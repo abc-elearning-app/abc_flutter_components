@@ -1,62 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/constants/index.dart';
-import 'package:flutter_abc_jsc_components/src/utils/email_validator.dart';
-import 'package:flutter_abc_jsc_components/src/utils/firebase_callbacks.dart';
+import 'package:flutter_abc_jsc_components/src/utils/index.dart';
+
+import '../index.dart';
 
 enum Screen { sendEmail, verifyCode }
 
 class EnterEmailSheet extends StatefulWidget {
-  final String loginTitle;
   final Widget privacyPolicyWidget;
-  final String notYetEnterEmailString;
-  final String emailInvalidString;
+  final VoidCallback clickLogin;
+  final VoidCallback buttonSubmitClick;
+  final VoidCallback buttonVerifyCodeClick;
+  final VoidCallback onSendEmail;
+  final VoidCallback onVerifyCode;
 
-  const EnterEmailSheet(
-      {super.key,
-      required this.loginTitle,
-      required this.privacyPolicyWidget,
-      required this.notYetEnterEmailString,
-      required this.emailInvalidString});
+  const EnterEmailSheet({
+    super.key,
+    required this.privacyPolicyWidget,
+    required this.clickLogin,
+    required this.buttonSubmitClick,
+    required this.buttonVerifyCodeClick,
+    required this.onSendEmail,
+    required this.onVerifyCode,
+  });
 
   @override
-  State<EnterEmailSheet> createState() => _EnterEmailSheetState();
+  State<EnterEmailSheet> createState() => EnterEmailSheetState();
 }
 
-class _EnterEmailSheetState extends State<EnterEmailSheet>
+class EnterEmailSheetState extends State<EnterEmailSheet>
     with SingleTickerProviderStateMixin {
-  late TextEditingController _textEmailController;
-  final _formEmailKey = GlobalKey<FormState>();
-  late TextEditingController _textCodeController;
-  final _formCodeKey = GlobalKey<FormState>();
-  bool _sendEmailLoading = false;
-  bool _verifyCodeLoading = false;
+  late TextEditingController textEmailController;
+  final formEmailKey = GlobalKey<FormState>();
+  late TextEditingController textCodeController;
+  final formCodeKey = GlobalKey<FormState>();
+  bool sendEmailLoading = false;
+  bool verifyCodeLoading = false;
 
-  late AnimationController _controller;
-  late Animation<Offset> _animation;
+  late AnimationController controller;
+  late Animation<Offset> animation;
   Screen screen = Screen.sendEmail;
 
   @override
   void initState() {
     super.initState();
-    _textEmailController = TextEditingController();
-    _textCodeController = TextEditingController();
-    _controller = AnimationController(
+    textEmailController = TextEditingController();
+    textCodeController = TextEditingController();
+    controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
-    _animation = Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero)
-        .animate(_controller);
-    _controller.forward(from: 1);
-    _clickLogin();
-  }
-
-  void _clickLogin() {
-    FirebaseCallbacks.logEvent(AppStrings.firebaseString.eventClickLogin);
+    animation = Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero)
+        .animate(controller);
+    controller.forward(from: 1);
+    widget.clickLogin.call();
   }
 
   @override
   void dispose() {
-    _textEmailController.dispose();
+    textEmailController.dispose();
     super.dispose();
   }
 
@@ -66,15 +68,15 @@ class _EnterEmailSheetState extends State<EnterEmailSheet>
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text(widget.loginTitle),
+        title: Text(AppStrings.enterEmailSheetStrings.login),
       ),
       body: Stack(
         children: [
           screen == Screen.sendEmail
               ? SlideTransition(
-                  position: _animation, child: _makePageSendEmail())
+                  position: animation, child: _makePageSendEmail())
               : SlideTransition(
-                  position: _animation, child: _makePageVerifyCode()),
+                  position: animation, child: _makePageVerifyCode()),
         ],
       ),
     );
@@ -83,7 +85,7 @@ class _EnterEmailSheetState extends State<EnterEmailSheet>
   Widget _makePageSendEmail() {
     return Center(
       child: Form(
-        key: _formEmailKey,
+        key: formEmailKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -102,7 +104,7 @@ class _EnterEmailSheetState extends State<EnterEmailSheet>
       padding: const EdgeInsets.all(20.0),
       child: TextFormField(
         autofocus: true,
-        controller: _textEmailController,
+        controller: textEmailController,
         decoration: const InputDecoration(
           icon: Icon(Icons.email),
           labelText: 'Email *',
@@ -112,10 +114,10 @@ class _EnterEmailSheetState extends State<EnterEmailSheet>
         validator: (value) {
           value = value?.trim() ?? "";
           if (value.isEmpty) {
-            return widget.notYetEnterEmailString;
+            return AppStrings.enterEmailSheetStrings.notYetEnterEmail;
           }
           if (!EmailValidator.validate(value)) {
-            return widget.emailInvalidString;
+            return AppStrings.enterEmailSheetStrings.emailInvalid;
           }
           return null;
         },
@@ -127,23 +129,23 @@ class _EnterEmailSheetState extends State<EnterEmailSheet>
     return Container(
       padding: const EdgeInsets.all(24),
       width: double.infinity,
-      child: _sendEmailLoading
+      child: sendEmailLoading
           ? const Column(
               children: [
                 CircularProgressIndicator(),
               ],
             )
-          : NewMainButton(
-              title: "Submit",
+          : MainButton(
+              title: AppStrings.enterEmailSheetStrings.submit,
               onPressed: () {
-                if (_sendEmailLoading) {
+                if (sendEmailLoading) {
                   return;
                 }
-                if (_formEmailKey.currentState!.validate()) {
+                if (formEmailKey.currentState!.validate()) {
                   setState(() {
-                    _sendEmailLoading = true;
+                    sendEmailLoading = true;
                   });
-                  _onSendEmail();
+                  widget.onSendEmail();
                 }
               },
             ),
@@ -169,9 +171,11 @@ class _EnterEmailSheetState extends State<EnterEmailSheet>
                                 size: 40, color: Colors.green)),
                         const SizedBox(width: 8),
                         Expanded(
-                            child: Text(LocaleKeys.sended_email.tr(namedArgs: {
-                          'title': _textEmailController.value.text.trim() ?? ""
-                        })))
+                          child: Text(
+                            AppStrings.enterEmailSheetStrings.sentEmail(
+                                textEmailController.value.text.trim()),
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -181,11 +185,7 @@ class _EnterEmailSheetState extends State<EnterEmailSheet>
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            LocaleKeys.timeout_code.tr(
-                              namedArgs: {
-                                'title': EMAIL_VERIFY_EXPIRED_TIME.toString()
-                              },
-                            ),
+                            AppStrings.enterEmailSheetStrings.timeoutCode,
                           ),
                         ),
                       ],
@@ -195,7 +195,7 @@ class _EnterEmailSheetState extends State<EnterEmailSheet>
               )
             : const SizedBox(),
         Form(
-          key: _formCodeKey,
+          key: formCodeKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -211,18 +211,19 @@ class _EnterEmailSheetState extends State<EnterEmailSheet>
       padding: const EdgeInsets.all(20.0),
       child: TextFormField(
         autofocus: true,
-        controller: _textCodeController,
+        controller: textCodeController,
         decoration: InputDecoration(
           icon: const Icon(Icons.email),
-          labelText: "${LocaleKeys.code.tr()} *",
+          labelText: AppStrings.enterEmailSheetStrings.code,
         ),
-        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+        style:
+            const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return LocaleKeys.not_yet_enter_code.tr();
+            return AppStrings.enterEmailSheetStrings.notYetEnterCode;
           }
-          if (value.length < 6 || !validateCode(value)) {
-            return LocaleKeys.code_invalid.tr();
+          if (value.length < 6 || !CodeValidator().validateCode(value)) {
+            return AppStrings.enterEmailSheetStrings.codeInvalid;
           }
           return null;
         },
@@ -234,140 +235,26 @@ class _EnterEmailSheetState extends State<EnterEmailSheet>
     return Container(
       padding: const EdgeInsets.all(24),
       width: double.infinity,
-      child: _verifyCodeLoading
+      child: verifyCodeLoading
           ? const Column(
               children: [
                 CircularProgressIndicator(),
               ],
             )
-          : NewMainButton(
-              title: LocaleKeys.verifyCode.tr(),
+          : MainButton(
+              title: AppStrings.enterEmailSheetStrings.verifyCode,
               onPressed: () {
-                if (_verifyCodeLoading) {
+                if (verifyCodeLoading) {
                   return;
                 }
-                if (_formCodeKey.currentState!.validate()) {
+                if (formCodeKey.currentState!.validate()) {
                   setState(() {
-                    _verifyCodeLoading = true;
+                    verifyCodeLoading = true;
                   });
-                  _onVerifyCode();
+                  widget.onVerifyCode();
                 }
               },
             ),
     );
-  }
-
-  void _gotoVerifyCodePage() {
-    setState(() {
-      screen = Screen.verifyCode;
-    });
-    _controller.reset();
-    _controller.forward();
-  }
-
-  void _onSendEmail() {
-    if (!DataManager.getInstance().isOnline) {
-      ABCToaster.showWarningNoInternet(context);
-      return;
-    }
-    String email = _textEmailController.value.text?.trim()?.toLowerCase() ?? "";
-    FirebaseManagement.logEvent(Constants.event_login_by_email, parameters: {
-      "email": email,
-    });
-    debugLog(
-        "0000000000000000000000000000000000000000000000000000000000000000 isInDebugMode $isInDebugMode");
-    if (EMAILS_DEMO.contains(email) ||
-        (DataManager.getInstance().isTester || isInDebugMode)) {
-      debugLog("1111111111111111111111111111111111111111111111111111");
-      Provider.of<AuthModel>(context, listen: false)
-          .onLoggedIn(email)
-          .then((_) {
-        Provider.of<InAppPurchaseModel>(context, listen: false).upgradePro();
-        setState(() {
-          _verifyCodeLoading = false;
-        });
-        Future.delayed(Duration(milliseconds: 200), () {
-          NavigationService().pop();
-        });
-        Future.delayed(Duration(milliseconds: 400), () {
-          ABCToaster.showToast(
-              context: context,
-              msg: LocaleKeys.login_successed.tr(),
-              type: ABCToasterType.success);
-          // showToastSuccess(LocaleKeys.login_successed.tr());
-        });
-      });
-      return;
-    }
-    NetworkManagement.instance.sendEmailVerifyCode(email).then((int status) {
-      setState(() {
-        _sendEmailLoading = false;
-      });
-      if (status == 1) {
-        _gotoVerifyCodePage();
-      } else {
-        ABCToaster.showToast(
-            context: context,
-            msg: LocaleKeys.cannot_send_email_try_again.tr(),
-            type: ABCToasterType.failed);
-        // showToastError(LocaleKeys.cannot_send_email_try_again.tr());
-      }
-    });
-  }
-
-  void _loginSuccess(String email) {
-    FirebaseManagement.logEvent(Constants.event_login_by_email_success,
-        parameters: {
-          "email": email,
-        });
-  }
-
-  void _onVerifyCode() {
-    if (!DataManager.getInstance().isOnline) {
-      ABCToaster.showWarningNoInternet(context);
-      return;
-    }
-    String email = _textEmailController.value.text?.trim() ?? "";
-    String code = _textCodeController.value.text?.trim() ?? "";
-    FirebaseManagement.logEvent(Constants.event_verify_code, parameters: {
-      "email": email,
-      "code": code,
-    });
-    Provider.of<AuthModel>(context, listen: false)
-        .verifyCode(email, code)
-        .then((int status) {
-      setState(() {
-        _verifyCodeLoading = false;
-      });
-      if (status == STATUS_EMAIL_VERIFY_OK) {
-        _loginSuccess(email);
-        NavigationService().pop();
-        Future.delayed(Duration(milliseconds: 200), () {
-          ABCToaster.showToast(
-              context: context,
-              msg: LocaleKeys.login_successed.tr(),
-              type: ABCToasterType.success);
-          // showToastSuccess(LocaleKeys.login_successed.tr());
-        });
-      } else if (status == STATUS_EMAIL_VERIFY_EXPIRED) {
-        ABCToaster.showToast(
-            context: context,
-            msg: LocaleKeys.code_expired.tr(),
-            type: ABCToasterType.failed);
-        // showToastError(LocaleKeys.code_expired.tr());
-      } else if (status == STATUS_EMAIL_VERIFY_NOT_EXISTED) {
-        ABCToaster.showToast(
-            context: context,
-            msg: LocaleKeys.code_not_existed_try_again.tr(),
-            type: ABCToasterType.failed);
-        // showToastError(LocaleKeys.code_not_existed_try_again.tr());
-      } else {
-        ABCToaster.showToast(
-            context: context,
-            msg: LocaleKeys.cannot_login_try_again.tr(),
-            type: ABCToasterType.failed);
-        // showToastError(LocaleKeys.cannot_login_try_again.tr());
-      }
-    });
   }
 }
