@@ -10,6 +10,11 @@ dependencies:
     sdk: flutter
 
   figma_squircle: ^0.5.3
+  cached_network_image: any
+  extended_text: any
+  flutter_html: ^3.0.0-alpha.6
+  flutter_html_math: ^3.0.0-alpha.3
+  flutter_svg: any
 
 
   cupertino_icons: ^1.0.5
