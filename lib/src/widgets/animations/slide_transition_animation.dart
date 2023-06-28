@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 enum PositionType { leftToRight, rightToLeft, topToBottom, bottomToTop }
 
 class SlideTransitionPanel extends StatefulWidget {
-  final Widget child;
-  final VoidCallback onEnd;
-  final PositionType position;
+  final Widget? child;
+  final VoidCallback? onEnd;
+  final PositionType? position;
 
   const SlideTransitionPanel({
     Key? key,
     required this.child,
-    required this.onEnd,
-    required this.position,
+    this.onEnd,
+    this.position,
   }) : super(key: key);
 
   @override
@@ -54,7 +54,7 @@ class SlideTransitionPanelState extends State<SlideTransitionPanel>
 
   void listen(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
-      widget.onEnd.call();
+      widget.onEnd?.call();
     }
   }
 
