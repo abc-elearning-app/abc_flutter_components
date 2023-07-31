@@ -1,10 +1,17 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
-Widget getRatingBottomSheet(BuildContext context, VoidCallback onSubmit) {
+Widget getRatingBottomSheet({
+  required BuildContext context,
+  required VoidCallback onSubmit,
+  required VoidCallback ratingDataRecordDecline,
+  required VoidCallback goToAtStore,
+  required VoidCallback rattingDataRecordRated,
+}) {
   RemoteSettingTotal remoteSettingTotal = RemoteSettingTotal(
     question1: AppStrings.ratingStrings.ratingQuestion1,
     question2: AppStrings.ratingStrings.ratingQuestion2,
@@ -13,20 +20,33 @@ Widget getRatingBottomSheet(BuildContext context, VoidCallback onSubmit) {
   return RatingBottomSheet(
     remoteSettingTotal: remoteSettingTotal,
     onSubmit: onSubmit,
+    goToAtStore: goToAtStore,
+    ratingDataRecordDecline: ratingDataRecordDecline,
+    rattingDataRecordRated: rattingDataRecordRated,
   );
 }
 
-void showRatingFeedbackBottomSheet(BuildContext context,
-    {VoidCallback? callback,
-    required bool isDarkMode,
-    required VoidCallback onSubmit}) {
+void showRatingFeedbackBottomSheet(
+  BuildContext context, {
+  VoidCallback? callback,
+  required bool isDarkMode,
+  required VoidCallback onSubmit,
+  required VoidCallback ratingDataRecordDecline,
+  required VoidCallback goToAtStore,
+  required VoidCallback rattingDataRecordRated,
+}) {
   showMyModalBottomSheet(
     context: context,
     isScrollControlled: true,
     enableDrag: true,
     backgroundColor: Colors.transparent,
     isDarkMode: isDarkMode,
-    widget: getRatingBottomSheet(context, onSubmit),
+    widget: getRatingBottomSheet(
+        context: context,
+        onSubmit: onSubmit,
+        ratingDataRecordDecline: ratingDataRecordDecline,
+        goToAtStore: goToAtStore,
+        rattingDataRecordRated: ratingDataRecordDecline),
   ).then((value) {
     callback?.call();
   });
@@ -53,12 +73,22 @@ class FeedbackItem {
 }
 
 class RatingBottomSheet extends StatefulWidget {
-  final RemoteSettingTotal remoteSettingTotal;
+  final String? configAppName;
+  final RemoteSettingTotal? remoteSettingTotal;
   final VoidCallback onSubmit;
-  final void onFeedbackYes;
+  final VoidCallback ratingDataRecordDecline;
+  final VoidCallback goToAtStore;
+  final VoidCallback rattingDataRecordRated;
 
-  const RatingBottomSheet(
-      {super.key, required this.remoteSettingTotal, required this.onSubmit});
+  const RatingBottomSheet({
+    super.key,
+    this.remoteSettingTotal,
+    required this.onSubmit,
+    this.configAppName,
+    required this.ratingDataRecordDecline,
+    required this.goToAtStore,
+    required this.rattingDataRecordRated,
+  });
 
   @override
   State<RatingBottomSheet> createState() => _RatingBottomSheetState();
@@ -98,7 +128,7 @@ class RatingBottomSheet extends StatefulWidget {
 }
 
 class _RatingBottomSheetState extends State<RatingBottomSheet> {
-  RemoteSettingTotal get remoteSettingTotal => widget.remoteSettingTotal;
+  RemoteSettingTotal? get remoteSettingTotal => widget.remoteSettingTotal;
 
   Map<int, FeedbackItem> feedbackChecked = {};
   FocusNode focusNode = FocusNode();
@@ -305,7 +335,11 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
     return _makeContentPage(
         icon: const RatingMenuIcon3(width: 120),
         title: Text(
-          widget.replaceAppNameStoreName(remoteSettingTotal.question3, context),
+          widget.replaceAppNameStoreName(
+            remoteSettingTotal?.question3 ?? "App",
+            context,
+            widget.configAppName ?? "",
+          ),
           textAlign: TextAlign.center,
           style: TextStyle(
               color: Theme.of(context).colorScheme.onSurface,
@@ -330,89 +364,100 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
 
   Widget _makeRating() {
     return _makeContentPage(
-        icon: const RatingMenuIcon2(width: 120),
-        title: Text(
-          widget.replaceAppNameStoreName(remoteSettingTotal.question2, context),
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface,
-              fontWeight: FontWeight.w600,
-              fontSize: 20),
+      icon: const RatingMenuIcon2(width: 120),
+      title: Text(
+        widget.replaceAppNameStoreName(
+          remoteSettingTotal?.question2 ?? "App",
+          context,
+          widget.configAppName ?? "",
         ),
-        yesButton: _makeYesButton(
-            text: LocaleKeys.okSure.tr(),
-            onPressed: () {
-              NavigationService().pop();
-              _gotoRating();
-            }),
-        noButton: _makeNoButton(
-            text: LocaleKeys.noThanks.tr(),
-            onPressed: () {
-              FirebaseManagement.logEvent("ignore_rate");
-              NavigationService().pop();
-              _ratingData.recordDecline();
-            }));
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface,
+            fontWeight: FontWeight.w600,
+            fontSize: 20),
+      ),
+      yesButton: _makeYesButton(
+          text: AppStrings.ratingStrings.okSure,
+          onPressed: () {
+            Navigator.of(context).pop();
+            _gotoRating();
+          }),
+      noButton: _makeNoButton(
+        text: AppStrings.ratingStrings.noThanks,
+        onPressed: () {
+          FirebaseCallbacks.logEvent("ignore_rate");
+          Navigator.of(context).pop();
+          widget.ratingDataRecordDecline();
+        },
+      ),
+    );
   }
 
-  Widget _makeYesButton({String text, Function onPressed}) {
+  Widget _makeYesButton(
+      {required String text, required VoidCallback onPressed}) {
     return SizedBox(
       width: double.infinity,
-      child: NewMainButton(
+      child: MainButton(
         title: text,
-        backgroundColor: MyTheme.get().primaryColor,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         onPressed: onPressed,
       ),
     );
   }
 
-  Widget _makeNoButton({String text, Function onPressed}) {
+  Widget _makeNoButton(
+      {required String text, required VoidCallback onPressed}) {
     return SizedBox(
       width: double.infinity,
-      child: NewMainButton(
+      child: MainButton(
         padding: const EdgeInsets.all(8),
         title: text,
         backgroundColor: Colors.transparent,
         onPressed: onPressed,
         borderSize: null,
-        textColor: MyTheme.get().primaryColor,
+        textColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }
 
   Widget _makeAskRating() {
     return _makeContentPage(
-        icon: RatingMenuIcon1(width: 120),
+        icon: const RatingMenuIcon1(width: 120),
         title: Text(
           widget.replaceAppNameStoreName(
-              remoteSettingTotal.question1 ?? "App", context),
+            remoteSettingTotal?.question1 ?? "App",
+            context,
+            widget.configAppName ?? "",
+          ),
           textAlign: TextAlign.center,
           style: _textStyle.copyWith(
-            color: _darkMode ? Colors.white : Colors.black,
+            color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w600,
             fontSize: 20,
           ),
         ),
         yesButton: _makeYesButton(
-          text: LocaleKeys.yes.tr(),
+          text: AppStrings.ratingStrings.yes,
           onPressed: () {
-            FirebaseManagement.logEvent("enjoying_app");
+            FirebaseCallbacks.logEvent("enjoying_app");
             _gotoPage(screenRating);
           },
         ),
         noButton: _makeNoButton(
-          text: LocaleKeys.notReally.tr(),
+          text: AppStrings.ratingStrings.notReally,
           onPressed: () {
-            FirebaseManagement.logEvent("not_enjoying_app");
+            FirebaseCallbacks.logEvent("not_enjoying_app");
             _gotoPage(screenAskFeedback);
           },
         ));
   }
 
   Widget _makeContentPage({
-    Widget icon,
-    Widget title,
-    Widget yesButton,
-    Widget noButton,
+    required Widget icon,
+    required Widget title,
+    required Widget yesButton,
+    required Widget noButton,
   }) {
     return Padding(
       padding: const EdgeInsets.all(20),
@@ -426,7 +471,7 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
             child: icon,
           ),
           title,
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           Row(
             children: <Widget>[
               Expanded(
@@ -435,7 +480,7 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
             ],
           ),
           noButton,
-          SizedBox(height: 20)
+          const SizedBox(height: 20)
         ],
       ),
     );
@@ -449,66 +494,66 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
   }
 
   void _gotoRating() async {
-    FirebaseManagement.logEvent("accept_rate");
-    gotoRatingAtStore();
-    // SharedPreferences _sharedPreferences = await DataManager.getInstance().getSharedPreferences();
-    // String key = "@key.show_review_in_app";
-    // DateTime currentTime = DateTime.now();
-    // int time = _sharedPreferences.getInt(key);
-    // final InAppReview inAppReview = InAppReview.instance;
-    // debugLog("_gotoRating");
-    // if(time == null || time <= 0 || currentTime.difference(DateTime.fromMillisecondsSinceEpoch(time)).inDays >= 15) {
-    //   debugLog("inAppReview.requestReview");
-    //   try {
-    //     if(await inAppReview.isAvailable()) {
-    //       try {
-    //         inAppReview.requestReview();
-    //       } catch(e) {
-    //         debugLog("openStoreListing");
-    //         try {
-    //           inAppReview.openStoreListing(appStoreId: CONFIG_APPLE_ID);
-    //         } catch(e){
-    //           gotoRatingAtStore();
-    //         }
-    //       }
-    //     } else {
-    //       gotoRatingAtStore();
-    //     }
-    //   } catch(e){
-    //     gotoRatingAtStore();
-    //   }
-    // } else {
-    //   debugLog("inAppReview.openStoreListing");
-    //   gotoRatingAtStore();
-    // }
-    _ratingData.recordRated();
+    FirebaseCallbacks.logEvent("accept_rate");
+    widget.goToAtStore.call();
+// SharedPreferences _sharedPreferences = await DataManager.getInstance().getSharedPreferences();
+// String key = "@key.show_review_in_app";
+// DateTime currentTime = DateTime.now();
+// int time = _sharedPreferences.getInt(key);
+// final InAppReview inAppReview = InAppReview.instance;
+// debugLog("_gotoRating");
+// if(time == null || time <= 0 || currentTime.difference(DateTime.fromMillisecondsSinceEpoch(time)).inDays >= 15) {
+//   debugLog("inAppReview.requestReview");
+//   try {
+//     if(await inAppReview.isAvailable()) {
+//       try {
+//         inAppReview.requestReview();
+//       } catch(e) {
+//         debugLog("openStoreListing");
+//         try {
+//           inAppReview.openStoreListing(appStoreId: CONFIG_APPLE_ID);
+//         } catch(e){
+//           gotoRatingAtStore();
+//         }
+//       }
+//     } else {
+//       gotoRatingAtStore();
+//     }
+//   } catch(e){
+//     gotoRatingAtStore();
+//   }
+// } else {
+//   debugLog("inAppReview.openStoreListing");
+//   gotoRatingAtStore();
+// }
+    widget.rattingDataRecordRated.call();
   }
 
-  void _onReportApp() async {
-    if (feedbackChecked.isEmpty ||
-        (feedbackChecked.length == 1 &&
-            feedbackChecked.containsKey(widget.feedbackItemOther) &&
-            (feedbackChecked[widget.feedbackItemOther] == null ||
-                feedbackChecked[widget.feedbackItemOther].name == null ||
-                feedbackChecked[widget.feedbackItemOther].name.isEmpty))) {
-      FirebaseManagement.logEvent("feedback_empty");
-      return;
-    }
-    try {
-      String json = jsonEncode(
-          feedbackChecked.values.map((FeedbackItem e) => e.toMap()).toList());
-      await NetworkManagement.instance.reportApp(json).then((value) {
-        FirebaseManagement.logEvent("feedback_success");
-      });
-    } catch (e) {
-      print('_onReportApp catchError $e');
-      FirebaseManagement.logEvent("feedback_failed");
-    }
-    ABCToaster.showToast(
-        context: context,
-        msg: LocaleKeys.thanks_for_feedback.tr(),
-        type: ABCToasterType.success);
-  }
+// void _onReportApp() async {
+//   if (feedbackChecked.isEmpty ||
+//       (feedbackChecked.length == 1 &&
+//           feedbackChecked.containsKey(widget.feedbackItemOther) &&
+//           (feedbackChecked[widget.feedbackItemOther] == null ||
+//               feedbackChecked[widget.feedbackItemOther].name == null ||
+//               feedbackChecked[widget.feedbackItemOther].name.isEmpty))) {
+//     FirebaseManagement.logEvent("feedback_empty");
+//     return;
+//   }
+//   try {
+//     String json = jsonEncode(
+//         feedbackChecked.values.map((FeedbackItem e) => e.toMap()).toList());
+//     await NetworkManagement.instance.reportApp(json).then((value) {
+//       FirebaseManagement.logEvent("feedback_success");
+//     });
+//   } catch (e) {
+//     print('_onReportApp catchError $e');
+//     FirebaseManagement.logEvent("feedback_failed");
+//   }
+//   ABCToaster.showToast(
+//       context: context,
+//       msg: LocaleKeys.thanks_for_feedback.tr(),
+//       type: ABCToasterType.success);
+// }
 }
 
 class RemoteSettingTotal {
@@ -517,11 +562,12 @@ class RemoteSettingTotal {
   String question3; // (no: question2)
   List<String> appIds;
 
-  RemoteSettingTotal(
-      {this.question1 = "",
-      this.question2 = "",
-      this.question3 = "",
-      this.appIds = []});
+  RemoteSettingTotal({
+    this.question1 = "",
+    this.question2 = "",
+    this.question3 = "",
+    this.appIds = const [],
+  });
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {};

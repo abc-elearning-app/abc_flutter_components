@@ -3,6 +3,7 @@ class AppStrings {
 
   static const enterEmailSheetStrings = _EnterEmailSheetStrings();
   static const ratingStrings = _RatingStrings();
+  static const reportMistakeString = _ReportMistakeStrings();
 }
 
 class _EnterEmailSheetStrings {
@@ -57,4 +58,18 @@ class _RatingStrings {
 
   final okSure = "Ok, sure!";
   final noThanks = "No, thanks!";
+
+  final yes = "Yes";
+  final notReally = "Not Really";
+}
+
+class _ReportMistakeStrings {
+  const _ReportMistakeStrings();
+
+  final thereIsAMistake = "There's a mistake";
+  final itTooDifficult = "It's too difficult";
+  final other = "Other";
+  final explainIssue = "Please explain your issue in a little bit more detail";
+  final reportMistake = "Report Mistake";
+  final report = "REPORT";
 }

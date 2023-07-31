@@ -6,9 +6,19 @@ import '../index.dart';
 class RatingView extends StatefulWidget {
   final VoidCallback onRating;
   final bool hasBackground;
+  final VoidCallback onSubmit;
+  final VoidCallback ratingDataRecordDecline;
+  final VoidCallback goToAtStore;
+  final VoidCallback rattingDataRecordRated;
 
   const RatingView(
-      {super.key, required this.onRating, required this.hasBackground});
+      {super.key,
+      required this.onRating,
+      required this.hasBackground,
+      required this.onSubmit,
+      required this.ratingDataRecordDecline,
+      required this.goToAtStore,
+      required this.rattingDataRecordRated});
 
   @override
   State<RatingView> createState() => _RatingViewState();
@@ -34,7 +44,13 @@ class _RatingViewState extends State<RatingView> {
             onRating: widget.onRating,
             hasBackground: widget.hasBackground,
           )
-        : getRatingBottomSheet(context);
+        : getRatingBottomSheet(
+            context: context,
+            onSubmit: widget.onSubmit,
+            ratingDataRecordDecline: widget.ratingDataRecordDecline,
+            goToAtStore: widget.goToAtStore,
+            rattingDataRecordRated: widget.rattingDataRecordRated,
+          );
   }
 }
 

@@ -7,13 +7,14 @@ class MainItem extends StatelessWidget {
   final Widget trailing;
   final Widget subtitle;
 
-  const MainItem(
-      {super.key,
-      required this.title,
-      required this.onTap,
-      required this.leading,
-      required this.subtitle,
-      required this.trailing});
+  const MainItem({
+    super.key,
+    required this.title,
+    required this.onTap,
+    required this.leading,
+    required this.subtitle,
+    required this.trailing,
+  });
 
   @override
   Widget build(BuildContext context) {
