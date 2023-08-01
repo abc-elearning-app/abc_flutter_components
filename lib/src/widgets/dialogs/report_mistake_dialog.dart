@@ -99,7 +99,7 @@ class _DialogContentState extends State<DialogContent> {
                     onCheckBoxChange(1);
                   },
                   title: Text(
-                    AppStrings.reportMistakeString.thereIsAMistake,
+                    AppStrings.reportMistakeStrings.thereIsAMistake,
                     style: const TextStyle(color: Colors.black87),
                   ),
                   controlAffinity: ListTileControlAffinity.leading,
@@ -110,7 +110,7 @@ class _DialogContentState extends State<DialogContent> {
                   onChanged: (_) {
                     onCheckBoxChange(2);
                   },
-                  title: Text(AppStrings.reportMistakeString.itTooDifficult,
+                  title: Text(AppStrings.reportMistakeStrings.itTooDifficult,
                       style: const TextStyle(color: Colors.black87)),
                   controlAffinity: ListTileControlAffinity.leading,
                 ),
@@ -120,7 +120,7 @@ class _DialogContentState extends State<DialogContent> {
                   onChanged: (_) {
                     onCheckBoxChange(3);
                   },
-                  title: Text(AppStrings.reportMistakeString.other,
+                  title: Text(AppStrings.reportMistakeStrings.other,
                       style: const TextStyle(color: Colors.black87)),
                   controlAffinity: ListTileControlAffinity.leading,
                 ),
@@ -136,7 +136,7 @@ class _DialogContentState extends State<DialogContent> {
               textInputAction: TextInputAction.done,
               style: const TextStyle(fontSize: 15.0, color: Colors.black87),
               decoration: InputDecoration(
-                hintText: AppStrings.reportMistakeString.explainIssue,
+                hintText: AppStrings.reportMistakeStrings.explainIssue,
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5.0),
                   borderSide: const BorderSide(
@@ -194,7 +194,7 @@ class _DialogContentState extends State<DialogContent> {
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 20),
                                 child: Text(
-                                  AppStrings.reportMistakeString.reportMistake,
+                                  AppStrings.reportMistakeStrings.reportMistake,
                                   style: const TextStyle(
                                       fontSize: 25, color: Colors.white),
                                 ),
@@ -219,7 +219,7 @@ class _DialogContentState extends State<DialogContent> {
                               color:
                                   isSelected ? Colors.green : Colors.grey[400],
                               child: Text(
-                                AppStrings.reportMistakeString.report,
+                                AppStrings.reportMistakeStrings.report,
                                 style: const TextStyle(
                                     fontSize: 18, color: Colors.white),
                               ),

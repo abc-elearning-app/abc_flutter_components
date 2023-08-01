@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 class TextAnimation extends StatefulWidget {
   final String text;
-  final TextStyle style;
-  final TextAlign textAlign;
+  final TextStyle? style;
+  final TextAlign? textAlign;
 
   const TextAnimation(
     this.text, {
     Key? key,
-    required this.style,
-    required this.textAlign,
+    this.style,
+    this.textAlign,
   }) : super(key: key);
 
   @override
@@ -54,15 +54,15 @@ class TextAnimationState extends State<TextAnimation>
 class _LetterAnimation extends StatefulWidget {
   final String text;
   final int duration;
-  final TextStyle style;
-  final TextAlign textAlign;
+  final TextStyle? style;
+  final TextAlign? textAlign;
 
   const _LetterAnimation(
     this.text, {
     Key? key,
     this.duration = 200,
-    required this.style,
-    required this.textAlign,
+    this.style,
+    this.textAlign,
   }) : super(key: key);
 
   @override

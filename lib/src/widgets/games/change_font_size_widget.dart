@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
-const CONFIG_FONT_SIZE_DEFAULT = 15;
+import '../../../models/constraints.dart';
 
 void showChangeFontSizeDialog({
   required BuildContext context,

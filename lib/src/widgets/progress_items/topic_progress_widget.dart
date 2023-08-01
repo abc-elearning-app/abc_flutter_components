@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/icons/main_icon.dart';
 
-class AppBarProgressItem {
+class AnimatedAppBarProgressItem {
   String title;
   String value;
   IconData icon;
 
-  AppBarProgressItem({
+  AnimatedAppBarProgressItem({
     required this.icon,
     required this.title,
     required this.value,
@@ -17,7 +17,7 @@ class TopicProgressWidget extends StatefulWidget {
   final bool animation;
   final double height;
   final double progress;
-  final List<AppBarProgressItem> progressItems;
+  final List<AnimatedAppBarProgressItem> progressItems;
   final String testBackgroundPath;
 
   const TopicProgressWidget({

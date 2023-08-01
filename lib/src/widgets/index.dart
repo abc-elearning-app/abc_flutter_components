@@ -94,7 +94,12 @@ export 'sliders/flutter_slider/models/flutter_slider_tooltip_position_offset.dar
 export 'sliders/flutter_slider/models/flutter_slider_handler.dart';
 export 'sliders/flutter_slider/models/flutter_slider_fixed_value.dart';
 export 'sliders/flutter_slider/flutter_slider.dart';
+export 'games/choice_panel.dart';
+export 'games/explanation_widget.dart';
 export 'games/change_font_size_widget.dart';
+export 'games/image_zoom.dart';
+export 'games/image_widget.dart';
+export 'games/text_content.dart';
 export 'games/reviews/review_choice_panel.dart';
 export 'games/reviews/review_question_panel.dart';
 export 'animations/opacity_animation.dart';

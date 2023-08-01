@@ -3,7 +3,10 @@ class AppStrings {
 
   static const enterEmailSheetStrings = _EnterEmailSheetStrings();
   static const ratingStrings = _RatingStrings();
-  static const reportMistakeString = _ReportMistakeStrings();
+  static const reportMistakeStrings = _ReportMistakeStrings();
+  static const gameStrings = _GameStrings();
+  static const treeWidgetStrings = _TreeWidgetStrings();
+  static const menuStrings = _MenuStrings();
 }
 
 class _EnterEmailSheetStrings {
@@ -13,8 +16,7 @@ class _EnterEmailSheetStrings {
   final notYetEnterEmail = "Please enter your email!";
   final emailInvalid = "Please provide a valid email address!";
 
-  get sentEmail =>
-          (String email) =>
+  get sentEmail => (String email) =>
       "We have sent an email with a verified code to $email. Please check your inbox!";
   final timeoutCode = "Notice: The code will invalid in 5 minutes.";
   final code = "Code";
@@ -72,4 +74,30 @@ class _ReportMistakeStrings {
   final explainIssue = "Please explain your issue in a little bit more detail";
   final reportMistake = "Report Mistake";
   final report = "REPORT";
+}
+
+class _GameStrings {
+  const _GameStrings();
+
+  final gameHide = "Hide";
+  final gameButtonSubmit = "Submit";
+  final gameSeeMore = "See More";
+  final gameShowExplanation = "Show Explanation";
+}
+
+class _TreeWidgetStrings {
+  const _TreeWidgetStrings();
+
+  final buttonReset = "Reset";
+  final buttonTryAgain = "Try Again";
+  final resetAllProgress = "Do you want to reset all progress of this part?";
+  final notNow = "Not now";
+}
+
+class _MenuStrings {
+  const _MenuStrings();
+
+  final addToFavorites = "Added to favorites";
+  final reportMistake = "Report Mistake";
+  final fontSize = "Font Size";
 }

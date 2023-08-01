@@ -2,16 +2,22 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:path_drawing/src/dash_path.dart';
 
 import '../../../flutter_abc_jsc_components.dart';
+import '../../../models/constraints.dart';
+import '../../../models/test_info/test_info.dart';
+import '../../../models/topic/topic.dart';
 
 class TreeWidget extends StatefulWidget {
+  final bool isSingleTest;
   final List<TreeItem>? treeItems;
   final Function(TreeItem treeItem, int index)? onClick;
   final Color? backgroundColor;
   final ScrollController? scrollController;
   final IconType iconType;
   final RotateType rotateType;
+  final bool checkUnlockTopic;
 
   const TreeWidget({
     super.key,
@@ -21,6 +27,8 @@ class TreeWidget extends StatefulWidget {
     this.scrollController,
     this.iconType = IconType.CIRCLE_SHAPE,
     this.rotateType = RotateType.TOP_LEFT,
+    required this.isSingleTest,
+    required this.checkUnlockTopic,
   });
 
   @override
@@ -103,14 +111,15 @@ class _TreeWidgetState extends State<TreeWidget>
     }
   }
 
-  OffsetItem _getPosition(GlobalKey key, Offset offset) {
+  OffsetItem? _getPosition(GlobalKey key, Offset offset) {
     try {
-      final RenderBox renderBoxRed = key.currentContext.findRenderObject();
-      Offset _positionRed = renderBoxRed.localToGlobal(Offset.zero);
-      if (_positionRed != null) {
+      final RenderBox? renderBoxRed =
+          key.currentContext?.findRenderObject() as RenderBox?;
+      Offset? positionRed = renderBoxRed?.localToGlobal(Offset.zero);
+      if (positionRed != null) {
         //ToDo: cần xác định con số này được dùng như thế nào
-        return OffsetItem(_positionRed.dx + sizeItem.width / 2 - offset.dx,
-            _positionRed.dy + sizeItem.width / 2 - offset.dy);
+        return OffsetItem(positionRed.dx + sizeItem.width / 2 - offset.dx,
+            positionRed.dy + sizeItem.width / 2 - offset.dy);
       }
       return null;
     } catch (e) {}
@@ -120,31 +129,31 @@ class _TreeWidgetState extends State<TreeWidget>
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: widget.backgroundColor ?? Theme.of(context).backgroundColor,
+      color: widget.backgroundColor ?? Theme.of(context).colorScheme.background,
       child: SingleChildScrollView(
         controller: widget.scrollController,
         child: CustomPaint(
           key: _keyOffsetWidget,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 24),
-            child: Column(
-              children: _makeTreeItem()
-                ..add(SizedBox(height: CheckAppUtils.isSingleTest ? 50 : 0)),
-            ),
-          ),
           painter: _draw
               ? DrawDragon(
                   offsets: _treeItemOffsets,
                   activeIndex: currentPart,
                   color: darkMode ? Colors.grey : _treeItemColor)
               : null,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 24),
+            child: Column(
+              children: _makeTreeItem()
+                ..add(SizedBox(height: widget.isSingleTest ? 50 : 0)),
+            ),
+          ),
         ),
       ),
     );
   }
 
   List<Widget> _makeTreeItem() {
-    int length = _treeItems.length;
+    var length = _treeItems?.length;
     List<Widget> widgets = [];
 
     ///biến temp này để lưu lại số hàng mà treeWidget tạo ra.
@@ -155,17 +164,17 @@ class _TreeWidgetState extends State<TreeWidget>
     currentPart = 0;
 
     ///lấy currentPart để phục vụ cho việc show animation
-    for (int index = 0; index < length; index++) {
-      if (!_treeItems[index].isLock) {
+    for (int index = 0; index < length!; index++) {
+      if (!_treeItems![index].isLock) {
         currentPart = index;
       }
     }
 
     ///Thêm toàn bộ các Row vào trong TreeWidget
     for (int index = 0; index < length; index++) {
-      TreeItem treeItem = _treeItems[index];
+      TreeItem? treeItem = _treeItems?[index];
       if (temp % 2 == 0) {
-        childs.add(_makeItem(treeItem, index, _treeItemColor));
+        childs.add(_makeItem(treeItem!, index, _treeItemColor));
 
         /// length = 3 thì sẽ ngắt 1 Row và xoá list<widget> childs đi.
         if (childs.length == 3) {
@@ -177,7 +186,7 @@ class _TreeWidgetState extends State<TreeWidget>
           widgets.add(widget);
         }
       } else {
-        childs.insert(0, _makeItem(treeItem, index, _treeItemColor));
+        childs.insert(0, _makeItem(treeItem!, index, _treeItemColor));
         if (childs.length == 2) {
           List<Widget> cs = [];
           cs.addAll(childs);
@@ -203,10 +212,10 @@ class _TreeWidgetState extends State<TreeWidget>
         widget = _makeRowItem(childs, MainAxisAlignment.center);
         widgets.add(widget);
       } else {
-        int _l = temp % 2 == 0 ? 3 : 2;
+        int l = temp % 2 == 0 ? 3 : 2;
         //vòng for này chỉ có tác dụng tạo thêm cho các item SizedBox để đủ các
         //phần tử để có thể tạo Row.
-        for (int index = 0; index < _l - childs.length; index++) {
+        for (int index = 0; index < l - childs.length; index++) {
           if (temp % 2 == 0) {
             childs
                 .add(SizedBox(width: sizeItem.width, height: sizeItem.height));
@@ -235,56 +244,56 @@ class _TreeWidgetState extends State<TreeWidget>
     );
   }
 
-  BorderRadius _shape(
-      IconType _iconType, RotateType _rotateType, double _size) {
-    if (_iconType == IconType.CIRCLE_SHAPE) {
-      return BorderRadius.circular(_size);
+  BorderRadius _shape(IconType iconType, RotateType rotateType, double size) {
+    if (iconType == IconType.CIRCLE_SHAPE) {
+      return BorderRadius.circular(size);
     }
-    if (_iconType == IconType.PARALLELOGRAM_SHAPE) {
+    if (iconType == IconType.PARALLELOGRAM_SHAPE) {
       return BorderRadius.only(
-          topLeft: Radius.circular(0),
-          bottomLeft: Radius.circular(_size / 2),
-          bottomRight: Radius.circular(0),
-          topRight: Radius.circular(_size / 2));
+          topLeft: const Radius.circular(0),
+          bottomLeft: Radius.circular(size / 2),
+          bottomRight: const Radius.circular(0),
+          topRight: Radius.circular(size / 2));
     }
-    if (_iconType == IconType.TEARDROP_SHAPE) {
-      switch (_rotateType) {
+    if (iconType == IconType.TEARDROP_SHAPE) {
+      switch (rotateType) {
         case RotateType.TOP_LEFT:
           return BorderRadius.only(
-              topLeft: Radius.circular(0),
-              bottomLeft: Radius.circular(_size),
-              bottomRight: Radius.circular(_size),
-              topRight: Radius.circular(_size));
+              topLeft: const Radius.circular(0),
+              bottomLeft: Radius.circular(size),
+              bottomRight: Radius.circular(size),
+              topRight: Radius.circular(size));
         case RotateType.TOP_RIGHT:
           return BorderRadius.only(
-              topLeft: Radius.circular(_size),
-              bottomLeft: Radius.circular(_size),
-              bottomRight: Radius.circular(_size),
-              topRight: Radius.circular(0));
+              topLeft: Radius.circular(size),
+              bottomLeft: Radius.circular(size),
+              bottomRight: Radius.circular(size),
+              topRight: const Radius.circular(0));
         case RotateType.BOTTOM_RIGHT:
           return BorderRadius.only(
-              topLeft: Radius.circular(_size),
-              bottomLeft: Radius.circular(_size),
-              bottomRight: Radius.circular(0),
-              topRight: Radius.circular(_size));
+              topLeft: Radius.circular(size),
+              bottomLeft: Radius.circular(size),
+              bottomRight: const Radius.circular(0),
+              topRight: Radius.circular(size));
         case RotateType.BOTTOM_LEFT:
           return BorderRadius.only(
-              topLeft: Radius.circular(_size),
-              bottomLeft: Radius.circular(0),
-              bottomRight: Radius.circular(_size),
-              topRight: Radius.circular(_size));
+              topLeft: Radius.circular(size),
+              bottomLeft: const Radius.circular(0),
+              bottomRight: Radius.circular(size),
+              topRight: Radius.circular(size));
         default:
           return BorderRadius.only(
-              topLeft: Radius.circular(0),
-              bottomLeft: Radius.circular(_size),
-              bottomRight: Radius.circular(_size),
-              topRight: Radius.circular(_size));
+              topLeft: const Radius.circular(0),
+              bottomLeft: Radius.circular(size),
+              bottomRight: Radius.circular(size),
+              topRight: Radius.circular(size));
       }
     }
     return BorderRadius.circular(8);
   }
 
-  Widget _getWidgetFromIconType({Widget child, IconType iconType}) {
+  Widget _getWidgetFromIconType(
+      {required Widget child, required IconType iconType}) {
     if (iconType != IconType.POLYGON_SHAPE) {
       return child;
     }
@@ -293,91 +302,80 @@ class _TreeWidgetState extends State<TreeWidget>
     );
   }
 
-  Widget _rotate({Widget child, RotateType rotateType}) {
+  Widget _rotate({required Widget child, required RotateType rotateType}) {
     switch (rotateType) {
       case RotateType.TOP_CENTER:
         return Transform.rotate(
           angle: pi / 4,
           child: child,
         );
-        break;
       case RotateType.CENTER_LEFT:
         return Transform.rotate(
           angle: pi * 3 / 4,
           child: child,
         );
-        break;
       case RotateType.CENTER_RIGHT:
         return Transform.rotate(
           angle: -pi / 4,
           child: child,
         );
-        break;
       case RotateType.BOTTOM_CENTER:
         return Transform.rotate(
           angle: pi * 5 / 4,
           child: child,
         );
-        break;
       default:
         return child;
     }
   }
 
-  Widget _rotateRollBack({Widget child, RotateType rotateType}) {
+  Widget _rotateRollBack(
+      {required Widget child, required RotateType rotateType}) {
     switch (rotateType) {
       case RotateType.TOP_CENTER:
         return Transform.rotate(
           angle: -pi / 4,
           child: child,
         );
-        break;
       case RotateType.CENTER_LEFT:
         return Transform.rotate(
           angle: -pi * 3 / 4,
           child: child,
         );
-        break;
       case RotateType.CENTER_RIGHT:
         return Transform.rotate(
           angle: pi / 4,
           child: child,
         );
-        break;
       case RotateType.BOTTOM_CENTER:
         return Transform.rotate(
           angle: -pi * 5 / 4,
           child: child,
         );
-        break;
       default:
         return child;
     }
   }
 
   Future<bool> get delay async {
-    await Future.delayed(Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 200));
     return Future.value(true);
   }
 
   bool isShowProTag(BuildContext context, TreeItem treeItem, int index) {
-    Topic topic = treeItem.entity;
-    if (topic is Topic) {
+    var topic = treeItem.entity;
+    if (topic is ITopic) {
       if (treeItem.isFreeToday) {
         return false;
       }
-      InAppPurchaseModel _inAppPurchaseModel =
-          Provider.of<InAppPurchaseModel>(context, listen: false);
-      List<RewardAdProgress> rewardProgress =
-          Provider.of<AdsModel>(context, listen: false).listRewardProgress;
-      return _inAppPurchaseModel.checkUnlockTopic(topic, index, rewardProgress);
+      return widget.checkUnlockTopic;
     }
     return false;
   }
 
   Widget _makeItem(TreeItem treeItem, int index, Color color) {
-    GlobalKey _key = GlobalKey();
-    _treeItemKeys.add(_key);
+    GlobalKey key = GlobalKey();
+    _treeItemKeys.add(key);
     // treeItem.isLock
     return Stack(
       children: <Widget>[
@@ -387,22 +385,22 @@ class _TreeWidgetState extends State<TreeWidget>
               builder: (context, snapshot) {
                 if (snapshot.data == true) {
                   return AnimatedBuilder(
-                    animation: _animation,
+                    animation: _animation!,
                     builder: (context, child) {
                       return Opacity(
-                        opacity: maxScale - _animation.value,
+                        opacity: maxScale - _animation!.value,
                         child: Transform.scale(
-                          scale: _animation.value,
+                          scale: _animation!.value,
                           child: _makeItemContent(),
                         ),
                       );
                     },
                   );
                 }
-                return SizedBox();
+                return const SizedBox();
               }),
         Container(
-          key: _key,
+          key: key,
           width: sizeItem.width,
           height: sizeItem.height,
           alignment: Alignment.center,
@@ -412,22 +410,22 @@ class _TreeWidgetState extends State<TreeWidget>
                   child: Column(
                     children: <Widget>[
                       GestureDetector(
-                          onTap: () => widget.onClick(treeItem, index),
+                          onTap: () => widget.onClick!(treeItem, index),
                           child: _makeIcon(treeItem)),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Flexible(
                           child: Text(
-                        '${treeItem.name(index)}',
+                        treeItem.name(index),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: darkMode
                                 ? Colors.white
-                                : MyColors.colorBlackFull),
+                                : const Color(0xFF212121)),
                       ))
                     ],
                   ),
                 )
-              : SizedBox(),
+              : const SizedBox(),
         ),
         if (treeItem.isFreeToday)
           Positioned(
@@ -438,9 +436,9 @@ class _TreeWidgetState extends State<TreeWidget>
                   width: 50,
                   height: 20,
                   decoration: BoxDecoration(
-                      color: MyColors.colorBlackFull,
+                      color: const Color(0xFF212121),
                       borderRadius: BorderRadius.circular(4)),
-                  child: Text("Free today",
+                  child: const Text("Free today",
                       style: TextStyle(fontSize: 8, color: Colors.white))))
         else if (isShowProTag(context, treeItem, index))
           Positioned(
@@ -452,11 +450,11 @@ class _TreeWidgetState extends State<TreeWidget>
     );
   }
 
-  double _getRotateDegrees(RotateType _rotateType) {
-    if (_rotateType == RotateType.TOP_LEFT ||
-        _rotateType == RotateType.TOP_RIGHT ||
-        _rotateType == RotateType.BOTTOM_LEFT ||
-        _rotateType == RotateType.BOTTOM_RIGHT) {
+  double _getRotateDegrees(RotateType rotateType) {
+    if (rotateType == RotateType.TOP_LEFT ||
+        rotateType == RotateType.TOP_RIGHT ||
+        rotateType == RotateType.BOTTOM_LEFT ||
+        rotateType == RotateType.BOTTOM_RIGHT) {
       return 30;
     }
     return 0;
@@ -464,7 +462,7 @@ class _TreeWidgetState extends State<TreeWidget>
 
   Widget _makeItemContent() {
     if (widget.iconType == IconType.POLYGON_SHAPE) {
-      return Container(
+      return SizedBox(
         width: sizeItem.width,
         height: sizeItem.width,
         child: ClipPolygon(
@@ -478,7 +476,7 @@ class _TreeWidgetState extends State<TreeWidget>
               PolygonBoxShadow(color: Colors.grey, elevation: 5.0)
             ],
             child: Container(
-                color: darkMode ? MyColors.darkColorFull : _treeItemColor)),
+                color: darkMode ? const Color(0xFF212121) : _treeItemColor)),
       );
     }
     return _rotate(
@@ -487,7 +485,7 @@ class _TreeWidgetState extends State<TreeWidget>
           width: sizeItem.width,
           height: sizeItem.width,
           decoration: BoxDecoration(
-              color: darkMode ? MyColors.darkColorMid : _treeItemColor,
+              color: darkMode ? const Color(0xFF4D4D4D) : _treeItemColor,
               borderRadius:
                   _shape(widget.iconType, widget.rotateType, sizeItem.width)),
         ));
@@ -495,28 +493,28 @@ class _TreeWidgetState extends State<TreeWidget>
 
   Widget _makeIconWithPolygonShape(TreeItem treeItem) {
     bool notDoYet = false;
-    if (treeItem.entity is TestInfo) {
-      notDoYet = (treeItem.entity as TestInfo).isNotDoYet;
+    if (treeItem.entity is ITestInfo) {
+      notDoYet = treeItem.testInfoTreeItemProperty!.isNotDoYet;
     }
-    Color _color = _treeItemColor;
+    Color color = _treeItemColor;
     Widget child = Text(notDoYet ? "?" : "${treeItem.progress.round()}%",
-        style: TextStyle(
+        style: const TextStyle(
             color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600));
     if (treeItem.isFreeToday) {
-      child = Icon(Icons.lock_open, size: 24, color: Color(0xFFAEAEC0));
-      _color = Color(0xFFEEF0F5);
+      child = const Icon(Icons.lock_open, size: 24, color: Color(0xFFAEAEC0));
+      color = const Color(0xFFEEF0F5);
     }
     if (treeItem.isLock) {
-      child = Icon(Icons.lock, size: 24, color: Color(0xFFAEAEC0));
-      _color = Color(0xFFEEF0F5);
+      child = const Icon(Icons.lock, size: 24, color: Color(0xFFAEAEC0));
+      color = const Color(0xFFEEF0F5);
     }
     if (treeItem.isPassed) {
-      child = Icon(Icons.done, size: 24, color: Colors.white);
-      _color = Colors.green;
+      child = const Icon(Icons.done, size: 24, color: Colors.white);
+      color = Colors.green;
     }
     if (treeItem.isNotPassed) {
-      child = Icon(Icons.close, size: 24, color: Colors.white);
-      _color = Colors.red;
+      child = const Icon(Icons.close, size: 24, color: Colors.white);
+      color = Colors.red;
     }
     return Container(
       alignment: Alignment.center,
@@ -535,7 +533,7 @@ class _TreeWidgetState extends State<TreeWidget>
           child: Container(
               width: sizeItem.width,
               height: sizeItem.width,
-              color: _color,
+              color: color,
               alignment: Alignment.center,
               child: child)),
     );
@@ -547,9 +545,9 @@ class _TreeWidgetState extends State<TreeWidget>
     }
     if (treeItem.isFreeToday) {
       return MainIcon(
-        icon: Icon(Icons.lock_open, size: 24, color: Color(0xFFAEAEC0)),
+        icon: const Icon(Icons.lock_open, size: 24, color: Color(0xFFAEAEC0)),
+        color: const Color(0xFFEEF0F5),
         size: sizeItem.width,
-        color: Color(0xFFEEF0F5),
         useDefault: true,
         iconType: widget.iconType,
         rotateType: widget.rotateType,
@@ -565,7 +563,7 @@ class _TreeWidgetState extends State<TreeWidget>
             boxShadow: darkMode
                 ? []
                 : [
-                    BoxShadow(
+                    const BoxShadow(
                         color: Colors.grey,
                         offset: Offset(0, 1),
                         blurRadius: 1,
@@ -573,17 +571,18 @@ class _TreeWidgetState extends State<TreeWidget>
                   ],
             borderRadius:
                 _shape(widget.iconType, widget.rotateType, sizeItem.width),
-            color: darkMode ? MyColors.darkColorFull : Color(0xFFEEF0F5),
+            color: darkMode ? const Color(0xFF383838) : const Color(0xFFEEF0F5),
           ),
           child: _rotateRollBack(
               rotateType: widget.rotateType,
-              child: Icon(Icons.lock, size: 24, color: Color(0xFFAEAEC0))),
+              child:
+                  const Icon(Icons.lock, size: 24, color: Color(0xFFAEAEC0))),
         ),
       );
     }
     if (treeItem.isPassed) {
       return MainIcon(
-        icon: Icon(Icons.done, size: 24, color: Colors.white),
+        icon: const Icon(Icons.done, size: 24, color: Colors.white),
         size: sizeItem.width,
         color: Colors.green,
         useDefault: true,
@@ -593,7 +592,7 @@ class _TreeWidgetState extends State<TreeWidget>
     }
     if (treeItem.isNotPassed) {
       return MainIcon(
-        icon: Icon(Icons.close, size: 24, color: Colors.white),
+        icon: const Icon(Icons.close, size: 24, color: Colors.white),
         size: sizeItem.width,
         color: Colors.red,
         useDefault: true,
@@ -601,14 +600,14 @@ class _TreeWidgetState extends State<TreeWidget>
         rotateType: widget.rotateType,
       );
     }
-    bool _showX = false;
-    if (treeItem.entity is TestInfo) {
-      _showX = (treeItem.entity as TestInfo).isNotDoYet;
+    bool showX = false;
+    if (treeItem.entity is ITestInfo) {
+      showX = treeItem.testInfoTreeItemProperty!.isNotDoYet;
     }
     return MainIcon(
       rotateType: widget.rotateType,
-      icon: Text(_showX ? "?" : "${treeItem.progress.round()}%",
-          style: TextStyle(
+      icon: Text(showX ? "?" : "${treeItem.progress.round()}%",
+          style: const TextStyle(
               color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
       size: sizeItem.width,
       useDefault: true,
@@ -621,16 +620,16 @@ class _TreeWidgetState extends State<TreeWidget>
 class DrawDragon extends CustomPainter {
   final List<OffsetItem> offsets;
   final int activeIndex;
-  final Color color;
-  Paint _paint;
+  final Color? color;
+  Paint? _paint;
 
   int get totalItem => offsets.length;
 
-  DrawDragon({this.offsets, this.activeIndex = 0, this.color}) {
-    _paint = new Paint();
-    _paint.color = color ?? Colors.blue;
-    _paint.style = PaintingStyle.stroke;
-    _paint.strokeWidth = 2;
+  DrawDragon({required this.offsets, this.activeIndex = 0, this.color}) {
+    _paint = Paint();
+    _paint?.color = color ?? Colors.blue;
+    _paint?.style = PaintingStyle.stroke;
+    _paint?.strokeWidth = 2;
     // debugLog("activeIndex = $activeIndex");
   }
 
@@ -662,20 +661,20 @@ class DrawDragon extends CustomPainter {
     canvas.drawPath(
       dashPathWidthLimit(path,
           dashArray: CircularIntervalList<double>(<double>[5, 10]),
-          limit: active == true ? 1000 : 0),
-      _paint,
+          limit: active == true ? 1000 : 0)!,
+      _paint!,
     );
     path.close();
   }
 
   void _drawHaftCircle(Canvas canvas, OffsetItem offsetFrom,
       OffsetItem offsetTo, String rotate, bool active) {
-    Path _path = Path();
+    Path path = Path();
     double delta = offsetTo.dy - offsetFrom.dy;
     if (rotate == 'left') {
-      _path.moveTo(offsetFrom.dx, offsetFrom.dy);
-      _path.lineTo(offsetTo.dx, offsetFrom.dy);
-      _path.cubicTo(
+      path.moveTo(offsetFrom.dx, offsetFrom.dy);
+      path.lineTo(offsetTo.dx, offsetFrom.dy);
+      path.cubicTo(
           offsetTo.dx - delta * 2 / pi,
           offsetFrom.dy,
           offsetTo.dx - delta * 2 / pi,
@@ -683,23 +682,23 @@ class DrawDragon extends CustomPainter {
           offsetTo.dx,
           offsetTo.dy);
     } else {
-      _path.moveTo(offsetFrom.dx, offsetFrom.dy);
-      _path.cubicTo(
+      path.moveTo(offsetFrom.dx, offsetFrom.dy);
+      path.cubicTo(
           delta * 2 / pi + offsetFrom.dx,
           offsetFrom.dy,
           delta * 2 / pi + offsetFrom.dx,
           delta + offsetFrom.dy,
           offsetFrom.dx,
           offsetTo.dy);
-      _path.lineTo(offsetTo.dx, offsetTo.dy);
+      path.lineTo(offsetTo.dx, offsetTo.dy);
     }
     canvas.drawPath(
-      dashPathWidthLimit(_path,
+      dashPathWidthLimit(path,
           dashArray: CircularIntervalList<double>(<double>[5, 10]),
-          limit: active == true ? 1000 : 0),
-      _paint,
+          limit: active == true ? 1000 : 0)!,
+      _paint!,
     );
-    _path.close();
+    path.close();
   }
 
   @override
@@ -710,10 +709,7 @@ class OffsetItem {
   double dx;
   double dy;
 
-  OffsetItem(double dx, double dy) {
-    this.dx = dx;
-    this.dy = dy;
-  }
+  OffsetItem(this.dx, this.dy);
 
   @override
   String toString() {
@@ -721,117 +717,154 @@ class OffsetItem {
   }
 }
 
+class TopicTreeItemProperty {
+  final double flashCardComplete;
+  final double percentComplete;
+  final bool progressLock;
+
+  TopicTreeItemProperty({
+    required this.progressLock,
+    required this.flashCardComplete,
+    required this.percentComplete,
+  });
+}
+
+class TestInfoTreeItemProperty {
+  final bool lock;
+  final bool isPassed;
+  final bool isNotPassed;
+  final double lastUserTestDataPassPercent;
+  final bool isNotDoYet;
+  final Function(int level) isLevelPassed;
+  final Function(int level) isLevelNotPassed;
+  final Function(int level) getPercentPassedByLevel;
+
+  TestInfoTreeItemProperty({
+    required this.lock,
+    required this.isPassed,
+    required this.isNotPassed,
+    required this.lastUserTestDataPassPercent,
+    required this.isNotDoYet,
+    required this.isLevelPassed,
+    required this.isLevelNotPassed,
+    required this.getPercentPassedByLevel,
+  });
+}
+
 class TreeItem {
-  BaseEntity entity;
+  dynamic entity;
   bool checkFreeToday = false;
   bool flashCard = false;
+  TopicTreeItemProperty? topicTreeItemProperty;
+  TestInfoTreeItemProperty? testInfoTreeItemProperty;
 
-  TreeItem.testInfo({this.entity});
+  TreeItem.testInfo({this.entity, required this.testInfoTreeItemProperty});
 
-  TreeItem.topic({this.entity, this.checkFreeToday});
+  TreeItem.topic(
+      {this.entity,
+      this.checkFreeToday = false,
+      required this.topicTreeItemProperty});
 
-  TreeItem.flashCard({this.entity}) {
-    this.flashCard = true;
+  TreeItem.flashCard({this.entity, required this.topicTreeItemProperty}) {
+    flashCard = true;
   }
 
-  String name(int index) => entity is Topic
-      ? ((entity as Topic).content ?? '')
-      : (entity is TestInfo ? 'Test ${index + 1}' : '');
+  String name(int index) => entity is ITopic
+      ? ((entity as ITopic).name)
+      : (entity is ITestInfo ? 'Test ${index + 1}' : '');
 
   bool get isLock {
     if (CONFIG_OPEN_ALL_PART_AND_TEST && CONFIG_TEST_MODE) {
       return false;
     }
-    return entity is Topic
-        ? ((entity as Topic).progress?.lock ?? true)
-        : (entity is TestInfo ? ((entity as TestInfo).lock ?? true) : true);
+    return entity is ITopic
+        ? topicTreeItemProperty?.progressLock ?? true
+        : (entity is ITestInfo
+            ? (testInfoTreeItemProperty?.lock ?? true)
+            : true);
   }
 
   bool get isFreeToday => checkFreeToday == true;
 
   bool get isPassed {
-    if (entity is Topic) {
-      Topic _t = entity as Topic;
+    if (entity is ITopic) {
       return flashCard
-          ? _t.getFlashCardComplete() >= 100
-          : _t.getPercentComplete() >= 100;
-    } else if (entity is TestInfo) {
-      return (entity as TestInfo).isPassed ?? false;
+          ? topicTreeItemProperty!.flashCardComplete >= 100
+          : topicTreeItemProperty!.percentComplete >= 100;
+    } else if (entity is ITestInfo) {
+      return testInfoTreeItemProperty?.isPassed ?? false;
     }
     return false;
   }
 
-  bool get isNotPassed => (entity is TestInfo
-      ? ((entity as TestInfo).isNotPassed ?? false)
+  bool get isNotPassed => (entity is ITestInfo
+      ? (testInfoTreeItemProperty?.isNotPassed ?? false)
       : false);
 
   double get progress {
-    if (entity is Topic) {
-      Topic _t = entity as Topic;
+    if (entity is ITopic) {
       return flashCard
-          ? (_t.getFlashCardComplete().toDouble() ?? 0)
-          : (_t.getPercentComplete().toDouble() ?? 0);
-    } else if (entity is TestInfo) {
-      return ((entity as TestInfo).lastUserTestData?.passedPercent ?? 0);
+          ? (topicTreeItemProperty?.flashCardComplete ?? 0)
+          : (topicTreeItemProperty?.percentComplete ?? 0);
+    } else if (entity is ITestInfo) {
+      return (testInfoTreeItemProperty?.lastUserTestDataPassPercent ?? 0);
     }
     return 0;
   }
 
   bool isLevelPassed(int level) {
-    if (entity is Topic) {
-      Topic _t = entity as Topic;
+    if (entity is ITopic) {
       return flashCard
-          ? _t.getFlashCardComplete() >= 100
-          : _t.getPercentComplete() >= 100;
-    } else if (entity is TestInfo) {
-      return (entity as TestInfo).isLevelPassed(level) ?? false;
+          ? topicTreeItemProperty!.flashCardComplete >= 100
+          : topicTreeItemProperty!.percentComplete >= 100;
+    } else if (entity is ITestInfo) {
+      return testInfoTreeItemProperty?.isLevelPassed(level) ?? false;
     }
     return false;
   }
 
-  bool isLevelNotPassed(int level) => (entity is TestInfo
-      ? ((entity as TestInfo).isLevelNotPassed(level) ?? false)
+  bool isLevelNotPassed(int level) => (entity is ITestInfo
+      ? (testInfoTreeItemProperty?.isLevelNotPassed(level) ?? false)
       : false);
 
   double levelProgress(int level) {
-    if (entity is Topic) {
-      Topic _t = entity as Topic;
+    if (entity is ITopic) {
       return flashCard
-          ? (_t.getFlashCardComplete().toDouble() ?? 0)
-          : (_t.getPercentComplete().toDouble() ?? 0);
-    } else if (entity is TestInfo) {
-      return ((entity as TestInfo).mapUserTestData[level]?.passedPercent ?? 0);
+          ? (topicTreeItemProperty?.flashCardComplete ?? 0)
+          : (topicTreeItemProperty?.percentComplete ?? 0);
+    } else if (entity is ITestInfo) {
+      return (testInfoTreeItemProperty?.getPercentPassedByLevel(level) ?? 0);
     }
     return 0;
   }
 }
 
 void showConfirmResetProgress(BuildContext context,
-    {String title, Function onConfirm, Function onCancel}) {
+    {String? title, required Function onConfirm, required Function onCancel}) {
   showDialog(
     context: context,
     builder: (context) {
-      bool _darkMode = ThemeUtils.getInstance().isDarkMode();
+      bool darkMode = Theme.of(context).brightness == Brightness.dark;
       return AlertDialog(
-        backgroundColor: _darkMode ? MyColors.darkColorFull : Colors.white,
-        insetPadding: EdgeInsets.all(20),
-        title: Text(LocaleKeys.tryAgain.tr(),
+        backgroundColor: darkMode ? const Color(0xFF383838) : Colors.white,
+        insetPadding: const EdgeInsets.all(20),
+        title: Text(AppStrings.treeWidgetStrings.buttonTryAgain,
             textAlign: TextAlign.center,
             style: TextStyle(
-                color: _darkMode ? Colors.white : Color(0xFF272728),
+                color: darkMode ? Colors.white : const Color(0xFF272728),
                 fontSize: 18,
                 fontWeight: FontWeight.w600)),
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(16.0))),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
-              title ?? LocaleKeys.resetAllProgress.tr(),
+              title ?? AppStrings.treeWidgetStrings.resetAllProgress,
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: _darkMode ? Colors.white : Color(0xFF575758),
+                  color: darkMode ? Colors.white : const Color(0xFF575758),
                   fontSize: 16,
                   fontWeight: FontWeight.normal),
             ),
@@ -843,21 +876,21 @@ void showConfirmResetProgress(BuildContext context,
                   Expanded(
                       flex: 1,
                       child: SizedBox(
-                        child: NewMainButton(
-                          title: LocaleKeys.notNow.tr(),
-                          onPressed: () => NavigationService().pop(),
+                        child: MainButton(
+                          title: AppStrings.treeWidgetStrings.notNow,
+                          onPressed: () => Navigator.of(context).pop(),
                           backgroundColor:
-                              _darkMode ? Colors.transparent : Colors.white,
-                          borderSize: BorderSide(color: Colors.grey[300]),
-                          textColor: _darkMode ? Colors.white : Colors.black,
+                              darkMode ? Colors.transparent : Colors.white,
+                          borderSize: BorderSide(color: Colors.grey.shade300),
+                          textColor: darkMode ? Colors.white : Colors.black,
                         ),
                       )),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Expanded(
                     flex: 1,
-                    child: NewMainButton(
-                      title: LocaleKeys.reset.tr(),
-                      onPressed: onConfirm,
+                    child: MainButton(
+                      title: AppStrings.treeWidgetStrings.buttonReset,
+                      onPressed: () => onConfirm.call(),
                     ),
                   )
                 ],
