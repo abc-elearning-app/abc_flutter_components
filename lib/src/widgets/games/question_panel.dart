@@ -3,18 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/models/question/question.dart';
 import 'package:flutter_abc_jsc_components/models/test_info/test_info.dart';
 import 'package:flutter_abc_jsc_components/models/topic/topic.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/games/paragraph_widget.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/games/question_actions.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/games/question_info_panel.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../flutter_abc_jsc_components.dart';
 import '../../../models/enums.dart';
+import '../../../models/question/question_status.dart';
 import '../../../models/test_setting/test_setting.dart';
-import '../../utils/app_utils.dart';
 
 class QuestionPanelNewDataManager {
   final String bucket;
+  final SelectDataType selectDataType;
   final bool isShowNativeAds;
   final Function(
       {IQuestion question,
@@ -26,6 +23,7 @@ class QuestionPanelNewDataManager {
 
   QuestionPanelNewDataManager({
     required this.bucket,
+    required this.selectDataType,
     required this.isShowNativeAds,
     required this.debugQuestion,
     required this.isTester,
@@ -34,8 +32,28 @@ class QuestionPanelNewDataManager {
 
 class QuestionPanelNewQuestionProgress {
   final bool bookmark;
+  final int numberAnswer;
+  final List<int> progress;
+  final List<String> choiceSelectedIds;
+  final QuestionStatus questionStatus;
 
-  QuestionPanelNewQuestionProgress({required this.bookmark});
+  QuestionPanelNewQuestionProgress({
+    required this.questionStatus,
+    required this.bookmark,
+    required this.numberAnswer,
+    required this.progress,
+    required this.choiceSelectedIds,
+  });
+}
+
+class QuestionPanelNewGameProgress {
+  final int currentIndex;
+  final int total;
+
+  QuestionPanelNewGameProgress({
+    required this.currentIndex,
+    required this.total,
+  });
 }
 
 class QuestionPanelNew extends StatefulWidget {
@@ -47,7 +65,7 @@ class QuestionPanelNew extends StatefulWidget {
   final TypeOfGame type;
   final Function(IAnswer) onChoiceSelected;
   final Function? onContinue;
-  final Function onSkip;
+  final Function? onSkip;
   final VoidCallback onReport;
   final VoidCallback onFavorite;
   final TestSettingNew? testSetting;
@@ -55,12 +73,15 @@ class QuestionPanelNew extends StatefulWidget {
   final ITopic topic;
   final ITopic mainTopic;
   final ITestInfo testInfo;
-  final bool showAllAnswer;
+  final bool? showAllAnswer;
   final Widget bannerAds;
   final Widget nativeAds;
   final ValueNotifier<double> fontSize;
   final QuestionPanelNewDataManager questionPanelNewDataManager;
   final QuestionPanelNewQuestionProgress questionPanelNewQuestionProgress;
+  final QuestionPanelNewGameProgress? questionPanelNewGameProgress;
+  final CheckAppModel checkAppModel;
+  final ChoicePanelInAppPurchase choicePanelInAppPurchase;
 
   const QuestionPanelNew({
     super.key,
@@ -74,7 +95,7 @@ class QuestionPanelNew extends StatefulWidget {
     this.testSetting,
     required this.prevQuestion,
     required this.onFavorite,
-    required this.onSkip,
+    this.onSkip,
     this.showAds = true,
     required this.topic,
     required this.mainTopic,
@@ -86,6 +107,9 @@ class QuestionPanelNew extends StatefulWidget {
     required this.fontSize,
     required this.nativeAds,
     required this.questionPanelNewQuestionProgress,
+    this.questionPanelNewGameProgress,
+    required this.choicePanelInAppPurchase,
+    required this.checkAppModel,
   });
 
   @override
@@ -219,6 +243,8 @@ class QuestionPanelState extends State<QuestionPanelNew>
             padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
             children: <Widget>[
               _makeBorderQuestion(
+                  questionPanelNewQuestionProgress:
+                      widget.questionPanelNewQuestionProgress,
                   testSetting: widget.testSetting!,
                   question: question,
                   child: Column(
@@ -230,6 +256,9 @@ class QuestionPanelState extends State<QuestionPanelNew>
                         widget.gameType,
                         bucket,
                         fontSize: fontSize,
+                        selectDataType:
+                            widget.questionPanelNewDataManager.selectDataType,
+                        questionInfoPanelCheckApp: widget.checkAppModel,
                       ),
                       const SizedBox(height: 4),
                       ParagraphWidget(
@@ -248,7 +277,7 @@ class QuestionPanelState extends State<QuestionPanelNew>
                       children: [
                         TextSpan(
                           text:
-                              "${question.numberAnswered}/${question.numberCorrect}",
+                              "${widget.questionPanelNewQuestionProgress.numberAnswer}/${question.numberCorrectAnswer}",
                           style: const TextStyle(
                               fontSize: 14, fontWeight: FontWeight.w600),
                         ),
@@ -302,27 +331,43 @@ class QuestionPanelState extends State<QuestionPanelNew>
           },
           gameType: gameType,
           modeExam: modeExam,
+          bucket: widget.questionPanelNewDataManager.bucket,
+          questionStatus:
+              widget.questionPanelNewQuestionProgress.questionStatus,
+          isTester: widget.questionPanelNewDataManager.isTester,
+          choicePanelCheckApp: widget.checkAppModel,
+          choicePanelInAppPurchase: widget.choicePanelInAppPurchase,
+          choiceSelectedIds:
+              widget.questionPanelNewQuestionProgress.choiceSelectedIds,
         )
       ];
-    } else if (question.childs != null && question.childs.isNotEmpty) {
-      return question.childs.map((q) {
+    } else if (question.questions != null && question.questions!.isNotEmpty) {
+      return question.questions!.map((q) {
         return Container(
           padding: const EdgeInsets.all(12),
           margin: const EdgeInsets.only(bottom: 8),
           decoration: BoxDecoration(
               color:
-                  darkMode ? MyColors.darkColorFull : MyColors.colorBlackHover,
+                  darkMode ? const Color(0xFF383838) : const Color(0xFFf6f6f6),
               borderRadius: BorderRadius.circular(12),
               border: darkMode
                   ? null
-                  : Border.all(width: 1, color: MyColors.colorBlackOutline)),
+                  : Border.all(width: 1, color: const Color(0xFFe4e4e4))),
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                QuestionInfoPanel(q, gameType, bucket, fontSize: fontSize),
+                QuestionInfoPanel(
+                  q,
+                  gameType,
+                  bucket,
+                  fontSize: fontSize,
+                  selectDataType:
+                      widget.questionPanelNewDataManager.selectDataType,
+                  questionInfoPanelCheckApp: widget.checkAppModel,
+                ),
                 const SizedBox(height: 8),
                 ParagraphWidget(
-                    fontSize: fontSize, paragraph: question.paragraph),
+                    fontSize: fontSize, paragraph: question.paragraph?.text),
                 ..._makeChoicePanel(
                   context,
                   question: q,
@@ -340,12 +385,12 @@ class QuestionPanelState extends State<QuestionPanelNew>
 
   bool canClick = false;
 
-  Widget _makeNewButton(Question question, BuildContext context) {
+  Widget _makeNewButton(IQuestion question, BuildContext context) {
     bool skipStatus = widget.gameType == GameType.TEST &&
         widget.onSkip != null &&
-        widget.question.questionStatus == QuestionStatus.notAnswerYet;
+        widget.question.status == QuestionStatus.notAnswerYet;
     bool canContinue =
-        !(widget.question.questionStatus == QuestionStatus.notAnswerYet &&
+        !(widget.question.status == QuestionStatus.notAnswerYet &&
             widget.gameType != GameType.TEST);
     if (widget.modeExam != null && widget.modeExam == ModeExam.exam) {
       skipStatus = true;
@@ -374,9 +419,8 @@ class QuestionPanelState extends State<QuestionPanelNew>
                     }
                   });
                   if (widget.onContinue != null) {
-                    _scrollController.jumpTo(0);
-                    if (widget.question.questionStatus ==
-                        QuestionStatus.notAnswerYet) {
+                    _scrollController?.jumpTo(0);
+                    if (widget.question.status == QuestionStatus.notAnswerYet) {
                       widget.onSkip?.call();
                     } else {
                       widget.onContinue?.call();
@@ -387,7 +431,7 @@ class QuestionPanelState extends State<QuestionPanelNew>
               : () {
                   ABCToaster.showToast(
                       context: context,
-                      msg: LocaleKeys.game_please_select_an_answer.tr(),
+                      msg: AppStrings.gameStrings.gamePleaseSelectAnAnswer,
                       type: ABCToasterType.warning,
                       position: BottomPosition(width: 200));
                   // showToastWarning("Please select an answer!");
@@ -398,9 +442,12 @@ class QuestionPanelState extends State<QuestionPanelNew>
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             alignment: Alignment.center,
             decoration: ShapeDecoration(
-              color: skipStatus ? Colors.white : MyTheme.theme.secondaryColor,
+              color: skipStatus
+                  ? Colors.white
+                  : Theme.of(context).colorScheme.secondary,
               shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1, color: MyTheme.theme.secondaryColor),
+                side: BorderSide(
+                    width: 1, color: Theme.of(context).colorScheme.secondary),
                 borderRadius:
                     SmoothBorderRadius(cornerRadius: 12, cornerSmoothing: 1),
               ),
@@ -411,7 +458,7 @@ class QuestionPanelState extends State<QuestionPanelNew>
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: skipStatus ? MyColors.colorBlackFull : Colors.white),
+                  color: skipStatus ? const Color(0xFF212121) : Colors.white),
             ),
           ),
         ),
@@ -419,7 +466,8 @@ class QuestionPanelState extends State<QuestionPanelNew>
     );
   }
 
-  Widget _makeHintIcon({String title, String icon, Color color}) {
+  Widget _makeHintIcon(
+      {required String title, Widget? icon, required Color color}) {
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: Row(
@@ -430,7 +478,8 @@ class QuestionPanelState extends State<QuestionPanelNew>
           Padding(
             padding: const EdgeInsets.only(bottom: 2),
             child: FadeScaleAnimation(
-                child: SvgPicture.asset(icon, width: 24, color: color)),
+              child: icon ?? const SizedBox(),
+            ),
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -451,52 +500,68 @@ class QuestionPanelState extends State<QuestionPanelNew>
     );
   }
 
-  Widget _makeBorderQuestion(
-      {Question question, Widget child, TestSettingNew testSetting}) {
+  Widget _makeBorderQuestion({
+    required IQuestion question,
+    required Widget child,
+    TestSettingNew? testSetting,
+    required QuestionPanelNewQuestionProgress questionPanelNewQuestionProgress,
+  }) {
     String label = "";
     Widget? hintWidget;
-    Color _textColor = Color(0xFFC4C4C4);
-    Border border = Border.all(color: _textColor, width: 1.5);
+    Color textColor = const Color(0xFFC4C4C4);
 
     if (testSetting == null) {
-      if (question.questionStatus == QuestionStatus.notAnswerYet) {
-        if (question.progress.progress.isEmpty) {
-          label = LocaleKeys.game_new_question.tr();
-        } else if (question.progress.progress.last ==
+      if (question.status == QuestionStatus.notAnswerYet) {
+        if (questionPanelNewQuestionProgress.progress.isEmpty) {
+          label = AppStrings.gameStrings.gameNewQuestion;
+        } else if (questionPanelNewQuestionProgress.progress.last ==
             QuestionListProgress.correct.index) {
-          label = LocaleKeys.game_reviewing.tr();
-          _textColor = Color(0xFF00C17C);
-          border = Border.all(color: _textColor, width: 1.5);
+          label = AppStrings.gameStrings.gameReviewing;
+          textColor = const Color(0xFF00C17C);
           hintWidget = _makeHintIcon(
-              title: LocaleKeys.game_you_got_this_question_last_time.tr(),
-              icon: "assets/static/checked_icon.svg",
-              color: _textColor);
-        } else if (question.progress.progress.last ==
+              title: AppStrings.gameStrings.gameYouGotThisQuestionLastTime,
+              icon: ToastCheckedIcon(
+                color: getHexCssColor(textColor),
+                height: 24,
+                width: 24,
+              ),
+              color: textColor);
+        } else if (questionPanelNewQuestionProgress.progress.last ==
             QuestionListProgress.incorrect.index) {
-          label = LocaleKeys.game_learning.tr();
-          _textColor = Color(0xFFEBAD34);
-          border = Border.all(color: _textColor, width: 1.5);
+          label = AppStrings.gameStrings.gameLearning;
+          textColor = const Color(0xFFEBAD34);
           hintWidget = _makeHintIcon(
-              title: LocaleKeys.game_you_got_this_wrong_last_time.tr(),
-              icon: "assets/static/warning_icon.svg",
-              color: _textColor);
+              title: AppStrings.gameStrings.gameYouGotThisWrongLastTime,
+              icon: ToastWarningIcon(
+                color: getHexCssColor(textColor),
+                height: 24,
+                width: 24,
+              ),
+              color: textColor);
         }
-      } else if (question.questionStatus == QuestionStatus.answeredCorrect) {
-        label = LocaleKeys.game_correct.tr();
-        _textColor = Color(0xFF00C17C);
-        border = Border.all(color: _textColor, width: 1.5);
+      } else if (question.status == QuestionStatus.answeredCorrect) {
+        label = AppStrings.gameStrings.gameCorrect;
+        textColor = const Color(0xFF00C17C);
         hintWidget = _makeHintIcon(
-            title: LocaleKeys.game_you_will_not_see_question.tr(),
-            icon: "assets/static/checked_icon.svg",
-            color: _textColor);
-      } else if (question.questionStatus == QuestionStatus.answeredIncorrect) {
-        label = LocaleKeys.game_incorrect.tr();
-        _textColor = _darkMode ? Color(0xFFF08A86) : Color(0xFFE31E18);
-        border = Border.all(color: _textColor, width: 1.5);
+            title: AppStrings.gameStrings.gameYouWillNotSeeQuestion,
+            icon: ToastCheckedIcon(
+              color: getHexCssColor(textColor),
+              height: 24,
+              width: 24,
+            ),
+            color: textColor);
+      } else if (question.status == QuestionStatus.answeredIncorrect) {
+        label = AppStrings.gameStrings.gameIncorrect;
+        textColor =
+            _darkMode ? const Color(0xFFF08A86) : const Color(0xFFE31E18);
         hintWidget = _makeHintIcon(
-            title: LocaleKeys.game_you_will_see_question.tr(),
-            icon: "assets/static/warning_icon.svg",
-            color: _textColor);
+            title: AppStrings.gameStrings.gameYouWillSeeQuestion,
+            icon: ToastWarningIcon(
+              color: getHexCssColor(textColor),
+              height: 24,
+              width: 24,
+            ),
+            color: textColor);
       }
     }
     if (widget.type == TypeOfGame.practiceTest ||
@@ -513,7 +578,7 @@ class QuestionPanelState extends State<QuestionPanelNew>
                 padding: const EdgeInsets.all(12),
                 decoration: ShapeDecoration(
                     // border: widget.border,
-                    color: _darkMode ? MyColors.darkColorMid : Colors.white,
+                    color: _darkMode ? const Color(0xFF4D4D4D) : Colors.white,
                     shape: SmoothRectangleBorder(
                       borderRadius: SmoothBorderRadius(
                           cornerRadius: 16, cornerSmoothing: 1),
@@ -522,7 +587,7 @@ class QuestionPanelState extends State<QuestionPanelNew>
                       BoxShadow(
                         blurRadius: 20,
                         color: Colors.black.withOpacity(0.1),
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                       )
                     ]),
                 child: Column(
@@ -531,42 +596,43 @@ class QuestionPanelState extends State<QuestionPanelNew>
                   children: [
                     Row(
                       children: [
-                        if (gameProgress != null)
+                        if (widget.questionPanelNewGameProgress != null)
                           Expanded(
                               child: Text(
-                            "${gameProgress.currentIndex + 1} / ${gameProgress.total}",
+                            "${widget.questionPanelNewGameProgress!.currentIndex + 1} / ${widget.questionPanelNewGameProgress!.total}",
                             textAlign: TextAlign.start,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                               color: _darkMode
                                   ? Colors.white.withOpacity(0.52)
-                                  : Color(0xFF212121),
+                                  : const Color(0xFF212121),
                             ),
                           )),
                         Padding(
                           padding: const EdgeInsets.only(left: 10),
                           child: QuestionActionsWidget(
                             onFavorite: () {
-                              FirebaseManagement.logEvent(
-                                  Constants.event_test_game_button_add_favorite,
+                              FirebaseCallbacks.logEvent(
+                                  "event_test_game_button_add_favorite",
                                   parameters: {
-                                    "questionId": widget.question.longId,
-                                    "shortId": widget.question.id,
+                                    "questionId": widget.question.id,
+                                    "shortId": widget.question.shortId,
                                   });
                               widget.onFavorite.call();
                               setState(() {
-                                showFavoriteToast =
-                                    widget.question.progress.bookmark;
+                                showFavoriteToast = widget
+                                    .questionPanelNewQuestionProgress.bookmark;
                               });
                             },
-                            question: widget.question,
                             onReport: widget.onReport,
+                            bookmark: widget
+                                .questionPanelNewQuestionProgress.bookmark,
                           ),
                         )
                       ],
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     child,
                   ],
                 ),
@@ -596,19 +662,18 @@ class QuestionPanelState extends State<QuestionPanelNew>
       alignment: Alignment.topRight,
       children: [
         BorderAnimation(
-          question: widget.question,
           key: _borderAnimationKey,
-          border: border,
           label: label,
-          textColor: _textColor,
+          textColor: textColor,
           actions: QuestionActionsWidget(
             onFavorite: () {
               widget.onFavorite.call();
               setState(() {
-                showFavoriteToast = widget.question.progress.bookmark;
+                showFavoriteToast =
+                    widget.questionPanelNewQuestionProgress.bookmark;
               });
             },
-            bookmark: widget.question,
+            bookmark: widget.questionPanelNewQuestionProgress.bookmark,
             onReport: widget.onReport,
           ),
           child: Column(

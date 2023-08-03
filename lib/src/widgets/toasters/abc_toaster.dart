@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/utils/index.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/icons/toast_icons/toast_alert_triangle_icon.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/icons/toast_icons/toast_checked_icon.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/icons/toast_icons/toast_info_icon.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/icons/toast_icons/toast_warning_icon.dart';
 import 'package:oktoast/oktoast.dart';
 
 enum ABCToasterType { success, failed, warning, info }
@@ -49,27 +52,51 @@ class ABCToaster {
     required String msg,
     required ABCToasterType type,
     BottomPosition? position,
-    String? iconPath,
   }) {
     try {
       Color textColor = Colors.black;
       Color backgroundColor = const Color(0xFFf6f6f6);
+      Widget iconWidget = ToastInfoIcon(
+        color: getHexCssColor(textColor),
+        width: 20,
+        height: 20,
+      );
       switch (type) {
         case ABCToasterType.failed:
           backgroundColor = const Color(0xFFFCE4E3);
           textColor = const Color(0xFFE31E18);
+          iconWidget = ToastWarningIcon(
+            color: getHexCssColor(textColor),
+            width: 20,
+            height: 20,
+          );
           break;
         case ABCToasterType.info:
           backgroundColor = const Color(0xFFE4F0FB);
           textColor = const Color(0xFF2183DF);
+          iconWidget = ToastInfoIcon(
+            color: getHexCssColor(textColor),
+            width: 20,
+            height: 20,
+          );
           break;
         case ABCToasterType.success:
           backgroundColor = const Color(0xFFEBFAF5);
           textColor = const Color(0xFF00C17C);
+          iconWidget = ToastCheckedIcon(
+            color: getHexCssColor(textColor),
+            width: 20,
+            height: 20,
+          );
           break;
         case ABCToasterType.warning:
           backgroundColor = const Color(0xFFFDF8EF);
           textColor = const Color(0xFFEBAD34);
+          iconWidget = ToastAlertTriangleIcon(
+            color: getHexCssColor(textColor),
+            width: 20,
+            height: 20,
+          );
           break;
         default:
       }
@@ -92,9 +119,7 @@ class ABCToaster {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              iconPath == null
-                  ? const SizedBox()
-                  : SvgPicture.asset(iconPath, width: 20, color: textColor),
+              iconWidget,
               const SizedBox(width: 10),
               Expanded(
                 child: Text(msg,

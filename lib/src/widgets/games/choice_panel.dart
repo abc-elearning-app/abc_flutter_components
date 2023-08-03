@@ -4,14 +4,34 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 
 import '../../../flutter_abc_jsc_components.dart';
 import '../../../models/constraints.dart';
 import '../../../models/enums.dart';
 import '../../../models/question/question.dart';
 import '../../../models/question/question_status.dart';
-import '../../utils/app_utils.dart';
+
+class CheckAppModel {
+  final bool isPartner;
+  final bool isAppFrance;
+  final bool pushRankingApp;
+
+  const CheckAppModel({
+    required this.isPartner,
+    required this.isAppFrance,
+    required this.pushRankingApp,
+  });
+}
+
+class ChoicePanelInAppPurchase {
+  final ValueNotifier<bool> inAppPurchaseLock;
+  final VoidCallback onInAppPurchaseLockClick;
+
+  const ChoicePanelInAppPurchase({
+    required this.inAppPurchaseLock,
+    required this.onInAppPurchaseLockClick,
+  });
+}
 
 class ChoicePanel extends StatefulWidget {
   final IQuestion question;
@@ -27,7 +47,9 @@ class ChoicePanel extends StatefulWidget {
   final String bucket;
   final QuestionStatus questionStatus;
   final bool isTester;
-  final bool inAppPurchaseLock;
+  final CheckAppModel choicePanelCheckApp;
+  final ChoicePanelInAppPurchase choicePanelInAppPurchase;
+  final List<String> choiceSelectedIds;
 
   const ChoicePanel({
     super.key,
@@ -44,7 +66,9 @@ class ChoicePanel extends StatefulWidget {
     required this.bucket,
     required this.questionStatus,
     required this.isTester,
-    required this.inAppPurchaseLock,
+    required this.choicePanelCheckApp,
+    required this.choicePanelInAppPurchase,
+    required this.choiceSelectedIds,
   });
 
   @override
@@ -57,7 +81,7 @@ class _ChoicePanelState extends State<ChoicePanel> {
   String get _bucket => widget.bucket;
 
   bool get isShowResult =>
-      widget.showResult || widget.questionStatus != QuestionStatus.notAnswerYet;
+      widget.showResult || (widget.questionStatus != QuestionStatus.notAnswerYet);
 
   Color get _inCorrectBackgroundColor => const Color(0xFFF08A86);
 
@@ -70,23 +94,23 @@ class _ChoicePanelState extends State<ChoicePanel> {
   bool get _hasMultipleAnswerExplanation {
     int count = 0;
     for (var element in widget.question.allAnswer) {
-      if (element.explanation != null && element.explanation.isNotEmpty) {
+      if (element.explanation.isNotEmpty) {
         count++;
       }
     }
     return count > 1;
   }
 
-  bool get showAnswerVersion2 => CheckAppUtils
+  bool get showAnswerVersion2 => widget.choicePanelCheckApp
       .isPartner; // Hiện đáp tất cả đáp án đúng và sai sau khi trả lời và hiện đáp án có giải thích riêng
-  bool get showAnswerVersion3 => CheckAppUtils
+  bool get showAnswerVersion3 => widget.choicePanelCheckApp
       .pushRankingApp; // Hiện đáp tất cả đáp án đúng và sai sau khi trả lời
 
   bool get isTester => widget.isTester;
 
   @override
   Widget build(BuildContext context) {
-    if (widget.question.choices == null || widget.question.choices.isEmpty) {
+    if (widget.question.choices.isEmpty) {
       return Container();
     }
     List<IAnswer> displayChoices = [];
@@ -104,7 +128,7 @@ class _ChoicePanelState extends State<ChoicePanel> {
           widget.instanceFeedback ||
           !_showAnswer ||
           choice.isCorrect ||
-          choice.selected ||
+          widget.choiceSelectedIds.contains(choice.id) ||
           widget.showAllAnswer) {
         displayChoices.add(choice);
       }
@@ -126,16 +150,16 @@ class _ChoicePanelState extends State<ChoicePanel> {
   }
 
   Widget _makeChoice(
-      {bool firstAnswerCorrect,
-      String questionExplanation,
-      Choice choice,
-      bool instanceFeedback,
-      double fontSize,
-      BuildContext context,
-      bool isTester,
-      bool showAnswer,
-      ModeExam modeExam}) {
-    String explanation = choice.explanation;
+      {required bool firstAnswerCorrect,
+      required String? questionExplanation,
+      IAnswer? choice,
+      required bool instanceFeedback,
+      required double fontSize,
+      required BuildContext context,
+      required bool isTester,
+      required bool showAnswer,
+      ModeExam? modeExam}) {
+    String? explanation = choice?.explanation;
     bool showAnswerExplanation =
         explanation != null && explanation.isNotEmpty && showAnswer;
     if (questionExplanation != null &&
@@ -150,31 +174,32 @@ class _ChoicePanelState extends State<ChoicePanel> {
       explanation = null;
     }
     bool isAnswered =
-        widget.question.questionStatus == QuestionStatus.answeredIncorrect ||
-            widget.question.questionStatus == QuestionStatus.answeredCorrect;
+        widget.question.status == QuestionStatus.answeredIncorrect ||
+            widget.question.status == QuestionStatus.answeredCorrect;
 
     return InkWell(
         onTap: () async {
           if (widget.onChoiceSelected != null && !showAnswer) {
-            widget.onChoiceSelected(choice);
+            widget.onChoiceSelected!(choice);
           }
         },
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              margin: EdgeInsets.symmetric(vertical: 4),
+              margin: const EdgeInsets.symmetric(vertical: 4),
               width: double.infinity,
               decoration: ShapeDecoration(
-                color: !showAnswer && choice.selected
-                    ? (_darkMode
-                        ? MyColors.colorBlackMid
-                        : MyColors.colorBlackOutline)
-                    : (_darkMode ? MyColors.darkColorMid : Colors.white),
+                color:
+                    !showAnswer && widget.choiceSelectedIds.contains(choice!.id)
+                        ? (_darkMode
+                            ? const Color(0xFF8c8c8c)
+                            : const Color(0xFFe4e4e4))
+                        : (_darkMode ? const Color(0xFF4D4D4D) : Colors.white),
                 shape: SmoothRectangleBorder(
                     borderRadius: SmoothBorderRadius(
                         cornerRadius: 12, cornerSmoothing: 1),
-                    side: _borderAnswer(choice, showAnswer, isTester)),
+                    side: _borderAnswer(choice!, showAnswer, isTester)),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -182,31 +207,33 @@ class _ChoicePanelState extends State<ChoicePanel> {
               ),
             ),
             if (showAnswerExplanation)
-              Consumer<InAppPurchaseModel>(builder: (_, inAppModel, __) {
-                bool locked = !inAppModel.isProVersion() &&
-                    RemoteConfigManagement.remoteSetting.inAppPurchaseScheme ==
-                        2;
-                final showExplanation = widget.review ||
-                    (showAnswerVersion2 && _hasMultipleAnswerExplanation
-                        ? (!choice.isCorrect && choice.selected && isAnswered)
-                        : isAnswered) ||
-                    showAnswerVersion3;
-                return buildExplanation(
-                    explanation: explanation,
-                    fontSize: fontSize - 4,
-                    locked: locked,
-                    show: showExplanation,
-                    onTap: () {
-                      if (locked) {
-                        InAppPurchaseWidget.show(
-                          context,
-                          InAppPurchasePosition.other,
-                          type: RewardAdProgressType.question,
-                        );
-                        return;
-                      }
-                    });
-              })
+              ValueListenableBuilder(
+                  valueListenable:
+                      widget.choicePanelInAppPurchase.inAppPurchaseLock,
+                  builder: (_, locked, __) {
+                    final showExplanation = widget.review ||
+                        (showAnswerVersion2 && _hasMultipleAnswerExplanation
+                            ? (!choice.isCorrect &&
+                                widget.choiceSelectedIds.contains(choice.id) &&
+                                isAnswered)
+                            : isAnswered) ||
+                        showAnswerVersion3;
+                    return buildExplanation(
+                      context,
+                      fontSize: fontSize - 4,
+                      locked: locked,
+                      show: showExplanation,
+                      explanation: explanation!,
+                      onTap: () {
+                        if (locked) {
+                          widget
+                              .choicePanelInAppPurchase.onInAppPurchaseLockClick
+                              .call();
+                          return;
+                        }
+                      },
+                    );
+                  })
           ],
         ));
   }
@@ -214,15 +241,16 @@ class _ChoicePanelState extends State<ChoicePanel> {
   BorderSide _borderAnswer(IAnswer choice, bool showAnswer, bool isTester) {
     bool showAnswerCorrect =
         choice.isCorrect && (testMode || isTester || showAnswer);
-    bool showAnswerInCorrect =
-        !choice.isCorrect && showAnswer && choice.selected;
+    bool showAnswerInCorrect = !choice.isCorrect &&
+        showAnswer &&
+        widget.choiceSelectedIds.contains(choice.id);
     if (showAnswerCorrect) {
       return BorderSide(color: _correctBackgroundColor, width: 1.5);
     }
     if (showAnswerInCorrect) {
       return BorderSide(color: _inCorrectBackgroundColor, width: 1.5);
     }
-    if (choice.selected) {
+    if (widget.choiceSelectedIds.contains(choice.id)) {
       return BorderSide(
           color: const Color(0xFF1D9AF4).withOpacity(0.08), width: 1.5);
     }
@@ -235,7 +263,7 @@ class _ChoicePanelState extends State<ChoicePanel> {
             content.endsWith(".svg") ||
             content.endsWith(".jpg") ||
             content.endsWith(".jpeg")) &&
-        CheckAppUtils.isAppFrance) {
+        widget.choicePanelCheckApp.isAppFrance) {
       String url = "$API_CONFIG/$_bucket/images/$content";
       return CachedNetworkImage(
         height: 80,

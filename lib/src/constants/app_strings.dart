@@ -83,6 +83,17 @@ class _GameStrings {
   final gameButtonSubmit = "Submit";
   final gameSeeMore = "See More";
   final gameShowExplanation = "Show Explanation";
+  final gamePleaseSelectAnAnswer = "Please select an answer!";
+  final gameNewQuestion = "NEW QUESTION";
+  final gameReviewing = "REVIEWING";
+  final gameYouGotThisQuestionLastTime="You got this question correct last time";
+  final gameYouGotThisWrongLastTime = "You got this question wrong last time";
+  final gameLearning = "LEARNING";
+  final gameCorrect = "CORRECT";
+  final gameIncorrect = "INCORRECT";
+  final gameYouWillNotSeeQuestion = "You won't see this question for a while";
+  final gameYouWillSeeQuestion = "You'll see this question again soon";
+
 }
 
 class _TreeWidgetStrings {

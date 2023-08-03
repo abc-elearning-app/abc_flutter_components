@@ -2,40 +2,45 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/models/enums.dart';
 import 'package:flutter_abc_jsc_components/src/utils/asset_utils.dart';
+import 'package:flutter_abc_jsc_components/src/utils/image_utils.dart';
 import 'package:flutter_svg/svg.dart';
 
 class ImageWidget extends StatelessWidget {
-  final String imageAsset;
-  final String imageNetwork;
+  final String imageUrl;
   final double? height;
   final double? width;
   final String? imageFolder;
   final Alignment alignment;
   final BoxFit fit;
   final Color? color;
+  final SelectDataType selectDataType;
+  final String bucket;
 
   const ImageWidget({
     super.key,
-    required this.imageAsset,
     this.height,
     this.width,
     this.imageFolder,
     this.alignment = Alignment.center,
     this.fit = BoxFit.contain,
     this.color,
-    required this.imageNetwork,
+    required this.imageUrl,
+    required this.selectDataType,
+    required this.bucket,
   });
 
   @override
   Widget build(BuildContext context) {
+    String imageAsset = getLocalImageUrl(imageUrl, dataType: selectDataType);
     return FutureBuilder<bool>(
         future: detectFileAssets(imageAsset),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             String link = imageAsset;
             if (!snapshot.data!) {
-              link = imageNetwork;
+              link = getNetworkImageUrl(imageUrl, bucket: bucket);
             }
             return imageWidget(context, link);
           }

@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 
 import '../../../flutter_abc_jsc_components.dart';
+import '../../../models/enums.dart';
 
 class ImageZoomWidget extends StatefulWidget {
   final String imageUrl;
-  final String imageAsset;
-  final String imageNetwork;
   final String bucket;
   final String? heroTag;
   final VoidCallback onClose;
+  final SelectDataType selectDataType;
 
   const ImageZoomWidget({
     super.key,
-    required this.imageAsset,
-    required this.imageNetwork,
     required this.bucket,
     this.heroTag,
     required this.onClose,
     required this.imageUrl,
+    required this.selectDataType,
   });
 
   @override
@@ -39,8 +38,9 @@ class _ImageZoomWidgetState extends State<ImageZoomWidget> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: ImageWidget(
-          imageAsset: widget.imageAsset,
-          imageNetwork: widget.imageNetwork,
+          imageUrl: imageUrl,
+          bucket: bucket,
+          selectDataType: widget.selectDataType,
           width: size.width - 48,
           fit: BoxFit.contain,
         ),

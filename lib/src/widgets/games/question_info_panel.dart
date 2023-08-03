@@ -7,27 +7,16 @@ import '../../../models/constraints.dart';
 import '../../../models/enums.dart';
 import '../../../models/question/question.dart';
 
-class QuestionInfoPanelCheckApp {
-  final bool isAppFrance;
-  final bool isPartner;
-
-  QuestionInfoPanelCheckApp({
-    required this.isAppFrance,
-    required this.isPartner,
-  });
-}
-
 class QuestionInfoPanel extends StatelessWidget {
   final IQuestion question;
-  final String imageAsset;
-  final String imageNetwork;
   final GameType gameType;
   final String bucket;
   final Axis axis;
   final double fontSize;
   final FontWeight fontWeight;
   final int? questionIndex;
-  final QuestionInfoPanelCheckApp questionInfoPanelCheckApp;
+  final SelectDataType selectDataType;
+  final CheckAppModel questionInfoPanelCheckApp;
 
   const QuestionInfoPanel(
     this.question,
@@ -38,9 +27,8 @@ class QuestionInfoPanel extends StatelessWidget {
     this.axis = Axis.horizontal,
     this.fontWeight = FontWeight.w500,
     this.questionIndex,
-    required this.imageAsset,
-    required this.imageNetwork,
     required this.questionInfoPanelCheckApp,
+    required this.selectDataType,
   });
 
   Widget _genQuestionView(BuildContext context, IQuestion question) {
@@ -123,7 +111,7 @@ class QuestionInfoPanel extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _getImageWidget(imageAsset, imageNetwork, fullWidth, context),
+              _getImageWidget(question.image, fullWidth, context),
               Icon(Icons.zoom_in,
                   size: 20,
                   color: Theme.of(context).brightness == Brightness.dark
@@ -136,8 +124,6 @@ class QuestionInfoPanel extends StatelessWidget {
               context,
               "imageZoom_${question.id}",
               question.image,
-              imageAsset,
-              imageNetwork,
             );
           },
         ),
@@ -174,8 +160,6 @@ class QuestionInfoPanel extends StatelessWidget {
     BuildContext context,
     String heroTag,
     String imageUrl,
-    String imageAsset,
-    String imageNetwork,
   ) {
     Navigator.push(
       context,
@@ -188,10 +172,9 @@ class QuestionInfoPanel extends StatelessWidget {
             return ImageZoomWidget(
               imageUrl: imageUrl,
               bucket: bucket,
+              selectDataType: selectDataType,
               heroTag: heroTag,
               onClose: () => Navigator.of(context).pop(),
-              imageAsset: imageNetwork,
-              imageNetwork: imageNetwork,
             );
           }),
     );
@@ -225,8 +208,7 @@ class QuestionInfoPanel extends StatelessWidget {
     return text;
   }
 
-  Widget _getImageWidget(String imageAsset, String imageNetwork, bool fullWidth,
-      BuildContext context) {
+  Widget _getImageWidget(String image, bool fullWidth, BuildContext context) {
     return Container(
       width: fullWidth ? double.infinity : 120,
       decoration: BoxDecoration(
@@ -239,8 +221,9 @@ class QuestionInfoPanel extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
         child: ImageWidget(
           width: 120,
-          imageAsset: imageAsset,
-          imageNetwork: imageNetwork,
+          imageUrl: image,
+          selectDataType: selectDataType,
+          bucket: bucket,
         ),
       ),
     );

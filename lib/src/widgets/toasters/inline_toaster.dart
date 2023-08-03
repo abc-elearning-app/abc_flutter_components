@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/icons/toast_icons/toast_alert_triangle_icon.dart';
 
 class InlineToaster extends StatefulWidget {
   final String msg;
   final ABCToasterType type;
   final Function onShowToastEnd;
-  final String iconPath;
 
   const InlineToaster({
     super.key,
     required this.msg,
     required this.type,
     required this.onShowToastEnd,
-    required this.iconPath,
   });
 
   @override
@@ -48,22 +46,47 @@ class _InlineToasterState extends State<InlineToaster> {
       try {
         Color textColor = Colors.black;
         Color backgroundColor = const Color(0xFFf6f6f6);
+        Widget iconWidget = ToastInfoIcon(
+          color: getHexCssColor(textColor),
+          width: 13,
+          height: 13,
+        );
         switch (widget.type) {
           case ABCToasterType.failed:
             backgroundColor = const Color(0xFFFCE4E3);
             textColor = const Color(0xFFE31E18);
+            iconWidget = ToastWarningIcon(
+              color: getHexCssColor(textColor),
+              width: 13,
+              height: 13,
+            );
             break;
           case ABCToasterType.info:
             backgroundColor = const Color(0xFFE4F0FB);
             textColor = const Color(0xFF2183DF);
+            iconWidget = ToastInfoIcon(
+              color: getHexCssColor(textColor),
+              width: 13,
+              height: 13,
+            );
             break;
           case ABCToasterType.success:
             backgroundColor = const Color(0xFFEBFAF5);
             textColor = const Color(0xFF00C17C);
+            iconWidget = ToastCheckedIcon(
+              color: getHexCssColor(textColor),
+              width: 13,
+              height: 13,
+            );
             break;
           case ABCToasterType.warning:
             backgroundColor = const Color(0xFFFDF8EF);
             textColor = const Color(0xFFEBAD34);
+            iconWidget = ToastAlertTriangleIcon(
+              color: getHexCssColor(textColor),
+              width: 13,
+              height: 13,
+            );
             break;
           default:
         }
@@ -90,8 +113,7 @@ class _InlineToasterState extends State<InlineToaster> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SvgPicture.asset(widget.iconPath,
-                      width: 13, color: textColor),
+                  iconWidget,
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(widget.msg,
