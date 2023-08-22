@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
@@ -26,21 +23,19 @@ Widget getRatingBottomSheet({
   );
 }
 
-void showRatingFeedbackBottomSheet(
+Future<void> showRatingFeedbackBottomSheet(
   BuildContext context, {
   VoidCallback? callback,
-  required bool isDarkMode,
   required VoidCallback onSubmit,
   required VoidCallback ratingDataRecordDecline,
   required VoidCallback goToAtStore,
   required VoidCallback rattingDataRecordRated,
-}) {
-  showMyModalBottomSheet(
+}) async {
+  await showMyModalBottomSheet(
     context: context,
     isScrollControlled: true,
     enableDrag: true,
     backgroundColor: Colors.transparent,
-    isDarkMode: isDarkMode,
     widget: getRatingBottomSheet(
         context: context,
         onSubmit: onSubmit,

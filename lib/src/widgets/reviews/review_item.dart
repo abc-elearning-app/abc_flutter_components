@@ -8,11 +8,11 @@ class ReviewItem extends MainItem {
   const ReviewItem({
     super.key,
     required this.iconName,
-    required super.onTap,
-    required super.title,
-    required super.leading,
-    required super.subtitle,
-    required super.trailing,
+    super.onTap,
+    super.title,
+    super.leading,
+    super.subtitle,
+    super.trailing,
   });
 
   Widget _getImage(String icon) {
@@ -27,7 +27,7 @@ class ReviewItem extends MainItem {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => onTap.call(),
+      onTap: () => onTap?.call(),
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
@@ -42,14 +42,16 @@ class ReviewItem extends MainItem {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  child: title != null
+                      ? Text(
+                          title!,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        )
+                      : const SizedBox(),
                 ),
                 Container(
                     width: 24,
@@ -69,12 +71,7 @@ class ReviewItem extends MainItem {
               width: double.infinity,
               color: Theme.of(context).colorScheme.outline,
             ),
-            Text(title,
-                textAlign: TextAlign.left,
-                style: Theme.of(context)
-                    .textTheme
-                    .subtitle2
-                    ?.copyWith(fontSize: 14)),
+            subtitle != null ? subtitle! : const SizedBox(),
           ],
         ),
       ),

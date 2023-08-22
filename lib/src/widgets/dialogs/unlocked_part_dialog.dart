@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
-void showUnlockedPartDialog(
-    {required String gifStringPath,
-    required BuildContext context,
-    required VoidCallback onNext}) {
-  showDialog(
+Future<dynamic> showUnlockedPartDialog({
+  required BuildContext context,
+  required VoidCallback onNext,
+}) async {
+  return await showDialog(
     context: context,
     builder: (context) => AlertDialog(
       elevation: 0,
@@ -17,7 +18,11 @@ void showUnlockedPartDialog(
           width: 200,
           height: 200,
           alignment: Alignment.center,
-          child: Image.asset(gifStringPath, fit: BoxFit.contain),
+          child: Image.asset(
+            "assets/gifs/unlocked_part.gif",
+            fit: BoxFit.contain,
+            package: appPackage,
+          ),
         ),
       ),
     ),

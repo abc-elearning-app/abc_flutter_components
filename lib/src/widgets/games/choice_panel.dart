@@ -43,7 +43,7 @@ class ChoicePanel extends StatefulWidget {
   final bool choiceAnimation;
   final bool showAllAnswer;
   final GameType gameType;
-  final ModeExam modeExam;
+  final ModeExam? modeExam;
   final String bucket;
   final QuestionStatus questionStatus;
   final bool isTester;
@@ -62,7 +62,7 @@ class ChoicePanel extends StatefulWidget {
     this.choiceAnimation = true,
     required this.gameType,
     this.showAllAnswer = false,
-    required this.modeExam,
+    this.modeExam,
     required this.bucket,
     required this.questionStatus,
     required this.isTester,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/src/constants/configs.dart';
 
 class BackgroundPanel extends StatelessWidget {
   final Widget? child;
@@ -16,12 +17,14 @@ class BackgroundPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String background =
-        backgroundImage ?? "assets/static/apps/background-image.jpg";
     return Container(
       decoration: BoxDecoration(
-        image: !isDarkMode && background.isNotEmpty
-            ? DecorationImage(fit: BoxFit.fill, image: AssetImage(background))
+        image: !isDarkMode
+            ? DecorationImage(
+                fit: BoxFit.fill,
+                image: AssetImage(
+                    backgroundImage ?? "assets/images/background_image.jpg",
+                    package: backgroundImage != null ? null : appPackage))
             : null,
         color: Theme.of(context).colorScheme.surface,
         borderRadius: radius,

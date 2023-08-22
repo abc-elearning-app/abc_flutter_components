@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/src/constants/configs.dart';
 
 import '../index.dart';
 
@@ -18,52 +19,52 @@ class RatingQuestionWidget extends StatefulWidget {
           color: const Color(0xFFDF2A19),
           id: 1,
           title: "1",
-          icon: "assets/static/rating_icon_1.png"),
+          icon: "assets/icons/rating_icon_1.png"),
       RatingQuestionItem(
           color: const Color(0xFFDF2A19),
           id: 2,
           title: "2",
-          icon: "assets/static/rating_icon_2.png"),
+          icon: "assets/icons/rating_icon_2.png"),
       RatingQuestionItem(
           color: const Color(0xFFF07C01),
           id: 3,
           title: "3",
-          icon: "assets/static/rating_icon_3.png"),
+          icon: "assets/icons/rating_icon_3.png"),
       RatingQuestionItem(
           color: const Color(0xFFF07C01),
           id: 4,
           title: "4",
-          icon: "assets/static/rating_icon_4.png"),
+          icon: "assets/icons/rating_icon_4.png"),
       RatingQuestionItem(
           color: const Color(0xFFE2C802),
           id: 5,
           title: "5",
-          icon: "assets/static/rating_icon_5.png"),
+          icon: "assets/icons/rating_icon_5.png"),
       RatingQuestionItem(
           color: const Color(0xFFE2C802),
           id: 6,
           title: "6",
-          icon: "assets/static/rating_icon_6.png"),
+          icon: "assets/icons/rating_icon_6.png"),
       RatingQuestionItem(
           color: const Color(0xFFD5BC48),
           id: 7,
           title: "7",
-          icon: "assets/static/rating_icon_7.png"),
+          icon: "assets/icons/rating_icon_7.png"),
       RatingQuestionItem(
           color: const Color(0xFFD5BC48),
           id: 8,
           title: "8",
-          icon: "assets/static/rating_icon_8.png"),
+          icon: "assets/icons/rating_icon_8.png"),
       RatingQuestionItem(
           color: const Color(0xFF8FAF1E),
           id: 9,
           title: "9",
-          icon: "assets/static/rating_icon_9.png"),
+          icon: "assets/icons/rating_icon_9.png"),
       RatingQuestionItem(
           color: const Color(0xFF54AE28),
           id: 10,
           title: "10",
-          icon: "assets/static/rating_icon_10.png")
+          icon: "assets/icons/rating_icon_10.png")
     ];
   }
 }
@@ -188,7 +189,11 @@ class _ItemWidgetState extends State<ItemWidget> {
       return SizedBox(
           width: 24,
           height: 24,
-          child: Image.asset(widget.item.icon.toString(), width: 24));
+          child: Image.asset(
+            widget.item.icon.toString(),
+            width: 24,
+            package: appPackage,
+          ));
     }
     return InkWell(
       onTap: widget.onChange,

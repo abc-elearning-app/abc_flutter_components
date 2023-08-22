@@ -80,7 +80,8 @@ class _ReportMistakeBottomSheetState extends State<ReportMistakeBottomSheet> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: SvgPicture.asset(
-                  "assets/static/icons/arrow_down_bottom_sheet.svg",
+                  "assets/images/arrow_down_bottom_sheet.svg",
+                  package: appPackage,
                   width: 55,
                   color: Colors.white),
             ),
@@ -178,41 +179,52 @@ class _ReportMistakeBottomSheetState extends State<ReportMistakeBottomSheet> {
                       fontSize: 18,
                       fontWeight: FontWeight.w500)),
             ),
-            if (ratingScore < 8) const SizedBox(height: 8),
-            if (ratingScore < 8)
-              Column(
-                children: reportMistakeDataItems.map((item) {
-                  bool sel = selectedIds.contains(item.id);
-                  return InkWell(
-                    onTap: () => _onSelected(item.id),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(item.name,
-                              style: TextStyle(
-                                  color: _isDarkMode
-                                      ? Colors.white
-                                      : const Color(0xFF383838),
-                                  fontSize: 16)),
-                          MyCheckBox(
-                            onChanged: (value) => _onSelected(item.id),
-                            value: sel,
-                            activeColor: _isDarkMode
-                                ? Colors.white
-                                : const Color(0xFF383838),
-                            checkColor: _isDarkMode
-                                ? Colors.white
-                                : const Color(0xFF383838),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
+            AnimatedSize(
+              alignment: Alignment.topCenter,
+              duration: const Duration(milliseconds: 300),
+              child: ratingScore < 8
+                  ? const SizedBox(height: 8)
+                  : const SizedBox(),
+            ),
+            AnimatedSize(
+                alignment: Alignment.topCenter,
+                duration: const Duration(milliseconds: 300),
+                child: ratingScore < 8
+                    ? Column(
+                        children: reportMistakeDataItems.map((item) {
+                          bool sel = selectedIds.contains(item.id);
+                          return InkWell(
+                            onTap: () => _onSelected(item.id),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(item.name,
+                                      style: TextStyle(
+                                          color: _isDarkMode
+                                              ? Colors.white
+                                              : const Color(0xFF383838),
+                                          fontSize: 16)),
+                                  MyCheckBox(
+                                    onChanged: (value) => _onSelected(item.id),
+                                    value: sel,
+                                    activeColor: _isDarkMode
+                                        ? Colors.white
+                                        : const Color(0xFF383838),
+                                    checkColor: _isDarkMode
+                                        ? Colors.white
+                                        : const Color(0xFF383838),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      )
+                    : const SizedBox()),
             const SizedBox(height: 12),
             TextField(
               controller: _textFieldController,

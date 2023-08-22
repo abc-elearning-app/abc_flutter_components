@@ -7,26 +7,26 @@ class FlashCardItem extends MainItem {
   final IconData icon;
   final int mastered;
   final int total;
-  final int index;
+  final int? index;
 
   const FlashCardItem({
     super.key,
     required this.icon,
     required this.name,
-    required super.onTap,
+    super.onTap,
     this.mastered = 0,
     this.total = 0,
-    required this.index,
-    required super.title,
-    required super.leading,
-    required super.subtitle,
-    required super.trailing,
+    this.index,
+    super.title,
+    super.leading,
+    super.subtitle,
+    super.trailing,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => onTap(),
+      onTap: () => onTap?.call(),
       child: Container(
         decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,

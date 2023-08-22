@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_svg/svg.dart';
 
 enum SignInIcon { google, apple, email }
 
 class SignInButton extends StatelessWidget {
-  final String signInIcon;
+  final SignInIcon signInIcon;
   final String title;
   final VoidCallback onPress;
   final Color backgroundColor;
@@ -38,8 +39,9 @@ class SignInButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SvgPicture.asset(
-                signInIcon,
+                "assets/icons/${signInIcon.toString().replaceAll("SignInIcon.", "")}.svg",
                 width: 24,
+                package: appPackage,
               ),
               const SizedBox(width: 12),
               Text(title,

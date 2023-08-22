@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
-void showDialogContent(
-    {required BuildContext context, required Widget content, String? title}) {
-  showGeneralDialog(
+Future<dynamic> showDialogContent(
+    {required BuildContext context,
+    required Widget content,
+    String? title}) async {
+  return await showGeneralDialog(
     barrierLabel: "Barrier",
     barrierDismissible: true,
     barrierColor: Colors.black.withOpacity(0.5),
@@ -27,7 +29,7 @@ void showDialogContent(
                         offset: Offset(0, 0),
                         spreadRadius: 1)
                   ],
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.surface,
                 ),
                 child: Column(
                   children: [
@@ -50,12 +52,12 @@ void showDialogContent(
                         ),
                       ],
                     ),
-                    Expanded(
-                        child: Container(
-                            padding: const EdgeInsets.only(
-                                left: 20, right: 20, bottom: 20),
-                            width: double.infinity,
-                            child: content)),
+                    Container(
+                      padding: const EdgeInsets.only(
+                          left: 20, right: 20, bottom: 20),
+                      width: double.infinity,
+                      child: content,
+                    ),
                   ],
                 ),
               ),

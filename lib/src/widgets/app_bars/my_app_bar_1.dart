@@ -8,13 +8,16 @@ class MyAppBar1 extends StatelessWidget implements PreferredSizeWidget {
   final Widget title;
   final Widget? action;
   final Color? backgroundColor;
+  final Color? foregroundColor;
 
-  const MyAppBar1(
-      {super.key,
-      this.action,
-      this.leading,
-      required this.title,
-      this.backgroundColor});
+  const MyAppBar1({
+    super.key,
+    this.action,
+    this.leading,
+    required this.title,
+    this.backgroundColor,
+    this.foregroundColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +27,13 @@ class MyAppBar1 extends StatelessWidget implements PreferredSizeWidget {
         parentRoute is PageRoute<dynamic> && parentRoute.fullscreenDialog;
     Widget? tempLeading = leading;
     if (canPop) {
-      tempLeading = useCloseButton ? const CloseButton() : const BackButton();
+      tempLeading = useCloseButton
+          ? CloseButton(
+              color: foregroundColor,
+            )
+          : BackButton(
+              color: foregroundColor,
+            );
     }
     return Container(
       margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),

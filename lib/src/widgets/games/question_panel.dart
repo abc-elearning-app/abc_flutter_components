@@ -14,11 +14,11 @@ class QuestionPanelNewDataManager {
   final SelectDataType selectDataType;
   final bool isShowNativeAds;
   final Function(
-      {IQuestion question,
-      String bucket,
-      ITestInfo testInfo,
-      ITopic topic,
-      ITopic mainTopic}) debugQuestion;
+      {required IQuestion question,
+      required String bucket,
+      ITestInfo? testInfo,
+      ITopic? topic,
+      ITopic? mainTopic}) debugQuestion;
   final bool isTester;
 
   QuestionPanelNewDataManager({
@@ -70,9 +70,9 @@ class QuestionPanelNew extends StatefulWidget {
   final VoidCallback onFavorite;
   final TestSettingNew? testSetting;
   final bool showAds;
-  final ITopic topic;
-  final ITopic mainTopic;
-  final ITestInfo testInfo;
+  final ITopic? topic;
+  final ITopic? mainTopic;
+  final ITestInfo? testInfo;
   final bool? showAllAnswer;
   final Widget bannerAds;
   final Widget nativeAds;
@@ -97,9 +97,9 @@ class QuestionPanelNew extends StatefulWidget {
     required this.onFavorite,
     this.onSkip,
     this.showAds = true,
-    required this.topic,
-    required this.mainTopic,
-    required this.testInfo,
+    this.topic,
+    this.mainTopic,
+    this.testInfo,
     this.showAllAnswer = false,
     this.modeExam,
     required this.questionPanelNewDataManager,
@@ -229,7 +229,7 @@ class QuestionPanelState extends State<QuestionPanelNew>
   Widget _makeContent(
       BuildContext context, IQuestion question, double fontSize) {
     bool checkShowSelected = question.numberCorrectAnswer > 1;
-    if (question.listChoices != null &&
+    if (question.answers != null &&
         question.numberCorrectAnswer == question.choices.length) {
       checkShowSelected = false;
     }
@@ -245,7 +245,7 @@ class QuestionPanelState extends State<QuestionPanelNew>
               _makeBorderQuestion(
                   questionPanelNewQuestionProgress:
                       widget.questionPanelNewQuestionProgress,
-                  testSetting: widget.testSetting!,
+                  testSetting: widget.testSetting,
                   question: question,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,7 +296,7 @@ class QuestionPanelState extends State<QuestionPanelNew>
                   instanceFeedback: instanceFeedback,
                   gameType: widget.gameType,
                   fontSize: fontSize,
-                  modeExam: widget.modeExam!),
+                  modeExam: widget.modeExam),
               _nativeAdFullWidget(context, show: liveShowAd),
             ],
           ),
@@ -315,10 +315,10 @@ class QuestionPanelState extends State<QuestionPanelNew>
     required bool instanceFeedback,
     required GameType gameType,
     required double fontSize,
-    required ModeExam modeExam,
+    required ModeExam? modeExam,
   }) {
     bool darkMode = Theme.of(context).brightness == Brightness.dark;
-    if (question.listChoices != null && question.choices.isNotEmpty) {
+    if (question.choices.isNotEmpty) {
       return [
         ChoicePanel(
           question: question,

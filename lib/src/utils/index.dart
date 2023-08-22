@@ -7,3 +7,4 @@ export 'game_utils.dart';
 export 'asset_utils.dart';
 export 'toaster_utils.dart';
 export 'code_validator.dart';
+export 'image_utils.dart';

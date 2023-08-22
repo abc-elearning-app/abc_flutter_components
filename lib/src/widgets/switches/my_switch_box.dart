@@ -15,18 +15,18 @@ class MySwitchBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: () {
-          onChanged.call(!value);
-        },
-        child: SwitchIcon(
-          on: value,
-          color: value
-              ? getHexCssColor(const Color(0xFF00C99E))
-              : getHexCssColor(const Color(0xFF8E8E8E)),
-          width: size,
-          height: size * 2 / 3,
-          isDarkMode:
-              Theme.of(context).colorScheme.brightness == Brightness.dark,
-        ));
+      onTap: () {
+        onChanged.call(!value);
+      },
+      child: SwitchIcon(
+        on: value,
+        color: value
+            ? getHexCssColor(const Color(0xFF00C99E))
+            : getHexCssColor(const Color(0xFF8E8E8E)),
+        width: size,
+        height: size * 2 / 3,
+        isDarkMode: Theme.of(context).colorScheme.brightness == Brightness.dark,
+      ),
+    );
   }
 }

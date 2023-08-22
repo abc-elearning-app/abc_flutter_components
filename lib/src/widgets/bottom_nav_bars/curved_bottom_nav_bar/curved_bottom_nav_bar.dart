@@ -4,7 +4,7 @@ class CurvedNavigationBar extends StatefulWidget {
   final List<Widget> items;
   final int index;
   final Color color;
-  final Color buttonBackgroundColor;
+  final Color? buttonBackgroundColor;
   final Color backgroundColor;
   final ValueChanged<int> onTap;
   final Curve animationCurve;
@@ -16,7 +16,7 @@ class CurvedNavigationBar extends StatefulWidget {
     required this.items,
     this.index = 0,
     required this.color,
-    required this.buttonBackgroundColor,
+    this.buttonBackgroundColor,
     this.backgroundColor = Colors.blueAccent,
     required this.onTap,
     this.animationCurve = Curves.easeOut,
@@ -127,7 +127,7 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
               painter: NavCustomPainter(
                   _pos,
                   _length,
-                  Theme.of(context).colorScheme.background,
+                  Theme.of(context).colorScheme.primary,
                   Directionality.of(context)),
               child: Container(
                 height: 75.0,

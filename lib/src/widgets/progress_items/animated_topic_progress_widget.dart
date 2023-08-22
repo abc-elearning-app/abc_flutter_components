@@ -4,20 +4,20 @@ import 'package:flutter_abc_jsc_components/src/widgets/icons/main_icon.dart';
 class AppBarProgressItem {
   String title;
   String value;
-  Color color;
-  IconData icon;
+  Color? color;
+  IconData? icon;
 
   AppBarProgressItem({
-    required this.icon,
+    this.icon,
     required this.title,
     required this.value,
-    required this.color,
+    this.color,
   });
 }
 
 class AnimatedTopicProgressWidget extends StatefulWidget {
   final bool animation;
-  final double height;
+  final double? height;
   final double progress;
   final List<AppBarProgressItem> progressItems;
 
@@ -25,7 +25,7 @@ class AnimatedTopicProgressWidget extends StatefulWidget {
     super.key,
     required this.progress,
     required this.progressItems,
-    required this.height,
+    this.height,
     this.animation = true,
   });
 
@@ -187,9 +187,9 @@ class _AnimatedTopicProgressWidgetState
   Widget _makeTitleProgress({
     String title = '',
     String value = '',
-    required IconData icon,
+    IconData? icon,
     required Animation<double> animation,
-    required Color color,
+    Color? color,
   }) {
     double textScaleFactor = MediaQuery.of(context).textScaleFactor;
     TextStyle style = TextStyle(

@@ -8,6 +8,7 @@ class RaisedButton extends StatelessWidget {
   final RoundedRectangleBorder? shape;
   final Color? textColor;
   final ButtonTextTheme? textTheme;
+  final double? elevation;
 
   const RaisedButton({
     super.key,
@@ -18,6 +19,7 @@ class RaisedButton extends StatelessWidget {
     this.shape,
     this.textColor,
     this.textTheme,
+    this.elevation,
   });
 
   @override
@@ -26,9 +28,10 @@ class RaisedButton extends StatelessWidget {
       shape: shape,
       padding: padding,
       onPressed: onPressed,
-      color: color,
+      color: color ?? Theme.of(context).colorScheme.primaryContainer,
       textColor: textColor,
       textTheme: textTheme,
+      elevation: elevation ?? 4,
       child: child,
     );
   }

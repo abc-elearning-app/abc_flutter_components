@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MenuButtonGetPro extends StatelessWidget {
@@ -22,8 +23,8 @@ class MenuButtonGetPro extends StatelessWidget {
           elevation: 0,
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14)),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        SvgPicture.asset("assets/static/icons/crown_icon.svg",
-            width: 24, height: 24, color: Colors.white),
+        SvgPicture.asset("assets/icons/crown_icon.svg",
+            width: 24, height: 24, color: Colors.white, package: appPackage),
         const Text(
           "Get Pro",
           style: TextStyle(

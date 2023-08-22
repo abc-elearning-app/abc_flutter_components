@@ -4,10 +4,10 @@ import 'package:flutter_abc_jsc_components/src/widgets/icons/main_icon.dart';
 class AnimatedAppBarProgressItem {
   String title;
   String value;
-  IconData icon;
+  IconData? icon;
 
   AnimatedAppBarProgressItem({
-    required this.icon,
+    this.icon,
     required this.title,
     required this.value,
   });
@@ -15,7 +15,7 @@ class AnimatedAppBarProgressItem {
 
 class TopicProgressWidget extends StatefulWidget {
   final bool animation;
-  final double height;
+  final double? height;
   final double progress;
   final List<AnimatedAppBarProgressItem> progressItems;
   final String testBackgroundPath;
@@ -24,7 +24,7 @@ class TopicProgressWidget extends StatefulWidget {
     super.key,
     required this.progress,
     required this.progressItems,
-    required this.height,
+    this.height,
     this.animation = true,
     required this.testBackgroundPath,
   });

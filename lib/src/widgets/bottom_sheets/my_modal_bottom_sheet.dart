@@ -17,29 +17,21 @@ Future<dynamic> showMyModalBottomSheet<T>({
   RouteSettings? routeSettings,
   bool isUseBackground = true,
   EdgeInsets? padding,
-  required bool isDarkMode,
 }) {
   return showModalBottomSheet(
     context: context,
     builder: (context) {
       return Padding(
         padding: padding ?? const EdgeInsets.all(0),
-        child: Column(children: [
-          Expanded(
-              child: InkWell(
-            child: Container(),
-            onTap: () => Navigator.pop(context),
-          )),
-          isUseBackground
-              ? BackgroundPanel(
-                  radius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20)),
-                  isDarkMode: isDarkMode,
-                  child: widget,
-                )
-              : widget,
-        ]),
+        child: isUseBackground
+            ? BackgroundPanel(
+                radius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
+                isDarkMode: Theme.of(context).brightness == Brightness.dark,
+                child: widget,
+              )
+            : widget,
       );
     },
     backgroundColor: backgroundColor,
@@ -50,7 +42,11 @@ Future<dynamic> showMyModalBottomSheet<T>({
     isDismissible: isDismissible,
     isScrollControlled: isScrollControlled,
     routeSettings: routeSettings,
-    shape: shape,
+    shape: isUseBackground
+        ? const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20)))
+        : shape,
     useRootNavigator: useRootNavigator,
   );
 }

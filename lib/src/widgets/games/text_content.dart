@@ -6,7 +6,6 @@ import 'package:extended_text/extended_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html_math/flutter_html_math.dart';
 
 const double defaultRatio = 0.8;
 

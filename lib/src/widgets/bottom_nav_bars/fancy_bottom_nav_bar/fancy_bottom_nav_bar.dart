@@ -74,6 +74,7 @@ class FancyBottomNavBarState extends State<FancyBottomNavBar>
   Widget build(BuildContext context) {
     return Stack(
       // overflow: Overflow.visible,
+      clipBehavior: Clip.none,
       alignment: Alignment.bottomCenter,
       children: <Widget>[
         Container(

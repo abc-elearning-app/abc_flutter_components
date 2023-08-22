@@ -5,10 +5,6 @@ import 'package:flutter/material.dart';
 import '../index.dart';
 
 class ChooseLoginOption extends StatefulWidget {
-  final bool isDarkMode;
-  final String iconAssetGoogle;
-  final String iconAssetApple;
-  final String iconAssetEmail;
   final Widget privacyPolicyWidget;
   final Future<bool> Function() isAppleAvailable;
   final VoidCallback onSignInWithGoogle;
@@ -17,10 +13,6 @@ class ChooseLoginOption extends StatefulWidget {
 
   const ChooseLoginOption({
     super.key,
-    required this.isDarkMode,
-    required this.iconAssetGoogle,
-    required this.iconAssetApple,
-    required this.iconAssetEmail,
     required this.isAppleAvailable,
     required this.onSignInWithGoogle,
     required this.onSignInWithApple,
@@ -66,10 +58,11 @@ class _ChooseLoginOptionState extends State<ChooseLoginOption> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SignInButton(
-                signInIcon: widget.iconAssetGoogle,
+                signInIcon: SignInIcon.google,
                 title: "Sign up with Google",
                 onPress: widget.onSignInWithGoogle,
                 backgroundColor: Colors.white,
+                textColor: Colors.black,
               ),
               if (Platform.isIOS)
                 FutureBuilder<bool>(
@@ -77,7 +70,7 @@ class _ChooseLoginOptionState extends State<ChooseLoginOption> {
                     builder: (context, snapshot) {
                       if (snapshot.hasData && snapshot.data as bool) {
                         return SignInButton(
-                          signInIcon: widget.iconAssetApple,
+                          signInIcon: SignInIcon.apple,
                           title: "Sign in with Apple",
                           onPress: widget.onSignInWithApple,
                           backgroundColor: const Color(0xFF333333),
@@ -87,7 +80,7 @@ class _ChooseLoginOptionState extends State<ChooseLoginOption> {
                       return const SizedBox();
                     }),
               SignInButton(
-                signInIcon: widget.iconAssetEmail,
+                signInIcon: SignInIcon.email,
                 title: "Sign in with Email",
                 onPress: widget.onSignInWithEmail,
                 backgroundColor: Colors.blue,

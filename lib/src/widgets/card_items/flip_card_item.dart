@@ -53,9 +53,9 @@ class FlipCardItem extends StatefulWidget {
 
   final int speed;
   final FlipDirection direction;
-  final VoidCallback onFlip;
-  final BoolCallback onFlipDone;
-  final FlipCardController controller;
+  final VoidCallback? onFlip;
+  final BoolCallback? onFlipDone;
+  final FlipCardController? controller;
   final bool flipOnTouch;
 
   const FlipCardItem({
@@ -63,11 +63,11 @@ class FlipCardItem extends StatefulWidget {
     required this.front,
     required this.back,
     this.speed = 500,
-    required this.onFlip,
-    required this.onFlipDone,
+    this.onFlip,
+    this.onFlipDone,
     this.direction = FlipDirection.horizontal,
     this.flipOnTouch = true,
-    required this.controller,
+    this.controller,
   });
 
   @override
@@ -120,10 +120,10 @@ class FlipCardItemState extends State<FlipCardItem>
     controller.addStatusListener((status) {
       if (status == AnimationStatus.completed ||
           status == AnimationStatus.dismissed) {
-        widget.onFlipDone(isFront);
+        widget.onFlipDone?.call(isFront);
       }
     });
-    widget.controller.onReset = () {
+    widget.controller?.onReset = () {
       if (!isFront) {
         controller.reverse(from: 0);
         setState(() {
@@ -134,7 +134,7 @@ class FlipCardItemState extends State<FlipCardItem>
   }
 
   void toggleCard() {
-    widget.onFlip();
+    widget.onFlip?.call();
     if (isFront) {
       controller.forward();
     } else {
