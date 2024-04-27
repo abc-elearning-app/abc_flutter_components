@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pinput/pinput.dart';
 
 enum TabType { email, code }
 
@@ -30,6 +30,9 @@ class LoginPages extends StatefulWidget {
 class _LoginPagesState extends State<LoginPages> {
   late PageController _pageController;
   final _pageIndex = ValueNotifier<int>(0);
+  final _emailController = TextEditingController();
+  final _otpController = TextEditingController();
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -44,12 +47,26 @@ class _LoginPagesState extends State<LoginPages> {
   void dispose() {
     _pageController.dispose();
     _pageIndex.dispose();
+    _emailController.dispose();
+    _otpController.dispose();
     super.dispose();
   }
 
+  PinTheme customPinTheme = PinTheme();
+
   @override
   Widget build(BuildContext context) {
+    customPinTheme = PinTheme(
+        textStyle: const TextStyle(fontSize: 12),
+        width: 30,
+        height: 30,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: Colors.white,
+            border: Border.all(width: 0.5, color: const Color(0xFF307561))));
+
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: widget.upperBackgroundColor,
@@ -109,7 +126,7 @@ class _LoginPagesState extends State<LoginPages> {
                   controller: _pageController,
                   itemCount: 2,
                   itemBuilder: (_, index) => _buildTab(
-                      type: index == 0 ? TabType.email : TabType.code))
+                      type: index == 0 ? TabType.email : TabType.code)),
             ]),
           ),
 
@@ -126,17 +143,19 @@ class _LoginPagesState extends State<LoginPages> {
               ),
               Center(
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.8,
+                  width: MediaQuery.of(context).size.width * 0.9,
                   child: ElevatedButton(
                     onPressed: () {
                       // If at email tab
                       if (_pageController.hasClients &&
                           _pageController.page == 0) {
-                        _pageController.nextPage(
-                            duration: const Duration(milliseconds: 200),
-                            curve: Curves.easeInOut);
-                        //TODO: Add textfield
-                        widget.onRequestCodeClick('abc');
+                        if (_emailController.text.isNotEmpty) {
+                          _pageController.nextPage(
+                              duration: const Duration(milliseconds: 200),
+                              curve: Curves.easeInOut);
+                        }
+
+                        widget.onRequestCodeClick(_emailController.text);
                       } else if (_pageController.hasClients) {}
                     },
                     style: ElevatedButton.styleFrom(
@@ -145,12 +164,12 @@ class _LoginPagesState extends State<LoginPages> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15)),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 80, vertical: 15)),
+                            horizontal: 50, vertical: 15)),
                     child: ValueListenableBuilder(
                       valueListenable: _pageIndex,
                       builder: (_, value, __) => Text(
                         value == 0 ? 'Request Code' : 'Submit',
-                        style: const TextStyle(fontSize: 25),
+                        style: const TextStyle(fontSize: 22),
                       ),
                     ),
                   ),
@@ -163,70 +182,105 @@ class _LoginPagesState extends State<LoginPages> {
     );
   }
 
-  Widget _buildTab({required TabType type}) => Column(
-        children: [
-          Icon(
-            Icons.abc,
-            size: 100,
-          ),
-          type == TabType.email ? Stack(
-            alignment: Alignment.center,
-            children: [
-              Image.asset('assets/images/login_1_1.png'),
-              Image.asset('assets/images/login_1_2.png')
-            ],
-          ) : Image.asset('assets/images/login_2.png'),
-          const SizedBox(
-            height: 100,
-          ),
-          type == TabType.email
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildTab({required TabType type}) => SingleChildScrollView(
+        controller: _scrollController,
+        child: Column(
+          children: [
+            if (type == TabType.code) const SizedBox(height: 30),
+            type == TabType.email
+                ? Stack(
+                    alignment: Alignment.center,
                     children: [
-                      const Text(
-                        'Email',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      TextField(
-                        decoration: InputDecoration(
-                            fillColor: Colors.white,
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide:
-                                    BorderSide(color: Color(0xFF307561))),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10))),
-                      ),
+                      Image.asset('assets/images/login_1_1.png', scale: 0.9),
+                      Image.asset('assets/images/login_1_2.png', scale: 0.9)
                     ],
-                  ),
-                )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    for (int i = 0; i < 4; i++)
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 10),
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            border:
-                                Border.all(width: 1, color: Color(0xFF307561))),
-                      )
-                  ],
-                ),
-          if (type == TabType.code)
-            const Padding(
-              padding: EdgeInsets.only(top: 20),
+                  )
+                : Image.asset('assets/images/login_2.png', scale: 1.8,),
+            Padding(
+              padding: EdgeInsets.only(
+                  left: 30,
+                  right: 30,
+                  bottom: 30,
+                  top: type == TabType.code ? 50 : 0),
               child: Text(
-                'Enter Another Email',
-                style: TextStyle(fontSize: 18, color: Color(0xFF307561)),
+                type == TabType.email
+                    ? "Log in now to receive personalized recommendations for practice and sync progress across devices."
+                    : "Please enter the verification code we sent to your email address within 30 minutes. If you don't see it, check your spam folder.",
+                style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
+                textAlign: TextAlign.center,
               ),
-            )
-        ],
+            ),
+            type == TabType.email
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Email',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 5),
+
+                        // Add padding when keyboard appear
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: TextField(
+                            onTap: () => _scrollController.animateTo(
+                                _scrollController.position.maxScrollExtent,
+                                duration: const Duration(milliseconds: 100),
+                                curve: Curves.linear),
+                            controller: _emailController,
+                            cursorColor: const Color(0xFF307561),
+                            decoration: InputDecoration(
+                                filled: true,
+                                hintText: 'Type your email',
+                                hintStyle:
+                                    TextStyle(color: Colors.grey.shade300),
+                                fillColor: Colors.white,
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    borderSide: const BorderSide(
+                                        color: Color(0xFF307561))),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10))),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : Transform.scale(
+                    scale: 2,
+                    child: Pinput(
+                      onTap: () => _scrollController.animateTo(
+                          _scrollController.position.maxScrollExtent,
+                          duration: const Duration(milliseconds: 100),
+                          curve: Curves.linear),
+                      controller: _otpController,
+                      defaultPinTheme: customPinTheme,
+                      focusedPinTheme: customPinTheme,
+                      onCompleted: (pin) => print(pin),
+                    ),
+                  ),
+            if (type == TabType.code)
+              GestureDetector(
+                onTap: () {
+                  _emailController.clear();
+                  _pageController.previousPage(
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.easeInOut);
+                },
+                child: const Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  child: Text(
+                    'Enter Another Email',
+                    style: TextStyle(fontSize: 1, color: Color(0xFF307561)),
+                  ),
+                ),
+              ),
+            const SizedBox(height: 10),
+          ],
+        ),
       );
 }

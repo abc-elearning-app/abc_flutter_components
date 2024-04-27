@@ -25,6 +25,7 @@ class AppRoute {
   static const String texts = '/texts';
   static const String toasters = '/toasters';
   static const String others = '/others';
+  static const String newLogin = '/new_login';
 
   static List<String> getAppRoute() {
     return [
@@ -51,6 +52,7 @@ class AppRoute {
       AppRoute.texts,
       AppRoute.toasters,
       AppRoute.others,
+      AppRoute.newLogin,
     ];
   }
 }
