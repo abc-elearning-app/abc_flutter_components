@@ -18,8 +18,10 @@ class IntroStudyPlanData {
 class IntroStudyPlanPages extends StatefulWidget {
   final Color upperBackgroundColor;
   final Color lowerBackgroundColor;
-  final Color buttonColor;
+  final Color mainColor;
   final Color buttonTextColor;
+  final Color titleColor;
+  final Color subTitleColor;
   final double buttonTextFontSize;
   final List<IntroStudyPlanData> tabList;
   final String? fontFamily;
@@ -27,11 +29,13 @@ class IntroStudyPlanPages extends StatefulWidget {
 
   const IntroStudyPlanPages(
       {super.key,
-      required this.upperBackgroundColor,
-      required this.lowerBackgroundColor,
-      required this.buttonColor,
-      required this.buttonTextColor,
-      required this.buttonTextFontSize,
+      this.upperBackgroundColor = const Color(0xFFEEFFFA),
+      this.lowerBackgroundColor = Colors.white,
+      this.mainColor = const Color(0xFF579E89),
+      this.buttonTextColor = Colors.white,
+      this.buttonTextFontSize = 20,
+      this.titleColor = Colors.black,
+      this.subTitleColor = Colors.grey,
       this.fontFamily,
       required this.tabList,
       required this.onFinish});
@@ -116,8 +120,10 @@ class _IntroStudyPlanPagesState extends State<IntroStudyPlanPages> {
                     padding: const EdgeInsets.only(top: 30, bottom: 20),
                     child: Text(
                       widget.tabList[index].title,
-                      style: const TextStyle(
-                          fontSize: 25, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: widget.titleColor,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                   Padding(
@@ -125,7 +131,10 @@ class _IntroStudyPlanPagesState extends State<IntroStudyPlanPages> {
                     child: Text(
                       widget.tabList[index].subtitle,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 16, color: Colors.grey),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: widget.subTitleColor,
+                      ),
                     ),
                   ),
                 ],
@@ -147,7 +156,7 @@ class _IntroStudyPlanPagesState extends State<IntroStudyPlanPages> {
                   builder: (_, value, __) => PageIndicator(
                       pageCount: widget.tabList.length,
                       currentPage: value.toInt(),
-                      color: widget.buttonColor)),
+                      color: widget.mainColor)),
             ),
             ElevatedButton(
               onPressed: () {
@@ -162,12 +171,13 @@ class _IntroStudyPlanPagesState extends State<IntroStudyPlanPages> {
               },
               style: ElevatedButton.styleFrom(
                   textStyle: TextStyle(
-                      fontFamily: widget.fontFamily, fontWeight: FontWeight.bold),
+                      fontFamily: widget.fontFamily,
+                      fontWeight: FontWeight.bold),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 60, vertical: 15),
-                  backgroundColor: widget.buttonColor,
+                  backgroundColor: widget.mainColor,
                   foregroundColor: widget.buttonTextColor),
               child: ValueListenableBuilder(
                 valueListenable: _pageIndex,
