@@ -13,24 +13,29 @@ class LoginDataItem {
 }
 
 class LoginPages extends StatefulWidget {
+  final Color appBarTextColor;
+  final Color textColor;
   final Color upperBackgroundColor;
   final Color lowerBackgroundColor;
-  final Color buttonColor;
+  final Color mainColor;
   final Color buttonTextColor;
+  final List<LoginDataItem> tabDataList;
   final void Function(String email) onRequestCodeClick;
   final void Function() onSkip;
   final void Function(String otp) onSubmit;
 
-  const LoginPages({
-    super.key,
-    required this.upperBackgroundColor,
-    required this.lowerBackgroundColor,
-    required this.buttonColor,
-    required this.buttonTextColor,
-    required this.onRequestCodeClick,
-    required this.onSkip,
-    required this.onSubmit,
-  });
+  const LoginPages(
+      {super.key,
+      this.appBarTextColor = Colors.black,
+      this.mainColor = const Color(0xFF579E89),
+      this.upperBackgroundColor = const Color(0xFFEEFFFA),
+      this.lowerBackgroundColor = Colors.white,
+      this.buttonTextColor = Colors.white,
+      this.textColor = Colors.grey,
+      required this.onRequestCodeClick,
+      required this.onSkip,
+      required this.onSubmit,
+      required this.tabDataList});
 
   @override
   State<LoginPages> createState() => _LoginPagesState();
@@ -44,22 +49,22 @@ class _LoginPagesState extends State<LoginPages> {
   final emailController = TextEditingController();
   final otpController = TextEditingController();
 
-  final tabDataList = <LoginDataItem>[
-    LoginDataItem(
-        image: Stack(
-          alignment: Alignment.center,
-          children: [
-            Image.asset('assets/images/login_1_1.png'),
-            Image.asset('assets/images/login_1_2.png')
-          ],
-        ),
-        detail:
-            "Log in now to receive personalized recommendations for practice and sync progress across devices."),
-    LoginDataItem(
-        image: Image.asset('assets/images/login_2.png'),
-        detail:
-            "Please enter the verification code we sent to your email address within 30 minutes. If you don't see it, check your spam folder.")
-  ];
+  // final tabDataList = <LoginDataItem>[
+  //   LoginDataItem(
+  //       image: Stack(
+  //         alignment: Alignment.center,
+  //         children: [
+  //           Image.asset('assets/images/login_1_1.png'),
+  //           Image.asset('assets/images/login_1_2.png')
+  //         ],
+  //       ),
+  //       detail:
+  //           "Log in now to receive personalized recommendations for practice and sync progress across devices."),
+  //   LoginDataItem(
+  //       image: Image.asset('assets/images/login_2.png'),
+  //       detail:
+  //           "Please enter the verification code we sent to your email address within 30 minutes. If you don't see it, check your spam folder.")
+  // ];
 
   @override
   void initState() {
@@ -140,7 +145,11 @@ class _LoginPagesState extends State<LoginPages> {
       builder: (_, value, __) => Visibility(
             visible: value != 0,
             child: IconButton(
-              icon: const Icon(Icons.chevron_left, size: 40),
+              icon: Icon(
+                Icons.chevron_left,
+                size: 40,
+                color: widget.appBarTextColor,
+              ),
               onPressed: () {
                 // Check button enable when go back to email page
                 _buttonEnable.value = _isValidEmail(emailController.text);
@@ -157,7 +166,11 @@ class _LoginPagesState extends State<LoginPages> {
       valueListenable: _pageIndex,
       builder: (_, value, __) => Text(
             value == 0 ? 'Log in' : 'Check your email',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 25,
+              color: widget.appBarTextColor,
+            ),
           ));
 
   Widget _buildSkipButton() => ValueListenableBuilder(
@@ -166,9 +179,14 @@ class _LoginPagesState extends State<LoginPages> {
             visible: value == 0,
             child: GestureDetector(
               onTap: () => widget.onSkip(),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Text('Skip', style: TextStyle(fontSize: 18)),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Text('Skip',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: widget.appBarTextColor,
+                    )),
               ),
             ),
           ));
@@ -176,14 +194,19 @@ class _LoginPagesState extends State<LoginPages> {
   Widget _buildTab({required TabType type}) => type == TabType.email
       ? EmailPage(
           emailController: emailController,
-          image: tabDataList[0].image,
-          detail: tabDataList[0].detail,
+          image: widget.tabDataList[0].image,
+          textColor: widget.textColor,
+          detail: widget.tabDataList[0].detail,
+          mainColor: widget.mainColor,
           onEnterEmail: () =>
-              _buttonEnable.value = _isValidEmail(emailController.text))
+              _buttonEnable.value = _isValidEmail(emailController.text),
+        )
       : OtpPage(
           otpController: otpController,
-          image: tabDataList[1].image,
-          detail: tabDataList[1].detail,
+          image: widget.tabDataList[1].image,
+          textColor: widget.textColor,
+          detail: widget.tabDataList[1].detail,
+          mainColor: widget.mainColor,
           onReenterEmail: () {
             // Clear all text controllers
             emailController.clear();
@@ -208,7 +231,7 @@ class _LoginPagesState extends State<LoginPages> {
           builder: (_, value, __) => ElevatedButton(
             onPressed: value ? _handleButtonClick : null,
             style: ElevatedButton.styleFrom(
-                backgroundColor: widget.buttonColor,
+                backgroundColor: widget.mainColor,
                 foregroundColor: widget.buttonTextColor,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15)),

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class EmailPage extends StatelessWidget {
   final Widget image;
   final String detail;
+  final Color textColor;
+  final Color mainColor;
   final TextEditingController emailController;
   final void Function() onEnterEmail;
 
@@ -11,7 +13,9 @@ class EmailPage extends StatelessWidget {
       required this.image,
       required this.detail,
       required this.emailController,
-      required this.onEnterEmail});
+      required this.onEnterEmail,
+      required this.textColor,
+      required this.mainColor});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +28,7 @@ class EmailPage extends StatelessWidget {
           padding: const EdgeInsets.all(30),
           child: Text(
             detail,
-            style: TextStyle(fontSize: 18, color: Colors.grey.shade700),
+            style: TextStyle(fontSize: 18, color: textColor),
             textAlign: TextAlign.center,
           ),
         ),
@@ -44,7 +48,6 @@ class EmailPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 5, bottom: 20),
                 child: TextField(
-
                   onChanged: (_) => onEnterEmail(),
                   controller: emailController,
                   cursorColor: const Color(0xFF307561),
@@ -56,12 +59,10 @@ class EmailPage extends StatelessWidget {
                       fillColor: Colors.white,
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
-                          borderSide:
-                              const BorderSide(color: Color(0xFF307561))),
+                          borderSide: BorderSide(color: mainColor)),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
-                          borderSide:
-                              const BorderSide(color: Color(0xFF307561)))),
+                          borderSide: BorderSide(color: mainColor))),
                 ),
               ),
             ],
