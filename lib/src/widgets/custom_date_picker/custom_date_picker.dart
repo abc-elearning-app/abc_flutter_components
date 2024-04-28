@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 // DatePicker Ultra pro max
 enum PickerType { day, month, year }
 
-class CupertinoDatePicker extends StatefulWidget {
+class CustomDatePicker extends StatefulWidget {
   final void Function(DateTime selectedDate) onSelectDate;
 
-  const CupertinoDatePicker({super.key, required this.onSelectDate});
+  const CustomDatePicker({super.key, required this.onSelectDate});
 
   @override
-  _CupertinoDatePickerState createState() => _CupertinoDatePickerState();
+  _CustomDatePickerState createState() => _CustomDatePickerState();
 }
 
-class _CupertinoDatePickerState extends State<CupertinoDatePicker> {
+class _CustomDatePickerState extends State<CustomDatePicker> {
   final _dayController = FixedExtentScrollController(initialItem: 0);
   final _monthController = FixedExtentScrollController(initialItem: 0);
   final _yearController = FixedExtentScrollController(initialItem: 0);
