@@ -52,7 +52,7 @@ class _LoginPagesState extends State<LoginPages> {
     super.dispose();
   }
 
-  PinTheme customPinTheme = PinTheme();
+  PinTheme customPinTheme = const PinTheme();
 
   @override
   Widget build(BuildContext context) {
@@ -65,119 +65,124 @@ class _LoginPagesState extends State<LoginPages> {
             color: Colors.white,
             border: Border.all(width: 0.5, color: const Color(0xFF307561))));
 
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: widget.upperBackgroundColor,
-        leading: ValueListenableBuilder(
-          valueListenable: _pageIndex,
-          builder: (_, value, __) => value != 0
-              ? IconButton(
-                  icon: const Icon(
-                    Icons.chevron_left,
-                    size: 40,
-                  ),
-                  onPressed: () => _pageController.previousPage(
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.easeInOut),
-                )
-              : const SizedBox(),
-        ),
-        title: ValueListenableBuilder(
-            valueListenable: _pageIndex,
-            builder: (_, value, __) => Text(
-                  value == 0 ? 'Log in' : 'Check your email',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 25),
-                )),
-        actions: [
-          ValueListenableBuilder(
-              valueListenable: _pageIndex,
-              builder: (_, value, __) => value == 0
-                  ? GestureDetector(
-                      onTap: () => widget.onSkip(),
-                      child: const Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        child: Text(
-                          'Skip',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ),
-                    )
-                  : const SizedBox())
-        ],
+    return Theme(
+      data: ThemeData(
+        fontFamily: 'Poppins'
       ),
-      body: Column(
-        children: [
-          Expanded(
-            flex: 5,
-            child: Stack(alignment: Alignment.center, children: [
-              Container(color: widget.lowerBackgroundColor),
-              Container(
-                decoration: BoxDecoration(
-                    color: widget.upperBackgroundColor,
-                    borderRadius: const BorderRadius.only(
-                        bottomRight: Radius.circular(50))),
-              ),
-              PageView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: _pageController,
-                  itemCount: 2,
-                  itemBuilder: (_, index) => _buildTab(
-                      type: index == 0 ? TabType.email : TabType.code)),
-            ]),
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: widget.upperBackgroundColor,
+          leading: ValueListenableBuilder(
+            valueListenable: _pageIndex,
+            builder: (_, value, __) => value != 0
+                ? IconButton(
+                    icon: const Icon(
+                      Icons.chevron_left,
+                      size: 40,
+                    ),
+                    onPressed: () => _pageController.previousPage(
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeInOut),
+                  )
+                : const SizedBox(),
           ),
+          title: ValueListenableBuilder(
+              valueListenable: _pageIndex,
+              builder: (_, value, __) => Text(
+                    value == 0 ? 'Log in' : 'Check your email',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 25),
+                  )),
+          actions: [
+            ValueListenableBuilder(
+                valueListenable: _pageIndex,
+                builder: (_, value, __) => value == 0
+                    ? GestureDetector(
+                        onTap: () => widget.onSkip(),
+                        child: const Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          child: Text(
+                            'Skip',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      )
+                    : const SizedBox())
+          ],
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              flex: 5,
+              child: Stack(alignment: Alignment.center, children: [
+                Container(color: widget.lowerBackgroundColor),
+                Container(
+                  decoration: BoxDecoration(
+                      color: widget.upperBackgroundColor,
+                      borderRadius: const BorderRadius.only(
+                          bottomRight: Radius.circular(50))),
+                ),
+                PageView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    controller: _pageController,
+                    itemCount: 2,
+                    itemBuilder: (_, index) => _buildTab(
+                        type: index == 0 ? TabType.email : TabType.code)),
+              ]),
+            ),
 
-          // Lower background
-          Expanded(
-            flex: 1,
-            child: Stack(children: [
-              Container(color: widget.upperBackgroundColor),
-              Container(
-                decoration: BoxDecoration(
-                    color: widget.lowerBackgroundColor,
-                    borderRadius:
-                        const BorderRadius.only(topLeft: Radius.circular(50))),
-              ),
-              Center(
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // If at email tab
-                      if (_pageController.hasClients &&
-                          _pageController.page == 0) {
-                        if (_emailController.text.isNotEmpty) {
-                          _pageController.nextPage(
-                              duration: const Duration(milliseconds: 200),
-                              curve: Curves.easeInOut);
-                        }
+            // Lower background
+            Expanded(
+              flex: 1,
+              child: Stack(children: [
+                Container(color: widget.upperBackgroundColor),
+                Container(
+                  decoration: BoxDecoration(
+                      color: widget.lowerBackgroundColor,
+                      borderRadius:
+                          const BorderRadius.only(topLeft: Radius.circular(50))),
+                ),
+                Center(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // If at email tab
+                        if (_pageController.hasClients &&
+                            _pageController.page == 0) {
+                          if (_emailController.text.isNotEmpty) {
+                            _pageController.nextPage(
+                                duration: const Duration(milliseconds: 200),
+                                curve: Curves.easeInOut);
+                          }
 
-                        widget.onRequestCodeClick(_emailController.text);
-                      } else if (_pageController.hasClients) {}
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: widget.buttonColor,
-                        foregroundColor: widget.buttonTextColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 50, vertical: 15)),
-                    child: ValueListenableBuilder(
-                      valueListenable: _pageIndex,
-                      builder: (_, value, __) => Text(
-                        value == 0 ? 'Request Code' : 'Submit',
-                        style: const TextStyle(fontSize: 22),
+                          widget.onRequestCodeClick(_emailController.text);
+                        } else if (_pageController.hasClients) {}
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: widget.buttonColor,
+                          foregroundColor: widget.buttonTextColor,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 50, vertical: 15)),
+                      child: ValueListenableBuilder(
+                        valueListenable: _pageIndex,
+                        builder: (_, value, __) => Text(
+                          value == 0 ? 'Request Code' : 'Submit',
+                          style: const TextStyle(fontSize: 22),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              )
-            ]),
-          )
-        ],
+                )
+              ]),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -195,7 +200,10 @@ class _LoginPagesState extends State<LoginPages> {
                       Image.asset('assets/images/login_1_2.png', scale: 0.9)
                     ],
                   )
-                : Image.asset('assets/images/login_2.png', scale: 1.8,),
+                : Image.asset(
+                    'assets/images/login_2.png',
+                    scale: 1.8,
+                  ),
             Padding(
               padding: EdgeInsets.only(
                   left: 30,

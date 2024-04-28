@@ -1,70 +1,73 @@
 import 'package:flutter/material.dart';
 
-class LoginDataItem {
+class EmailPage extends StatelessWidget {
   final Widget image;
   final String detail;
-
-  LoginDataItem({required this.image, required this.detail});
-}
-
-class EmailPage extends StatefulWidget {
-  final Color upperBackgroundColor;
-  final Color lowerBackgroundColor;
-  final LoginDataItem tabData;
+  final TextEditingController emailController;
+  final void Function() onEnterEmail;
 
   const EmailPage(
       {super.key,
-      required this.upperBackgroundColor,
-      required this.lowerBackgroundColor,
-      required this.tabData});
+      required this.image,
+      required this.detail,
+      required this.emailController,
+      required this.onEnterEmail});
 
-  @override
-  State<EmailPage> createState() => _EmailPageState();
-}
-
-class _EmailPageState extends State<EmailPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            flex: 8,
-            child: Stack(alignment: Alignment.center, children: [
-              Container(color: widget.lowerBackgroundColor),
-              Container(
-                decoration: BoxDecoration(
-                    color: widget.upperBackgroundColor,
-                    borderRadius: const BorderRadius.only(
-                        bottomRight: Radius.circular(50))),
-              ),
-              widget.tabData.image
-            ]),
-          ),
+    return Column(
+      children: [
+        Expanded(child: image),
 
-          // Lower background
-          Expanded(
-            flex: 3,
-            child: Stack(children: [
-              Container(color: widget.upperBackgroundColor),
-              Container(
-                decoration: BoxDecoration(
-                    color: widget.lowerBackgroundColor,
-                    borderRadius:
-                        const BorderRadius.only(topLeft: Radius.circular(50))),
+        // Detail text
+        Padding(
+          padding: const EdgeInsets.all(30),
+          child: Text(
+            detail,
+            style: TextStyle(fontSize: 18, color: Colors.grey.shade700),
+            textAlign: TextAlign.center,
+          ),
+        ),
+
+        // Email text field
+        Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 50),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Email',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
+
+              // Add padding when keyboard appear
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Text(
-                  widget.tabData.detail,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 16, color: Colors.grey),
+                padding: const EdgeInsets.only(top: 5, bottom: 20),
+                child: TextField(
+
+                  onChanged: (_) => onEnterEmail(),
+                  controller: emailController,
+                  cursorColor: const Color(0xFF307561),
+                  decoration: InputDecoration(
+                      filled: true,
+                      hintText: 'Type your email',
+                      hintStyle:
+                          TextStyle(color: Colors.grey.shade300, fontSize: 18),
+                      fillColor: Colors.white,
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide:
+                              const BorderSide(color: Color(0xFF307561))),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide:
+                              const BorderSide(color: Color(0xFF307561)))),
                 ),
-              )
-            ]),
-          )
-        ],
-      ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

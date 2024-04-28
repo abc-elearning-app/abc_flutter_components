@@ -4,6 +4,7 @@ import 'package:example/screens/check_boxes_screen/check_boxes_screen.dart';
 import 'package:example/screens/emails_screen/emails_screen.dart';
 import 'package:example/screens/loadings_screen/loadings_screen.dart';
 import 'package:example/screens/logins_screen/logins_screen.dart';
+import 'package:example/screens/new_login_pages/login_pages/login_pages.dart';
 import 'package:example/screens/sliders_screen/sliders_screen.dart';
 import 'package:example/screens/tab_views_screen/tab_views_screen.dart';
 import 'package:example/screens/texts_screen/texts_screen.dart';
@@ -67,6 +68,18 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: routeName,
         viewToShow: const TabViewsScreen(),
       );
+    case AppRoute.newLogin:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: LoginPages(
+            upperBackgroundColor: const Color(0xFFEEFFFA),
+            lowerBackgroundColor: Colors.white,
+            buttonColor: const Color(0xFF579E89),
+            buttonTextColor: Colors.white,
+            onRequestCodeClick: (String email) {},
+            onSkip: () {},
+            onSubmit: (String code) {},
+          ));
     case AppRoute.texts:
       return _getPageRoute(
         routeName: routeName,
