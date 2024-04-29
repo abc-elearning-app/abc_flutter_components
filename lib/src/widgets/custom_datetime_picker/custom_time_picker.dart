@@ -6,17 +6,19 @@ import 'package:flutter/widgets.dart';
 enum PickerType { hour, minute }
 
 class CustomTimePicker extends StatefulWidget {
-  final void Function(DateTime selectedDate) onSelectDate;
 
-  const CustomTimePicker({super.key, required this.onSelectDate});
+  final void Function(TimeOfDay selectedDate) onSelectTime;
+
+  const CustomTimePicker({super.key, required this.onSelectTime});
 
   @override
   _CustomTimePickerState createState() => _CustomTimePickerState();
 }
 
 class _CustomTimePickerState extends State<CustomTimePicker> {
-  final _hourController = FixedExtentScrollController(initialItem: 0);
-  final _minuteController = FixedExtentScrollController(initialItem: 0);
+  // TODO: May have index error
+  final _hourController = FixedExtentScrollController(initialItem: DateTime.now().hour);
+  final _minuteController = FixedExtentScrollController(initialItem: DateTime.now().minute);
 
   @override
   void dispose() {
@@ -72,7 +74,7 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
         magnification: 1.2,
         diameterRatio: 2,
         squeeze: 0.9,
-        onSelectedItemChanged: (int value) => _handleSelectDate(type, value),
+        onSelectedItemChanged: (int value) => _handleSelectDate(),
         children: List.generate(
             type == PickerType.hour ? 24 : 59,
             (index) => Align(
@@ -98,13 +100,8 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
     return index;
   }
 
-  _handleSelectDate(PickerType type, int value) {}
-
-  _update() {
-    // widget.onSelectDate(DateTime(
-    //     DateTime.now().year + _yearController.selectedItem,
-    //     _minuteController.selectedItem + 1,
-    //     _hourController.selectedItem + 1));
+  _handleSelectDate() {
+    widget.onSelectTime(TimeOfDay(hour: _hourController.selectedItem, minute: _minuteController.selectedItem));
   }
 
   _getScrollController(PickerType type) {

@@ -34,10 +34,15 @@ class SelectReminderTimePage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 40),
             child: image,
           ),
-          Expanded(child: Transform.scale(scale: 1.2, child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: CustomTimePicker(onSelectDate: (DateTime selectedDate) {  },),
-          )))
+          Expanded(
+              child: Transform.scale(
+                  scale: 1.2,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: CustomTimePicker(
+                      onSelectTime: (TimeOfDay selectedDate) {},
+                    ),
+                  )))
         ],
       ),
     ));
