@@ -1,12 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 // DatePicker Ultra pro max
 enum PickerType { hour, minute }
 
 class CustomTimePicker extends StatefulWidget {
-
   final void Function(TimeOfDay selectedDate) onSelectTime;
 
   const CustomTimePicker({super.key, required this.onSelectTime});
@@ -16,9 +14,21 @@ class CustomTimePicker extends StatefulWidget {
 }
 
 class _CustomTimePickerState extends State<CustomTimePicker> {
-  // TODO: May have index error
-  final _hourController = FixedExtentScrollController(initialItem: DateTime.now().hour);
-  final _minuteController = FixedExtentScrollController(initialItem: DateTime.now().minute);
+  final _hourController = FixedExtentScrollController();
+  final _minuteController = FixedExtentScrollController();
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      int currentHour = TimeOfDay.now().hour;
+      int currentMinute = TimeOfDay.now().minute;
+      _hourController.animateToItem(currentHour,
+          duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+      _minuteController.animateToItem(currentMinute,
+          duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+    });
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -95,30 +105,14 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
                 )),
       );
 
-  _getDisplayTime(int index) {
-    if (index < 10) return '0$index';
-    return index;
-  }
+  _getDisplayTime(int value) => value < 10 ? '0$value' : value.toString();
 
-  _handleSelectDate() {
-    widget.onSelectTime(TimeOfDay(hour: _hourController.selectedItem, minute: _minuteController.selectedItem));
-  }
+  _handleSelectDate() => widget.onSelectTime(TimeOfDay(
+      hour: _hourController.selectedItem,
+      minute: _minuteController.selectedItem));
 
-  _getScrollController(PickerType type) {
-    switch (type) {
-      case PickerType.hour:
-        return _hourController;
-      case PickerType.minute:
-        return _minuteController;
-    }
-  }
+  _getScrollController(PickerType type) =>
+      type == PickerType.hour ? _hourController : _minuteController;
 
-  _getOffAxisFraction(PickerType type) {
-    switch (type) {
-      case PickerType.hour:
-        return -0.5;
-      case PickerType.minute:
-        return 0.5;
-    }
-  }
+  _getOffAxisFraction(PickerType type) => type == PickerType.hour ? -0.5 : 0.5;
 }

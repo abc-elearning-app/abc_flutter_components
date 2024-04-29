@@ -1,23 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/exam_time_setup/select_exam_date_page.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/exam_time_setup/select_reminder_time_page.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/exam_time_setup/start_diagnostic_page.dart';
-
-import 'date_option_page.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/exam_time_setup/pages/date_option_page.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/exam_time_setup/pages/select_exam_date_page.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/exam_time_setup/pages/select_reminder_time_page.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/exam_time_setup/pages/start_diagnostic_page.dart';
 
 class ExamDateSelectPages extends StatefulWidget {
   final List<Widget> pageImages;
   final Color upperBackgroundColor;
   final Color lowerBackgroundColor;
   final Color mainColor;
+  final Color appBarColor;
+  final Color optionBoxFillColor;
+  final Color mainButtonTextColor;
+  final Color notNowButtonTextColor;
 
-  const ExamDateSelectPages({
-    super.key,
-    required this.pageImages,
-    this.upperBackgroundColor = const Color(0xFFEEFFFA),
-    this.lowerBackgroundColor = Colors.white,
-    this.mainColor = const Color(0xFF579E89),
-  });
+  // Callbacks
+  final void Function() onStartDiagnostic;
+  final void Function() onSkipDiagnostic;
+  final void Function(DateTime selectedDate) onSelectExamDate;
+  final void Function(TimeOfDay selectedReminderTime) onSelectReminderTime;
+
+  const ExamDateSelectPages(
+      {super.key,
+      required this.pageImages,
+      this.upperBackgroundColor = const Color(0xFFEEFFFA),
+      this.lowerBackgroundColor = Colors.white,
+      this.mainColor = const Color(0xFF579E89),
+      this.mainButtonTextColor = Colors.white,
+      this.notNowButtonTextColor = Colors.black,
+      required this.onStartDiagnostic,
+      required this.onSkipDiagnostic,
+      required this.onSelectExamDate,
+      required this.onSelectReminderTime,
+      this.appBarColor = Colors.black,
+      this.optionBoxFillColor = Colors.white});
 
   @override
   State<ExamDateSelectPages> createState() => _ExamDateSelectPagesState();
@@ -28,29 +44,41 @@ class _ExamDateSelectPagesState extends State<ExamDateSelectPages> {
   final pageController = PageController(keepPage: true);
   final _pageIndex = ValueNotifier<int>(0);
 
+  Map<String, dynamic> selectedTime = {};
+
   @override
   void initState() {
     tabList = [
       DateOptionPage(
         title: 'When Is Your Exam ?',
         image: widget.pageImages[0],
+        mainColor: widget.mainColor,
+        appBarColor: widget.appBarColor,
+        optionBoxFillColor: widget.optionBoxFillColor,
         pageController: pageController,
       ),
       SelectExamDatePage(
-        title: 'When Is Your Exam ?',
-        image: widget.pageImages[1],
+          title: 'When Is Your Exam ?',
+          image: widget.pageImages[1],
+          pageController: pageController,
+          selectedTime: selectedTime),
+      SelectReminderTimePage(
+        title: 'Would you like to set study reminders ?',
+        image: widget.pageImages[2],
+        selectedTime: selectedTime,
         pageController: pageController,
       ),
-      SelectReminderTimePage(
-          title: 'Would you like to set study reminders ?',
-          image: widget.pageImages[2],
-          pageController: pageController),
       StartDiagnosticPage(
           title: 'Diagnostic Test',
           subTitle:
               'Take our diagnostic test to assess your current level and get a personalized study plan.',
           image: widget.pageImages[3])
     ];
+
+    // Initial selected time
+    selectedTime['exam_date'] = DateTime.now().toIso8601String();
+    selectedTime['reminder_hour'] = TimeOfDay.now().hour.toString();
+    selectedTime['reminder_minute'] = TimeOfDay.now().minute.toString();
 
     pageController.addListener(() {
       _pageIndex.value = pageController.page!.toInt();
@@ -68,9 +96,9 @@ class _ExamDateSelectPagesState extends State<ExamDateSelectPages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEEFFFA),
       body: Column(
         children: [
+          // Upper background
           Expanded(
             flex: 4,
             child: Stack(alignment: Alignment.center, children: [
@@ -81,6 +109,8 @@ class _ExamDateSelectPagesState extends State<ExamDateSelectPages> {
                     borderRadius: const BorderRadius.only(
                         bottomRight: Radius.circular(50))),
               ),
+
+              // Main content
               PageView.builder(
                   // physics: const NeverScrollableScrollPhysics(),
                   controller: pageController,
@@ -88,6 +118,8 @@ class _ExamDateSelectPagesState extends State<ExamDateSelectPages> {
                   itemBuilder: (_, index) => tabList[index])
             ]),
           ),
+
+          // Dynamic lower background
           ValueListenableBuilder(
               valueListenable: _pageIndex,
               builder: (_, value, __) => AnimatedContainer(
@@ -103,19 +135,19 @@ class _ExamDateSelectPagesState extends State<ExamDateSelectPages> {
                             borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(50))),
                       ),
+
+                      // Buttons
                       Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.95,
+                            // Next button
+                            Container(
+                              width: double.infinity,
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
                               child: ElevatedButton(
-                                onPressed: () {
-                                  pageController.nextPage(
-                                      duration:
-                                          const Duration(milliseconds: 200),
-                                      curve: Curves.easeInOut);
-                                },
+                                onPressed: () => _handleMainButtonClick(),
                                 style: ElevatedButton.styleFrom(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 15),
@@ -125,30 +157,35 @@ class _ExamDateSelectPagesState extends State<ExamDateSelectPages> {
                                             BorderRadius.circular(15))),
                                 child: Text(
                                   _getButtonText(value),
-                                  style: const TextStyle(
-                                      fontSize: 22, color: Colors.white),
+                                  style: TextStyle(
+                                      fontSize: 22,
+                                      color: widget.mainButtonTextColor),
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 5),
-                            if (value > 1)
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.transparent,
-                                      elevation: 0,
-                                      shadowColor: Colors.transparent,
-                                    ),
-                                    child: const Text(
-                                      'Not Now',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w300),
-                                    )),
-                              )
+
+                            // Not now button
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              width: double.infinity,
+                              height: value <= 1 ? 0 : 50,
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
+                              child: ElevatedButton(
+                                  onPressed: () => _handleNotNowButtonClick(),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    elevation: 0,
+                                  ),
+                                  child: Text(
+                                    'Not Now',
+                                    style: TextStyle(
+                                        color: widget.notNowButtonTextColor,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w300),
+                                  )),
+                            )
                           ],
                         ),
                       )
@@ -157,6 +194,31 @@ class _ExamDateSelectPagesState extends State<ExamDateSelectPages> {
         ],
       ),
     );
+  }
+
+  _handleMainButtonClick() {
+    if (pageController.page != 3) {
+      if (pageController.page == 1) {
+        widget.onSelectExamDate(DateTime.parse(selectedTime['exam_date']));
+      } else if (pageController.page == 2) {
+        widget.onSelectReminderTime(TimeOfDay(
+            hour: int.parse(selectedTime['reminder_hour']),
+            minute: int.parse(selectedTime['reminder_minute'])));
+      }
+      pageController.nextPage(
+          duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+    } else {
+      widget.onStartDiagnostic();
+    }
+  }
+
+  _handleNotNowButtonClick() {
+    if (pageController.page == 2) {
+      pageController.nextPage(
+          duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+    } else {
+      widget.onSkipDiagnostic();
+    }
   }
 
   _getButtonText(int value) {

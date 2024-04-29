@@ -1,19 +1,19 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-import '../custom_datetime_picker/custom_time_picker.dart';
+import '../../custom_datetime_picker/custom_time_picker.dart';
 
 class SelectReminderTimePage extends StatelessWidget {
   final String title;
   final Widget image;
+  final Map<String, dynamic> selectedTime;
   final PageController pageController;
 
   const SelectReminderTimePage(
       {super.key,
       required this.title,
       required this.image,
-      required this.pageController});
+      required this.pageController,
+      required this.selectedTime});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,10 @@ class SelectReminderTimePage extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: CustomTimePicker(
-                      onSelectTime: (TimeOfDay selectedDate) {},
+                      onSelectTime: (TimeOfDay selectedReminderTime) {
+                        selectedTime['reminder_hour'] = selectedReminderTime.hour.toString();
+                        selectedTime['reminder_minute'] = (selectedReminderTime.minute + 1).toString();
+                      },
                     ),
                   )))
         ],

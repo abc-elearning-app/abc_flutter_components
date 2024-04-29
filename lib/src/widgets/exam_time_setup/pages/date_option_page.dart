@@ -3,13 +3,21 @@ import 'package:flutter/material.dart';
 class DateOptionPage extends StatefulWidget {
   final String title;
   final Widget image;
+  final Color appBarColor;
+  final Color mainColor;
+  final Color optionBoxFillColor;
+
   final PageController pageController;
 
-  const DateOptionPage(
-      {super.key,
-      required this.title,
-      required this.image,
-      required this.pageController});
+  const DateOptionPage({
+    super.key,
+    required this.title,
+    required this.image,
+    required this.pageController,
+    required this.appBarColor,
+    required this.mainColor,
+    required this.optionBoxFillColor,
+  });
 
   @override
   State<DateOptionPage> createState() => _DateOptionPageState();
@@ -35,8 +43,10 @@ class _DateOptionPageState extends State<DateOptionPage> {
               padding: const EdgeInsets.symmetric(vertical: 20),
               child: Text(
                 widget.title,
-                style:
-                    const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: widget.appBarColor),
               ),
             ),
             Padding(
@@ -56,18 +66,22 @@ class _DateOptionPageState extends State<DateOptionPage> {
                                 Text(
                                   'Choose A Date',
                                   style: TextStyle(
-                                      color: value == 0
-                                          ? Colors.white
-                                          : Colors.black,
+                                      color: _isColorLight(value == 0
+                                              ? widget.mainColor
+                                              : widget.optionBoxFillColor)
+                                          ? Colors.black
+                                          : Colors.white,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 18),
                                 ),
                                 Text('Pick A Date From Calendar',
                                     style: TextStyle(
                                         fontSize: 15,
-                                        color: value == 0
-                                            ? Colors.grey.shade300
-                                            : Colors.grey)),
+                                        color: _isColorLight(value == 0
+                                            ? widget.mainColor
+                                            : widget.optionBoxFillColor)
+                                            ? Colors.grey.shade700
+                                            : Colors.grey.shade200)),
                               ],
                             )),
                         const SizedBox(height: 20),
@@ -79,9 +93,11 @@ class _DateOptionPageState extends State<DateOptionPage> {
                               child: Text(
                                 "I Don't Know My Exam Date Yet",
                                 style: TextStyle(
-                                    color: value == 1
-                                        ? Colors.white
-                                        : Colors.black,
+                                    color: _isColorLight(value == 1
+                                        ? widget.mainColor
+                                        : widget.optionBoxFillColor)
+                                        ? Colors.black
+                                        : Colors.white,
                                     fontWeight: FontWeight.w600,
                                     fontSize: 18),
                               ),
@@ -99,30 +115,15 @@ class _DateOptionPageState extends State<DateOptionPage> {
           required bool isSelected,
           required Widget child}) =>
       GestureDetector(
-        onTap: () {
-          _selectedIndex.value = index;
-
-          // Delay for smooth animation
-          Future.delayed(const Duration(milliseconds: 200), () {
-            if (_selectedIndex.value == 0) {
-              widget.pageController.nextPage(
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeInOut);
-            } else {
-              widget.pageController.animateToPage(3,
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeInOut);
-            }
-          });
-        },
+        onTap: () => _handleSelectOption(index),
         child: Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             border: isSelected
                 ? null
-                : Border.all(width: 1, color: const Color(0xFF579E89)),
-            color: isSelected ? const Color(0xFF579E89) : Colors.white,
+                : Border.all(width: 1, color: widget.mainColor),
+            color: isSelected ? widget.mainColor : widget.optionBoxFillColor,
           ),
           child: Row(
             children: [
@@ -132,12 +133,40 @@ class _DateOptionPageState extends State<DateOptionPage> {
                 backgroundColor: isSelected ? Colors.white : Colors.grey,
                 child: CircleAvatar(
                   radius: isSelected ? 5 : 11,
-                  backgroundColor:
-                      isSelected ? const Color(0xFF579E89) : Colors.white,
+                  backgroundColor: isSelected ? widget.mainColor : Colors.white,
                 ),
               )
             ],
           ),
         ),
       );
+
+  _handleSelectOption(int index) {
+    _selectedIndex.value = index;
+
+    // Delay for smooth animation
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (_selectedIndex.value == 0) {
+        widget.pageController.nextPage(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut);
+      } else {
+        widget.pageController.animateToPage(3,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut);
+      }
+    });
+  }
+
+  _isColorLight(Color color) {
+    // Normalize the RGB components to 0-1 range
+    final r = color.red / 255.0;
+    final g = color.green / 255.0;
+    final b = color.blue / 255.0;
+
+    // Calculate luminance using the WCAG formula
+    final luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
+    return luminance > 0.8;
+  }
 }
