@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/page_indicator/page_indicator.dart';
 
@@ -70,86 +71,108 @@ class _IntroStudyPlanPagesState extends State<IntroStudyPlanPages> {
     return Scaffold(
       body: Theme(
         data: ThemeData(fontFamily: widget.fontFamily),
-        child: Column(
-          children: [
-            Expanded(
-              child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: widget.tabList.length,
-                  itemBuilder: (_, index) =>
-                      _buildStudyPlanTab(context, index)),
-            ),
-            _buildNavigateSection()
-          ],
-        ),
+        child: Stack(children: [
+          Column(
+            children: [
+              // Upper background
+              Expanded(
+                flex: 8,
+                child: Stack(alignment: Alignment.center, children: [
+                  Container(color: widget.lowerBackgroundColor),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: widget.upperBackgroundColor,
+                        borderRadius: const BorderRadius.only(
+                            bottomRight: Radius.circular(50))),
+                  ),
+                ]),
+              ),
+
+              // Lower background
+              Expanded(
+                flex: 3,
+                child: Stack(children: [
+                  Container(color: widget.upperBackgroundColor),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: widget.lowerBackgroundColor,
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(50))),
+                  ),
+                ]),
+              )
+            ],
+          ),
+
+          // Main content
+          Column(
+            children: [
+              Expanded(
+                child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: widget.tabList.length,
+                    itemBuilder: (_, index) =>
+                        _buildStudyPlanTab(context, index)),
+              ),
+              _buildNavigateSection()
+            ],
+          ),
+        ]),
       ),
     );
   }
 
   _buildStudyPlanTab(BuildContext context, int index) => Column(
         children: [
-          // Upper background
+          // Upper part
           Expanded(
             flex: 8,
-            child: Stack(alignment: Alignment.center, children: [
-              Container(color: widget.lowerBackgroundColor),
-              Container(
-                decoration: BoxDecoration(
-                    color: widget.upperBackgroundColor,
-                    borderRadius: const BorderRadius.only(
-                        bottomRight: Radius.circular(50))),
-              ),
-              widget.tabList[index].image
-            ]),
+            child: widget.tabList[index].image,
           ),
 
-          // Lower background
+          // Page indicator and button
           Expanded(
             flex: 3,
-            child: Stack(children: [
-              Container(color: widget.upperBackgroundColor),
-              Container(
-                decoration: BoxDecoration(
-                    color: widget.lowerBackgroundColor,
-                    borderRadius:
-                        const BorderRadius.only(topLeft: Radius.circular(50))),
-              ),
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 30, bottom: 20),
-                    child: Text(
-                      widget.tabList[index].title,
-                      style: TextStyle(
-                          color: widget.titleColor,
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold),
-                    ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 30, bottom: 20),
+                  child: Text(
+                    widget.tabList[index].title,
+                    style: TextStyle(
+                        color: widget.titleColor,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Text(
-                      widget.tabList[index].subtitle,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: widget.subTitleColor,
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Text(
+                        widget.tabList[index].subtitle,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: widget.subTitleColor,
+                        ),
                       ),
                     ),
                   ),
-                ],
-              )
-            ]),
+                ),
+              ],
+            ),
           )
         ],
       );
 
   _buildNavigateSection() => Container(
         padding:
-            const EdgeInsets.only(top: 10, bottom: 50, left: 30, right: 30),
+            const EdgeInsets.only(top: 10, bottom: 30, left: 30, right: 30),
         color: widget.lowerBackgroundColor,
         child: Row(
           children: [
+            // Page indicator
             Expanded(
               child: ValueListenableBuilder(
                   valueListenable: _pageIndex,
@@ -158,17 +181,9 @@ class _IntroStudyPlanPagesState extends State<IntroStudyPlanPages> {
                       currentPage: value.toInt(),
                       color: widget.mainColor)),
             ),
+
             ElevatedButton(
-              onPressed: () {
-                if (_pageController.hasClients &&
-                    _pageController.page != widget.tabList.length - 1) {
-                  _pageController.nextPage(
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.easeInOut);
-                } else {
-                  widget.onFinish();
-                }
-              },
+              onPressed: () => _handleButtonClick(),
               style: ElevatedButton.styleFrom(
                   textStyle: TextStyle(
                       fontFamily: widget.fontFamily,
@@ -192,4 +207,14 @@ class _IntroStudyPlanPagesState extends State<IntroStudyPlanPages> {
           ],
         ),
       );
+
+  _handleButtonClick() {
+    if (_pageController.hasClients &&
+        _pageController.page != widget.tabList.length - 1) {
+      _pageController.nextPage(
+          duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+    } else {
+      widget.onFinish();
+    }
+  }
 }

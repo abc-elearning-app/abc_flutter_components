@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 
@@ -35,12 +36,14 @@ class OtpPage extends StatelessWidget {
       children: [
         const SizedBox(height: 30),
         Expanded(child: image),
-        Padding(
-          padding: const EdgeInsets.all(30),
-          child: Text(
-            detail,
-            style: TextStyle(fontSize: 18, color: textColor),
-            textAlign: TextAlign.center,
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(30),
+            child: Text(
+              detail,
+              style: TextStyle(fontSize: 18, color: textColor),
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
         Transform.scale(
