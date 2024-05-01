@@ -70,7 +70,6 @@ class _StudyPlanAnalyzingScreenState extends State<StudyPlanAnalyzingScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 50),
               child: CircleAvatar(
@@ -90,13 +89,12 @@ class _StudyPlanAnalyzingScreenState extends State<StudyPlanAnalyzingScreen> {
                       radius: 100,
                       backgroundColor: Colors.white,
                       child: CircleAvatar(
-                        radius: 100,
-                        backgroundColor: widget.mainColor.withOpacity(0.3),
-                        child: widget.image != null
-                            ? Transform.scale(
-                                scale: 1.2, child: Image.asset(widget.image!))
-                            : null,
-                      ),
+                          radius: 100,
+                          backgroundColor: widget.mainColor.withOpacity(0.3),
+                          child: Transform.scale(
+                              scale: 1.2,
+                              child: Image.asset(widget.image ??
+                                  'assets/images/analyzing.png'))),
                     )
                     // image != null ? Image.asset(image!) : null,
                     ),
