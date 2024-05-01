@@ -59,63 +59,67 @@ class _StudyPlanAnalyzingScreenState extends State<StudyPlanAnalyzingScreen> {
     return Scaffold(
       backgroundColor: widget.backgroundColor,
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                'Generating Your Personalized Study Plan...',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'Generating Your Personalized Study Plan...',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 50),
-              child: CircleAvatar(
-                backgroundColor: widget.mainColor.withOpacity(0.3),
-                radius: 140,
-                child: CircularPercentIndicator(
-                    radius: 120,
-                    circularStrokeCap: CircularStrokeCap.round,
-                    lineWidth: 20,
-                    backgroundColor: widget.mainColor.withOpacity(0.5),
-                    progressColor: widget.mainColor,
-                    percent: 1,
-                    animation: true,
-                    animationDuration: widget.loadingTime,
-                    onAnimationEnd: () => widget.onFinish(),
-                    center: CircleAvatar(
-                      radius: 100,
-                      backgroundColor: Colors.white,
-                      child: CircleAvatar(
-                          radius: 100,
-                          backgroundColor: widget.mainColor.withOpacity(0.3),
-                          child: Transform.scale(
-                              scale: 1.2,
-                              child: Image.asset(widget.image ??
-                                  'assets/images/analyzing.png'))),
-                    )
-                    // image != null ? Image.asset(image!) : null,
-                    ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 50),
+                child: CircleAvatar(
+                  backgroundColor: widget.mainColor.withOpacity(0.3),
+                  radius: 140,
+                  child: CircularPercentIndicator(
+                      radius: 120,
+                      circularStrokeCap: CircularStrokeCap.round,
+                      lineWidth: 20,
+                      backgroundColor: widget.mainColor.withOpacity(0.5),
+                      progressColor: widget.mainColor,
+                      percent: 1,
+                      animation: true,
+                      animationDuration: widget.loadingTime,
+                      onAnimationEnd: () => widget.onFinish(),
+                      center: CircleAvatar(
+                        radius: 100,
+                        backgroundColor: Colors.white,
+                        child: CircleAvatar(
+                            radius: 100,
+                            backgroundColor: widget.mainColor.withOpacity(0.3),
+                            child: Transform.scale(
+                                scale: 1.2,
+                                child: Image.asset(widget.image ??
+                                    'assets/images/analyzing.png'))),
+                      )
+                      // image != null ? Image.asset(image!) : null,
+                      ),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: ValueListenableBuilder(
-                valueListenable: _progressValue,
-                builder: (_, value, __) => Text('$value%',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: widget.mainColor,
-                        fontSize: 40)),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: ValueListenableBuilder(
+                  valueListenable: _progressValue,
+                  builder: (_, value, __) => Text('$value%',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: widget.mainColor,
+                          fontSize: 40)),
+                ),
               ),
-            ),
-            const Text(
-              'Analyzing Your Data ...',
-              style: TextStyle(fontSize: 18),
-            )
-          ],
+              const Text(
+                'Analyzing Your Data ...',
+                style: TextStyle(fontSize: 18),
+              )
+            ],
+          ),
         ),
       ),
     );
