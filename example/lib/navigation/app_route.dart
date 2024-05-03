@@ -69,6 +69,7 @@ class AppRoute {
       AppRoute.texts,
       AppRoute.toasters,
       AppRoute.others,
+      AppRoute.newLogin,
     ];
   }
 }
