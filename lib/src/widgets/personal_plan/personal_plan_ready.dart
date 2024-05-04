@@ -1,6 +1,10 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../flutter_abc_jsc_components.dart';
 
 class InformationData {
   final String icon;
@@ -10,7 +14,7 @@ class InformationData {
   InformationData(this.icon, this.title, this.content);
 }
 
-class StudyPlanReadyScreen extends StatelessWidget {
+class PersonalPlanReadyScreen extends StatelessWidget {
   final Color backgroundColor;
   final Color mainColor;
   final String? image;
@@ -30,7 +34,7 @@ class StudyPlanReadyScreen extends StatelessWidget {
 
   final void Function() onStartLearning;
 
-  const StudyPlanReadyScreen({
+  const PersonalPlanReadyScreen({
     super.key,
     this.backgroundColor = const Color(0xFFEEFFFA),
     this.mainColor = const Color(0xFF579E89),
@@ -51,7 +55,7 @@ class StudyPlanReadyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final informationDataList = <InformationData>[
       InformationData(reminderImage ?? 'assets/images/ready_reminder.svg',
-          'Reminder', _getReminderTime(reminderTime ?? TimeOfDay.now())),
+          'Reminder', _getDisplayReminderTime(reminderTime ?? TimeOfDay.now())),
       InformationData(
           examDateImage ?? 'assets/images/ready_calendar.svg',
           'Exam date',
@@ -65,79 +69,86 @@ class StudyPlanReadyScreen extends StatelessWidget {
           '${passingScore.toInt()}%')
     ];
 
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Title
-                  const Text(
-                    'Your Personal Plan Is Ready!',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-                    textAlign: TextAlign.center,
-                  ),
+    return Stack(children: [
+      Scaffold(
+        backgroundColor: backgroundColor,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Title
+                      const Text(
+                        'Your Personal Plan Is Ready!',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 30),
+                        textAlign: TextAlign.center,
+                      ),
 
-                  // Chart image
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Image.asset(
-                        chartImage ?? 'assets/images/personal_plan_chart.png'),
-                  ),
+                      // Chart image
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Image.asset(chartImage ??
+                            'assets/images/personal_plan_chart.png'),
+                      ),
 
-                  // Current date
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Text(
-                      'Today - ${_getDisplayDate(time: DateTime.now())}',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w600, fontSize: 18),
-                    ),
-                  ),
+                      // Current date
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Text(
+                          'Today - ${_getDisplayDate(time: DateTime.now())}',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 18),
+                        ),
+                      ),
 
-                  // Detail information
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: informationDataList.length,
-                                itemBuilder: (_, index) =>
-                                    _buildInformationTile(
-                                        informationDataList[index]))),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: Image.asset(
-                              image ?? 'assets/images/ready_plan.png',
-                              height: 250),
-                        )
-                      ],
-                    ),
-                  )
-                ],
+                      // Detail information
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            // Information
+                            Expanded(
+                                child: ListView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: informationDataList.length,
+                                    itemBuilder: (_, index) =>
+                                        _buildInformationTile(
+                                            informationDataList[index]))),
+
+                            // Image
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                              child: Image.asset(
+                                  image ?? 'assets/images/ready_plan.png',
+                                  height: 250),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              width: double.infinity,
-              child: MainButton(
-                title: 'Start Learning',
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                backgroundColor: mainColor,
-                borderRadius: 16,
-                textStyle: const TextStyle(fontSize: 18),
-                onPressed: () => onStartLearning(),
-              ),
-            )
-          ],
+              _buildButton()
+            ],
+          ),
         ),
       ),
-    );
+
+      // Debug button
+      if (kDebugMode && Platform.isIOS)
+        SafeArea(
+            child: IconButton(
+                onPressed: () => Navigator.of(context).pop(context),
+                icon: const Icon(Icons.chevron_left, color: Colors.red)))
+    ]);
   }
 
   Widget _buildInformationTile(InformationData data) => Padding(
@@ -165,7 +176,20 @@ class StudyPlanReadyScreen extends StatelessWidget {
         ),
       );
 
-  _getReminderTime(TimeOfDay time) {
+  Widget _buildButton() => Container(
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        width: double.infinity,
+        child: MainButton(
+          title: 'Start Learning',
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          backgroundColor: mainColor,
+          borderRadius: 16,
+          textStyle: const TextStyle(fontSize: 18),
+          onPressed: () => onStartLearning(),
+        ),
+      );
+
+  _getDisplayReminderTime(TimeOfDay time) {
     final hour = time.hour <= 12 ? time.hour : time.hour - 12;
     final displayHour = hour < 10 ? '0$hour' : hour.toString();
     final displayMinute =
@@ -205,7 +229,6 @@ class StudyPlanReadyScreen extends StatelessWidget {
       'November',
       'December',
     ];
-
     // Ensure the month value is between 1 and 12
     if (time.month < 1 || time.month > 12) {
       throw ArgumentError('Month must be between 1 and 12');

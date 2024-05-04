@@ -25,7 +25,13 @@ class AppRoute {
   static const String texts = '/texts';
   static const String toasters = '/toasters';
   static const String others = '/others';
+
   static const String newLogin = '/new_login';
+  static const String introPersonalPlan = '/intro_personal_plan';
+  static const String diagnosticResult = '/diagnostic_result';
+  static const String personalPlanAnalyzing = '/personal_plan_analyzing';
+  static const String personalPlanReady = '/personal_plan_ready';
+  static const String examTimeSetup = '/exam_time_setup';
 
   static List<String> getAppRoute() {
     return [
@@ -52,7 +58,13 @@ class AppRoute {
       AppRoute.texts,
       AppRoute.toasters,
       AppRoute.others,
+      
       AppRoute.newLogin,
+      AppRoute.introPersonalPlan,
+      AppRoute.diagnosticResult,
+      AppRoute.personalPlanAnalyzing,
+      AppRoute.personalPlanReady,
+      AppRoute.examTimeSetup
     ];
   }
 }

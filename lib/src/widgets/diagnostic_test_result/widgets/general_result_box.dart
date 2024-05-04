@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 enum LevelType { beginner, intermediate, advanced }
 
@@ -41,6 +43,12 @@ class GeneralResultBox extends StatelessWidget {
       padding: const EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 50),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.grey.shade300,
+              blurRadius: 1,
+              offset: const Offset(0, 1))
+        ],
         color: boxColor,
       ),
       child: Column(
@@ -94,46 +102,55 @@ class GeneralResultBox extends StatelessWidget {
     );
   }
 
-  Widget _buildCircleProgress(LevelType levelType) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: CircleAvatar(
-          radius: 130,
-          backgroundColor: _getLevelColor(levelType).withOpacity(0.3),
-          child: CircleAvatar(
-            radius: 115,
-            backgroundColor: _getLevelColor(levelType),
-            child: Stack(alignment: Alignment.center, children: [
-              const CircleAvatar(
-                radius: 98,
-                backgroundColor: Colors.white,
-              ),
-              CircleAvatar(
-                radius: 98,
-                backgroundColor: _getLevelColor(levelType).withOpacity(0.1),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (circleProgressImage != null)
-                      SizedBox(
-                          height: 80, child: Image.asset(circleProgressImage!)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      child: Text('Your result is',
-                          style: TextStyle(
-                              fontSize: 18, color: _getLevelColor(levelType))),
-                    ),
-                    Text('${mainProgress.toInt()}%',
-                        style: TextStyle(
-                            fontSize: 35,
-                            fontWeight: FontWeight.bold,
-                            color: _getLevelColor(levelType)))
-                  ],
+  Widget _buildCircleProgress(LevelType levelType) {
+    const outerRadius = 130.0;
+    const lineWidth = 18.0;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: CircularPercentIndicator(
+        radius: outerRadius,
+        lineWidth: lineWidth,
+        backgroundColor: _getLevelColor(levelType).withOpacity(0.2),
+        center: CircularPercentIndicator(
+          radius: outerRadius - lineWidth,
+          lineWidth: lineWidth,
+          circularStrokeCap: CircularStrokeCap.round,
+          percent: mainProgress / 100,
+          animation: true,
+          backgroundColor: _getLevelColor(levelType).withOpacity(0.5),
+          progressColor: _getLevelColor(levelType),
+          center: CircleAvatar(
+            radius: outerRadius - 2 * lineWidth,
+            backgroundColor: _getLevelColor(levelType).withOpacity(0.05),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (circleProgressImage != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    child: Transform.scale(
+                        scale: 1.5, child: Image.asset(circleProgressImage!)),
+                  ),
+                Text(
+                  'Your result is',
+                  style: TextStyle(color: _getLevelColor(levelType)),
                 ),
-              ),
-            ]),
+                Text(
+                  '${mainProgress.toInt()}%',
+                  style: TextStyle(
+                      color: _getLevelColor(levelType),
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold),
+                )
+              ],
+            ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   Widget _buildLevelRow(LevelType levelType) =>
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -159,7 +176,7 @@ class GeneralResultBox extends StatelessWidget {
           child: CircleAvatar(
             radius: radius,
             backgroundColor:
-            _getLevelColor(type).withOpacity(backGroundOpacity),
+                _getLevelColor(type).withOpacity(backGroundOpacity),
             child: Transform.scale(
                 scale: levelImageScale,
                 child: image != null ? Image.asset(image) : const SizedBox()),
@@ -213,7 +230,7 @@ class GeneralResultBox extends StatelessWidget {
     }
   }
 
-  _getLevelColor(LevelType type) {
+  Color _getLevelColor(LevelType type) {
     switch (type) {
       case LevelType.beginner:
         return beginnerColor;
