@@ -14,7 +14,7 @@ class PassingProbabilityBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(left: 10),
+      margin: const EdgeInsets.only(left: 20),
       padding: const EdgeInsets.symmetric(
           horizontal: 12, vertical: 10),
       width: double.infinity,

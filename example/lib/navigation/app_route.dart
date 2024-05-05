@@ -33,6 +33,7 @@ class AppRoute {
   static const String personalPlanReady = '/personal_plan_ready';
   static const String examTimeSetup = '/exam_time_setup';
   static const String newStudyTab = '/new_study_tab';
+  static const String levelsPath = '/level_path';
 
   static List<String> getAppRoute() {
     return [
@@ -43,6 +44,7 @@ class AppRoute {
       AppRoute.personalPlanReady,
       AppRoute.examTimeSetup,
       AppRoute.newStudyTab,
+      AppRoute.levelsPath,
 
       AppRoute.animations,
       AppRoute.appBars,

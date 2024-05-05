@@ -36,7 +36,7 @@ class SubjectTile extends StatelessWidget {
               scale: 1.5,
               child: SvgPicture.asset(
                 subjectData.icon,
-                color: tileColor,
+                colorFilter: ColorFilter.mode(tileColor, BlendMode.srcIn),
               ),
             ),
           ),

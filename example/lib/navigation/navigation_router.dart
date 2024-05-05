@@ -7,6 +7,7 @@ import 'package:example/screens/logins_screen/logins_screen.dart';
 import 'package:example/screens/new_components/diagnostic_result_screen.dart';
 import 'package:example/screens/new_components/exam_time_setup_screen.dart';
 import 'package:example/screens/new_components/intro_personal_screens.dart';
+import 'package:example/screens/new_components/levels_path_screen.dart';
 import 'package:example/screens/new_components/login_screen.dart';
 import 'package:example/screens/new_components/new_study_tab_screen.dart';
 import 'package:example/screens/new_components/personal_plan_analyzing.dart';
@@ -120,6 +121,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
         routeName: routeName,
         viewToShow: const TestNewStudyTabScreen(),
+      );
+    case AppRoute.levelsPath:
+      return _getPageRoute(
+        routeName: routeName,
+        viewToShow: const TestLevelsPathScreen(),
       );
     default:
       return MaterialPageRoute(
