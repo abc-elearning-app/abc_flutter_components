@@ -8,6 +8,7 @@ import 'package:example/screens/new_components/diagnostic_result_screen.dart';
 import 'package:example/screens/new_components/exam_time_setup_screen.dart';
 import 'package:example/screens/new_components/intro_personal_screens.dart';
 import 'package:example/screens/new_components/login_screen.dart';
+import 'package:example/screens/new_components/new_study_tab_screen.dart';
 import 'package:example/screens/new_components/personal_plan_analyzing.dart';
 import 'package:example/screens/new_components/personal_plan_ready.dart';
 import 'package:example/screens/sliders_screen/sliders_screen.dart';
@@ -115,7 +116,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: routeName,
         viewToShow: const TestExamSetupTime(),
       );
-
+    case AppRoute.newStudyTab:
+      return _getPageRoute(
+        routeName: routeName,
+        viewToShow: const TestNewStudyTabScreen(),
+      );
     default:
       return MaterialPageRoute(
         builder: (_) => Scaffold(

@@ -32,9 +32,18 @@ class AppRoute {
   static const String personalPlanAnalyzing = '/personal_plan_analyzing';
   static const String personalPlanReady = '/personal_plan_ready';
   static const String examTimeSetup = '/exam_time_setup';
+  static const String newStudyTab = '/new_study_tab';
 
   static List<String> getAppRoute() {
     return [
+      AppRoute.newLogin,
+      AppRoute.introPersonalPlan,
+      AppRoute.diagnosticResult,
+      AppRoute.personalPlanAnalyzing,
+      AppRoute.personalPlanReady,
+      AppRoute.examTimeSetup,
+      AppRoute.newStudyTab,
+
       AppRoute.animations,
       AppRoute.appBars,
       AppRoute.bottomNavBars,
@@ -58,13 +67,6 @@ class AppRoute {
       AppRoute.texts,
       AppRoute.toasters,
       AppRoute.others,
-      
-      AppRoute.newLogin,
-      AppRoute.introPersonalPlan,
-      AppRoute.diagnosticResult,
-      AppRoute.personalPlanAnalyzing,
-      AppRoute.personalPlanReady,
-      AppRoute.examTimeSetup
     ];
   }
 }

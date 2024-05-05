@@ -52,3 +52,4 @@ export 'personal_plan/personal_plan_ready.dart';
 export 'diagnostic_test_result/diagnostic_test_result.dart';
 export 'spider_chart/spider_chart.dart';
 export 'page_indicator/page_indicator.dart';
+export 'new_study_tab/new_study_tab.dart';
