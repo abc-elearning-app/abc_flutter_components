@@ -106,7 +106,6 @@ class _LevelState extends State<Level> with TickerProviderStateMixin {
 
     // Start splash animation
     if (widget.isCurrent) {
-      // _splashController.forward();
       Future.delayed(Duration(milliseconds: currentIndexIndicatorDelay + 1000),
           () {
         startSplashAnimation();
@@ -154,11 +153,13 @@ class _LevelState extends State<Level> with TickerProviderStateMixin {
                 opacity: _fadingInAnimation.value,
                 child: Transform.translate(
                     offset: Offset(0, _landingAnimation.value + 20),
-                    child: widget.isCurrent
-                        ? _currentLevelWidget()
-                        : widget.isLock
-                            ? _lockLevelWidget()
-                            : _mainLevelWidget())),
+                    child: widget.isFinalLevel
+                        ? _finalLevelWidget()
+                        : widget.isCurrent
+                            ? _currentLevelWidget()
+                            : widget.isLock
+                                ? _lockLevelWidget()
+                                : _mainLevelWidget())),
           )
         else
           AnimatedBuilder(
@@ -230,8 +231,8 @@ class _LevelState extends State<Level> with TickerProviderStateMixin {
             ),
           ),
           Text(
-            'Part ${widget.index}',
-            style: const TextStyle(fontWeight: FontWeight.w600),
+            'Part ${widget.index + 1}',
+            style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey),
           ),
         ],
       );
@@ -254,7 +255,7 @@ class _LevelState extends State<Level> with TickerProviderStateMixin {
           ),
         ),
         Text(
-          'Part ${widget.index}',
+          'Part ${widget.index + 1}',
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
       ]);
@@ -268,8 +269,8 @@ class _LevelState extends State<Level> with TickerProviderStateMixin {
         Transform.translate(
           offset: const Offset(0, 25),
           child: Text(
-            'Part ${widget.index}',
-            style: const TextStyle(fontWeight: FontWeight.w600),
+            'Part ${widget.index + 1}',
+            style: TextStyle(fontWeight: FontWeight.w600, color: widget.isLock ? Colors.grey : null),
           ),
         ),
       ]);

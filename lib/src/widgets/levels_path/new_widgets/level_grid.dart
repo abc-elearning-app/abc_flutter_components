@@ -43,7 +43,8 @@ class LevelGrid extends StatelessWidget {
           i++;
         }
       } else if (k == rows - 1) {
-        int remainingLevelCount = levelDataList.length % rowItemCount;
+        // Add 1 to length since there is a placeholder level at 1st position
+        int remainingLevelCount = (levelDataList.length + 1) % rowItemCount;
 
         // Add remaining levels to last row
         for (int j = i; j < levelDataList.length; j++) {
@@ -51,8 +52,6 @@ class LevelGrid extends StatelessWidget {
           levelsInARow.add(_getLevelWidget(i, currentLevel));
           i++;
         }
-
-        print('ABC ${rowItemCount - remainingLevelCount}');
 
         // If last round is not full
         if (remainingLevelCount != 0) {
@@ -68,15 +67,19 @@ class LevelGrid extends StatelessWidget {
         }
       }
 
+      // Translate level widgets to left and right symmetrically
       rowList.add(
         SizedBox(
           height: 120,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: rowList.length % 2 == 0
-                ? levelsInARow
-                : levelsInARow.reversed.toList(),
+          child: Transform.translate(
+            offset: Offset(rowList.length % 2 == 0 ? -20 : 20, 0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: rowList.length % 2 == 0
+                  ? levelsInARow
+                  : levelsInARow.reversed.toList(),
+            ),
           ),
         ),
       );

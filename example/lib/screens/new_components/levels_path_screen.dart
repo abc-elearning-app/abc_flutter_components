@@ -6,7 +6,7 @@ class TestLevelsPathScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const int currentLevel = 6;
+    const int currentLevel = 1;
     final levelDataList = <LevelData>[
       LevelData(
           progress: 100,
@@ -28,6 +28,7 @@ class TestLevelsPathScreen extends StatelessWidget {
           isLock: 3 > currentLevel,
           isCurrent: 3 == currentLevel,
           isFreeToday: false),
+
     ];
 
     return Scaffold(
@@ -37,13 +38,16 @@ class TestLevelsPathScreen extends StatelessWidget {
         elevation: 0,
         scrolledUnderElevation: 0,
         title: const Text('Word Knowledge',
-            style: TextStyle(fontWeight: FontWeight.bold)),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Poppins',
+            )),
       ),
       body: SingleChildScrollView(
         child: LevelsPath(
           levelDataList: levelDataList,
           drawSpeed: 300,
-          isFirstTimeOpen: false,
+          isFirstTimeOpen: true,
         ),
       ),
     );

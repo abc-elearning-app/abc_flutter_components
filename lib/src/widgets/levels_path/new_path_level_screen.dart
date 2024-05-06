@@ -43,40 +43,41 @@ class _LevelsPathState extends State<LevelsPath> {
   late Duration lastRoundDrawSpeed;
 
   // Additional data to draw
-  late int dashRoundCount;
-  late int lineRoundCount;
-  late int lastRoundDashLevelCount;
-  late int lastRoundLineCount;
+  late int backgroundCycleCount;
+  late int progressCycleCount;
+  late int lastCycleBackgroundLevelCount;
+  late int lastCycleProgressCount;
 
   @override
   void initState() {
     // Draw speed
-    // roundDrawSpeed = Duration(milliseconds: widget.drawSpeed);
-    // lastRoundDrawSpeed =
-    //     Duration(milliseconds: (widget.drawSpeed - 100).clamp(100, 500));
-    //
-    // // Calculate number of items to draw dash line
-    // final dashLevelLength = widget.levelDataList.length;
-    // dashRoundCount = dashLevelLength <= longRowCount + shortRowCount
-    //     ? 0
-    //     : (dashLevelLength % (longRowCount + shortRowCount) == 0)
-    //         ? dashLevelLength ~/ (longRowCount + shortRowCount) - 1
-    //         : dashLevelLength ~/ (longRowCount + shortRowCount);
-    //
-    // // Calculate number of items to draw progress line
-    // final progressLevelLength = widget.levelDataList.indexOf(
-    //         widget.levelDataList.firstWhere((level) => level.isCurrent)) +
-    //     1;
-    // lineRoundCount = progressLevelLength <= longRowCount + shortRowCount
-    //     ? 0
-    //     : (progressLevelLength % (longRowCount + shortRowCount) == 0)
-    //         ? progressLevelLength ~/ (longRowCount + shortRowCount) - 1
-    //         : progressLevelLength ~/ (longRowCount + shortRowCount);
-    //
-    // lastRoundDashLevelCount =
-    //     dashLevelLength - dashRoundCount * (longRowCount + shortRowCount);
-    // lastRoundLineCount =
-    //     progressLevelLength - lineRoundCount * (longRowCount + shortRowCount);
+    roundDrawSpeed = Duration(milliseconds: widget.drawSpeed);
+    lastRoundDrawSpeed =
+        Duration(milliseconds: (widget.drawSpeed - 100).clamp(100, 500));
+
+    // Calculate number of items to draw background line
+    final backgroundLevelLength = widget.levelDataList.length + 1;
+    backgroundCycleCount = backgroundLevelLength <= longRowCount + shortRowCount
+        ? 0
+        : (backgroundLevelLength % (longRowCount + shortRowCount) == 0)
+            ? backgroundLevelLength ~/ (longRowCount + shortRowCount) - 1
+            : backgroundLevelLength ~/ (longRowCount + shortRowCount);
+
+    // Calculate number of items to draw progress line
+    final progressLevelLength = widget.levelDataList.indexOf(
+            widget.levelDataList.firstWhere((level) => level.isCurrent)) +
+        2;
+    progressCycleCount = progressLevelLength <= longRowCount + shortRowCount
+        ? 0
+        : (progressLevelLength % (longRowCount + shortRowCount) == 0)
+            ? progressLevelLength ~/ (longRowCount + shortRowCount) - 1
+            : progressLevelLength ~/ (longRowCount + shortRowCount);
+
+    // Calculate last cycle's remaining levels
+    lastCycleBackgroundLevelCount = backgroundLevelLength -
+        backgroundCycleCount * (longRowCount + shortRowCount);
+    lastCycleProgressCount = progressLevelLength -
+        progressCycleCount * (longRowCount + shortRowCount);
 
     super.initState();
   }
@@ -85,34 +86,34 @@ class _LevelsPathState extends State<LevelsPath> {
   Widget build(BuildContext context) {
     return Stack(children: [
       // Background path
-      // PathAnimation(
-      //     lineColor: const Color(0xFFD6EFE8),
-      //     roundDrawSpeed: roundDrawSpeed,
-      //     lastRoundDrawSpeed: lastRoundDrawSpeed,
-      //     longRowCount: longRowCount,
-      //     shortRowCount: shortRowCount,
-      //     rounds: dashRoundCount,
-      //     lastRoundLevelCount: lastRoundDashLevelCount,
-      //     showAnimation: widget.isFirstTimeOpen,
-      //     isBackground: true),
-      //
-      // // Progress path (Delay for smoother animation)
-      // FutureBuilder(
-      //     future: Future.delayed(
-      //         Duration(milliseconds: widget.isFirstTimeOpen ? 500 : 0)),
-      //     builder: (context, snapShot) =>
-      //     snapShot.connectionState == ConnectionState.done
-      //         ? PathAnimation(
-      //       lineColor: const Color(0xFF579E89),
-      //       roundDrawSpeed: roundDrawSpeed,
-      //       lastRoundDrawSpeed: lastRoundDrawSpeed,
-      //       longRowCount: longRowCount,
-      //       shortRowCount: shortRowCount,
-      //       rounds: lineRoundCount,
-      //       lastRoundLevelCount: lastRoundLineCount,
-      //       showAnimation: widget.isFirstTimeOpen,
-      //     )
-      //         : const SizedBox()),
+      PathAnimation(
+          lineColor: const Color(0xFFD6EFE8),
+          roundDrawSpeed: roundDrawSpeed,
+          lastRoundDrawSpeed: lastRoundDrawSpeed,
+          longRowCount: longRowCount,
+          shortRowCount: shortRowCount,
+          cycles: backgroundCycleCount,
+          remainingLevelCount: lastCycleBackgroundLevelCount,
+          showAnimation: widget.isFirstTimeOpen,
+          isBackground: true),
+
+      // Progress path (Delay for smoother animation)
+      FutureBuilder(
+          future: Future.delayed(
+              Duration(milliseconds: widget.isFirstTimeOpen ? 500 : 0)),
+          builder: (context, snapShot) =>
+              snapShot.connectionState == ConnectionState.done
+                  ? PathAnimation(
+                      lineColor: const Color(0xFF579E89),
+                      roundDrawSpeed: roundDrawSpeed,
+                      lastRoundDrawSpeed: lastRoundDrawSpeed,
+                      longRowCount: longRowCount,
+                      shortRowCount: shortRowCount,
+                      cycles: progressCycleCount,
+                      remainingLevelCount: lastCycleProgressCount,
+                      showAnimation: widget.isFirstTimeOpen,
+                      isBackground: false)
+                  : const SizedBox()),
 
       // Levels
       LevelGrid(
@@ -123,14 +124,12 @@ class _LevelsPathState extends State<LevelsPath> {
 
       // Start and finish images
       Positioned(
-          top: 0,
-          left: 10,
-          child: Image.asset('assets/images/path_start.png')),
+          top: 0, left: 20, child: Transform.scale(scale: 1.2, child: Image.asset('assets/images/path_start.png'))),
 
       Positioned(
           bottom: 0,
-          right: 0,
-          child: Image.asset('assets/images/path_finish.png')),
+          right: widget.levelDataList.length % (2 * rowItemCount) < rowItemCount ? 20 : null,
+          child: Transform.scale(scale: 1.2, child: Image.asset('assets/images/path_finish.png'))),
     ]);
   }
 }
