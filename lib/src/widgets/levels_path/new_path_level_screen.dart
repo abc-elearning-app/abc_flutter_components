@@ -17,6 +17,8 @@ class LevelData {
 }
 
 class LevelsPath extends StatefulWidget {
+  final String startImage;
+  final String finishImage;
   final int drawSpeed;
   final bool isFirstTimeOpen;
   final List<LevelData> levelDataList;
@@ -25,7 +27,9 @@ class LevelsPath extends StatefulWidget {
       {super.key,
       required this.levelDataList,
       this.drawSpeed = 250,
-      this.isFirstTimeOpen = true});
+      this.isFirstTimeOpen = true,
+      required this.startImage,
+      required this.finishImage});
 
   @override
   State<LevelsPath> createState() => _LevelsPathState();
@@ -124,12 +128,18 @@ class _LevelsPathState extends State<LevelsPath> {
 
       // Start and finish images
       Positioned(
-          top: 0, left: 20, child: Transform.scale(scale: 1.2, child: Image.asset('assets/images/path_start.png'))),
+          top: 0,
+          left: 20,
+          child: Transform.scale(
+              scale: 1.2, child: Image.asset(widget.startImage))),
 
       Positioned(
           bottom: 0,
-          right: widget.levelDataList.length % (2 * rowItemCount) < rowItemCount ? 20 : null,
-          child: Transform.scale(scale: 1.2, child: Image.asset('assets/images/path_finish.png'))),
+          right: widget.levelDataList.length % (2 * rowItemCount) < rowItemCount
+              ? 20
+              : null,
+          child: Transform.scale(
+              scale: 1.2, child: Image.asset(widget.finishImage))),
     ]);
   }
 }
