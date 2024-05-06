@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 
-class Level extends StatefulWidget {
-  final int drawSpeed;
+class DefaultLevel extends StatefulWidget {
   final bool isCurrent;
   final int index;
   final double progress;
@@ -11,10 +8,8 @@ class Level extends StatefulWidget {
   final bool isFreeToday;
   final bool isPlaceholder;
   final bool isFirstTimeOpen;
-  final bool isFinalLevel;
-  final int rowItemCount;
 
-  const Level(
+  const DefaultLevel(
       {super.key,
       this.isPlaceholder = false,
       required this.progress,
@@ -22,16 +17,13 @@ class Level extends StatefulWidget {
       required this.index,
       required this.isLock,
       required this.isFreeToday,
-      required this.isFirstTimeOpen,
-      required this.drawSpeed,
-      required this.isFinalLevel,
-      required this.rowItemCount});
+      required this.isFirstTimeOpen});
 
   @override
-  State<Level> createState() => _LevelState();
+  State<DefaultLevel> createState() => _DefaultLevelState();
 }
 
-class _LevelState extends State<Level> with TickerProviderStateMixin {
+class _DefaultLevelState extends State<DefaultLevel> with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadingInAnimation;
   late Animation<double> _landingAnimation;
@@ -59,7 +51,8 @@ class _LevelState extends State<Level> with TickerProviderStateMixin {
     _landingAnimation = Tween(begin: -10.0, end: 0.0).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: Curves.easeInOut,
+        curve:
+            Curves.easeInOut, // Adjust the curve for different movement effect
       ),
     );
 
@@ -79,8 +72,8 @@ class _LevelState extends State<Level> with TickerProviderStateMixin {
     );
 
     // Delay appearance of level widgets
-    int currentIndexIndicatorDelay = widget.index *
-        (widget.isFirstTimeOpen ? widget.drawSpeed : widget.drawSpeed ~/ 2);
+    final currentIndexIndicatorDelay =
+        widget.index * (widget.isFirstTimeOpen ? 200 : 100);
 
     if (widget.isFirstTimeOpen) {
       Future.delayed(Duration(milliseconds: currentIndexIndicatorDelay), () {
@@ -154,135 +147,94 @@ class _LevelState extends State<Level> with TickerProviderStateMixin {
                 opacity: _fadingInAnimation.value,
                 child: Transform.translate(
                     offset: Offset(0, _landingAnimation.value + 20),
-                    child: widget.isCurrent
-                        ? _currentLevelWidget()
-                        : widget.isLock
-                            ? _lockLevelWidget()
-                            : _mainLevelWidget())),
+                    child: _mainLevelWidget())),
           )
         else
           AnimatedBuilder(
             animation: _bouncingAnimation,
             builder: (_, __) => Transform.translate(
                 offset: Offset(0, _bouncingAnimation.value + 11),
-                child: widget.isFinalLevel
-                    ? _finalLevelWidget()
-                    : widget.isCurrent
-                        ? _currentLevelWidget()
-                        : widget.isLock
-                            ? _lockLevelWidget()
-                            : _mainLevelWidget()),
+                child: _mainLevelWidget()),
           )
       ],
     );
   }
 
-  Widget _mainLevelWidget() =>
-      Stack(alignment: Alignment.bottomCenter, children: [
-        Transform.translate(
-          offset: const Offset(0, -25),
-          child: CircularPercentIndicator(
-            radius: 35,
-            lineWidth: 7,
-            backgroundColor: _getProgressColor().withOpacity(0.2),
-            progressColor: _getProgressColor().withOpacity(0.6),
-            percent: widget.progress / 100,
-            circularStrokeCap: CircularStrokeCap.round,
-            center: CircleAvatar(
-              radius: 28,
-              backgroundColor: Colors.white,
-              child: CircleAvatar(
-                radius: 25,
-                backgroundColor: _getProgressColor(),
-                child: Text(
-                  '${widget.progress.toInt()}%',
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15),
-                ),
-              ),
-            ),
-          ),
-        ),
-        Text(
-          'Part ${widget.index}',
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
-      ]);
-
-  Widget _lockLevelWidget() => Stack(
-        alignment: Alignment.bottomCenter,
+  Widget _mainLevelWidget() => Column(
         children: [
-          Transform.translate(
-            offset: const Offset(0, -25),
-            child: CircleAvatar(
-              radius: 35,
-              backgroundColor: Colors.grey.shade200,
-              child: const CircleAvatar(
-                radius: 26,
-                backgroundColor: Colors.white,
-                child: Icon(
-                  Icons.lock,
-                  color: Colors.grey,
+          SizedBox(
+            height: 70,
+            width: 65,
+            child: Stack(
+              alignment: Alignment.topRight,
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: _getKetchupColor(),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: Center(
+                        child: widget.isLock
+                            ? const Icon(
+                                Icons.lock,
+                                color: Colors.white,
+                              )
+                            : Text(
+                                '${widget.progress.floor()}%',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: _getValueColor(),
+                                ),
+                              ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                Container(
+                  height: 25,
+                  width: 25,
+                  decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(50)),
+                  child: const Icon(
+                    Icons.fastfood_rounded,
+                    size: 16,
+                    color: Colors.white,
+                  ),
+                )
+              ],
             ),
           ),
-          Text(
-            'Part ${widget.index}',
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
+          Text('Cà chua ${widget.index}')
         ],
       );
 
-  Widget _currentLevelWidget() =>
-      Stack(alignment: Alignment.bottomCenter, children: [
-        Transform.translate(
-          offset: const Offset(0, -25),
-          child: CircleAvatar(
-            radius: 35,
-            backgroundColor: _getProgressColor(value: 100).withOpacity(0.5),
-            child: CircleAvatar(
-              radius: 28,
-              backgroundColor: Colors.white.withOpacity(0.5),
-              child: CircleAvatar(
-                  radius: 24,
-                  backgroundColor: _getProgressColor(value: 100),
-                  child: SvgPicture.asset('assets/images/play.svg')),
-            ),
-          ),
-        ),
-        Text(
-          'Part ${widget.index}',
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
-      ]);
+  _getKetchupColor() {
+    if (widget.isLock) return Colors.green;
 
-  Widget _finalLevelWidget() => Stack(alignment: Alignment.center, children: [
-        Transform.translate(
-          offset: const Offset(0, -70),
-          child: Transform.scale(
-              scale: 1.2, child: Image.asset('assets/images/final_level.png')),
-        ),
-        Transform.translate(
-          offset: const Offset(0, 25),
-          child: Text(
-            'Part ${widget.index}',
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-        ),
-      ]);
-
-  Color _getProgressColor({double? value}) {
-    if (widget.isLock) return Colors.grey;
-
-    final progress = value ?? widget.progress;
-    if (progress < 40) {
-      return const Color(0xFFFC5656);
+    if (widget.progress < 30) {
+      return Colors.lightGreen;
+    } else if (30 <= widget.progress && widget.progress < 80) {
+      return Colors.lime;
     } else {
-      return const Color(0xFF579E89);
+      return Colors.redAccent;
     }
+  }
+
+  _getValueColor() {
+    if (30 <= widget.progress && widget.progress < 80) return Colors.grey;
+    return Colors.white;
   }
 }
 
@@ -307,7 +259,7 @@ class SplashCirclePainter extends CustomPainter {
     double maxRadius = 30;
 
     Paint paint = Paint()
-      ..color = Colors.grey.withOpacity(
+      ..color = Colors.green.withOpacity(
           1 * (1 - animation.value)) // Adjust opacity based on animation value
       ..style = PaintingStyle.stroke
       ..strokeWidth = 50;

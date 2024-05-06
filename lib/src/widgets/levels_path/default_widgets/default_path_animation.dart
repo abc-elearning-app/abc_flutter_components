@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-class UpgradedPathAnimation extends StatefulWidget {
+class DefaultPathAnimation extends StatefulWidget {
   final int longRowCount;
   final int shortRowCount;
   final int lastRoundLevelCount;
@@ -12,26 +12,23 @@ class UpgradedPathAnimation extends StatefulWidget {
   final bool isFirstTimeOpen;
   final Duration roundDrawSpeed;
   final Duration lastRoundDrawSpeed;
-  final Color lineColor;
 
-  const UpgradedPathAnimation({
-    super.key,
-    required this.rounds,
-    required this.lastRoundLevelCount,
-    required this.longRowCount,
-    required this.shortRowCount,
-    required this.roundDrawSpeed,
-    required this.lastRoundDrawSpeed,
-    required this.lineColor,
-    this.isDash = false,
-    this.isFirstTimeOpen = true,
-  });
+  const DefaultPathAnimation(
+      {super.key,
+      required this.rounds,
+      required this.lastRoundLevelCount,
+      required this.longRowCount,
+      required this.shortRowCount,
+      required this.roundDrawSpeed,
+      required this.lastRoundDrawSpeed,
+      this.isDash = false,
+      this.isFirstTimeOpen = true});
 
   @override
-  _UpgradedPathAnimationState createState() => _UpgradedPathAnimationState();
+  _DefaultPathAnimationState createState() => _DefaultPathAnimationState();
 }
 
-class _UpgradedPathAnimationState extends State<UpgradedPathAnimation>
+class _DefaultPathAnimationState extends State<DefaultPathAnimation>
     with TickerProviderStateMixin {
   List<AnimationController> lineControllers = [];
   List<AnimationController> curveControllers = [];
@@ -221,7 +218,6 @@ class _UpgradedPathAnimationState extends State<UpgradedPathAnimation>
         ]),
         builder: (_, __) => CustomPaint(
           painter: PathLine(
-              lineColor: widget.lineColor,
               rounds: widget.rounds,
               lastRoundLevelCount: widget.lastRoundLevelCount,
               longRoundCount: widget.longRowCount,
@@ -268,7 +264,6 @@ class PathLine extends CustomPainter {
   final AnimationController smallLineController;
   final bool isDash;
   final bool isFirstTimeOpen;
-  final Color lineColor;
 
   PathLine(
       {required this.rounds,
@@ -282,31 +277,27 @@ class PathLine extends CustomPainter {
       required this.nextLevelController,
       required this.smallLineController,
       required this.isDash,
-      required this.isFirstTimeOpen,
-      required this.lineColor});
+      required this.isFirstTimeOpen});
 
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
-      // ..color = isDash ? Colors.grey : const Color(0xFF579E89)
-      ..color = lineColor
-      ..strokeWidth = 12
+      ..color = isDash ? Colors.grey : Colors.green
+      ..strokeWidth = isDash ? 5 : 8
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.square
       ..style = PaintingStyle.stroke
       ..strokeJoin = StrokeJoin.bevel;
 
-    if (isDash) {
-      if (isFirstTimeOpen)
-        _drawFirstTimeOpenDash(canvas, paint, size);
-      else
-        _drawDefaultDash(canvas, paint, size);
+    if (isDash && isFirstTimeOpen) {
+      _drawFirstTimeOpenDash(canvas, paint, size);
+    } else if (isDash && !isFirstTimeOpen) {
+      _drawDefaultDash(canvas, paint, size);
+    } else if (!isDash && isFirstTimeOpen) {
+      _drawFirstTimeOpenLine(canvas, paint, size);
     } else {
-      if (isFirstTimeOpen)
-        _drawFirstTimeOpenLine(canvas, paint, size);
-      else
-        _drawNextLevelAnimation(canvas, paint, size);
+      _drawNextLevelAnimation(canvas, paint, size);
     }
   }
 
@@ -354,8 +345,7 @@ class PathLine extends CustomPainter {
         _drawDashedArc(
           canvas: canvas,
           segment: dashArcSegments,
-          rect:
-              Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
+          rect: Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
           startAngle: startAngle,
           clockwise: true,
           value: curveControllers[(i * 2 - 1) - 1].value,
@@ -393,8 +383,7 @@ class PathLine extends CustomPainter {
         _drawDashedArc(
           canvas: canvas,
           segment: dashArcSegments,
-          rect:
-              Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
+          rect: Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
           startAngle: startAngle,
           clockwise: false,
           value: curveControllers[(i * 2) - 1].value,
@@ -446,11 +435,9 @@ class PathLine extends CustomPainter {
           canvas,
           Offset(upperStartX, upperStartY),
           Offset(
-            lerpDouble(upperStartX, upperEndX,
-                    lastRoundLineControllers[0].value) ??
+            lerpDouble(upperStartX, upperEndX, lastRoundLineControllers[0].value) ??
                 0,
-            lerpDouble(upperStartY, upperEndY,
-                    lastRoundLineControllers[0].value) ??
+            lerpDouble(upperStartY, upperEndY, lastRoundLineControllers[0].value) ??
                 0,
           ),
           paint,
@@ -463,8 +450,7 @@ class PathLine extends CustomPainter {
         _drawDashedArc(
           canvas: canvas,
           segment: dashArcSegments,
-          rect:
-              Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
+          rect: Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
           startAngle: startAngle,
           clockwise: true,
           value: lastRoundCurveController.value,
@@ -480,8 +466,7 @@ class PathLine extends CustomPainter {
         startX = lastRoundStartX;
         startY = lastRoundStartY;
 
-        endX =
-            i == 0 ? shortRoundCount * shortRowLength : startX - shortRowLength;
+        endX = i == 0 ? shortRoundCount * shortRowLength : startX - shortRowLength;
         endY = startY;
 
         if (lastRoundLineControllers[i + 1].value > 0) {
@@ -489,10 +474,8 @@ class PathLine extends CustomPainter {
             canvas,
             Offset(startX, startY),
             Offset(
-              lerpDouble(startX, endX, lastRoundLineControllers[i + 1].value) ??
-                  0,
-              lerpDouble(startY, endY, lastRoundLineControllers[i + 1].value) ??
-                  0,
+              lerpDouble(startX, endX, lastRoundLineControllers[i + 1].value) ?? 0,
+              lerpDouble(startY, endY, lastRoundLineControllers[i + 1].value) ?? 0,
             ),
             paint,
           );
@@ -503,6 +486,7 @@ class PathLine extends CustomPainter {
       }
     }
   }
+
 
   _drawDefaultDash(Canvas canvas, Paint paint, Size size) {
     double startX;
@@ -676,10 +660,8 @@ class PathLine extends CustomPainter {
         canvas.drawLine(
           Offset(startX, startY),
           Offset(
-            lerpDouble(startX, endX, lineControllers[(i * 2 - 1) - 1].value) ??
-                0,
-            lerpDouble(startY, endY, lineControllers[(i * 2 - 1) - 1].value) ??
-                0,
+            lerpDouble(startX, endX, lineControllers[(i * 2 - 1) - 1].value) ?? 0,
+            lerpDouble(startY, endY, lineControllers[(i * 2 - 1) - 1].value) ?? 0,
           ),
           paint,
         );
@@ -778,11 +760,9 @@ class PathLine extends CustomPainter {
         canvas.drawLine(
           Offset(upperStartX, upperStartY),
           Offset(
-            lerpDouble(upperStartX, upperEndX,
-                    lastRoundLineControllers[0].value) ??
+            lerpDouble(upperStartX, upperEndX, lastRoundLineControllers[0].value) ??
                 0,
-            lerpDouble(upperStartY, upperEndY,
-                    lastRoundLineControllers[0].value) ??
+            lerpDouble(upperStartY, upperEndY, lastRoundLineControllers[0].value) ??
                 0,
           ),
           paint,
@@ -811,17 +791,15 @@ class PathLine extends CustomPainter {
         startY = lastRoundStartY;
 
         endX =
-            i == 0 ? shortRoundCount * shortRowLength : startX - shortRowLength;
+        i == 0 ? shortRoundCount * shortRowLength : startX - shortRowLength;
         endY = startY;
 
         if (lastRoundLineControllers[i + 1].value > 0) {
           canvas.drawLine(
             Offset(startX, startY),
             Offset(
-              lerpDouble(startX, endX, lastRoundLineControllers[i + 1].value) ??
-                  0,
-              lerpDouble(startY, endY, lastRoundLineControllers[i + 1].value) ??
-                  0,
+              lerpDouble(startX, endX, lastRoundLineControllers[i + 1].value) ?? 0,
+              lerpDouble(startY, endY, lastRoundLineControllers[i + 1].value) ?? 0,
             ),
             paint,
           );
@@ -832,6 +810,7 @@ class PathLine extends CustomPainter {
       }
     }
   }
+
 
   _drawNextLevelAnimation(Canvas canvas, Paint paint, Size size) {
     double startX;

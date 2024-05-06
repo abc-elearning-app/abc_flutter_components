@@ -1,6 +1,6 @@
+import 'package:example/screens/exam_time_setup/pages/date_option_page.dart';
+import 'package:example/screens/exam_time_setup/pages/select_exam_date_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/exam_time_setup/pages/date_option_page.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/exam_time_setup/pages/select_exam_date_page.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/exam_time_setup/pages/select_reminder_time_page.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/exam_time_setup/pages/start_diagnostic_page.dart';
 
@@ -22,18 +22,18 @@ class ExamDateSelectPages extends StatefulWidget {
 
   const ExamDateSelectPages(
       {super.key,
-        required this.pageImages,
-        this.upperBackgroundColor = const Color(0xFFEEFFFA),
-        this.lowerBackgroundColor = Colors.white,
-        this.mainColor = const Color(0xFF579E89),
-        this.mainButtonTextColor = Colors.white,
-        this.notNowButtonTextColor = Colors.black,
-        required this.onStartDiagnostic,
-        required this.onSkipDiagnostic,
-        required this.onSelectExamDate,
-        required this.onSelectReminderTime,
-        this.appBarColor = Colors.black,
-        this.optionBoxFillColor = Colors.white});
+      required this.pageImages,
+      this.upperBackgroundColor = const Color(0xFFEEFFFA),
+      this.lowerBackgroundColor = Colors.white,
+      this.mainColor = const Color(0xFF579E89),
+      this.mainButtonTextColor = Colors.white,
+      this.notNowButtonTextColor = Colors.black,
+      required this.onStartDiagnostic,
+      required this.onSkipDiagnostic,
+      required this.onSelectExamDate,
+      required this.onSelectReminderTime,
+      this.appBarColor = Colors.black,
+      this.optionBoxFillColor = Colors.white});
 
   @override
   State<ExamDateSelectPages> createState() => _ExamDateSelectPagesState();
@@ -67,12 +67,16 @@ class _ExamDateSelectPagesState extends State<ExamDateSelectPages> {
         image: widget.pageImages[2],
         selectedTime: selectedTime,
         pageController: pageController,
+        showBackButton: false,
       ),
       StartDiagnosticPage(
-          title: 'Diagnostic Test',
-          subTitle:
-          'Take our diagnostic test to assess your current level and get a personalized study plan.',
-          image: widget.pageImages[3])
+        title: 'Diagnostic Test',
+        subTitle:
+            'Take our diagnostic test to assess your current level and get a personalized study plan.',
+        image: widget.pageImages[3],
+        showBackButton: false,
+        pageController: pageController,
+      )
     ];
 
     // Initial selected time
@@ -123,77 +127,77 @@ class _ExamDateSelectPagesState extends State<ExamDateSelectPages> {
           ValueListenableBuilder(
               valueListenable: _pageIndex,
               builder: (_, value, __) => AnimatedContainer(
-                height: value == 0
-                    ? 0
-                    : MediaQuery.of(context).size.height * 0.2,
-                duration: const Duration(milliseconds: 200),
-                child: Stack(children: [
-                  Container(color: widget.upperBackgroundColor),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: widget.lowerBackgroundColor,
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(50))),
-                  ),
-
-                  // Buttons
-                  Center(
-                    child: SingleChildScrollView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // Next button
-                          Container(
-                            width: double.infinity,
-                            margin:
-                            const EdgeInsets.symmetric(horizontal: 10),
-                            child: ElevatedButton(
-                              onPressed: () => _handleMainButtonClick(),
-                              style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 15),
-                                  backgroundColor: widget.mainColor,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                      BorderRadius.circular(15))),
-                              child: Text(
-                                _getButtonText(value),
-                                style: TextStyle(
-                                    fontSize: 22,
-                                    color: widget.mainButtonTextColor),
-                              ),
-                            ),
-                          ),
-
-                          // Not now button
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            width: double.infinity,
-                            height: value <= 1 ? 0 : 50,
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                            child: ElevatedButton(
-                                onPressed: () => _handleNotNowButtonClick(),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.transparent,
-                                  shadowColor: Colors.transparent,
-                                  elevation: 0,
-                                ),
-                                child: Text(
-                                  'Not Now',
-                                  style: TextStyle(
-                                      color: widget.notNowButtonTextColor,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w300),
-                                )),
-                          )
-                        ],
+                    height: value == 0
+                        ? 0
+                        : MediaQuery.of(context).size.height * 0.2,
+                    duration: const Duration(milliseconds: 200),
+                    child: Stack(children: [
+                      Container(color: widget.upperBackgroundColor),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: widget.lowerBackgroundColor,
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(50))),
                       ),
-                    ),
-                  )
-                ]),
-              ))
+
+                      // Buttons
+                      Center(
+                        child: SingleChildScrollView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Next button
+                              Container(
+                                width: double.infinity,
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: ElevatedButton(
+                                  onPressed: () => _handleMainButtonClick(),
+                                  style: ElevatedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 15),
+                                      backgroundColor: widget.mainColor,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15))),
+                                  child: Text(
+                                    _getButtonText(value),
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        color: widget.mainButtonTextColor),
+                                  ),
+                                ),
+                              ),
+
+                              // Not now button
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                width: double.infinity,
+                                height: value <= 1 ? 0 : 50,
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+                                child: ElevatedButton(
+                                    onPressed: () => _handleNotNowButtonClick(),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      shadowColor: Colors.transparent,
+                                      elevation: 0,
+                                    ),
+                                    child: Text(
+                                      'Not Now',
+                                      style: TextStyle(
+                                          color: widget.notNowButtonTextColor,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w300),
+                                    )),
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    ]),
+                  ))
         ],
       ),
     );

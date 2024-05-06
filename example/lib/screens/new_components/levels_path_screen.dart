@@ -6,19 +6,46 @@ class TestLevelsPathScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const int currentLevel = 6;
     final levelDataList = <LevelData>[
-      LevelData(progress: 60, isLock: false, isCurrent: false, isFreeToday: false),
-      LevelData(progress: 80, isLock: false, isCurrent: false, isFreeToday: false),
-      LevelData(progress: 50, isLock: false, isCurrent: false, isFreeToday: false),
-      LevelData(progress: 10, isLock: false, isCurrent: false, isFreeToday: false),
-      LevelData(progress: 100, isLock: false, isCurrent: false, isFreeToday: false),
-      LevelData(progress: 0, isLock: false, isCurrent: true, isFreeToday: false),
-      LevelData(progress: 0, isLock: true, isCurrent: false, isFreeToday: false),
-      LevelData(progress: 0, isLock: true, isCurrent: false, isFreeToday: false),
-      LevelData(progress: 0, isLock: true, isCurrent: false, isFreeToday: false),
-      LevelData(progress: 0, isLock: true, isCurrent: false, isFreeToday: false),
-      // LevelData(progress: 0, isLock: true, isCurrent: false, isFreeToday: false),
+      LevelData(
+          progress: 100,
+          isLock: 0 > currentLevel,
+          isCurrent: 0 == currentLevel,
+          isFreeToday: false),
+      LevelData(
+          progress: 80,
+          isLock: 1 > currentLevel,
+          isCurrent: 1 == currentLevel,
+          isFreeToday: false),
+      LevelData(
+          progress: 50,
+          isLock: 2 > currentLevel,
+          isCurrent: 2 == currentLevel,
+          isFreeToday: false),
+      LevelData(
+          progress: 85,
+          isLock: 3 > currentLevel,
+          isCurrent: 3 == currentLevel,
+          isFreeToday: false),
     ];
-    return LevelsPath(levelDataList: levelDataList);
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFEEFFFA),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        title: const Text('Word Knowledge',
+            style: TextStyle(fontWeight: FontWeight.bold)),
+      ),
+      body: SingleChildScrollView(
+        child: LevelsPath(
+          levelDataList: levelDataList,
+          drawSpeed: 300,
+          isFirstTimeOpen: false,
+        ),
+      ),
+    );
   }
 }
