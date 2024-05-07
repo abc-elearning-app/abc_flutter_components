@@ -6,6 +6,7 @@ import '../../../../flutter_abc_jsc_components.dart';
 import 'level_widget.dart';
 
 class LevelGrid extends StatelessWidget {
+  final bool isStarted;
   final int drawSpeed;
   final int rowItemCount;
   final bool isFirstTimeOpen;
@@ -17,6 +18,7 @@ class LevelGrid extends StatelessWidget {
     required this.levelDataList,
     required this.drawSpeed,
     required this.rowItemCount,
+    required this.isStarted,
   });
 
   @override
@@ -89,6 +91,7 @@ class LevelGrid extends StatelessWidget {
   }
 
   Widget _getLevelWidget(int index, LevelData levelData) => Level(
+      isStarted: isStarted,
       rowItemCount: rowItemCount,
       progress: levelData.progress,
       isCurrent: levelData.isCurrent,

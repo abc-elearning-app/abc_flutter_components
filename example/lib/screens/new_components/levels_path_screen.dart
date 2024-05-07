@@ -31,7 +31,7 @@ class TestLevelsPathScreen extends StatelessWidget {
           isFreeToday: false),
     ];
 
-    const int currentLevel2 = 0;
+    const int currentLevel2 = -1;
     final levelDataList2 = <LevelData>[
       LevelData(
           progress: 100,
@@ -60,7 +60,7 @@ class TestLevelsPathScreen extends StatelessWidget {
           isFreeToday: false),
     ];
 
-    const int currentLevel3 = 0;
+    const int currentLevel3 = -1;
     final levelDataList3 = <LevelData>[
       LevelData(
           progress: 100,
@@ -105,6 +105,7 @@ class TestLevelsPathScreen extends StatelessWidget {
         child: Column(
           children: [
             LevelsPath(
+              isStarted: true,
               startImage: 'assets/images/path_start.png',
               finishImage: 'assets/images/path_finish.png',
               levelDataList: levelDataList1,
@@ -126,6 +127,7 @@ class TestLevelsPathScreen extends StatelessWidget {
                   Text(
                     'Intermediate',
                     style: TextStyle(
+                        fontWeight: FontWeight.bold,
                         color: Colors.grey.shade400,
                         fontFamily: 'Poppins',
                         fontSize: 20),
@@ -154,25 +156,26 @@ class TestLevelsPathScreen extends StatelessWidget {
                 children: [
                   Expanded(
                       child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 10),
-                        width: double.infinity,
-                        height: 2,
-                        color: Colors.grey.shade400,
-                      )),
+                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                    width: double.infinity,
+                    height: 2,
+                    color: Colors.grey.shade400,
+                  )),
                   Text(
                     'Advanced',
                     style: TextStyle(
+                        fontWeight: FontWeight.bold,
                         color: Colors.grey.shade400,
                         fontFamily: 'Poppins',
                         fontSize: 20),
                   ),
                   Expanded(
                       child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 10),
-                        width: double.infinity,
-                        height: 2,
-                        color: Colors.grey.shade400,
-                      )),
+                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                    width: double.infinity,
+                    height: 2,
+                    color: Colors.grey.shade400,
+                  )),
                 ],
               ),
             ),

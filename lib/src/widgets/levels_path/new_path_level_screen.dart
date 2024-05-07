@@ -17,6 +17,7 @@ class LevelData {
 }
 
 class LevelsPath extends StatefulWidget {
+  final bool isStarted;
   final String startImage;
   final String finishImage;
   final int drawSpeed;
@@ -25,6 +26,7 @@ class LevelsPath extends StatefulWidget {
 
   const LevelsPath(
       {super.key,
+      this.isStarted = false,
       required this.levelDataList,
       this.drawSpeed = 250,
       this.isFirstTimeOpen = true,
@@ -68,9 +70,13 @@ class _LevelsPathState extends State<LevelsPath> {
             : backgroundLevelLength ~/ (longRowCount + shortRowCount);
 
     // Calculate number of items to draw progress line
-    final progressLevelLength = widget.levelDataList.indexOf(
-            widget.levelDataList.firstWhere((level) => level.isCurrent)) +
-        2;
+    final progressLevelLength = widget.levelDataList
+            .where((element) => element.isCurrent)
+            .isEmpty
+        ? 0
+        : widget.levelDataList.indexOf(
+                widget.levelDataList.firstWhere((level) => level.isCurrent)) +
+            2;
     progressCycleCount = progressLevelLength <= longRowCount + shortRowCount
         ? 0
         : (progressLevelLength % (longRowCount + shortRowCount) == 0)
@@ -121,6 +127,7 @@ class _LevelsPathState extends State<LevelsPath> {
 
       // Levels
       LevelGrid(
+          isStarted: widget.isStarted,
           drawSpeed: widget.drawSpeed,
           rowItemCount: rowItemCount,
           isFirstTimeOpen: widget.isFirstTimeOpen,

@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class Level extends StatefulWidget {
+  final bool isStarted;
   final int drawSpeed;
   final bool isCurrent;
   final int index;
@@ -25,7 +28,8 @@ class Level extends StatefulWidget {
       required this.isFirstTimeOpen,
       required this.drawSpeed,
       required this.isFinalLevel,
-      required this.rowItemCount});
+      required this.rowItemCount,
+      required this.isStarted});
 
   @override
   State<Level> createState() => _LevelState();
@@ -153,26 +157,34 @@ class _LevelState extends State<Level> with TickerProviderStateMixin {
                 opacity: _fadingInAnimation.value,
                 child: Transform.translate(
                     offset: Offset(0, _landingAnimation.value + 20),
-                    child: widget.isFinalLevel
-                        ? _finalLevelWidget()
-                        : widget.isCurrent
-                            ? _currentLevelWidget()
-                            : widget.isLock
-                                ? _lockLevelWidget()
-                                : _mainLevelWidget())),
+                    child: !widget.isStarted
+                        ? widget.index == 0
+                            ? _initialLevelWidget()
+                            : widget.isFinalLevel ? _finalLevelWidget() : _lockLevelWidget()
+                        : widget.isFinalLevel
+                            ? _finalLevelWidget()
+                            : widget.isCurrent
+                                ? _currentLevelWidget()
+                                : widget.isLock
+                                    ? _lockLevelWidget()
+                                    : _mainLevelWidget())),
           )
         else
           AnimatedBuilder(
             animation: _bouncingAnimation,
             builder: (_, __) => Transform.translate(
                 offset: Offset(0, _bouncingAnimation.value + 11),
-                child: widget.isFinalLevel
-                    ? _finalLevelWidget()
-                    : widget.isCurrent
-                        ? _currentLevelWidget()
-                        : widget.isLock
-                            ? _lockLevelWidget()
-                            : _mainLevelWidget()),
+                child: !widget.isStarted
+                    ? widget.index == 0
+                        ? _initialLevelWidget()
+                        : widget.isFinalLevel ? _finalLevelWidget() : _lockLevelWidget()
+                    : widget.isFinalLevel
+                        ? _finalLevelWidget()
+                        : widget.isCurrent
+                            ? _currentLevelWidget()
+                            : widget.isLock
+                                ? _lockLevelWidget()
+                                : _mainLevelWidget()),
           )
       ],
     );
@@ -232,7 +244,8 @@ class _LevelState extends State<Level> with TickerProviderStateMixin {
           ),
           Text(
             'Part ${widget.index + 1}',
-            style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey),
+            style: const TextStyle(
+                fontWeight: FontWeight.w600, color: Colors.grey),
           ),
         ],
       );
@@ -260,6 +273,51 @@ class _LevelState extends State<Level> with TickerProviderStateMixin {
         ),
       ]);
 
+  Widget _initialLevelWidget() =>
+      Stack(alignment: Alignment.bottomCenter, children: [
+        Transform.translate(
+            offset: const Offset(0, -100),
+            child: Container(
+              height: 50,
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFB443),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: const Center(
+                child: Text(
+                  'Jump Here',
+                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+              ),
+            )),
+        Transform.translate(
+            offset: const Offset(0, -90),
+            child: CustomPaint(
+                size: const Size(25, 10),
+                painter:
+                    DownwardTrianglePainter(color: const Color(0xFFFFB443)))),
+        Transform.translate(
+          offset: const Offset(0, -25),
+          child: CircleAvatar(
+            radius: 35,
+            backgroundColor: const Color(0xFFFFB443).withOpacity(0.5),
+            child: CircleAvatar(
+              radius: 28,
+              backgroundColor: Colors.white.withOpacity(0.5),
+              child: CircleAvatar(
+                  radius: 24,
+                  backgroundColor: const Color(0xFFFFB443),
+                  child: SvgPicture.asset('assets/images/jump_here.svg')),
+            ),
+          ),
+        ),
+        Text(
+          'Part ${widget.index + 1}',
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+      ]);
+
   Widget _finalLevelWidget() => Stack(alignment: Alignment.center, children: [
         Transform.translate(
           offset: const Offset(0, -70),
@@ -270,7 +328,9 @@ class _LevelState extends State<Level> with TickerProviderStateMixin {
           offset: const Offset(0, 25),
           child: Text(
             'Part ${widget.index + 1}',
-            style: TextStyle(fontWeight: FontWeight.w600, color: widget.isLock ? Colors.grey : null),
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: widget.isLock ? Colors.grey : null),
           ),
         ),
       ]);
@@ -327,5 +387,33 @@ class SplashCirclePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
+  }
+}
+
+class DownwardTrianglePainter extends CustomPainter {
+  final Color color;
+
+  DownwardTrianglePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Define the points for the triangle
+    final path = Path()
+      ..moveTo(size.width / 2, size.height) // Bottom middle
+      ..lineTo(0, 0) // Top left
+      ..lineTo(size.width, 0) // Top right
+      ..close(); // Complete the triangle
+
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill; // Fill the triangle
+
+    // Draw the triangle on the canvas
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false; // No need to repaint if there's no change
   }
 }
