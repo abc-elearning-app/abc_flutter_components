@@ -87,6 +87,11 @@ class TestLevelsPathScreen extends StatelessWidget {
           isLock: 3 > currentLevel3,
           isCurrent: 3 == currentLevel3,
           isFreeToday: false),
+      LevelData(
+          progress: 85,
+          isLock: 3 > currentLevel3,
+          isCurrent: 3 == currentLevel3,
+          isFreeToday: false),
     ];
 
     return Scaffold(
@@ -102,93 +107,70 @@ class TestLevelsPathScreen extends StatelessWidget {
             )),
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 50),
         child: Column(
           children: [
-            LevelsPath(
-              isStarted: true,
-              startImage: 'assets/images/path_start.png',
-              finishImage: 'assets/images/path_finish.png',
-              levelDataList: levelDataList1,
-              drawSpeed: 300,
-              isFirstTimeOpen: true,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                      child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    width: double.infinity,
-                    height: 2,
-                    color: Colors.grey.shade400,
-                  )),
-                  Text(
-                    'Intermediate',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey.shade400,
-                        fontFamily: 'Poppins',
-                        fontSize: 20),
-                  ),
-                  Expanded(
-                      child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    width: double.infinity,
-                    height: 2,
-                    color: Colors.grey.shade400,
-                  )),
-                ],
+            SizedBox(
+              height: 500,
+              child: LevelsPath(
+                type: OpenType.firstTime,
+                isStarted: true,
+                startImage: 'assets/images/path_start.png',
+                finishImage: 'assets/images/path_finish.png',
+                levelDataList: levelDataList1,
+                drawSpeed: 300,
               ),
             ),
-            LevelsPath(
-              startImage: 'assets/images/path_start_1.png',
-              finishImage: 'assets/images/path_finish_1.png',
-              levelDataList: levelDataList2,
-              drawSpeed: 300,
-              isFirstTimeOpen: true,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                      child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    width: double.infinity,
-                    height: 2,
-                    color: Colors.grey.shade400,
-                  )),
-                  Text(
-                    'Advanced',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey.shade400,
-                        fontFamily: 'Poppins',
-                        fontSize: 20),
-                  ),
-                  Expanded(
-                      child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    width: double.infinity,
-                    height: 2,
-                    color: Colors.grey.shade400,
-                  )),
-                ],
-              ),
-            ),
-            LevelsPath(
-              startImage: 'assets/images/path_start_2.png',
-              finishImage: 'assets/images/path_finish_2.png',
-              levelDataList: levelDataList3,
-              drawSpeed: 300,
-              isFirstTimeOpen: true,
-            ),
+            // _buildDivider('Intermediate'),
+            // LevelsPath(
+            //   startImage: 'assets/images/path_start_1.png',
+            //   finishImage: 'assets/images/path_finish_1.png',
+            //   levelDataList: levelDataList2,
+            //   drawSpeed: 300,
+            //   isFirstTimeOpen: true,
+            // ),
+            // _buildDivider('Advanced'),
+            // LevelsPath(
+            //   startImage: 'assets/images/path_start_2.png',
+            //   finishImage: 'assets/images/path_finish_2.png',
+            //   levelDataList: levelDataList3,
+            //   drawSpeed: 300,
+            //   isFirstTimeOpen: true,
+            // ),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildDivider(String title) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              width: double.infinity,
+              height: 1,
+              color: Colors.grey.shade400,
+            )),
+        Text(
+          title,
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade400,
+              fontFamily: 'Poppins',
+              fontSize: 18),
+        ),
+        Expanded(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              width: double.infinity,
+              height: 1,
+              color: Colors.grey.shade400,
+            )),
+      ],
+    ),
+  );
 }

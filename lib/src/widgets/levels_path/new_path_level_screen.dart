@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'new_widgets/level_grid.dart';
 import 'new_widgets/path_animation.dart';
 
+enum OpenType { firstTime, nextLevel, normal }
+
 class LevelData {
   double progress;
   bool isFreeToday;
@@ -17,31 +19,28 @@ class LevelData {
 }
 
 class LevelsPath extends StatefulWidget {
+  final OpenType type;
   final bool isStarted;
   final String startImage;
   final String finishImage;
   final int drawSpeed;
-  final bool isFirstTimeOpen;
   final List<LevelData> levelDataList;
 
   const LevelsPath(
       {super.key,
       this.isStarted = false,
-      required this.levelDataList,
       this.drawSpeed = 250,
-      this.isFirstTimeOpen = true,
+      required this.levelDataList,
       required this.startImage,
-      required this.finishImage});
+      required this.finishImage,
+      required this.type});
 
   @override
   State<LevelsPath> createState() => _LevelsPathState();
 }
 
 class _LevelsPathState extends State<LevelsPath> {
-  // Number of items on long and short row
-  final int longRowCount = 2;
-  final int shortRowCount = 2;
-
+  // Item count in a row
   final int rowItemCount = 2;
 
   // The shorter the faster
@@ -51,7 +50,7 @@ class _LevelsPathState extends State<LevelsPath> {
   // Additional data to draw
   late int backgroundCycleCount;
   late int progressCycleCount;
-  late int lastCycleBackgroundLevelCount;
+  late int lastCycleBackgroundCount;
   late int lastCycleProgressCount;
 
   @override
@@ -61,92 +60,78 @@ class _LevelsPathState extends State<LevelsPath> {
     lastRoundDrawSpeed =
         Duration(milliseconds: (widget.drawSpeed - 100).clamp(100, 500));
 
-    // Calculate number of items to draw background line
+    // Calculate background's cycles
     final backgroundLevelLength = widget.levelDataList.length + 1;
-    backgroundCycleCount = backgroundLevelLength <= longRowCount + shortRowCount
-        ? 0
-        : (backgroundLevelLength % (longRowCount + shortRowCount) == 0)
-            ? backgroundLevelLength ~/ (longRowCount + shortRowCount) - 1
-            : backgroundLevelLength ~/ (longRowCount + shortRowCount);
+    backgroundCycleCount = _calculateCycleCount(backgroundLevelLength);
 
-    // Calculate number of items to draw progress line
-    final progressLevelLength = widget.levelDataList
-            .where((element) => element.isCurrent)
-            .isEmpty
-        ? 0
-        : widget.levelDataList.indexOf(
-                widget.levelDataList.firstWhere((level) => level.isCurrent)) +
-            2;
-    progressCycleCount = progressLevelLength <= longRowCount + shortRowCount
-        ? 0
-        : (progressLevelLength % (longRowCount + shortRowCount) == 0)
-            ? progressLevelLength ~/ (longRowCount + shortRowCount) - 1
-            : progressLevelLength ~/ (longRowCount + shortRowCount);
+    // Calculate progress's cycles
+    if (widget.isStarted) {
+      final progressLevelLength = widget.levelDataList.indexOf(
+              widget.levelDataList.firstWhere((level) => level.isCurrent)) +
+          2;
+      progressCycleCount = _calculateCycleCount(progressLevelLength);
 
-    // Calculate last cycle's remaining levels
-    lastCycleBackgroundLevelCount = backgroundLevelLength -
-        backgroundCycleCount * (longRowCount + shortRowCount);
-    lastCycleProgressCount = progressLevelLength -
-        progressCycleCount * (longRowCount + shortRowCount);
+      // Progress's last cycle's remaining levels
+      lastCycleProgressCount =
+          progressLevelLength - progressCycleCount * (rowItemCount * 2);
+    }
+
+    // Background's last cycle's remaining levels
+    lastCycleBackgroundCount =
+        backgroundLevelLength - backgroundCycleCount * (rowItemCount * 2);
 
     super.initState();
   }
+
+  _calculateCycleCount(int length) => length > rowItemCount * 2
+      ? (length % (rowItemCount * 2) == 0)
+          ? length ~/ (rowItemCount * 2) - 1
+          : length ~/ (rowItemCount * 2)
+      : 0;
 
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
       // Background path
       PathAnimation(
+          type: OpenType.firstTime,
           lineColor: const Color(0xFFD6EFE8),
           roundDrawSpeed: roundDrawSpeed,
           lastRoundDrawSpeed: lastRoundDrawSpeed,
-          longRowCount: longRowCount,
-          shortRowCount: shortRowCount,
           cycles: backgroundCycleCount,
-          remainingLevelCount: lastCycleBackgroundLevelCount,
-          showAnimation: widget.isFirstTimeOpen,
-          isBackground: true),
+          remainingLevelCount: lastCycleBackgroundCount,
+          rowItemCount: rowItemCount),
 
       // Progress path (Delay for smoother animation)
-      FutureBuilder(
-          future: Future.delayed(
-              Duration(milliseconds: widget.isFirstTimeOpen ? 500 : 0)),
-          builder: (context, snapShot) =>
-              snapShot.connectionState == ConnectionState.done
-                  ? PathAnimation(
-                      lineColor: const Color(0xFF579E89),
-                      roundDrawSpeed: roundDrawSpeed,
-                      lastRoundDrawSpeed: lastRoundDrawSpeed,
-                      longRowCount: longRowCount,
-                      shortRowCount: shortRowCount,
-                      cycles: progressCycleCount,
-                      remainingLevelCount: lastCycleProgressCount,
-                      showAnimation: widget.isFirstTimeOpen,
-                      isBackground: false)
-                  : const SizedBox()),
+      // if (widget.isStarted)
+      //   FutureBuilder(
+      //       future: Future.delayed(
+      //           Duration(milliseconds: widget.isFirstTimeOpen ? 500 : 0)),
+      //       builder: (context, snapShot) =>
+      //           snapShot.connectionState == ConnectionState.done
+      //               ? PathAnimation(
+      //                   lineColor: const Color(0xFF579E89),
+      //                   roundDrawSpeed: roundDrawSpeed,
+      //                   lastRoundDrawSpeed: lastRoundDrawSpeed,
+      //                   cycles: progressCycleCount,
+      //                   remainingLevelCount: lastCycleProgressCount,
+      //                   showAnimation: widget.isFirstTimeOpen,
+      //                   rowItemCount: rowItemCount,
+      //                   isBackground: true)
+      //               : const SizedBox()),
 
       // Levels
-      LevelGrid(
-          isStarted: widget.isStarted,
-          drawSpeed: widget.drawSpeed,
-          rowItemCount: rowItemCount,
-          isFirstTimeOpen: widget.isFirstTimeOpen,
-          levelDataList: widget.levelDataList),
+      // LevelGrid(
+      //     isStarted: widget.isStarted,
+      //     drawSpeed: widget.drawSpeed,
+      //     rowItemCount: rowItemCount,
+      //     isFirstTimeOpen: widget.isFirstTimeOpen,
+      //     levelDataList: widget.levelDataList),
 
       // Start and finish images
-      Positioned(
-          top: 0,
-          left: 20,
-          child: Transform.scale(
-              scale: 1.2, child: Image.asset(widget.startImage))),
+      Positioned(top: 0, left: 20, child: Image.asset(widget.startImage)),
 
-      Positioned(
-          bottom: 0,
-          right: widget.levelDataList.length % (2 * rowItemCount) < rowItemCount
-              ? 20
-              : null,
-          child: Transform.scale(
-              scale: 1.2, child: Image.asset(widget.finishImage))),
+      Positioned(top: 250, right: 0, child: Image.asset(widget.finishImage)),
     ]);
   }
 }
