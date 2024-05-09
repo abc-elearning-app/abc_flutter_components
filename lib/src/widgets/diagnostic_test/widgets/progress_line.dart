@@ -16,9 +16,9 @@ class ProgressLine extends StatelessWidget {
       required this.totalQuestions,
       required this.correctQuestions,
       required this.incorrectQuestions,
-      this.correctColor = const Color(0xFF07C58C),
-      this.incorrectColor = const Color(0xFFFF746D),
-      this.backgroundColor = Colors.white});
+      required this.correctColor,
+      required this.incorrectColor,
+      required this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
