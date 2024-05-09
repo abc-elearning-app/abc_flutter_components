@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/diagnostic_test_result/widgets/general_result_box.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/diagnostic_test_result/widgets/subject_tile.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/diagnostic_test/widgets/general_result_box.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/diagnostic_test/widgets/subject_tile.dart';
 
 import '../../../flutter_abc_jsc_components.dart';
 
