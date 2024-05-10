@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
+import 'package:provider/provider.dart';
 
 class TestDiagnosticQuestionsPage extends StatelessWidget {
   const TestDiagnosticQuestionsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final questionList = <QuestionData>[
+    final questions = <QuestionData>[
       QuestionData(
           'Some city transit buses may have a brake-door interlock system, this system _____.',
           <AnswerData>[
@@ -45,9 +46,16 @@ class TestDiagnosticQuestionsPage extends StatelessWidget {
           "Very simple question"),
     ];
 
-    return DiagnosticTestQuestions(
-      questions: questionList,
+    return DiagnosticTestWrapper(
+      questions: questions,
       onFinish: () => print('onFinish'),
+      onClickExplanation: () => print('buyPro'),
+      onReport: (reportDataList, otherReason) {
+        for (var element in reportDataList) {
+          print('${element.title} - ${element.isSelected}');
+        }
+        print(otherReason);
+      },
     );
   }
 }

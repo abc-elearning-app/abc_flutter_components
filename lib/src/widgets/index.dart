@@ -55,3 +55,4 @@ export 'page_indicator/page_indicator.dart';
 export 'new_study_tab/new_study_tab.dart';
 export 'levels_path/new_path_level_screen.dart';
 export 'diagnostic_test/new_diagnostic_test.dart';
+export 'diagnostic_test/provider/diagnostic_questions_provider.dart';
