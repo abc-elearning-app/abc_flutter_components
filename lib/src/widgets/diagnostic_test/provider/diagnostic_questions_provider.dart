@@ -20,28 +20,17 @@ class QuestionData {
 
 class AnswerData {
   final String content;
-  final bool isCorrect;
+  final bool? isCorrect;
 
-  AnswerData(this.content, this.isCorrect);
+  AnswerData(this.content, {this.isCorrect});
 }
 
 class DiagnosticQuestionProvider extends ChangeNotifier {
-  QuestionData? prevQuestion;
-  QuestionData? nextQuestion;
+  int correctQuestions = 0;
+  int incorrectQuestions = 0;
 
   int correctAnswerIndex = -1;
   int selectedAnswerIndex = -1;
-
-  void init(
-      {required QuestionData? prevQuestion,
-      required QuestionData nextQuestion}) {
-    this.prevQuestion = prevQuestion;
-    this.nextQuestion = nextQuestion;
-
-    // setup correct index
-    correctAnswerIndex =
-        nextQuestion.answers.indexWhere((answer) => answer.isCorrect);
-  }
 
   ButtonStatus getButtonStatus() {
     if (selectedAnswerIndex == -1) {
@@ -52,20 +41,4 @@ class DiagnosticQuestionProvider extends ChangeNotifier {
       return ButtonStatus.incorrect;
     }
   }
-
-// void toggleBookmark(int questionIndex) {
-//   _questions[questionIndex].bookmarked =
-//   !_questions[questionIndex].bookmarked;
-//   _updateQuestionList();
-// }
-//
-// void toggleLike(int questionIndex) {
-//   _questions[questionIndex].liked = !_questions[questionIndex].liked;
-//   _updateQuestionList();
-// }
-//
-// void toggleDislike(int questionIndex) {
-//   _questions[questionIndex].disliked = !_questions[questionIndex].disliked;
-//   _updateQuestionList();
-// }
 }

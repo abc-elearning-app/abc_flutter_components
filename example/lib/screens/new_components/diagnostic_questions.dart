@@ -1,61 +1,141 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
-import 'package:provider/provider.dart';
 
-class TestDiagnosticQuestionsPage extends StatelessWidget {
+class TestDiagnosticQuestionsPage extends StatefulWidget {
   const TestDiagnosticQuestionsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final questions = <QuestionData>[
+  State<TestDiagnosticQuestionsPage> createState() =>
+      _TestDiagnosticQuestionsPageState();
+}
+
+class _TestDiagnosticQuestionsPageState
+    extends State<TestDiagnosticQuestionsPage> {
+  int currentIndex = 0;
+  int correctQuestions = 0;
+  int incorrectQuestions = 0;
+
+  final questionValueNotifier = ValueNotifier<List<QuestionData>>([]);
+
+  @override
+  void initState() {
+    questionValueNotifier.value = [
       QuestionData(
           'Some city transit buses may have a brake-door interlock system, this system _____.',
           <AnswerData>[
-            AnswerData('An incorrect answer', false),
-            AnswerData('A correct answer', true),
-            AnswerData('An incorrect answer', false),
-            AnswerData('An incorrect answer', false),
+            AnswerData('An incorrect answer'),
+            AnswerData('A correct answer', isCorrect:  true),
+            AnswerData('An incorrect answer'),
+            AnswerData('An incorrect answer'),
           ],
           "There are four pieces in the assembled puzzle, two of which are triangles and the other pieces are 2 rectangles with different length."),
       QuestionData(
           'Who was in Paris ?',
           <AnswerData>[
-            AnswerData('Joe Cinema', false),
-            AnswerData('Kayne West', true),
-            AnswerData('Mickey Trump', false),
-            AnswerData('Charles Dicken', false),
+            AnswerData('Joe Cinema'),
+            AnswerData('Kayne West', isCorrect:  true),
+            AnswerData('Mickey Trump'),
+            AnswerData('Charles Dicken'),
           ],
           "Anyone could be in Paris !!!"),
       QuestionData(
           'Who is Kim Jisoo ?',
           <AnswerData>[
-            AnswerData('Kpop Idol', true),
-            AnswerData("Korean's president", false),
-            AnswerData('Vietnamese singer', false),
-            AnswerData('Teacher', false),
+            AnswerData('Kpop Idol', isCorrect: true),
+            AnswerData("Korean's president"),
+            AnswerData('Vietnamese singer'),
+            AnswerData('Teacher'),
           ],
           "A member of the South Korean girl group Blackpink, formed by YG Entertainment, in August 2016"),
       QuestionData(
           'Where is ABC ?',
           <AnswerData>[
-            AnswerData('Thành Đông kindergarten', true),
-            AnswerData("19 Tố Hữu", false),
-            AnswerData('Inside the white house', false),
-            AnswerData('Inside HUST', false),
+            AnswerData('Thành Đông kindergarten', isCorrect:  true),
+            AnswerData("19 Tố Hữu"),
+            AnswerData('Inside the white house'),
+            AnswerData('Inside HUST'),
           ],
           "Very simple question"),
     ];
+    super.initState();
+  }
 
-    return DiagnosticTestWrapper(
-      questions: questions,
-      onFinish: () => print('onFinish'),
-      onClickExplanation: () => print('buyPro'),
-      onReport: (reportDataList, otherReason) {
-        for (var element in reportDataList) {
-          print('${element.title} - ${element.isSelected}');
-        }
-        print(otherReason);
-      },
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F4EE),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFF5F4EE),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Progress line
+            ValueListenableBuilder(
+              valueListenable: questionValueNotifier,
+              builder: (_, value, __) => ProgressLine(
+                  lineHeight: 4,
+                  totalQuestions: value.length,
+                  correctQuestions: value
+                      .where((element) => element.isCorrectlyChosen == true)
+                      .length,
+                  incorrectQuestions: value
+                      .where((element) => element.isCorrectlyChosen == false)
+                      .length),
+            ),
+
+            // Question
+            Expanded(
+              child: DiagnosticTestQuestions(
+                prevQuestion: currentIndex == 0
+                    ? null
+                    : questionValueNotifier.value[currentIndex - 1],
+                nextQuestion: questionValueNotifier.value[currentIndex],
+                correctQuestions: correctQuestions,
+                incorrectQuestions: incorrectQuestions,
+                totalQuestions: questionValueNotifier.value.length,
+                currentQuestionIndex: currentIndex,
+                onContinue: () => _handleContinue(),
+                onClickExplanation: () => print('buyPro'),
+                onReport: (reportDataList, otherReason) {
+                  for (var element in reportDataList) {
+                    print('${element.title} - ${element.isSelected}');
+                  }
+                  print(otherReason);
+                },
+                onSelectAnswer: (bool isCorrect) {
+                  final tmpQuestionList = questionValueNotifier.value;
+                  tmpQuestionList[currentIndex].isCorrectlyChosen = isCorrect;
+                  questionValueNotifier.value = tmpQuestionList
+                      .map((e) => QuestionData(
+                          e.question, e.answers, e.explanation,
+                          bookmarked: e.bookmarked,
+                          liked: e.liked,
+                          disliked: e.disliked,
+                          isCorrectlyChosen: e.isCorrectlyChosen))
+                      .toList();
+                },
+                onToggleBookmark: (bool isSelected) =>
+                    print('Bookmark $isSelected'),
+                onToggleLike: (bool isSelected) =>
+                    print('Like $isSelected'),
+                onToggleDislike: (bool isSelected) =>
+                    print('Dislike $isSelected'),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
+  }
+
+  _handleContinue() {
+    if (currentIndex < questionValueNotifier.value.length - 1) {
+      setState(() {
+        currentIndex++;
+      });
+    } else {
+      Navigator.of(context).pop();
+    }
   }
 }

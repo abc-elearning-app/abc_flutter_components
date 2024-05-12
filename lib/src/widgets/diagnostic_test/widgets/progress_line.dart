@@ -10,15 +10,16 @@ class ProgressLine extends StatelessWidget {
   final Color incorrectColor;
   final Color backgroundColor;
 
-  const ProgressLine(
-      {super.key,
-      required this.lineHeight,
-      required this.totalQuestions,
-      required this.correctQuestions,
-      required this.incorrectQuestions,
-      required this.correctColor,
-      required this.incorrectColor,
-      required this.backgroundColor});
+  const ProgressLine({
+    super.key,
+    required this.lineHeight,
+    required this.totalQuestions,
+    required this.correctQuestions,
+    required this.incorrectQuestions,
+    this.correctColor = const Color(0xFF07C58C),
+    this.incorrectColor = const Color(0xFFFF746D),
+    this.backgroundColor = Colors.white,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,21 +28,18 @@ class ProgressLine extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          _buildColorProgress(context, correctColor, true),
-          _buildColorProgress(context, incorrectColor, false),
+          _buildColorProgress(context, correctColor, correctQuestions),
+          _buildColorProgress(context, incorrectColor, incorrectQuestions),
         ],
       ),
     );
   }
 
-  Widget _buildColorProgress(
-          BuildContext context, Color color, bool isCorrect) =>
+  Widget _buildColorProgress(BuildContext context, Color color, int value) =>
       AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         height: lineHeight,
         color: color,
-        width: MediaQuery.of(context).size.width *
-            ((isCorrect ? correctQuestions : incorrectQuestions) /
-                totalQuestions),
+        width: MediaQuery.of(context).size.width * (value / totalQuestions),
       );
 }

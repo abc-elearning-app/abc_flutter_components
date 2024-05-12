@@ -16,7 +16,7 @@ class PageAnimationState extends State<PageAnimation>
   late Animation<Offset> _insideAnimation;
   late Animation<Offset> _outsideAnimation;
 
-  Duration get duration => const Duration(milliseconds: 200);
+  Duration get duration => const Duration(milliseconds: 300);
 
   @override
   void initState() {

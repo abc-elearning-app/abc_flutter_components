@@ -35,6 +35,8 @@ class AppRoute {
   static const String newStudyTab = '/new_study_tab';
   static const String levelsPath = '/level_path';
   static const String diagnosticQuestion = '/diagnostic_question';
+  static const String newPracticeTab = '/practice_tab';
+  static const String groupQuestionList = '/group_question_list';
 
   static List<String> getAppRoute() {
     return [
@@ -46,7 +48,9 @@ class AppRoute {
       AppRoute.examTimeSetup,
       AppRoute.newStudyTab,
       AppRoute.levelsPath,
-      AppRoute.diagnosticQuestion
+      AppRoute.diagnosticQuestion,
+      AppRoute.newPracticeTab,
+      AppRoute.groupQuestionList
     ];
   }
 }

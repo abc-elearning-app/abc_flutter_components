@@ -7,9 +7,11 @@ import 'package:example/screens/logins_screen/logins_screen.dart';
 import 'package:example/screens/new_components/diagnostic_questions.dart';
 import 'package:example/screens/new_components/diagnostic_result_screen.dart';
 import 'package:example/screens/new_components/exam_time_setup_screen.dart';
+import 'package:example/screens/new_components/group_questions_list_page.dart';
 import 'package:example/screens/new_components/intro_personal_screens.dart';
 import 'package:example/screens/new_components/levels_path_screen.dart';
 import 'package:example/screens/new_components/login_screen.dart';
+import 'package:example/screens/new_components/new_practice_tab.dart';
 import 'package:example/screens/new_components/new_study_tab_screen.dart';
 import 'package:example/screens/new_components/personal_plan_analyzing.dart';
 import 'package:example/screens/new_components/personal_plan_ready.dart';
@@ -17,6 +19,7 @@ import 'package:example/screens/sliders_screen/sliders_screen.dart';
 import 'package:example/screens/tab_views_screen/tab_views_screen.dart';
 import 'package:example/screens/texts_screen/texts_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 import '../screens/buttons_screen/buttons_screen.dart';
 import '../screens/home_screen/home_screen.dart';
@@ -132,6 +135,14 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
           routeName: routeName,
           viewToShow: const TestDiagnosticQuestionsPage());
+    case AppRoute.newPracticeTab:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestNewPracticeTab());
+    case AppRoute.groupQuestionList:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestGroupQuestionList());
     default:
       return MaterialPageRoute(
         builder: (_) => Scaffold(

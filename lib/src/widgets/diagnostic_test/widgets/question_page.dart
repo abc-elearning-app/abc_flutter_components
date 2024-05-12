@@ -15,6 +15,9 @@ class QuestionPage extends StatelessWidget {
   final Color incorrectColor;
   final void Function(bool isCorrect) onSelectAnswer;
   final void Function() onClickExplanation;
+  final void Function(bool isSelected) onToggleBookmark;
+  final void Function(bool isSelected) onToggleLike;
+  final void Function(bool isSelected) onToggleDislike;
 
   QuestionPage(
       {super.key,
@@ -23,7 +26,10 @@ class QuestionPage extends StatelessWidget {
       this.correctColor = const Color(0xFF07C58C),
       this.incorrectColor = const Color(0xFFFF746D),
       required this.onSelectAnswer,
-      required this.onClickExplanation});
+      required this.onClickExplanation,
+      required this.onToggleBookmark,
+      required this.onToggleLike,
+      required this.onToggleDislike});
 
   int selectedAnswerIndex = -1;
 
@@ -59,89 +65,56 @@ class QuestionPage extends StatelessWidget {
         ),
 
         // Bookmark, like and dislike buttons
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   children: [
-        //     _iconButton(context, ButtonType.bookmark, () {
-        //       context
-        //           .read<DiagnosticQuestionProvider>()
-        //           .toggleBookmark(questionIndex);
-        //     }),
-        //     _iconButton(context, ButtonType.like, () {
-        //       context
-        //           .read<DiagnosticQuestionProvider>()
-        //           .toggleLike(questionIndex);
-        //     }),
-        //     _iconButton(context, ButtonType.dislike, () {
-        //       context
-        //           .read<DiagnosticQuestionProvider>()
-        //           .toggleDislike(questionIndex);
-        //     }),
-        //   ],
-        // )
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _iconButton(ButtonType.bookmark, onToggleBookmark),
+            _iconButton(ButtonType.like, onToggleLike),
+            _iconButton(ButtonType.dislike, onToggleDislike),
+          ],
+        )
       ],
     );
   }
 
-  Widget _iconButton(
-          BuildContext context, ButtonType type, void Function() action) =>
-      Selector<DiagnosticQuestionProvider, bool>(
-        selector: (_, provider) => provider.questions[questionIndex].liked,
-        builder: (_, value, __) => GestureDetector(
-          onTap: action,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: SvgPicture.asset(
-                'assets/images/${_getIconName(context, type)}.svg',
-                width: 30),
-          ),
+  Widget _iconButton(ButtonType type, void Function(bool isSelected) onToggle) {
+    bool isSelected = false;
+    return StatefulBuilder(
+      builder: (_, setState) => GestureDetector(
+        onTap: () {
+          setState(() => isSelected = !isSelected);
+          onToggle(isSelected);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: SvgPicture.asset(
+              'assets/images/${_getIconName(type, isSelected)}.svg',
+              width: 30),
         ),
-      );
+      ),
+    );
+  }
 
-  _getIconName(BuildContext context, ButtonType type) {
-    final currentQuestion =
-        context.read<DiagnosticQuestionProvider>().questions[questionIndex];
-    bool isChosen = false;
-    switch (type) {
-      case ButtonType.bookmark:
-        isChosen = currentQuestion.bookmarked;
-        break;
-
-      case ButtonType.like:
-        isChosen = currentQuestion.liked;
-        break;
-
-      case ButtonType.dislike:
-        isChosen = currentQuestion.disliked;
-        break;
-    }
-
-    String iconName = '';
-    if (isChosen) {
+  _getIconName(ButtonType type, bool isSelected) {
+    if (isSelected) {
       switch (type) {
         case ButtonType.bookmark:
-          iconName = 'bookmarked';
-          break;
+          return 'bookmarked';
         case ButtonType.like:
-          iconName = 'liked';
-          break;
-        default:
-          iconName = 'disliked';
+          return 'liked';
+        case ButtonType.dislike:
+          return 'disliked';
       }
     } else {
       switch (type) {
         case ButtonType.bookmark:
-          iconName = 'bookmark';
-          break;
+          return 'bookmark';
         case ButtonType.like:
-          iconName = 'like';
-          break;
-        default:
-          iconName = 'dislike';
+          return 'like';
+        case ButtonType.dislike:
+          return 'dislike';
       }
     }
-
-    return iconName;
   }
 
   Widget _buildQuestionBox() => Container(
@@ -184,9 +157,9 @@ class QuestionPage extends StatelessWidget {
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
             color:
-                _getAnswerBackgroundColor(answerIndex, currentAnswer.isCorrect),
+                _getAnswerBackgroundColor(answerIndex, currentAnswer.isCorrect == true),
             borderRadius: BorderRadius.circular(15),
-            border: _buildAnswerBorder(answerIndex, currentAnswer.isCorrect)),
+            border: _buildAnswerBorder(answerIndex, currentAnswer.isCorrect == false)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -197,7 +170,7 @@ class QuestionPage extends StatelessWidget {
             ),
 
             // Icon (after selected)
-            _buildIcon(answerIndex, currentAnswer.isCorrect)
+            _buildIcon(answerIndex, currentAnswer.isCorrect == true)
           ],
         ),
       ),
@@ -206,11 +179,11 @@ class QuestionPage extends StatelessWidget {
       onTap: () {
         if (selectedAnswerIndex == -1) {
           setState(() => selectedAnswerIndex = answerIndex);
-          context
-              .read<DiagnosticQuestionProvider>()
-              .updateQuestionStatus(questionIndex, currentAnswer.isCorrect);
+          // context
+          //     .read<DiagnosticQuestionProvider>()
+          //     .updateQuestionStatus(questionIndex, currentAnswer.isCorrect);
 
-          onSelectAnswer(currentAnswer.isCorrect);
+          onSelectAnswer(currentAnswer.isCorrect == true);
         }
       },
     );
@@ -243,13 +216,16 @@ class QuestionPage extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Stack(children: [
-                Text(
-                  questionData.explanation,
-                  style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.grey.shade700,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.w500),
+                Padding(
+                  padding: const EdgeInsets.all(3),
+                  child: Text(
+                    questionData.explanation,
+                    style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.grey.shade700,
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w500),
+                  ),
                 ),
                 if (!isPro) const BlurEffect()
               ])
