@@ -49,14 +49,14 @@ class SubjectTile extends StatelessWidget {
                   Text(
                     subjectData.title,
                     style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.w600),
+                        fontSize: 18, fontWeight: FontWeight.w500),
                   ),
-                  Text(
-                    _getLevelTitle(subjectData.progress),
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: tileColor),
-                  ),
+                  // Text(
+                  //   _getLevelTitle(subjectData.progress),
+                  //   style: TextStyle(
+                  //       fontSize: 16,
+                  //       color: tileColor),
+                  // ),
                 ],
               ),
             ),

@@ -13,7 +13,6 @@ class SubjectData {
 }
 
 class NewStudyTab extends StatelessWidget {
-  final Color backgroundColor;
   final Color mainColor;
   final Color textColor;
   final Color beginnerColor;
@@ -26,19 +25,20 @@ class NewStudyTab extends StatelessWidget {
 
   final int dayStreak;
   final double passingProbability;
+  final String buttonText;
 
   final void Function() onClickTodayQuestion;
 
   const NewStudyTab({
     super.key,
     this.streakIcon,
-    this.backgroundColor = const Color(0xFFEEFFFA),
     this.mainColor = const Color(0xFF579E89),
     this.textColor = Colors.white,
     this.buttonBackground,
     this.beginnerColor = const Color(0xFFFC5656),
     this.intermediateColor = const Color(0xFFFFB443),
     this.advancedColor = const Color(0xFF2C9CB5),
+    this.buttonText = "Today's Questions",
     required this.dayStreak,
     required this.passingProbability,
     required this.onClickTodayQuestion,
@@ -72,7 +72,8 @@ class NewStudyTab extends StatelessWidget {
           ),
 
           // Button
-          TodayQuestionButton(buttonBackground: buttonBackground),
+          TodayQuestionButton(
+              title: buttonText, buttonBackground: buttonBackground),
 
           // Subject list
           Expanded(

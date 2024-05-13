@@ -40,9 +40,11 @@ class TestNewStudyTabScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-        backgroundColor: const Color(0xFFEEFFFA),
+        backgroundColor: const Color(0xFFF5F4EE),
         body: SafeArea(
             child: NewStudyTab(
+          buttonText: '',
+          mainColor: const Color(0xFFE3A651),
           subjectDataList: subjectDataList,
           dayStreak: 14,
           passingProbability: 30,
