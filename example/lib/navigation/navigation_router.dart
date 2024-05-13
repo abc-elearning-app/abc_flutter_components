@@ -4,6 +4,7 @@ import 'package:example/screens/check_boxes_screen/check_boxes_screen.dart';
 import 'package:example/screens/emails_screen/emails_screen.dart';
 import 'package:example/screens/loadings_screen/loadings_screen.dart';
 import 'package:example/screens/logins_screen/logins_screen.dart';
+import 'package:example/screens/new_components/customize_test.dart';
 import 'package:example/screens/new_components/diagnostic_questions.dart';
 import 'package:example/screens/new_components/diagnostic_result_screen.dart';
 import 'package:example/screens/new_components/exam_time_setup_screen.dart';
@@ -143,6 +144,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
           routeName: routeName,
           viewToShow: const TestGroupQuestionList());
+    case AppRoute.customizeTest:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestCustomizeTest());
     default:
       return MaterialPageRoute(
         builder: (_) => Scaffold(

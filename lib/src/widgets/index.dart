@@ -59,3 +59,4 @@ export 'diagnostic_test/diagnostic_question.dart';
 export 'diagnostic_test/widgets/progress_line.dart';
 export 'new_home_screen/new_practice_tab.dart';
 export 'new_home_screen/widgets/review_question_box.dart';
+export 'customize_test/customize_test.dart';
