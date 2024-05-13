@@ -11,32 +11,32 @@ class TestNewPracticeTab extends StatelessWidget {
           'Random Questions',
           'Select questions randomly from the question bank.',
           'random_questions',
-          const Color(0xFFBAE8DB),
-          () => print('Random Questions')),
+          iconBackgroundColor: const Color(0xFFBAE8DB),
+          () => _handleOpenDialog(context)),
       QuestionGroupData(
           'Weak Questions',
           'Retake missed questions to improve your score.',
           'weak_questions',
-          const Color(0xFFFFC7C7),
-          () => print('Weak Questions')),
+          iconBackgroundColor: const Color(0xFFFFC7C7),
+          () => _handleOpenDialog(context)),
       QuestionGroupData(
           'Hardest Questions',
           'Practice commonly answered incorrectly questions.',
           'hardest_questions',
-          const Color(0xFFD3F7FF),
-          () => print('Hardest Questions')),
+          iconBackgroundColor: const Color(0xFFD3F7FF),
+          () => _handleOpenDialog(context)),
       QuestionGroupData(
           'Saved Questions',
           'Practice saved questions from lessons.',
           'saved_questions',
-          const Color(0xFFFEEDD5),
-          () => print('Saved Questions')),
+          iconBackgroundColor: const Color(0xFFFEEDD5),
+          () => _handleOpenDialog(context)),
       QuestionGroupData(
           'Exam Simulator',
           'Customize the test according to your preferences.',
           'exam_simulator',
-          const Color(0xFFDEEBFF),
-          () => _handleOpenDialog(context)),
+          iconBackgroundColor: const Color(0xFFDEEBFF),
+          () {}),
     ];
 
     return Scaffold(

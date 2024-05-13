@@ -24,7 +24,7 @@ class _TestDiagnosticQuestionsPageState
           'Some city transit buses may have a brake-door interlock system, this system _____.',
           <AnswerData>[
             AnswerData('An incorrect answer'),
-            AnswerData('A correct answer', isCorrect:  true),
+            AnswerData('A correct answer', isCorrect: true),
             AnswerData('An incorrect answer'),
             AnswerData('An incorrect answer'),
           ],
@@ -33,7 +33,7 @@ class _TestDiagnosticQuestionsPageState
           'Who was in Paris ?',
           <AnswerData>[
             AnswerData('Joe Cinema'),
-            AnswerData('Kayne West', isCorrect:  true),
+            AnswerData('Kayne West', isCorrect: true),
             AnswerData('Mickey Trump'),
             AnswerData('Charles Dicken'),
           ],
@@ -50,7 +50,7 @@ class _TestDiagnosticQuestionsPageState
       QuestionData(
           'Where is ABC ?',
           <AnswerData>[
-            AnswerData('Thành Đông kindergarten', isCorrect:  true),
+            AnswerData('Thành Đông kindergarten', isCorrect: true),
             AnswerData("19 Tố Hữu"),
             AnswerData('Inside the white house'),
             AnswerData('Inside HUST'),
@@ -86,47 +86,39 @@ class _TestDiagnosticQuestionsPageState
 
             // Question
             Expanded(
-              child: DiagnosticTestQuestions(
+              child: DiagnosticQuestion(
                 prevQuestion: currentIndex == 0
                     ? null
                     : questionValueNotifier.value[currentIndex - 1],
+                isPro: false,
                 nextQuestion: questionValueNotifier.value[currentIndex],
-                correctQuestions: correctQuestions,
-                incorrectQuestions: incorrectQuestions,
                 totalQuestions: questionValueNotifier.value.length,
                 currentQuestionIndex: currentIndex,
                 onContinue: () => _handleContinue(),
                 onClickExplanation: () => print('buyPro'),
-                onReport: (reportDataList, otherReason) {
-                  for (var element in reportDataList) {
-                    print('${element.title} - ${element.isSelected}');
-                  }
-                  print(otherReason);
-                },
-                onSelectAnswer: (bool isCorrect) {
-                  final tmpQuestionList = questionValueNotifier.value;
-                  tmpQuestionList[currentIndex].isCorrectlyChosen = isCorrect;
-                  questionValueNotifier.value = tmpQuestionList
-                      .map((e) => QuestionData(
-                          e.question, e.answers, e.explanation,
-                          bookmarked: e.bookmarked,
-                          liked: e.liked,
-                          disliked: e.disliked,
-                          isCorrectlyChosen: e.isCorrectlyChosen))
-                      .toList();
-                },
-                onToggleBookmark: (bool isSelected) =>
-                    print('Bookmark $isSelected'),
-                onToggleLike: (bool isSelected) =>
-                    print('Like $isSelected'),
-                onToggleDislike: (bool isSelected) =>
-                    print('Dislike $isSelected'),
+                onReport: (reportDataList, otherReason) {},
+                onSelectAnswer: (isCorrect) => _handleOnSelectAnswer(isCorrect),
+                onToggleLike: (isSelected) => print('Like $isSelected'),
+                onToggleDislike: (isSelected) => print('Dislike $isSelected'),
+                onToggleBookmark: (isSelected) => print('Bookmark $isSelected'),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  _handleOnSelectAnswer(bool isCorrect) {
+    final tmpQuestionList = questionValueNotifier.value;
+    tmpQuestionList[currentIndex].isCorrectlyChosen = isCorrect;
+    questionValueNotifier.value = tmpQuestionList
+        .map((e) => QuestionData(e.question, e.answers, e.explanation,
+            bookmarked: e.bookmarked,
+            liked: e.liked,
+            disliked: e.disliked,
+            isCorrectlyChosen: e.isCorrectlyChosen))
+        .toList();
   }
 
   _handleContinue() {

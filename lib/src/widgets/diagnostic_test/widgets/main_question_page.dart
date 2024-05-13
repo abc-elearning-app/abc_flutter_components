@@ -1,120 +1,84 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/diagnostic_test/widgets/blur_effect.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/animations/blur_effect.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/buttons/toggle_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 
-import '../provider/diagnostic_questions_provider.dart';
+import '../../../../flutter_abc_jsc_components.dart';
 
 enum ButtonType { bookmark, like, dislike }
 
-class QuestionPage extends StatelessWidget {
+class MainQuestionPage extends StatelessWidget {
   final int questionIndex;
   final QuestionData questionData;
+  final bool isPro;
+
+  // Colors
   final Color correctColor;
   final Color incorrectColor;
-  final void Function(bool isCorrect) onSelectAnswer;
-  final void Function() onClickExplanation;
-  final void Function(bool isSelected) onToggleBookmark;
-  final void Function(bool isSelected) onToggleLike;
-  final void Function(bool isSelected) onToggleDislike;
+  final String? correctIcon;
+  final String? incorrectIcon;
 
-  QuestionPage(
+  // Callbacks
+  final void Function(bool isCorrect)? onSelectAnswer;
+  final void Function()? onClickExplanation;
+  final void Function(bool isSelected)? onToggleBookmark;
+  final void Function(bool isSelected)? onToggleLike;
+  final void Function(bool isSelected)? onToggleDislike;
+
+  MainQuestionPage(
       {super.key,
       required this.questionIndex,
       required this.questionData,
+      this.isPro = false,
       this.correctColor = const Color(0xFF07C58C),
       this.incorrectColor = const Color(0xFFFF746D),
-      required this.onSelectAnswer,
-      required this.onClickExplanation,
-      required this.onToggleBookmark,
-      required this.onToggleLike,
-      required this.onToggleDislike});
+      this.onSelectAnswer,
+      this.onClickExplanation,
+      this.onToggleBookmark,
+      this.onToggleLike,
+      this.onToggleDislike,
+      this.correctIcon,
+      this.incorrectIcon});
 
   int selectedAnswerIndex = -1;
-
-  // Debug
-  final bool isPro = false;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(
-          child: ListView(
-            children: [
-              _buildQuestionBox(),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Question
+                _buildQuestionBox(),
 
-              // Answers
-              StatefulBuilder(
-                builder: (_, setState) => Column(
-                  children: [
-                    ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.only(top: 15),
-                        itemCount: questionData.answers.length,
-                        itemBuilder: (_, index) =>
-                            _buildAnswer(context, index, setState)),
-                    _buildExplanation()
-                  ],
+                StatefulBuilder(
+                  builder: (_, setState) => Column(
+                    children: [
+                      // Answers
+                      ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.only(top: 15),
+                          itemCount: questionData.answers.length,
+                          itemBuilder: (_, index) =>
+                              _buildAnswer(context, index, setState)),
+
+                      // Explanation
+                      _buildExplanation()
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
 
         // Bookmark, like and dislike buttons
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _iconButton(ButtonType.bookmark, onToggleBookmark),
-            _iconButton(ButtonType.like, onToggleLike),
-            _iconButton(ButtonType.dislike, onToggleDislike),
-          ],
-        )
+        _buildOptions()
       ],
     );
-  }
-
-  Widget _iconButton(ButtonType type, void Function(bool isSelected) onToggle) {
-    bool isSelected = false;
-    return StatefulBuilder(
-      builder: (_, setState) => GestureDetector(
-        onTap: () {
-          setState(() => isSelected = !isSelected);
-          onToggle(isSelected);
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: SvgPicture.asset(
-              'assets/images/${_getIconName(type, isSelected)}.svg',
-              width: 30),
-        ),
-      ),
-    );
-  }
-
-  _getIconName(ButtonType type, bool isSelected) {
-    if (isSelected) {
-      switch (type) {
-        case ButtonType.bookmark:
-          return 'bookmarked';
-        case ButtonType.like:
-          return 'liked';
-        case ButtonType.dislike:
-          return 'disliked';
-      }
-    } else {
-      switch (type) {
-        case ButtonType.bookmark:
-          return 'bookmark';
-        case ButtonType.like:
-          return 'like';
-        case ButtonType.dislike:
-          return 'dislike';
-      }
-    }
   }
 
   Widget _buildQuestionBox() => Container(
@@ -148,44 +112,42 @@ class QuestionPage extends StatelessWidget {
         ),
       );
 
-  Widget _buildAnswer(BuildContext context, int answerIndex,
-      void Function(void Function() action) setState) {
+  Widget _buildAnswer(
+    BuildContext context,
+    int answerIndex,
+    void Function(void Function() action) setState,
+  ) {
     final currentAnswer = questionData.answers[answerIndex];
     return GestureDetector(
+      // Handle select answer
+      onTap: () {
+        if (selectedAnswerIndex == -1) {
+          setState(() => selectedAnswerIndex = answerIndex);
+          if (onSelectAnswer != null) {
+            onSelectAnswer!(currentAnswer.isCorrect == true);
+          }
+        }
+      },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-            color:
-                _getAnswerBackgroundColor(answerIndex, currentAnswer.isCorrect == true),
             borderRadius: BorderRadius.circular(15),
-            border: _buildAnswerBorder(answerIndex, currentAnswer.isCorrect == false)),
+            color: _answerBackgroundColor(answerIndex, currentAnswer.isCorrect),
+            border: _answerBorder(answerIndex, currentAnswer.isCorrect)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Answer content
             Text(
               currentAnswer.content,
               style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
             ),
 
             // Icon (after selected)
-            _buildIcon(answerIndex, currentAnswer.isCorrect == true)
+            _buildIcon(answerIndex, currentAnswer.isCorrect)
           ],
         ),
       ),
-
-      // Handle select answer
-      onTap: () {
-        if (selectedAnswerIndex == -1) {
-          setState(() => selectedAnswerIndex = answerIndex);
-          // context
-          //     .read<DiagnosticQuestionProvider>()
-          //     .updateQuestionStatus(questionIndex, currentAnswer.isCorrect);
-
-          onSelectAnswer(currentAnswer.isCorrect == true);
-        }
-      },
     );
   }
 
@@ -239,7 +201,36 @@ class QuestionPage extends StatelessWidget {
           : CrossFadeState.showFirst,
       duration: const Duration(milliseconds: 200));
 
-  _getAnswerBackgroundColor(int answerIndex, bool isCorrect) {
+  Widget _buildOptions() => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ToggleButton(
+              iconSize: 30,
+              unselectedIcon: 'bookmark',
+              selectedIcon: 'bookmarked',
+              isSelected: questionData.bookmarked,
+              onToggle: (isSelected) => onToggleBookmark != null
+                  ? onToggleBookmark!(isSelected)
+                  : null),
+          ToggleButton(
+              iconSize: 30,
+              unselectedIcon: 'like',
+              selectedIcon: 'liked',
+              isSelected: questionData.liked,
+              onToggle: (isSelected) =>
+                  onToggleLike != null ? onToggleLike!(isSelected) : null),
+          ToggleButton(
+              iconSize: 30,
+              unselectedIcon: 'dislike',
+              selectedIcon: 'disliked',
+              isSelected: questionData.disliked,
+              onToggle: (isSelected) => onToggleDislike != null
+                  ? onToggleDislike!(isSelected)
+                  : null),
+        ],
+      );
+
+  _answerBackgroundColor(int answerIndex, bool? isCorrect) {
     switch (_checkAnswer(answerIndex, isCorrect)) {
       case 0:
         return Colors.white;
@@ -250,7 +241,7 @@ class QuestionPage extends StatelessWidget {
     }
   }
 
-  _buildAnswerBorder(int answerIndex, bool isCorrect) {
+  _answerBorder(int answerIndex, bool? isCorrect) {
     switch (_checkAnswer(answerIndex, isCorrect)) {
       case 0:
         return null;
@@ -261,24 +252,30 @@ class QuestionPage extends StatelessWidget {
     }
   }
 
-  _buildIcon(int answerIndex, bool isCorrect) {
+  _buildIcon(int answerIndex, bool? isCorrect) {
     switch (_checkAnswer(answerIndex, isCorrect)) {
       case 0:
         return const SizedBox();
       case 1:
-        return SvgPicture.asset('assets/images/correct.svg');
+        return SvgPicture.asset(
+            'assets/images/${correctIcon ?? 'correct'}.svg');
       case 2:
-        return SvgPicture.asset('assets/images/incorrect.svg');
+        return SvgPicture.asset(
+            'assets/images/${incorrectIcon ?? 'incorrect'}.svg');
     }
   }
 
   /// 0 - default,  1 - correct,  2 - incorrect
-  int _checkAnswer(int answerIndex, bool isCorrect) {
-    if (selectedAnswerIndex == -1 ||
-        (selectedAnswerIndex != answerIndex && !isCorrect)) {
-      return 0;
-    }
+  int _checkAnswer(int answerIndex, bool? isCorrect) {
+    // If not select any answer yet
+    if (selectedAnswerIndex == -1) return 0;
 
-    return isCorrect ? 1 : 2;
+    // Display correct answer
+    if (isCorrect == true) return 1;
+
+    // Display incorrect answer (if choose wrong)
+    if (selectedAnswerIndex == answerIndex) return 2;
+
+    return 0;
   }
 }

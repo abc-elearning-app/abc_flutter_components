@@ -1,19 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/diagnostic_test/widgets/question_page.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/diagnostic_test/widgets/report_tab.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/diagnostic_test/widgets/main_question_page.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/bottom_sheets/report_tab.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/animations/page_animation.dart';
 
-class DiagnosticTestQuestions extends StatefulWidget {
+class QuestionData {
+  final String question;
+  final List<AnswerData> answers;
+  final String explanation;
+  bool? isCorrectlyChosen;
+  bool bookmarked;
+  bool liked;
+  bool disliked;
+
+  QuestionData(this.question, this.answers, this.explanation,
+      {this.bookmarked = false,
+      this.liked = false,
+      this.disliked = false,
+      this.isCorrectlyChosen});
+}
+
+class AnswerData {
+  final String content;
+  final bool? isCorrect;
+
+  AnswerData(this.content, {this.isCorrect});
+}
+
+enum ButtonStatus { disabled, correct, incorrect }
+
+class DiagnosticQuestion extends StatefulWidget {
   final QuestionData? prevQuestion;
   final QuestionData nextQuestion;
 
   final int currentQuestionIndex;
-
-  // For displaying progress line
-  final int correctQuestions;
-  final int incorrectQuestions;
   final int totalQuestions;
+  final bool isPro;
 
   // Callbacks
   final void Function() onClickExplanation;
@@ -28,33 +50,35 @@ class DiagnosticTestQuestions extends StatefulWidget {
   final Color correctColor;
   final Color incorrectColor;
   final Color progressBackgroundColor;
+  final String? correctIcon;
+  final String? incorrectIcon;
 
-  const DiagnosticTestQuestions({
+  const DiagnosticQuestion({
     super.key,
     required this.prevQuestion,
     required this.nextQuestion,
+    required this.isPro,
     this.correctColor = const Color(0xFF07C58C),
     this.incorrectColor = const Color(0xFFFF746D),
     this.progressBackgroundColor = Colors.white,
-    required this.onClickExplanation,
-    required this.onReport,
-    required this.correctQuestions,
-    required this.incorrectQuestions,
     required this.totalQuestions,
     required this.currentQuestionIndex,
+    required this.onClickExplanation,
+    required this.onReport,
     required this.onContinue,
     required this.onSelectAnswer,
     required this.onToggleBookmark,
     required this.onToggleLike,
     required this.onToggleDislike,
+    this.correctIcon,
+    this.incorrectIcon
   });
 
   @override
-  State<DiagnosticTestQuestions> createState() =>
-      _DiagnosticTestQuestionsState();
+  State<DiagnosticQuestion> createState() => _DiagnosticQuestionState();
 }
 
-class _DiagnosticTestQuestionsState extends State<DiagnosticTestQuestions> {
+class _DiagnosticQuestionState extends State<DiagnosticQuestion> {
   final _buttonStatus = ValueNotifier<ButtonStatus>(ButtonStatus.disabled);
 
   @override
@@ -90,26 +114,28 @@ class _DiagnosticTestQuestionsState extends State<DiagnosticTestQuestions> {
 
   Widget _buildQuestion() => PageAnimation(
         key: animationKey,
+
+        // prevChild only for animation
         prevChild: widget.currentQuestionIndex == 0
             ? null
-            : QuestionPage(
+            : MainQuestionPage(
                 questionIndex: widget.currentQuestionIndex - 1,
                 questionData: widget.prevQuestion!,
-                onSelectAnswer: (bool isCorrect) =>
-                    _handleOnSelectAnswer(isCorrect),
-                onClickExplanation: widget.onClickExplanation,
-                onToggleBookmark: widget.onToggleBookmark,
-                onToggleLike: widget.onToggleLike,
-                onToggleDislike: widget.onToggleDislike,
               ),
-        nextChild: QuestionPage(
+
+        nextChild: MainQuestionPage(
+          isPro: widget.isPro,
           questionIndex: widget.currentQuestionIndex,
           questionData: widget.nextQuestion,
-          onSelectAnswer: (bool isCorrect) => _handleOnSelectAnswer(isCorrect),
+          correctColor: widget.correctColor,
+          incorrectColor: widget.incorrectColor,
+          onSelectAnswer: (isCorrect) => _handleOnSelectAnswer(isCorrect),
           onClickExplanation: widget.onClickExplanation,
           onToggleBookmark: widget.onToggleBookmark,
           onToggleLike: widget.onToggleLike,
           onToggleDislike: widget.onToggleDislike,
+          correctIcon: widget.correctIcon,
+          incorrectIcon: widget.incorrectIcon,
         ),
       );
 
@@ -132,11 +158,13 @@ class _DiagnosticTestQuestionsState extends State<DiagnosticTestQuestions> {
       );
 
   _handleContinueButtonClick() {
+    // Reset status and trigger callback
     _buttonStatus.value = ButtonStatus.disabled;
     widget.onContinue();
   }
 
   _handleOnSelectAnswer(bool isCorrect) {
+    // Update status and trigger callback
     _buttonStatus.value =
         isCorrect ? ButtonStatus.correct : ButtonStatus.incorrect;
 

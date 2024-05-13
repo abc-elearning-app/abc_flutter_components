@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/buttons/toggle_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ReviewQuestionBox extends StatefulWidget {
   final int index;
   final QuestionData questionData;
+
+  final Color textColor;
+  final Color explanationColor;
+  final String correctIcon;
+  final String incorrectIcon;
+  final String unselectedIcon;
+
+  // Callbacks
   final void Function(bool isSelected) onBookmarkClick;
   final void Function(bool isSelected) onLikeClick;
   final void Function(bool isSelected) onDislikeClick;
+  final void Function() onProClick;
 
   const ReviewQuestionBox({
     super.key,
@@ -16,6 +26,12 @@ class ReviewQuestionBox extends StatefulWidget {
     required this.onBookmarkClick,
     required this.onLikeClick,
     required this.onDislikeClick,
+    required this.onProClick,
+    this.textColor = Colors.black,
+    this.explanationColor = const Color(0xFF5497FF),
+    this.correctIcon = 'correct',
+    this.incorrectIcon = 'incorrect',
+    this.unselectedIcon = 'unselected',
   });
 
   @override
@@ -68,8 +84,10 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                 // Question and answers
                 Text(
                   '${widget.index + 1}. ${widget.questionData.question}',
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: widget.textColor),
                 ),
 
                 Column(
@@ -91,14 +109,16 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                       AnimatedCrossFade(
                         firstChild: Padding(
                           padding: const EdgeInsets.only(
-                              left: 10, right: 10, bottom: 10),
+                              left: 15, right: 15, bottom: 20),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
+                              Text(
                                 'Explanation',
                                 style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: widget.textColor),
                               ),
                               Text(
                                 widget.questionData.explanation,
@@ -131,42 +151,31 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            StatefulBuilder(
-                builder: (_, setState) => GestureDetector(
-                    onTap: () {
-                      setState(() => isBookmarked = !isBookmarked);
-                      widget.onBookmarkClick(isBookmarked);
-                    },
-                    child: SvgPicture.asset(
-                        'assets/images/${isBookmarked ? 'bookmarked' : 'bookmark'}.svg'))),
-            const SizedBox(width: 15),
-            StatefulBuilder(
-                builder: (_, setState) => GestureDetector(
-                    onTap: () {
-                      setState(() => isLiked = !isLiked);
-                      widget.onLikeClick(isDisliked);
-                    },
-                    child: SvgPicture.asset(
-                        'assets/images/${isLiked ? 'liked' : 'like'}.svg'))),
-            const SizedBox(width: 15),
-            StatefulBuilder(
-                builder: (_, setState) => GestureDetector(
-                    onTap: () {
-                      setState(() => isDisliked = !isDisliked);
-                      widget.onDislikeClick(isDisliked);
-                    },
-                    child: SvgPicture.asset(
-                        'assets/images/${isDisliked ? 'disliked' : 'dislike'}.svg'))),
+            ToggleButton(
+                unselectedIcon: 'bookmark',
+                selectedIcon: 'bookmarked',
+                isSelected: isBookmarked,
+                onToggle: (isSelected) => widget.onBookmarkClick(isSelected)),
+            ToggleButton(
+                unselectedIcon: 'like',
+                selectedIcon: 'liked',
+                isSelected: isLiked,
+                onToggle: (isSelected) => widget.onLikeClick(isSelected)),
+            ToggleButton(
+                unselectedIcon: 'dislike',
+                selectedIcon: 'disliked',
+                isSelected: isDisliked,
+                onToggle: (isSelected) => widget.onDislikeClick(isSelected)),
           ],
         ),
       );
 
   Widget _buildAnswer(String content, {bool? isCorrect}) {
     String icon = isCorrect == null
-        ? 'unselected'
+        ? widget.unselectedIcon
         : isCorrect == true
-            ? 'correct'
-            : 'incorrect';
+            ? widget.correctIcon
+            : widget.incorrectIcon;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -177,7 +186,8 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
             width: 12,
           ),
           const SizedBox(width: 15),
-          Text(content, style: const TextStyle(fontSize: 17)),
+          Text(content,
+              style: TextStyle(fontSize: 17, color: widget.textColor)),
         ],
       ),
     );
@@ -189,24 +199,24 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
           if (isPro) {
             setState(() => isShowExplanation = !isShowExplanation);
           } else {
-            print('Purchasing');
+            widget.onProClick();
           }
         },
         child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: const BoxDecoration(
-              color: Color(0xFFDEEBFF),
-              borderRadius: BorderRadius.only(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+              color: widget.explanationColor.withOpacity(0.2),
+              borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(15),
                   bottomRight: Radius.circular(15))),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Show Explanation',
                 style: TextStyle(
                     fontSize: 18,
-                    color: Color(0xFF5497FF),
+                    color: widget.explanationColor,
                     fontWeight: FontWeight.w500),
               ),
               Padding(
@@ -215,14 +225,14 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                     flipY: isShowExplanation,
                     child: SvgPicture.asset('assets/images/chevron_down.svg')),
               ),
+
+              // Pro icon
               if (!isPro)
                 Expanded(
                     child: Align(
                   alignment: Alignment.centerRight,
-                  child: SvgPicture.asset(
-                    'assets/images/pro_content.svg',
-                    height: 25,
-                  ),
+                  child: SvgPicture.asset('assets/images/pro_content.svg',
+                      height: 25),
                 ))
             ],
           ),

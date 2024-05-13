@@ -12,6 +12,23 @@ class TestGroupQuestionList extends StatelessWidget {
         child: Column(
           children: [
             ReviewQuestionBox(
+              onProClick: () => print('buy pro'),
+              onLikeClick: (liked) => print(liked),
+              onDislikeClick: (disliked) => print(disliked),
+              onBookmarkClick: (bookmarked) => print(bookmarked),
+              index: 0,
+              questionData: QuestionData(
+                  "When transporting chlorine in cargo tanks, what must you have?",
+                  <AnswerData>[
+                    AnswerData('Pipe wrench', isCorrect: false),
+                    AnswerData('Socket wrench'),
+                    AnswerData('Alien wrench', isCorrect: true),
+                    AnswerData('Pipe wrench'),
+                  ],
+                  'There are four pieces in the assembled puzzle, two of which are triangles and the other pieces are 2 rectangles with different length.'),
+            ),
+            ReviewQuestionBox(
+              onProClick: () => print('buy pro'),
               onLikeClick: (liked) {},
               onDislikeClick: (disliked) {},
               onBookmarkClick: (bookmarked) {},
@@ -27,21 +44,7 @@ class TestGroupQuestionList extends StatelessWidget {
                   'There are four pieces in the assembled puzzle, two of which are triangles and the other pieces are 2 rectangles with different length.'),
             ),
             ReviewQuestionBox(
-              onLikeClick: (liked) {},
-              onDislikeClick: (disliked) {},
-              onBookmarkClick: (bookmarked) {},
-              index: 0,
-              questionData: QuestionData(
-                  "When transporting chlorine in cargo tanks, what must you have?",
-                  <AnswerData>[
-                    AnswerData('Pipe wrench', isCorrect: false),
-                    AnswerData('Socket wrench'),
-                    AnswerData('Alien wrench', isCorrect: true),
-                    AnswerData('Pipe wrench'),
-                  ],
-                  'There are four pieces in the assembled puzzle, two of which are triangles and the other pieces are 2 rectangles with different length.'),
-            ),
-            ReviewQuestionBox(
+              onProClick: () => print('buy pro'),
               onLikeClick: (liked) {},
               onDislikeClick: (disliked) {},
               onBookmarkClick: (bookmarked) {},

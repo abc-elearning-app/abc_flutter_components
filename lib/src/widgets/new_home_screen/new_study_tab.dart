@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/new_study_tab/widgets/passing_probability_box.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/new_study_tab/widgets/streak_circle.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/new_study_tab/widgets/subject_tile.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/new_study_tab/widgets/today_question_button.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/passing_probability_box.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/streak_circle.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/subject_tile.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/today_question_button.dart';
 
 class SubjectData {
   final String icon;
@@ -64,12 +64,10 @@ class NewStudyTab extends StatelessWidget {
                 streakIcon: streakIcon,
                 dayStreak: dayStreak,
               ),
-
               Expanded(
-                child: PassingProbabilityBox(
-                        mainColor: mainColor,
-                        passingProbability: passingProbability),
-              )
+                  child: PassingProbabilityBox(
+                      mainColor: mainColor,
+                      passingProbability: passingProbability))
             ],
           ),
 

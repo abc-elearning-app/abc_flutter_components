@@ -6,15 +6,14 @@ class QuestionGroupData {
   final String subtitle;
   final String icon;
   final Color iconBackgroundColor;
+  final Color backgroundColor;
+  final Color textColor;
   final void Function() onClick;
 
-  QuestionGroupData(
-    this.title,
-    this.subtitle,
-    this.icon,
-    this.iconBackgroundColor,
-    this.onClick,
-  );
+  QuestionGroupData(this.title, this.subtitle, this.icon, this.onClick,
+      {this.textColor = Colors.black,
+      this.iconBackgroundColor = Colors.grey,
+      this.backgroundColor = Colors.white});
 }
 
 class NewPracticeTab extends StatelessWidget {
@@ -32,14 +31,15 @@ class NewPracticeTab extends StatelessWidget {
     );
   }
 
-  Widget _buildQuestionGroup(QuestionGroupData questionGroupData) => GestureDetector(
-    onTap: questionGroupData.onClick,
-    child: Container(
+  Widget _buildQuestionGroup(QuestionGroupData questionGroupData) =>
+      GestureDetector(
+        onTap: questionGroupData.onClick,
+        child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.all(15),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(18),
-              color: Colors.white,
+              color: questionGroupData.backgroundColor,
               boxShadow: [
                 BoxShadow(
                     color: Colors.grey.shade300, spreadRadius: 1, blurRadius: 1)
@@ -62,12 +62,17 @@ class NewPracticeTab extends StatelessWidget {
                   children: [
                     Text(
                       questionGroupData.title,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w500, fontSize: 18),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18,
+                          color: questionGroupData.textColor),
                     ),
                     Text(
                       questionGroupData.subtitle,
-                      style: const TextStyle(fontSize: 14),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: questionGroupData.textColor,
+                      ),
                     ),
                   ],
                 ),
@@ -75,5 +80,5 @@ class NewPracticeTab extends StatelessWidget {
             ],
           ),
         ),
-  );
+      );
 }

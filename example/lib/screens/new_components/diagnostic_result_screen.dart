@@ -34,7 +34,7 @@ class TestDiagnosticScreen extends StatelessWidget {
       ),
     ];
 
-    return DiagnosticTestResult(
+    return DiagnosticResult(
         subjectList: subjectDataList,
         onNext: () => print('onNext'),
         testDate: DateTime.now(),

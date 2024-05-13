@@ -12,7 +12,7 @@ class SubjectResultData {
   SubjectResultData(this.title, this.progress, this.icon);
 }
 
-class DiagnosticTestResult extends StatelessWidget {
+class DiagnosticResult extends StatelessWidget {
   final List<SubjectResultData> subjectList;
   final Color boxColor;
   final Color beginnerColor;
@@ -30,7 +30,7 @@ class DiagnosticTestResult extends StatelessWidget {
   final double mainProgress;
   final void Function() onNext;
 
-  const DiagnosticTestResult(
+  const DiagnosticResult(
       {super.key,
       this.beginnerColor = const Color(0xFFFC5656),
       this.intermediateColor = const Color(0xFFFFB443),

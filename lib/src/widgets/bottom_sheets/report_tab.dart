@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../flutter_abc_jsc_components.dart';
+import '../../../flutter_abc_jsc_components.dart';
 
 class ReportData {
   final String title;

@@ -11,12 +11,12 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Provider.of<AppThemeProvider>(context, listen: false)
-            .changeAppTheme(),
-        label: const Text("Change Theme"),
-        icon: const Icon(Icons.grid_view_outlined),
-      ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   onPressed: () => Provider.of<AppThemeProvider>(context, listen: false)
+      //       .changeAppTheme(),
+      //   label: const Text("Change Theme"),
+      //   icon: const Icon(Icons.grid_view_outlined),
+      // ),
       body: SafeArea(
         child: Padding(
           padding:
