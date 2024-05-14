@@ -8,6 +8,7 @@ import 'package:example/screens/new_components/customize_test.dart';
 import 'package:example/screens/new_components/diagnostic_questions.dart';
 import 'package:example/screens/new_components/diagnostic_result_screen.dart';
 import 'package:example/screens/new_components/exam_time_setup_screen.dart';
+import 'package:example/screens/new_components/final_test_result.dart';
 import 'package:example/screens/new_components/group_questions_list_page.dart';
 import 'package:example/screens/new_components/intro_personal_screens.dart';
 import 'package:example/screens/new_components/levels_path_screen.dart';
@@ -148,6 +149,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
           routeName: routeName,
           viewToShow: const TestCustomizeTest());
+    case AppRoute.finalTestResult:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestFinalTestResult());
     default:
       return MaterialPageRoute(
         builder: (_) => Scaffold(

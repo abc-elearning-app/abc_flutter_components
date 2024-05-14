@@ -1,30 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/customize_test/provider/customize_test_provider.dart';
+import 'package:provider/provider.dart';
 
-import '../customize_test.dart';
+enum SliderType { question, duration, passingScore }
 
-class SliderTile extends StatefulWidget {
-  final ValueType type;
+class SliderTile extends StatelessWidget {
+  final Color mainColor;
+  final Color backgroundColor;
+
   final int maxValue;
   final int minValue;
+  final SliderType type;
 
   const SliderTile(
       {super.key,
-      required this.type,
       required this.maxValue,
-      required this.minValue});
-
-  @override
-  State<SliderTile> createState() => _SliderTileState();
-}
-
-class _SliderTileState extends State<SliderTile> {
-  late double selectedValue;
-
-  @override
-  void initState() {
-    selectedValue = 20;
-    super.initState();
-  }
+      required this.minValue,
+      required this.mainColor,
+      required this.backgroundColor,
+      required this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +26,8 @@ class _SliderTileState extends State<SliderTile> {
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
-          border: Border.all(width: 1, color: const Color(0xFFE3A651)),
-          color: Colors.white,
+          border: Border.all(width: 1, color: mainColor),
+          color: backgroundColor,
           borderRadius: BorderRadius.circular(20)),
       child: Center(
           child: Column(
@@ -43,21 +37,28 @@ class _SliderTileState extends State<SliderTile> {
               showValueIndicator: ShowValueIndicator.never,
               activeTickMarkColor: Colors.transparent,
               inactiveTickMarkColor: Colors.transparent,
-              activeTrackColor: const Color(0xFFE3A651),
+              activeTrackColor: mainColor,
               thumbColor: Colors.white,
               thumbShape: ThumbShape(
-                  maxValue: widget.maxValue, minValue: widget.minValue),
+                  thumbColor: backgroundColor,
+                  maxValue: maxValue,
+                  minValue: minValue),
               inactiveTrackColor: Colors.grey.shade300,
             ),
-            child: Slider(
-              value: selectedValue,
-              onChanged: (double newValue) {
-                _setValue(context, newValue);
-              },
-              min: widget.minValue.toDouble(),
-              max: widget.maxValue.toDouble(),
-              divisions: ((widget.maxValue - widget.minValue) * 10).toInt(),
-              label: selectedValue.floor().toString(),
+            child: Selector<CustomizeTestProvider, int>(
+              selector: (_, provider) => _getSelector(provider, type),
+              builder: (_, value, __) => Slider(
+                value: value.toDouble(),
+                onChanged: (newValue) {
+                  context
+                      .read<CustomizeTestProvider>()
+                      .updateSlider(type, newValue.toInt());
+                },
+                min: minValue.toDouble(),
+                max: maxValue.toDouble(),
+                divisions: ((maxValue - minValue) * 10).toInt(),
+                label: value.floor().toString(),
+              ),
             ),
           ),
           Padding(
@@ -65,10 +66,10 @@ class _SliderTileState extends State<SliderTile> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('${widget.minValue}',
+                Text('$minValue',
                     style: const TextStyle(
                         fontWeight: FontWeight.w500, fontSize: 15)),
-                Text('${widget.maxValue}',
+                Text('$maxValue',
                     style: const TextStyle(
                         fontWeight: FontWeight.w500, fontSize: 15)),
               ],
@@ -79,28 +80,15 @@ class _SliderTileState extends State<SliderTile> {
     );
   }
 
-  _setValue(BuildContext context, double newValue) {
-    setState(() {
-      selectedValue = newValue;
-    });
-    // switch (widget.type) {
-    //   case ValueType.question:
-    //     {
-    //       // context.read<ExamSimulatorProvider>().questionCount =
-    //       //     newValue.toInt();
-    //       break;
-    //     }
-    //   case ValueType.minute:
-    //     {
-    //       // context.read<ExamSimulatorProvider>().minuteCount = newValue.toInt();
-    //       break;
-    //     }
-    //   case ValueType.passRate:
-    //     {
-    //       // context.read<ExamSimulatorProvider>().passRate = newValue.toInt();
-    //       break;
-    //     }
-    // }
+  _getSelector(CustomizeTestProvider provider, SliderType type) {
+    switch (type) {
+      case SliderType.question:
+        return provider.selectedQuestions;
+      case SliderType.duration:
+        return provider.selectedDuration;
+      case SliderType.passingScore:
+        return provider.selectedPassingScore;
+    }
   }
 }
 
@@ -112,6 +100,7 @@ class ThumbShape extends SliderComponentShape {
   final double yOffset;
   final int maxValue;
   final int minValue;
+  final Color thumbColor;
 
   ThumbShape({
     this.thumbWidth = 36,
@@ -119,6 +108,7 @@ class ThumbShape extends SliderComponentShape {
     this.borderRadius = 8,
     this.triangleWidth = 15,
     this.yOffset = -30,
+    required this.thumbColor,
     required this.maxValue,
     required this.minValue,
   });
@@ -145,7 +135,7 @@ class ThumbShape extends SliderComponentShape {
   }) {
     final Paint paint = Paint()
       ..style = PaintingStyle.fill
-      ..color = Colors.white;
+      ..color = thumbColor;
 
     final Paint shadowPaint = Paint()
       ..color = Colors.black.withOpacity(0.25)
@@ -159,7 +149,7 @@ class ThumbShape extends SliderComponentShape {
     context.canvas.drawCircle(center, radius, paint);
 
     // Draw rounded square box and triangle with blue color
-    paint.color = const Color(0xFF676767);
+    paint.color = const Color(0xFF7C6F5B);
     final RRect roundedRect = RRect.fromRectAndRadius(
       Rect.fromCenter(
         center: Offset(center.dx, center.dy + yOffset), // Adjusted y offset

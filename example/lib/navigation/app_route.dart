@@ -38,6 +38,7 @@ class AppRoute {
   static const String newPracticeTab = '/practice_tab';
   static const String groupQuestionList = '/group_question_list';
   static const String customizeTest = '/customize_test';
+  static const String finalTestResult = '/final_test_result';
 
   static List<String> getAppRoute() {
     return [
@@ -53,6 +54,7 @@ class AppRoute {
       AppRoute.newPracticeTab,
       AppRoute.groupQuestionList,
       AppRoute.customizeTest,
+      AppRoute.finalTestResult
     ];
   }
 }
