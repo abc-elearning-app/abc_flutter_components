@@ -6,6 +6,6 @@ class TestFinalTestResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FinalTestResult();
+    return FinalTestResult(progress: 90);
   }
 }

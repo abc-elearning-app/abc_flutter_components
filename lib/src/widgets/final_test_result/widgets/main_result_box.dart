@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
@@ -37,26 +38,15 @@ class MainResultBox extends StatelessWidget {
         margin: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(30)),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Result title
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 30),
-              child: Text(
-                'Do not rest on your laurels, friend. Time to leaf through the rest of these tests and make them tremble with your intellect!',
-                style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    color: Color.lerp(
-                        progress >= 80 ? correctColor : incorrectColor,
-                        Colors.black,
-                        0.2),
-                    fontSize: 15),
-                textAlign: TextAlign.center,
-              ),
-            ),
+            _buildDetailText(),
 
             // Progress chart
             Stack(children: [
@@ -73,122 +63,65 @@ class MainResultBox extends StatelessWidget {
                   _buildLinearProgress(context),
 
                   // Average community progress
-                  StatefulBuilder(
-                    builder: (_, setState) {
-                      return Column(
-                        children: [
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Community Score: ${averageProgress.toInt()}% ',
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                IconButton(
-                                    onPressed: () => setState(() =>
-                                        isShowingDetail = !isShowingDetail),
-                                    icon: const Icon(Icons.info))
-                              ]),
-                          AnimatedContainer(
-                            height: isShowingDetail ? 110 : 0,
-                            duration: const Duration(milliseconds: 500),
-                            curve: Curves.fastOutSlowIn,
-                            child: Container(
-                              padding: const EdgeInsets.only(
-                                  left: 10, right: 10, top: 10),
-                              decoration: BoxDecoration(
-                                  // color: context.isDarkMode ? Colors.grey.shade800 : Colors.grey.shade100,
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: const SingleChildScrollView(
-                                physics: NeverScrollableScrollPhysics(),
-                                child: Column(
-                                  children: [
-                                    Text('Community Average',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold)),
-                                    Text(
-                                        'Never gonna give you up, Never gonna let you down, Never gonna run around and desert you, Never gonna make you cry, Never gonna say goodbye, Never gonna tell a lie and hurt you',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 11)),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      );
-                    },
-                  )
+                  _buildCommunityScore()
                 ],
               ),
 
               // Blur effect and buttons (when not purchased)
-              ValueListenableBuilder(
-                  valueListenable: isProPurchased,
-                  builder: (_, value, __) =>
-                      Visibility(visible: !value, child: const BlurEffect())),
-              ValueListenableBuilder(
-                  valueListenable: isProPurchased,
-                  builder: (_, value, __) => Visibility(
-                      visible: !value,
-                      child: Positioned(
-                          top: 10,
-                          left: 10,
-                          child: _proContentNotification(context)))),
-              ValueListenableBuilder(
-                  valueListenable: isProPurchased,
-                  builder: (_, value, __) => Visibility(
-                      visible: !value,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: _seeFullButton(),
-                      )))
+              // ValueListenableBuilder(
+              //     valueListenable: isProPurchased,
+              //     builder: (_, value, __) =>
+              //         Visibility(visible: !value, child: const BlurEffect())),
+              // ValueListenableBuilder(
+              //     valueListenable: isProPurchased,
+              //     builder: (_, value, __) => Visibility(
+              //         visible: !value,
+              //         child: Positioned(
+              //             top: 10,
+              //             left: 10,
+              //             child: _proContentNotification(context)))),
+              // ValueListenableBuilder(
+              //     valueListenable: isProPurchased,
+              //     builder: (_, value, __) => Visibility(
+              //         visible: !value,
+              //         child: Align(
+              //           alignment: Alignment.center,
+              //           child: _seeFullButton(),
+              //         )))
             ])
           ],
         ),
       ),
-      Transform.translate(
-        offset: const Offset(0, -20),
-        child: Stack(alignment: Alignment.center, children: [
-          SvgPicture.asset(
-            'assets/images/banner_shape.svg',
-            height: 50,
-            colorFilter: ColorFilter.mode(
-                progress >= 80 ? correctColor : incorrectColor,
-                BlendMode.srcIn),
-          ),
-          const Text(
-            'Excellent Performance!',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color: Colors.white,
-            ),
-          ),
-        ]),
-      ),
+      _buildBanner(),
     ]);
   }
+
+  Widget _buildDetailText() => progress >= 90 || progress < 20
+      ? Padding(
+          padding: const EdgeInsets.symmetric(vertical: 30),
+          child: Text(
+            progress >= 90
+                ? "Do not rest on your laurels, friend. Time to leaf through the rest of these tests and make them tremble with your intellect!"
+                : "That was a tough one, but every wrong answer is a stepping stone to the right one. Keep at it, and you'll be a knowledge ninja soon!",
+            style: TextStyle(
+                fontWeight: FontWeight.w400,
+                color: Color.lerp(
+                    progress >= 90 ? correctColor : incorrectColor,
+                    Colors.black,
+                    0.2),
+                fontSize: 15),
+            textAlign: TextAlign.center,
+          ),
+        )
+      : const SizedBox();
 
   Widget _buildExplanation() => Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _colorExplanation(
-              const Color(0xFF28D799),
-              'Correct',
-              correctQuestions,
-            ),
-            _colorExplanation(
-              const Color(0xFFF14A4A),
-              'Incorrect',
-              incorrectQuestions,
-            ),
+            _colorExplanation(correctColor, 'Correct', correctQuestions),
+            _colorExplanation(incorrectColor, 'Incorrect', incorrectQuestions),
           ],
         ),
       );
@@ -198,7 +131,7 @@ class MainResultBox extends StatelessWidget {
         children: [
           // Color line
           Container(
-            width: 30,
+            width: 25,
             height: 6,
             margin: const EdgeInsets.only(top: 5),
             decoration: BoxDecoration(
@@ -208,7 +141,10 @@ class MainResultBox extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title),
+              Text(
+                title,
+                style: const TextStyle(fontSize: 16, color: Color(0xFF939393)),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Text(
@@ -228,7 +164,7 @@ class MainResultBox extends StatelessWidget {
         // Background, use gap to align
         LinearPercentIndicator(
           backgroundColor: Colors.grey.shade200,
-          lineHeight: 8,
+          lineHeight: 9,
           barRadius: const Radius.circular(8),
         ),
 
@@ -237,7 +173,7 @@ class MainResultBox extends StatelessWidget {
           backgroundColor: Colors.transparent,
           percent: progress / 100,
           progressColor: const Color(0xFFE3A651),
-          lineHeight: 11,
+          lineHeight: 12,
           animation: true,
           barRadius: const Radius.circular(8),
         ),
@@ -257,6 +193,32 @@ class MainResultBox extends StatelessWidget {
               ),
             ))
       ]);
+
+  Widget _buildBanner() => progress >= 90 || progress < 20
+      ? Transform.translate(
+          offset: const Offset(0, -25),
+          child: Stack(alignment: Alignment.center, children: [
+            SvgPicture.asset(
+              'assets/images/banner_shape.svg',
+              height: 50,
+              colorFilter: ColorFilter.mode(
+                  progress >= 90
+                      ? correctColor
+                      : Color.lerp(incorrectColor, Colors.white, 0.8) ??
+                          incorrectColor,
+                  BlendMode.srcIn),
+            ),
+            Text(
+              progress >= 90 ? 'Excellent Performance!' : 'Not Enough To Pass!',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: progress >= 90 ? Colors.white : incorrectColor,
+              ),
+            ),
+          ]),
+        )
+      : const SizedBox();
 
   Widget _proContentNotification(BuildContext context) => Container(
         width: MediaQuery.of(context).size.width * 0.24,
@@ -283,6 +245,47 @@ class MainResultBox extends StatelessWidget {
           isProPurchased.value = true;
         },
       ));
+
+  Widget _buildCommunityScore() => StatefulBuilder(
+        builder: (_, setState) {
+          return Column(
+            children: [
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Text(
+                  'Community Score: ${averageProgress.toInt()}% ',
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(width: 10),
+                GestureDetector(
+                  onTap: () =>
+                      setState(() => isShowingDetail = !isShowingDetail),
+                  child: SvgPicture.asset(
+                    'assets/images/info_icon.svg',
+                    colorFilter: const ColorFilter.mode(
+                        Color(0xFF212121), BlendMode.srcIn),
+                  ),
+                )
+              ]),
+              AnimatedContainer(
+                height: isShowingDetail ? 100 : 0,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.fastOutSlowIn,
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      // color: context.isDarkMode ? Colors.grey.shade800 : Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(15)),
+                  child: const Text(
+                      'Never gonna give you up, Never gonna let you down, Never gonna run around and desert you, Never gonna make you cry, Never gonna say goodbye, Never gonna tell a lie and hurt you',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14)),
+                ),
+              )
+            ],
+          );
+        },
+      );
 }
 
 class TrianglePainter extends CustomPainter {

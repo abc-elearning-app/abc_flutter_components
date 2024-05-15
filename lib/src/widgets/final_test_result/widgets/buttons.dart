@@ -16,7 +16,7 @@ Widget reviewButton(BuildContext context) => Container(
     ));
 
 Widget tryAgainButton() => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+      padding: const EdgeInsets.only(left: 15, right: 5, bottom: 25, top: 20),
       child: MainButton(
         title: 'Try Again',
         borderRadius: 15,
@@ -29,7 +29,7 @@ Widget tryAgainButton() => Container(
     );
 
 Widget continueButton() => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+      padding: const EdgeInsets.only(left: 5, right: 15, bottom: 25, top: 20),
       child: MainButton(
         title: 'Continue',
         borderRadius: 15,
