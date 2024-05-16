@@ -33,12 +33,14 @@ class AppRoute {
   static const String personalPlanReady = '/personal_plan_ready';
   static const String examTimeSetup = '/exam_time_setup';
   static const String newStudyTab = '/new_study_tab';
+  static const String newPracticeTab = '/new_practice_tab';
+  static const String newTestTab = '/new_test_tab';
   static const String levelsPath = '/level_path';
   static const String diagnosticQuestion = '/diagnostic_question';
-  static const String newPracticeTab = '/practice_tab';
   static const String groupQuestionList = '/group_question_list';
   static const String customizeTest = '/customize_test';
   static const String finalTestResult = '/final_test_result';
+  static const String partTestResult = '/part_test_result';
 
   static List<String> getAppRoute() {
     return [
@@ -48,13 +50,15 @@ class AppRoute {
       AppRoute.personalPlanAnalyzing,
       AppRoute.personalPlanReady,
       AppRoute.examTimeSetup,
-      AppRoute.newStudyTab,
       AppRoute.levelsPath,
       AppRoute.diagnosticQuestion,
-      AppRoute.newPracticeTab,
       AppRoute.groupQuestionList,
       AppRoute.customizeTest,
-      AppRoute.finalTestResult
+      AppRoute.finalTestResult,
+      AppRoute.partTestResult,
+      AppRoute.newStudyTab,
+      AppRoute.newPracticeTab,
+      AppRoute.newTestTab
     ];
   }
 }

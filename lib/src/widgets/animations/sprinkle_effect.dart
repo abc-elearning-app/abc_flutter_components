@@ -8,11 +8,14 @@ class SprinkleEffect extends StatefulWidget {
   final int fallDirection;
   final double additionalOffsetY;
 
+  final int rows;
+
   const SprinkleEffect({
     super.key,
-    this.height = 300,
+    this.rows = 3,
+    this.height = 250,
     this.speed = 3,
-    this.fallDirection = 40,
+    this.fallDirection = 80,
     this.additionalOffsetY = 0,
   });
 
@@ -29,13 +32,13 @@ class _SprinkleEffectState extends State<SprinkleEffect>
   void initState() {
     // Add controllers for each triangle
     animationControllers = List.generate(
-        20,
+        widget.rows * 10,
         (_) => AnimationController(
             vsync: this, duration: Duration(seconds: widget.speed)));
 
     // Animate the controllers
     animations = List.generate(
-        20,
+        widget.rows * 10,
         (index) => Tween<double>(begin: 0, end: 1)
             .animate(animationControllers[index]));
 
@@ -71,7 +74,7 @@ class _SprinkleEffectState extends State<SprinkleEffect>
       child: ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: 2,
+          itemCount: widget.rows,
           itemBuilder: (_, colIndex) => Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(10, (rowIndex) {
