@@ -34,7 +34,15 @@ class TestNewTestTab extends StatelessWidget {
     ];
     return Scaffold(
       appBar: AppBar(),
-      body: NewTestTab(practiceTests: practiceTest),
+      body: NewTestTab(
+        practiceTests: practiceTest,
+        diagnosticProgress: 20,
+        finalTestProgress: 40,
+        onTryAgainDiagnosticTab: () => print('try again'),
+        onClickFinalTest: () => print('final test'),
+        onSeeAllPracticeTests: () => print('see all practice test'),
+        onSelectPracticeTest: (index) => print('Practice test $index'),
+      ),
     );
   }
 }

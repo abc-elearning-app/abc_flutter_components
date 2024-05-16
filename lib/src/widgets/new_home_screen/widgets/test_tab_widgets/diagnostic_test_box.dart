@@ -10,97 +10,107 @@ class DiagnosticTestBox extends StatelessWidget {
   final Color textColor;
   final Color progressColor;
 
+  final double progress;
+
+  final void Function() onClick;
+
   const DiagnosticTestBox(
       {super.key,
       required this.icon,
       required this.background,
       required this.textColor,
-      required this.progressColor});
+      required this.progressColor,
+      required this.onClick,
+      required this.progress});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(15),
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-          image:
-              DecorationImage(image: AssetImage(background), fit: BoxFit.cover),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.grey.shade300,
-                blurRadius: 2,
-                spreadRadius: 2,
-                offset: const Offset(0, 1))
-          ],
-          borderRadius: BorderRadius.circular(15)),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Image.asset(icon),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Diagnostic Test',
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: textColor)),
-                    RichText(
-                        text: TextSpan(
-                            style: TextStyle(
-                                color: textColor,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: 'Poppins'),
-                            children: const [
-                          TextSpan(
-                            text:
-                                'Take our diagnostic test to assess your current level and get a ',
-                          ),
-                          TextSpan(
-                              text: 'personalized study plan.',
-                              style: TextStyle(fontWeight: FontWeight.w600)),
-                        ]))
-                  ],
-                ),
-              )
+    return GestureDetector(
+      onTap: onClick,
+      child: Container(
+        margin: const EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage(background), fit: BoxFit.cover),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.grey.shade300,
+                  blurRadius: 2,
+                  spreadRadius: 2,
+                  offset: const Offset(0, 1))
             ],
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: LinearPercentIndicator(
-              percent: 0.2,
-              animation: true,
-              barRadius: const Radius.circular(20),
-              lineHeight: 8,
-              progressColor: progressColor,
-              backgroundColor: Colors.grey.shade200.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(15)),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Image.asset(icon),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Diagnostic Test',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: textColor)),
+                      RichText(
+                          text: TextSpan(
+                              style: TextStyle(
+                                  color: textColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: 'Poppins'),
+                              children: const [
+                            TextSpan(
+                              text:
+                                  'Take our diagnostic test to assess your current level and get a ',
+                            ),
+                            TextSpan(
+                                text: 'personalized study plan.',
+                                style: TextStyle(fontWeight: FontWeight.w600)),
+                          ]))
+                    ],
+                  ),
+                )
+              ],
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              MainButton(
-                title: 'Try Again',
-                onPressed: () {},
-                backgroundColor: Colors.transparent,
-                textStyle: const TextStyle(fontSize: 16),
-                textColor: textColor,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: LinearPercentIndicator(
+                percent: progress / 100,
+                animation: true,
+                barRadius: const Radius.circular(20),
+                lineHeight: 8,
+                progressColor: progressColor,
+                backgroundColor: Colors.grey.shade200.withOpacity(0.3),
               ),
-              IconButton(
-                  onPressed: () {},
-                  icon: Icon(
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Try Again',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: textColor),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 10, bottom: 5),
+                  child: Icon(
                     Icons.arrow_forward,
                     color: textColor,
-                  ))
-            ],
-          )
-        ],
+                  ),
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

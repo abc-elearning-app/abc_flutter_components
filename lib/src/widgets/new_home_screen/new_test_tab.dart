@@ -5,6 +5,8 @@ import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/t
 
 class NewTestTab extends StatelessWidget {
   final List<PracticeTestBoxData> practiceTests;
+  final double diagnosticProgress;
+  final double finalTestProgress;
 
   final Color mainColor;
   final Color secondaryColor;
@@ -15,6 +17,11 @@ class NewTestTab extends StatelessWidget {
   final String diagnosticBoxBackground;
   final String finalTestBackground;
 
+  final void Function() onTryAgainDiagnosticTab;
+  final void Function() onSeeAllPracticeTests;
+  final void Function(int index) onSelectPracticeTest;
+  final void Function() onClickFinalTest;
+
   const NewTestTab(
       {super.key,
       required this.practiceTests,
@@ -24,7 +31,12 @@ class NewTestTab extends StatelessWidget {
       this.finalTestIcon = 'assets/images/test_tab_icon.png',
       this.diagnosticBoxBackground = 'assets/images/test_tab_background_1.png',
       this.finalTestBackground = 'assets/images/test_tab_background_4.png',
-      this.boxTextColor = Colors.white});
+      this.boxTextColor = Colors.white,
+      required this.onTryAgainDiagnosticTab,
+      required this.onSeeAllPracticeTests,
+      required this.onClickFinalTest,
+      required this.diagnosticProgress,
+      required this.finalTestProgress, required this.onSelectPracticeTest});
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +45,8 @@ class NewTestTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DiagnosticTestBox(
+            progress: diagnosticProgress,
+            onClick: onTryAgainDiagnosticTab,
             progressColor: boxTextColor,
             icon: diagnosticTestIcon,
             background: diagnosticBoxBackground,
@@ -63,6 +77,7 @@ class NewTestTab extends StatelessWidget {
           PracticeTestList(
             practiceTests: practiceTests,
             textColor: boxTextColor,
+            onSelect: onSelectPracticeTest,
           ),
 
           const Padding(
@@ -74,6 +89,7 @@ class NewTestTab extends StatelessWidget {
           ),
 
           FinalTestBox(
+              progress: finalTestProgress,
               answeredQuestions: 18,
               totalQuestions: 60,
               correctPercent: 20,

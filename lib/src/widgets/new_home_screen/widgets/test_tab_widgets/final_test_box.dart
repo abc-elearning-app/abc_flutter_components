@@ -8,6 +8,7 @@ class FinalTestBox extends StatelessWidget {
   final Color textColor;
   final Color progressColor;
 
+  final double progress;
   final int answeredQuestions;
   final int totalQuestions;
   final double correctPercent;
@@ -20,7 +21,8 @@ class FinalTestBox extends StatelessWidget {
       required this.progressColor,
       required this.answeredQuestions,
       required this.totalQuestions,
-      required this.correctPercent});
+      required this.correctPercent,
+      required this.progress});
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +71,7 @@ class FinalTestBox extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: LinearPercentIndicator(
-              percent: 0.3,
+              percent: progress / 100,
               animation: true,
               barRadius: const Radius.circular(20),
               lineHeight: 10,

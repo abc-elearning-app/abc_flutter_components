@@ -14,11 +14,13 @@ class PracticeTestBoxData {
 class PracticeTestList extends StatelessWidget {
   final Color textColor;
   final List<PracticeTestBoxData> practiceTests;
+  final void Function(int index) onSelect;
 
   const PracticeTestList({
     super.key,
     required this.practiceTests,
     required this.textColor,
+    required this.onSelect,
   });
 
   @override
@@ -27,7 +29,7 @@ class PracticeTestList extends StatelessWidget {
       height: 250,
       width: double.infinity,
       child: ListView.builder(
-        padding: const EdgeInsets.only(left: 10, bottom: 10),
+          padding: const EdgeInsets.only(left: 10, bottom: 10),
           scrollDirection: Axis.horizontal,
           shrinkWrap: true,
           itemCount: practiceTests.length,
@@ -36,37 +38,40 @@ class PracticeTestList extends StatelessWidget {
     );
   }
 
-  Widget _practiceTestBox(PracticeTestBoxData data, int index) => Container(
-        margin: const EdgeInsets.symmetric(horizontal: 5),
-        padding: const EdgeInsets.all(10),
-        width: 180,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            image: DecorationImage(
-                image: AssetImage(data.background), fit: BoxFit.cover)),
-        child: Stack(
-          children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: IconBox(
-                iconColor: Colors.black,
-                backgroundColor: textColor,
-                icon: data.icon,
-                padding: const EdgeInsets.all(2),
+  Widget _practiceTestBox(PracticeTestBoxData data, int index) => GestureDetector(
+    onTap: () => onSelect(index),
+    child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 5),
+          padding: const EdgeInsets.all(10),
+          width: 200,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              image: DecorationImage(
+                  image: AssetImage(data.background), fit: BoxFit.cover)),
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.topRight,
+                child: IconBox(
+                  iconColor: Colors.black,
+                  backgroundColor: textColor,
+                  icon: data.icon,
+                  padding: const EdgeInsets.all(2),
+                ),
               ),
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Text(
-                data.title,
-                maxLines: 2,
-                style: TextStyle(
-                    color: textColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Text(
+                  data.title,
+                  maxLines: 2,
+                  style: TextStyle(
+                      color: textColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      );
+  );
 }
