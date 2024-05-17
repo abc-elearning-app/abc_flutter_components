@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/passing_probability_box.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/streak_circle.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/common/passing_probability_box.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/subject_tile.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/today_question_button.dart';
 
@@ -20,7 +19,7 @@ class NewStudyTab extends StatelessWidget {
   final Color advancedColor;
   final List<SubjectData> subjectDataList;
 
-  final String? streakIcon;
+  final String streakIcon;
   final String? buttonBackground;
 
   final int dayStreak;
@@ -31,7 +30,7 @@ class NewStudyTab extends StatelessWidget {
 
   const NewStudyTab({
     super.key,
-    this.streakIcon,
+    this.streakIcon = 'assets/images/fire.svg',
     this.mainColor = const Color(0xFF579E89),
     this.textColor = Colors.white,
     this.buttonBackground,
@@ -56,19 +55,11 @@ class NewStudyTab extends StatelessWidget {
       child: Column(
         children: [
           // Day streak and passing probability
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              StreakCircle(
-                mainColor: mainColor,
-                streakIcon: streakIcon,
-                dayStreak: dayStreak,
-              ),
-              Expanded(
-                  child: PassingProbabilityBox(
-                      mainColor: mainColor,
-                      passingProbability: passingProbability))
-            ],
+          PassingProbabilityBox(
+            passingProbability: passingProbability,
+            mainColor: mainColor,
+            dayStreak: dayStreak,
+            streakIcon: streakIcon,
           ),
 
           // Button

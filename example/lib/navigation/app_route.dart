@@ -35,6 +35,7 @@ class AppRoute {
   static const String newStudyTab = '/new_study_tab';
   static const String newPracticeTab = '/new_practice_tab';
   static const String newTestTab = '/new_test_tab';
+  static const String newStatisticTab = '/new_statistic_tab';
   static const String levelsPath = '/level_path';
   static const String diagnosticQuestion = '/diagnostic_question';
   static const String groupQuestionList = '/group_question_list';
@@ -61,6 +62,7 @@ class AppRoute {
       AppRoute.newStudyTab,
       AppRoute.newPracticeTab,
       AppRoute.newTestTab,
+      AppRoute.newStatisticTab,
       AppRoute.practiceTestGrid,
       AppRoute.proPurchaseScreen
     ];

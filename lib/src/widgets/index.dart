@@ -69,3 +69,5 @@ export 'result_screens/final_test_result/widgets/progress_tile_section.dart';
 export 'result_screens/part_test_result/part_result_screen.dart';
 export 'practice_test_grid/practice_test_grid.dart';
 export 'pro_purchase/pro_purchase_screen.dart';
+export 'pro_purchase/widgets/pro_options.dart';
+export 'new_home_screen/new_statistic_test.dart';
