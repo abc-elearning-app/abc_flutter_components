@@ -42,6 +42,7 @@ class AppRoute {
   static const String finalTestResult = '/final_test_result';
   static const String partTestResult = '/part_test_result';
   static const String practiceTestGrid = '/practice_test_grid';
+  static const String proPurchaseScreen = '/pro_purchase';
 
   static List<String> getAppRoute() {
     return [
@@ -60,7 +61,8 @@ class AppRoute {
       AppRoute.newStudyTab,
       AppRoute.newPracticeTab,
       AppRoute.newTestTab,
-      AppRoute.practiceTestGrid
+      AppRoute.practiceTestGrid,
+      AppRoute.proPurchaseScreen
     ];
   }
 }
