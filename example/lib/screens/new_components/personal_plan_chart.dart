@@ -6,15 +6,24 @@ class TestPersonalPlanChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        children: [
-          PersonalPlanChart(
-            mainColor: const Color(0xFFE3A651),
-            correctColor: const Color(0xFF00CA9F),
-          )
-        ],
+    return Container(
+      decoration: const BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/images/chart_background.png'),
+              fit: BoxFit.cover)),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+        ),
+        body: Column(
+          children: [
+            PersonalPlanChart(
+              mainColor: const Color(0xFFE3A651),
+              correctColor: const Color(0xFF00CA9F),
+            )
+          ],
+        ),
       ),
     );
   }
