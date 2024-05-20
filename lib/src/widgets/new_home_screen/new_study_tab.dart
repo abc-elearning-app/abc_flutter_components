@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/common/passing_probability_box.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/subject_tile.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/today_question_button.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/study_tab_widgets/subject_tile.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/study_tab_widgets/today_question_button.dart';
 
 class SubjectData {
   final String icon;

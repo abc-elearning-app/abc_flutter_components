@@ -53,7 +53,30 @@ class MainResultBox extends StatelessWidget {
                 children: [
                   // Chart
                   HalfCircleProgressIndicator(
-                      value: progress / 100, lineWidth: 20, radius: 125),
+                    correctColor: correctColor,
+                    incorrectColor: incorrectColor,
+                    progress: progress / 100,
+                    lineWidth: 20,
+                    radius: 125,
+                    center: Container(
+                      margin: const EdgeInsets.only(bottom: 30),
+                      child: RichText(
+                        text: TextSpan(
+                            style: DefaultTextStyle.of(context).style.copyWith(
+                                color: progress < 0.8
+                                    ? incorrectColor
+                                    : correctColor,
+                                fontWeight: FontWeight.bold),
+                            children: [
+                              TextSpan(
+                                  text: '${progress.round()}',
+                                  style: const TextStyle(fontSize: 70)),
+                              const TextSpan(
+                                  text: '%', style: TextStyle(fontSize: 40))
+                            ]),
+                      ),
+                    ),
+                  ),
 
                   // Chart explanation
                   _buildExplanation(),

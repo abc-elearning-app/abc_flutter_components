@@ -7,8 +7,13 @@ class TestNewStatisticTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: SafeArea(child: NewStatisticTab(dayStreak: 14, passingProbability: 31,)),
+      appBar: AppBar(backgroundColor: Colors.transparent),
+      backgroundColor: const Color(0xFFF5F4EE),
+      body: const SafeArea(
+          child: NewStatisticTab(
+        dayStreak: 14,
+        passingProbability: 31,
+      )),
     );
   }
 }
