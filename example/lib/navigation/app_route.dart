@@ -48,6 +48,7 @@ class AppRoute {
 
   static List<String> getAppRoute() {
     return [
+      AppRoute.personalPlanChart,
       AppRoute.newLogin,
       AppRoute.introPersonalPlan,
       AppRoute.diagnosticResult,
@@ -66,7 +67,6 @@ class AppRoute {
       AppRoute.newStatisticTab,
       AppRoute.practiceTestGrid,
       AppRoute.proPurchaseScreen,
-      AppRoute.personalPlanChart
     ];
   }
 }
