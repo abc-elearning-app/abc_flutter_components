@@ -55,6 +55,8 @@ export 'spider_chart/spider_chart.dart';
 export 'page_indicator/page_indicator.dart';
 export 'new_home_screen/new_study_tab.dart';
 export 'levels_path/new_path_level_screen.dart';
+export 'levels_path/default_path_level_screen.dart';
+export 'levels_path/updated_path_level_screen.dart';
 export 'diagnostic_test/diagnostic_question.dart';
 export 'diagnostic_test/widgets/progress_line.dart';
 export 'new_home_screen/new_practice_tab.dart';

@@ -4,7 +4,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 // Data class
 class ChartData {
   final DateTime date;
-  final double value;
+  final int value;
 
   ChartData(
     this.date,
@@ -15,8 +15,9 @@ class ChartData {
 enum ChartType { line, expected, actual }
 
 class PersonalPlanChart extends StatefulWidget {
-  final List<ChartData> dataList;
-  final List<double> expectedLineValues;
+  final List<int> valueList;
+  final DateTime startTime;
+  final DateTime examDate;
 
   final Color mainColor;
   final Color correctColor;
@@ -50,8 +51,9 @@ class PersonalPlanChart extends StatefulWidget {
 
   const PersonalPlanChart(
       {super.key,
-      required this.dataList,
-      required this.expectedLineValues,
+      required this.startTime,
+      required this.examDate,
+      required this.valueList,
       this.expectedBarValue = 50,
       this.mainColor = const Color(0xFFE3A651),
       this.correctColor = const Color(0xFF00CA9F),
@@ -79,49 +81,23 @@ class PersonalPlanChart extends StatefulWidget {
 
 class _PersonalPlanChartState extends State<PersonalPlanChart> {
   late TooltipBehavior _tooltip;
-  late ZoomPanBehavior _zoomPanBehavior;
-
-  late CategoryAxisController lineAxisController;
-  late CategoryAxisController expectedAxisController;
-  late CategoryAxisController actualAxisController;
 
   List<ChartData> dataList = [];
+  List<double> expectedLineValues = [];
   final List<double> percentValues = [];
+
+  late int currentDayIndex;
+  late int currentDayGroupIndex;
+  List<double> averageValues = [];
 
   @override
   void initState() {
-    _reduceDataList();
-    _calculateLinePercentValues();
-
     _tooltip = TooltipBehavior(enable: true);
-    _zoomPanBehavior = ZoomPanBehavior(
-      enablePanning: true,
-      zoomMode: ZoomMode.x,
-    );
 
-    final int currentDayIndex = dataList
-        .indexWhere((data) => _compareWithCurrentTime(data.date) == 0);
-
-    int steps = 0;
-    if (currentDayIndex < 4) {
-      steps = 0;
-    } else if (currentDayIndex < 6) {
-      steps = 2;
-    } else if (currentDayIndex < 9) {
-      steps = 4;
-    } else {
-      steps = 5;
-    }
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (currentDayIndex == 0) {
-        _zoomPanBehavior.panToDirection('left');
-      } else {
-        for (int i = 0; i < steps; i++) {
-          _zoomPanBehavior.panToDirection('right');
-        }
-      }
-    });
+    // Initial calculations
+    _calculateAverageValues();
+    _calculateExpectedLineValues();
+    _calculateLinePercentValues();
 
     super.initState();
   }
@@ -130,7 +106,7 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Title
+        // Axis title
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Row(
@@ -164,17 +140,17 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
               axes: _buildPlaceHolderYAxis(),
               primaryXAxis: _buildCustomXAxis(ChartType.line),
               primaryYAxis: _buildCustomYAxis(ChartType.line),
-              onZooming: (args) => _handleZooming(args, ChartType.line),
-              zoomPanBehavior: _zoomPanBehavior,
+              // onZooming: (args) => _handleZooming(args, ChartType.line),
+              // zoomPanBehavior: _zoomPanBehavior,
               tooltipBehavior: _tooltip,
               series: [
                 // Expected line
-                SplineSeries<ChartData, String>(
-                    dataSource: dataList,
+                SplineSeries<double, String>(
+                    name: 'Expected',
+                    dataSource: expectedLineValues,
                     width: widget.lineWidth,
-                    xValueMapper: (data, _) => _getDisplayDate(data.date),
-                    yValueMapper: (_, index) =>
-                        widget.expectedLineValues[index],
+                    xValueMapper: (_, index) => index.toString(),
+                    yValueMapper: (value, _) => value,
                     animationDuration: widget.duration,
                     splineType: SplineType.cardinal,
                     cardinalSplineTension: widget.curveTension,
@@ -182,19 +158,19 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
                     markerSettings: const MarkerSettings(isVisible: false)),
 
                 // Actual line
-                SplineSeries<ChartData, String>(
-                    dataSource: dataList,
+                SplineSeries<double, String>(
+                    name: 'Progress',
+                    dataSource: percentValues,
                     width: widget.lineWidth,
-                    xValueMapper: (ChartData data, _) => _getDisplayDate(data.date),
-                    yValueMapper: (ChartData data, int index) =>
-                        widget.expectedLineValues[index] * percentValues[index],
+                    xValueMapper: (_, index) => index.toString(),
+                    yValueMapper: (value, index) =>
+                        expectedLineValues[index] * value,
                     animationDuration: widget.duration,
                     splineType: SplineType.cardinal,
                     cardinalSplineTension: widget.curveTension,
-                    pointColorMapper: (ChartData data, _) =>
-                        _compareWithCurrentTime(data.date) >= 0
-                            ? widget.correctColor
-                            : widget.mainColor,
+                    pointColorMapper: (_, index) => index >= currentDayGroupIndex
+                        ? widget.correctColor
+                        : widget.mainColor,
                     markerSettings: MarkerSettings(
                         isVisible: true,
                         shape: DataMarkerType.circle,
@@ -211,99 +187,62 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
         // Questions progress charts
         SizedBox(
           height: widget.barSectionHeight,
-          child: Stack(
-            children: [
-              // Expected chart
-              SfCartesianChart(
-                primaryXAxis: _buildCustomXAxis(ChartType.expected),
-                primaryYAxis: _buildCustomYAxis(ChartType.expected),
-                onZooming: (args) => _handleZooming(args, ChartType.expected),
-                zoomPanBehavior: _zoomPanBehavior,
-                axes: _buildPlaceHolderYAxis(
-                  isOpposed: true,
-                  contain3Digits: true,
-                ),
-                series: [
-                  StackedColumnSeries<ChartData, String>(
-                    dataSource: dataList,
-                    width: widget.barRatio,
-                    xValueMapper: (data, _) => _getDisplayDate(data.date),
-                    yValueMapper: (data, _) => widget.expectedBarValue,
-                    animationDuration: widget.duration,
-                    pointColorMapper: (data, index) =>
-                        _getBarColor(index).withOpacity(0.2),
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(50),
-                      topLeft: Radius.circular(50),
-                    ),
-                  )
-                ],
+          child: SfCartesianChart(
+              primaryXAxis: _buildCustomXAxis(ChartType.actual),
+              primaryYAxis: _buildCustomYAxis(ChartType.actual),
+              axes: _buildPlaceHolderYAxis(
+                isOpposed: true,
+                contain3Digits: true,
               ),
-
-              // Actual questions
-              SfCartesianChart(
-                  primaryXAxis: _buildCustomXAxis(ChartType.actual),
-                  primaryYAxis: _buildCustomYAxis(ChartType.actual),
-                  axes: _buildPlaceHolderYAxis(
-                    isOpposed: true,
-                    contain3Digits: true,
+              tooltipBehavior: _tooltip,
+              series: <CartesianSeries>[
+                StackedColumnSeries<double, String>(
+                  name: 'Correct Questions',
+                  dataSource: averageValues,
+                  width: widget.barRatio,
+                  xValueMapper: (_, index) => index.toString(),
+                  yValueMapper: (value, _) => value,
+                  animationDuration: widget.duration,
+                  pointColorMapper: (data, index) => _getBarColor(index),
+                ),
+                StackedColumnSeries<double, String>(
+                  name: 'Expected Questions',
+                  width: widget.barRatio,
+                  dataSource: averageValues,
+                  xValueMapper: (_, index) => index.toString(),
+                  yValueMapper: (value, _) => widget.expectedBarValue - value,
+                  animationDuration: widget.duration,
+                  pointColorMapper: (data, index) =>
+                      _getBarColor(index).withOpacity(0.2),
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(50),
+                    topLeft: Radius.circular(50),
                   ),
-                  tooltipBehavior: _tooltip,
-                  zoomPanBehavior: _zoomPanBehavior,
-                  onZooming: (args) => _handleZooming(args, ChartType.actual),
-                  series: <CartesianSeries>[
-                    StackedColumnSeries<ChartData, String>(
-                      name: 'Correct Questions',
-                      width: widget.barRatio,
-                      dataSource: dataList,
-                      xValueMapper: (data, _) => _getDisplayDate(data.date),
-                      yValueMapper: (data, _) => data.value,
-                      animationDuration: widget.duration,
-                      pointColorMapper: (data, index) => _getBarColor(index),
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(50),
-                        topLeft: Radius.circular(50),
-                      ),
-                    ),
-                  ]),
-            ],
-          ),
+                ),
+              ]),
         ),
       ],
     );
   }
+
+  /// Chart drawing utils
 
   _buildCustomXAxis(ChartType type) => CategoryAxis(
         isVisible: type != ChartType.line,
         labelStyle: const TextStyle(color: Colors.transparent),
         majorTickLines: const MajorTickLines(width: 0),
         majorGridLines: const MajorGridLines(color: Colors.transparent),
-        onRendererCreated: (controller) {
-          switch (type) {
-            case ChartType.line:
-              lineAxisController = controller;
-              break;
-            case ChartType.expected:
-              expectedAxisController = controller;
-              break;
-            case ChartType.actual:
-              actualAxisController = controller;
-              break;
-          }
-        },
-        initialVisibleMaximum: widget.displayColumns.toDouble(),
-        initialVisibleMinimum: 0,
-        initialZoomPosition: 0,
       );
 
   _buildCustomYAxis(ChartType type) => NumericAxis(
+        plotOffset: type == ChartType.line ? 10 : 0,
         opposedPosition: type == ChartType.line,
         minimum:
             type == ChartType.line ? widget.minLineValue : widget.minBarValue,
         maximum: (type == ChartType.line
                 ? widget.maxLineValue
                 : widget.maxBarValue) +
-            2,
+            (type != ChartType.line ? 5 : 0),
         interval: type == ChartType.line
             ? widget.lineValueInterval
             : widget.barValueInterval,
@@ -330,20 +269,8 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
       ];
 
   Color _getBarColor(int index) {
-    if (index != dataList.length - 1) return widget.mainColor;
+    if (index != widget.displayColumns - 1) return widget.mainColor;
     return widget.correctColor;
-  }
-
-  int _compareWithCurrentTime(DateTime time) {
-    final currentTime = DateTime.now();
-
-    if (time.day == currentTime.day &&
-        time.month == currentTime.month &&
-        time.year == currentTime.year) {
-      return 0;
-    }
-
-    return time.compareTo(currentTime);
   }
 
   _drawLineMarker(MarkerRenderArgs args) {
@@ -352,10 +279,10 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
     args.borderWidth = 2;
 
     final int index = args.pointIndex!;
-    if (index == dataList.length - 1) {
+    if (index == widget.displayColumns - 1) {
       args.color = widget.correctColor;
       args.borderColor = Colors.white;
-    } else if (_compareWithCurrentTime(dataList[index].date) == 0) {
+    } else if (index == currentDayGroupIndex) {
       args.borderColor = widget.correctColor;
       args.color = Colors.white;
     } else {
@@ -364,83 +291,60 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
     }
   }
 
-  _handleZooming(ZoomPanArgs args, ChartType type) {
-    if (args.axis?.name == 'primaryXAxis') {
-      // Storing the zoomPosition and the zoomFactor
-      switch (type) {
-        case ChartType.line:
-          expectedAxisController.zoomPosition = args.currentZoomPosition;
-          expectedAxisController.zoomFactor = args.currentZoomFactor;
+  /// Initial calculations
 
-          actualAxisController.zoomPosition = args.currentZoomPosition;
-          actualAxisController.zoomFactor = args.currentZoomFactor;
-          break;
-        case ChartType.expected:
-          lineAxisController.zoomPosition = args.currentZoomPosition;
-          lineAxisController.zoomFactor = args.currentZoomFactor;
+  _calculateAverageValues() {
+    // Calculate days in a group
+    final days = widget.examDate.difference(widget.startTime).inDays;
+    final groupDays = days ~/ widget.displayColumns;
 
-          actualAxisController.zoomPosition = args.currentZoomPosition;
-          actualAxisController.zoomFactor = args.currentZoomFactor;
-          break;
-        case ChartType.actual:
-          lineAxisController.zoomPosition = args.currentZoomPosition;
-          lineAxisController.zoomFactor = args.currentZoomFactor;
+    // Index of current day from the start time
+    currentDayIndex = DateTime.now().difference(widget.startTime).inDays;
 
-          expectedAxisController.zoomPosition = args.currentZoomPosition;
-          expectedAxisController.zoomFactor = args.currentZoomFactor;
-          break;
-      }
+    // Index of the group that current day belongs to
+    currentDayGroupIndex = currentDayIndex ~/ groupDays - 1;
+    if (currentDayIndex % groupDays != 0) currentDayGroupIndex++;
+
+    // Calculate average values of each group except the current group
+    int startGroupIndex = 0;
+    for (int i = 0; i < currentDayGroupIndex; i++) {
+      int sum = widget.valueList
+          .sublist(startGroupIndex, startGroupIndex + groupDays)
+          .reduce((a, b) => a + b);
+      averageValues.add(sum / groupDays);
+
+      startGroupIndex += groupDays;
     }
+
+    // Calculate current day group's average
+    int sum = widget.valueList
+        .sublist(startGroupIndex, widget.valueList.length)
+        .reduce((a, b) => a + b);
+    averageValues.add(sum / (widget.valueList.length - startGroupIndex));
+
+    // The rest are all 0
+    int missingValuesCount = widget.displayColumns - averageValues.length;
+    averageValues.addAll(List.generate(missingValuesCount, (_) => 0));
   }
 
-  _reduceDataList() {
-    if (widget.dataList.length < 15) {
-      dataList = widget.dataList;
-      return;
+  _calculateExpectedLineValues() {
+    // Evenly divide expected value range from 10 to 100%
+    double gap = (100 - 10) / (widget.displayColumns - 1);
+    for (int i = 0; i < widget.displayColumns; i++) {
+      expectedLineValues.add(10 + i * gap);
     }
-
-    // By default, the chart contains 1st day and last day
-    dataList = [widget.dataList[0]];
-
-    int reduceRatio = widget.dataList.length ~/ 10;
-    for (int i = 1; i < widget.dataList.length - 1; i++) {
-      if (i % reduceRatio == 0) {
-        dataList.add(widget.dataList[i]);
-      }
-    }
-
-    //TODO: Add current day
-
-
-    dataList.add(widget.dataList.last);
   }
 
   _calculateLinePercentValues() {
-    percentValues.clear();
-
-    int currentDayIndex = dataList
-        .indexWhere((data) => _compareWithCurrentTime(data.date) == 0);
-
     // Previous days' percent
-    for (int i = 0; i < currentDayIndex; i++) {
-      var percent = dataList[i].value / widget.expectedBarValue;
+    for (int i = 0; i <= currentDayGroupIndex; i++) {
+      var percent = averageValues[i] / widget.expectedBarValue;
       percentValues.add(percent);
     }
 
-    // Today's percent
-    if (dataList[currentDayIndex].value == 0) {
-      // If haven't done yet -> calculate
-      var predictedPercent = _calculatePercent(currentDayIndex);
-
-      percentValues.add(predictedPercent);
-    } else {
-      percentValues.add(
-          dataList[currentDayIndex].value / widget.expectedBarValue);
-    }
-
-    for (int i = currentDayIndex + 1; i < dataList.length; i++) {
-      var predictedValue = _calculatePercent(i);
-      percentValues.add(predictedValue);
+    // Calculate future prediction
+    for (int i = currentDayGroupIndex + 1; i < widget.displayColumns; i++) {
+      percentValues.add(_calculatePercent(i));
     }
   }
 
@@ -454,6 +358,4 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
           (widget.expectedBarValue -
               percentValues[index - 1] * widget.expectedBarValue) /
           widget.expectedBarValue;
-
-  _getDisplayDate(DateTime date) => '${date.day}/${date.month}';
 }

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
@@ -8,15 +6,10 @@ class TestPersonalPlanChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     // Dummy data
-    int count = 100;
-    final expectedLineValues =
-        List.generate(count, (index) => (index * 2 + Random().nextInt(50)).clamp(0, 100).toDouble());
-    final dataList = List.generate(
-        count,
-        (index) =>
-            ChartData(DateTime.now().add(Duration(days: index - 20)), (index + 10).clamp(0, 50).toDouble()));
+    final startDate = DateTime(2024, 5, 15);
+    final examDate = DateTime(2024, 6, 20);
+    final valueList = <int>[0, 0, 0, 0, 35, 30, 20, 30];
 
     return Container(
       decoration: const BoxDecoration(
@@ -25,14 +18,13 @@ class TestPersonalPlanChart extends StatelessWidget {
               fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-        ),
+        appBar: AppBar(backgroundColor: Colors.transparent),
         body: Column(
           children: [
             PersonalPlanChart(
-              dataList: dataList,
-              expectedLineValues: expectedLineValues,
+              startTime: startDate,
+              examDate: examDate,
+              valueList: valueList,
             )
           ],
         ),

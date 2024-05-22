@@ -1,5 +1,6 @@
 import 'package:example/providers/app_theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:provider/provider.dart';
 
 import '../../navigation/app_route.dart';
@@ -21,17 +22,21 @@ class HomeScreen extends StatelessWidget {
         child: Padding(
           padding:
               const EdgeInsets.all(16).add(const EdgeInsets.only(bottom: 60)),
-          child: ListView(
+          child: GridView(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, childAspectRatio: 3),
             children: AppRoute.getAppRoute()
                 .map(
-                  (e) => ElevatedButton(
-                    onPressed: () => NavigationService().pushNamed(e),
-                    child: Text(e
-                        .substring(1)
-                        .split(RegExp(r'_(?=[a-zA-Z])'))
-                        .map(
-                            (part) => part[0].toUpperCase() + part.substring(1))
-                        .join(" ")),
+                  (e) => Container(
+                    margin: const EdgeInsets.all(10),
+                    child: MainButton(
+                        onPressed: () => NavigationService().pushNamed(e),
+                        title: e
+                            .substring(1)
+                            .split(RegExp(r'_(?=[a-zA-Z])'))
+                            .map((part) =>
+                                part[0].toUpperCase() + part.substring(1))
+                            .join(" ")),
                   ),
                 )
                 .toList(),
