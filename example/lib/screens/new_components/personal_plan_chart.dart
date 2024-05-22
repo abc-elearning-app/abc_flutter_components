@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
@@ -6,29 +8,15 @@ class TestPersonalPlanChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final expectedLineValues = <double>[50, 55, 60, 65, 70, 75, 80, 85, 85, 90, 95, 98, 98, 98, 98, 98, 98, 98];
 
-    int x = -3;
-    final dataList = <ChartData>[
-      ChartData(DateTime.now().add(Duration(days: -5 + x)), 10),
-      ChartData(DateTime.now().add(Duration(days: -4 + x)), 20),
-      ChartData(DateTime.now().add(Duration(days: -3 + x)), 25),
-      ChartData(DateTime.now().add(Duration(days: -2 + x)), 15),
-      ChartData(DateTime.now().add(Duration(days: -1 + x)), 20),
-      ChartData(DateTime.now().add(Duration(days: 0 + x)), 30),
-      ChartData(DateTime.now().add(Duration(days: 1 + x)), 20),
-      ChartData(DateTime.now().add(Duration(days: 2 + x)), 20),
-      ChartData(DateTime.now().add(Duration(days: 3 + x)), 20),
-      ChartData(DateTime.now().add(Duration(days: 4 + x)), 20),
-      ChartData(DateTime.now().add(Duration(days: 5 + x)), 20),
-      // ChartData(DateTime.now().add(Duration(days: 6 + x)), 20),
-      // ChartData(DateTime.now().add(Duration(days: 7 + x)), 20),
-      // ChartData(DateTime.now().add(Duration(days: 8 + x)), 20),
-      // ChartData(DateTime.now().add(Duration(days: 9 + x)), 20),
-      // ChartData(DateTime.now().add(Duration(days: 10 + x)), 20),
-      // ChartData(DateTime.now().add(Duration(days: 11 + x)), 20),
-      // ChartData(DateTime.now().add(Duration(days: 12 + x)), 20),
-    ];
+    // Dummy data
+    int count = 100;
+    final expectedLineValues =
+        List.generate(count, (index) => (index * 2 + Random().nextInt(50)).clamp(0, 100).toDouble());
+    final dataList = List.generate(
+        count,
+        (index) =>
+            ChartData(DateTime.now().add(Duration(days: index - 20)), (index + 10).clamp(0, 50).toDouble()));
 
     return Container(
       decoration: const BoxDecoration(

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -87,10 +85,12 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
   late CategoryAxisController expectedAxisController;
   late CategoryAxisController actualAxisController;
 
+  List<ChartData> dataList = [];
   final List<double> percentValues = [];
 
   @override
   void initState() {
+    _reduceDataList();
     _calculateLinePercentValues();
 
     _tooltip = TooltipBehavior(enable: true);
@@ -99,19 +99,29 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
       zoomMode: ZoomMode.x,
     );
 
-    // var time = Timer.periodic(const Duration(seconds: 2), (timer) {
-    final int currentDayIndex = widget.dataList.indexWhere((data) => _compareWithCurrentTime(data.date) == 0);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      for (int i = 0; i < (currentDayIndex -(widget.dataList.length > 10 ? 5 : 2)).clamp(0, 1000); i ++) {
-        _zoomPanBehavior.panToDirection('right');
-      }
-      // _zoomPanBehavior.panToDirection('right');
-      // _zoomPanBehavior.panToDirection('right');
-      // _zoomPanBehavior.panToDirection('right');
-      // _zoomPanBehavior.panToDirection('right');
-    });
-    // });
+    final int currentDayIndex = dataList
+        .indexWhere((data) => _compareWithCurrentTime(data.date) == 0);
 
+    int steps = 0;
+    if (currentDayIndex < 4) {
+      steps = 0;
+    } else if (currentDayIndex < 6) {
+      steps = 2;
+    } else if (currentDayIndex < 9) {
+      steps = 4;
+    } else {
+      steps = 5;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (currentDayIndex == 0) {
+        _zoomPanBehavior.panToDirection('left');
+      } else {
+        for (int i = 0; i < steps; i++) {
+          _zoomPanBehavior.panToDirection('right');
+        }
+      }
+    });
 
     super.initState();
   }
@@ -160,9 +170,9 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
               series: [
                 // Expected line
                 SplineSeries<ChartData, String>(
-                    dataSource: widget.dataList,
+                    dataSource: dataList,
                     width: widget.lineWidth,
-                    xValueMapper: (data, _) => data.date.toString(),
+                    xValueMapper: (data, _) => _getDisplayDate(data.date),
                     yValueMapper: (_, index) =>
                         widget.expectedLineValues[index],
                     animationDuration: widget.duration,
@@ -173,9 +183,9 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
 
                 // Actual line
                 SplineSeries<ChartData, String>(
-                    dataSource: widget.dataList,
+                    dataSource: dataList,
                     width: widget.lineWidth,
-                    xValueMapper: (ChartData data, _) => data.date.toString(),
+                    xValueMapper: (ChartData data, _) => _getDisplayDate(data.date),
                     yValueMapper: (ChartData data, int index) =>
                         widget.expectedLineValues[index] * percentValues[index],
                     animationDuration: widget.duration,
@@ -215,9 +225,9 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
                 ),
                 series: [
                   StackedColumnSeries<ChartData, String>(
-                    dataSource: widget.dataList,
+                    dataSource: dataList,
                     width: widget.barRatio,
-                    xValueMapper: (data, _) => data.date.toString(),
+                    xValueMapper: (data, _) => _getDisplayDate(data.date),
                     yValueMapper: (data, _) => widget.expectedBarValue,
                     animationDuration: widget.duration,
                     pointColorMapper: (data, index) =>
@@ -245,8 +255,8 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
                     StackedColumnSeries<ChartData, String>(
                       name: 'Correct Questions',
                       width: widget.barRatio,
-                      dataSource: widget.dataList,
-                      xValueMapper: (data, _) => data.date.toString(),
+                      dataSource: dataList,
+                      xValueMapper: (data, _) => _getDisplayDate(data.date),
                       yValueMapper: (data, _) => data.value,
                       animationDuration: widget.duration,
                       pointColorMapper: (data, index) => _getBarColor(index),
@@ -320,7 +330,7 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
       ];
 
   Color _getBarColor(int index) {
-    if (index != widget.dataList.length - 1) return widget.mainColor;
+    if (index != dataList.length - 1) return widget.mainColor;
     return widget.correctColor;
   }
 
@@ -342,10 +352,10 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
     args.borderWidth = 2;
 
     final int index = args.pointIndex!;
-    if (index == widget.dataList.length - 1) {
+    if (index == dataList.length - 1) {
       args.color = widget.correctColor;
       args.borderColor = Colors.white;
-    } else if (_compareWithCurrentTime(widget.dataList[index].date) == 0) {
+    } else if (_compareWithCurrentTime(dataList[index].date) == 0) {
       args.borderColor = widget.correctColor;
       args.color = Colors.white;
     } else {
@@ -383,30 +393,52 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
     }
   }
 
+  _reduceDataList() {
+    if (widget.dataList.length < 15) {
+      dataList = widget.dataList;
+      return;
+    }
+
+    // By default, the chart contains 1st day and last day
+    dataList = [widget.dataList[0]];
+
+    int reduceRatio = widget.dataList.length ~/ 10;
+    for (int i = 1; i < widget.dataList.length - 1; i++) {
+      if (i % reduceRatio == 0) {
+        dataList.add(widget.dataList[i]);
+      }
+    }
+
+    //TODO: Add current day
+
+
+    dataList.add(widget.dataList.last);
+  }
+
   _calculateLinePercentValues() {
     percentValues.clear();
 
-    int currentDayIndex = widget.dataList
+    int currentDayIndex = dataList
         .indexWhere((data) => _compareWithCurrentTime(data.date) == 0);
 
     // Previous days' percent
     for (int i = 0; i < currentDayIndex; i++) {
-      var percent = widget.dataList[i].value / widget.expectedBarValue;
+      var percent = dataList[i].value / widget.expectedBarValue;
       percentValues.add(percent);
     }
 
     // Today's percent
-    if (widget.dataList[currentDayIndex].value == 0) {
+    if (dataList[currentDayIndex].value == 0) {
       // If haven't done yet -> calculate
       var predictedPercent = _calculatePercent(currentDayIndex);
 
       percentValues.add(predictedPercent);
     } else {
       percentValues.add(
-          widget.dataList[currentDayIndex].value / widget.expectedBarValue);
+          dataList[currentDayIndex].value / widget.expectedBarValue);
     }
 
-    for (int i = currentDayIndex + 1; i < widget.dataList.length; i++) {
+    for (int i = currentDayIndex + 1; i < dataList.length; i++) {
       var predictedValue = _calculatePercent(i);
       percentValues.add(predictedValue);
     }
@@ -422,4 +454,6 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
           (widget.expectedBarValue -
               percentValues[index - 1] * widget.expectedBarValue) /
           widget.expectedBarValue;
+
+  _getDisplayDate(DateTime date) => '${date.day}/${date.month}';
 }
