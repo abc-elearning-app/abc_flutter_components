@@ -2,11 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/levels_path/updated_path_level_screen.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/levels_path/updated_widgets/updated_path_animation.dart';
 
-import '../default_path_level_screen.dart';
 import 'updated_level_widget.dart';
 
 class UpdatedLevelGrid extends StatelessWidget {
+  final DrawType drawType;
   final int longRowCount;
   final int shortRowCount;
   final bool isFirstTimeOpen;
@@ -14,6 +15,7 @@ class UpdatedLevelGrid extends StatelessWidget {
 
   const UpdatedLevelGrid({
     super.key,
+    required this.drawType,
     required this.isFirstTimeOpen,
     required this.levelDataList,
     required this.longRowCount,
@@ -55,7 +57,7 @@ class UpdatedLevelGrid extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: row.length % 2 == 0
+            children: row.length % 2 != 0
                 ? levelsInARow
                 : levelsInARow.reversed.toList(),
           ),
@@ -63,8 +65,6 @@ class UpdatedLevelGrid extends StatelessWidget {
       );
     }
 
-    return Column(
-      children: row,
-    );
+    return Column(children: row);
   }
 }

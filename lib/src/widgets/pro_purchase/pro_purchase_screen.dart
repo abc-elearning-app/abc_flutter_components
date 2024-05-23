@@ -50,6 +50,12 @@ class _ProPurchaseScreenState extends State<ProPurchaseScreen> {
   }
 
   @override
+  void dispose() {
+    _proBannerData.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: widget.backgroundColor,

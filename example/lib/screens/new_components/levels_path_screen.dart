@@ -6,31 +6,7 @@ class TestLevelsPathScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const int currentLevel1 = 1;
-    final levelDataList1 = <LevelData>[
-      LevelData(
-          progress: 100,
-          isLock: 0 > currentLevel1,
-          isCurrent: 0 == currentLevel1,
-          isFreeToday: false),
-      LevelData(
-          progress: 80,
-          isLock: 1 > currentLevel1,
-          isCurrent: 1 == currentLevel1,
-          isFreeToday: false),
-      LevelData(
-          progress: 50,
-          isLock: 2 > currentLevel1,
-          isCurrent: 2 == currentLevel1,
-          isFreeToday: false),
-      LevelData(
-          progress: 85,
-          isLock: 3 > currentLevel1,
-          isCurrent: 3 == currentLevel1,
-          isFreeToday: false),
-    ];
-
-    return UpdatedPathLevelScreen();
+    return const UpdatedPathLevelScreen();
   }
 
   Widget _buildDivider(String title) => Padding(

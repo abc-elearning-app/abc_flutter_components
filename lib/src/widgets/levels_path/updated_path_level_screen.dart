@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/levels_path/updated_widgets/updated_path_animation.dart';
 
@@ -24,53 +25,48 @@ class UpdatedPathLevelScreen extends StatefulWidget {
 }
 
 class _UpdatedPathLevelScreenState extends State<UpdatedPathLevelScreen> {
-  final int dummyListLength = 20;
-  late List<UpdatedLevelData> levelDataList;
+  final int dummyListLength = 6;
+  late List<UpdatedLevelData> levelList;
 
-  final int longRowCount = 2;
-  final int shortRowCount = 3;
+  final int upperRowCount = 1;
+  final int lowerRoundCount = 2;
 
   // The shorter the faster
   final roundDrawSpeed = const Duration(milliseconds: 250);
   final lastRoundDrawSpeed = const Duration(milliseconds: 150);
 
-  final bool isFirstTimeOpen = true;
-
   late int dashRoundCount;
-  late int lineRoundCount;
+  late int currentCycleCount;
   late int lastRoundDashLevelCount;
-  late int lastRoundLineCount;
+  late int lastCycleLevelCount;
 
   @override
   void initState() {
     // Create dummy list (instead of passing in)
-    levelDataList = List.generate(
+    levelList = List.generate(
         dummyListLength,
         (index) => UpdatedLevelData(
-            progress: index * 10, isCurrent: index == 10, isLock: index > 10));
+            progress: index * 10, isCurrent: index == 2, isLock: index > 2));
 
-    final endDashLevelLength = levelDataList.length;
-    dashRoundCount = endDashLevelLength <= longRowCount + shortRowCount
+    final endDashLevelLength = levelList.length;
+    dashRoundCount = endDashLevelLength <= upperRowCount + lowerRoundCount
         ? 0
-        : (endDashLevelLength % (longRowCount + shortRowCount) == 0)
-            ? endDashLevelLength ~/ (longRowCount + shortRowCount) - 1
-            : endDashLevelLength ~/ (longRowCount + shortRowCount);
+        : (endDashLevelLength % (upperRowCount + lowerRoundCount) == 0)
+            ? endDashLevelLength ~/ (upperRowCount + lowerRoundCount) - 1
+            : endDashLevelLength ~/ (upperRowCount + lowerRoundCount);
 
-    final endLineLevelLength = levelDataList
-            .indexOf(levelDataList.firstWhere((level) => level.isCurrent)) +
-        1;
-    lineRoundCount = endLineLevelLength <= longRowCount + shortRowCount
+    final currentLevelLength =
+        levelList.indexWhere((level) => level.isCurrent) + 1;
+    currentCycleCount = currentLevelLength <= upperRowCount + lowerRoundCount
         ? 0
-        : (endLineLevelLength % (longRowCount + shortRowCount) == 0)
-            ? endLineLevelLength ~/ (longRowCount + shortRowCount) - 1
-            : endLineLevelLength ~/ (longRowCount + shortRowCount);
-
-    print('$endDashLevelLength - $endLineLevelLength');
+        : (currentLevelLength % (upperRowCount + lowerRoundCount) == 0)
+            ? currentLevelLength ~/ (upperRowCount + lowerRoundCount) - 1
+            : currentLevelLength ~/ (upperRowCount + lowerRoundCount);
 
     lastRoundDashLevelCount =
-        endDashLevelLength - dashRoundCount * (longRowCount + shortRowCount);
-    lastRoundLineCount =
-        endLineLevelLength - lineRoundCount * (longRowCount + shortRowCount);
+        endDashLevelLength - dashRoundCount * (upperRowCount + lowerRoundCount);
+    lastCycleLevelCount = currentLevelLength -
+        currentCycleCount * (upperRowCount + lowerRoundCount);
 
     super.initState();
   }
@@ -84,48 +80,44 @@ class _UpdatedPathLevelScreenState extends State<UpdatedPathLevelScreen> {
             backgroundColor: Colors.transparent,
             elevation: 0,
             scrolledUnderElevation: 0,
-            title: const Text('Vuờn cà chua của Đại',
+            title: const Text('ABC',
                 style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           backgroundColor: Colors.transparent,
           body: SafeArea(
             child: SingleChildScrollView(
-                child: Transform.scale(
-                  scale: 0.9,
-                  child: Stack(children: [
-                    // UpdatedPathAnimation(
-                    //   roundDrawSpeed: roundDrawSpeed,
-                    //   lastRoundDrawSpeed: lastRoundDrawSpeed,
-                    //   longRowCount: longRowCount,
-                    //   shortRowCount: shortRowCount,
-                    //   rounds: dashRoundCount,
-                    //   isDash: true,
-                    //   isFirstTimeOpen: isFirstTimeOpen,
-                    //   lastRoundLevelCount: lastRoundDashLevelCount,
-                    // ),
-                    FutureBuilder(
-                      future: Future.delayed(
-                          Duration(milliseconds: isFirstTimeOpen ? 500 : 0)),
-                      builder: (context, snapShot) =>
-                          snapShot.connectionState == ConnectionState.done
-                              ? UpdatedPathAnimation(
-                                  roundDrawSpeed: roundDrawSpeed,
-                                  lastRoundDrawSpeed: lastRoundDrawSpeed,
-                                  longRowCount: longRowCount,
-                                  shortRowCount: shortRowCount,
-                                  rounds: lineRoundCount,
-                                  isFirstTimeOpen: isFirstTimeOpen,
-                                  lastRoundLevelCount: lastRoundLineCount,
-                                )
-                              : const SizedBox(),
-                    ),
-                    UpdatedLevelGrid(
-                        isFirstTimeOpen: isFirstTimeOpen,
-                        longRowCount: longRowCount,
-                        shortRowCount: shortRowCount,
-                        levelDataList: levelDataList),
-                  ]),
-                )),
+                child: Stack(children: [
+                  UpdatedPathAnimation(
+                    drawType: DrawType.firstTimeOpen,
+                    roundDrawSpeed: roundDrawSpeed,
+                    lastRoundDrawSpeed: lastRoundDrawSpeed,
+                    upperRowCount: upperRowCount,
+                    lowerRoundCount: lowerRoundCount,
+                    rounds: dashRoundCount,
+                    lastCycleLevelCount: lastRoundDashLevelCount,
+                    lineColor: const Color(0xFFF3EADA),
+                  ),
+                  FutureBuilder(
+                    future: Future.delayed(const Duration(milliseconds: 500)),
+                    builder: (context, snapShot) =>
+                        snapShot.connectionState == ConnectionState.done
+                            ? UpdatedPathAnimation(
+                                drawType: DrawType.firstTimeOpen,
+                                roundDrawSpeed: roundDrawSpeed,
+                                lastRoundDrawSpeed: lastRoundDrawSpeed,
+                                upperRowCount: upperRowCount,
+                                lowerRoundCount: lowerRoundCount,
+                                rounds: currentCycleCount,
+                                lastCycleLevelCount: lastCycleLevelCount,
+                              )
+                            : const SizedBox(),
+                  ),
+                  UpdatedLevelGrid(
+                      drawType: DrawType.firstTimeOpen,
+                      longRowCount: upperRowCount,
+                      shortRowCount: lowerRoundCount,
+                      levelDataList: levelList, isFirstTimeOpen: true,),
+                ])),
           )),
     );
   }
