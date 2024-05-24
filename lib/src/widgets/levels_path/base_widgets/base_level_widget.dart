@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-class UpdatedLevel extends StatefulWidget {
+class BaseLevelWidget extends StatefulWidget {
   final bool isCurrent;
   final int index;
   final double progress;
@@ -11,7 +9,7 @@ class UpdatedLevel extends StatefulWidget {
   final bool isPlaceholder;
   final bool isFirstTimeOpen;
 
-  const UpdatedLevel(
+  const BaseLevelWidget(
       {super.key,
       this.isPlaceholder = false,
       required this.progress,
@@ -22,11 +20,10 @@ class UpdatedLevel extends StatefulWidget {
       required this.isFirstTimeOpen});
 
   @override
-  State<UpdatedLevel> createState() => _UpdatedLevelState();
+  State<BaseLevelWidget> createState() => _BaseLevelWidgetState();
 }
 
-class _UpdatedLevelState extends State<UpdatedLevel>
-    with TickerProviderStateMixin {
+class _BaseLevelWidgetState extends State<BaseLevelWidget> with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadingInAnimation;
   late Animation<double> _landingAnimation;
@@ -134,11 +131,14 @@ class _UpdatedLevelState extends State<UpdatedLevel>
       alignment: Alignment.center,
       children: [
         if (widget.isCurrent)
-          CustomPaint(
-            size: const Size(20.0, 20.0),
-            painter: SplashCirclePainter(
-                animation: _splashController,
-                animationStarted: _animationStarted),
+          Transform.translate(
+            offset: const Offset(0, -5),
+            child: CustomPaint(
+              size: const Size(20.0, 20.0),
+              painter: SplashCirclePainter(
+                  animation: _splashController,
+                  animationStarted: _animationStarted),
+            ),
           ),
         if (widget.isFirstTimeOpen)
           AnimatedBuilder(
@@ -162,36 +162,61 @@ class _UpdatedLevelState extends State<UpdatedLevel>
 
   Widget _mainLevelWidget() => Column(
         children: [
-          widget.index != 5 ?
-          Stack(
-            alignment: Alignment.topRight,
-            children: [
-              CircleAvatar(
-                radius: 40,
-                backgroundColor: const Color(0xFFE3A651).withOpacity(0.2),
-                child: CircleAvatar(
-                  radius: 32,
-                  backgroundColor: Colors.white,
-                  child: CircleAvatar(
-                    radius: 28,
-                    backgroundColor: const Color(0xFFE3A651),
-                    child: SvgPicture.asset(
-                      'assets/images/subject_icon.svg',
-                      colorFilter:
-                          const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+          SizedBox(
+            height: 70,
+            width: 65,
+            child: Stack(
+              alignment: Alignment.topRight,
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: _getKetchupColor(),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: Center(
+                        child: widget.isLock
+                            ? const Icon(
+                                Icons.lock,
+                                color: Colors.white,
+                              )
+                            : Text(
+                                '${widget.progress.floor()}%',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: _getValueColor(),
+                                ),
+                              ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Transform.translate(
-                  offset: const Offset(5, -5),
+                Container(
+                  height: 25,
+                  width: 25,
+                  decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(50)),
                   child: const Icon(
-                    Icons.lock,
-                    color: Colors.grey,
-                  ))
-            ],
-          ): Image.asset('assets/images/final_level.png'),
-          Text('Part ${widget.index}')
+                    Icons.fastfood_rounded,
+                    size: 16,
+                    color: Colors.white,
+                  ),
+                )
+              ],
+            ),
+          ),
+          Text('Cà chua ${widget.index}')
         ],
       );
 
@@ -226,17 +251,15 @@ class SplashCirclePainter extends CustomPainter {
   final Animation<double> animation;
   final bool animationStarted;
 
-  SplashCirclePainter({
-    required this.animation,
-    required this.animationStarted,
-  }) : super(repaint: animation);
+  SplashCirclePainter({required this.animation, required this.animationStarted})
+      : super(repaint: animation);
 
   @override
   void paint(Canvas canvas, Size size) {
     double maxRadius = 30;
 
     Paint paint = Paint()
-      ..color = Color(0xFFE3A651).withOpacity(
+      ..color = Colors.green.withOpacity(
           1 * (1 - animation.value)) // Adjust opacity based on animation value
       ..style = PaintingStyle.stroke
       ..strokeWidth = 50;

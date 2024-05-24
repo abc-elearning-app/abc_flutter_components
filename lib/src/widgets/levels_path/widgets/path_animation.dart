@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 enum DrawType { noAnimation, firstTimeOpen, nextLevel }
 
-class UpdatedPathAnimation extends StatefulWidget {
+class PathAnimation extends StatefulWidget {
   final DrawType drawType;
   final Color lineColor;
   final int upperRowCount;
@@ -15,7 +15,7 @@ class UpdatedPathAnimation extends StatefulWidget {
   final Duration roundDrawSpeed;
   final Duration lastRoundDrawSpeed;
 
-  const UpdatedPathAnimation(
+  const PathAnimation(
       {super.key,
       required this.drawType,
       required this.rounds,
@@ -27,16 +27,16 @@ class UpdatedPathAnimation extends StatefulWidget {
       this.lineColor = const Color(0xFFE3A651)});
 
   @override
-  _UpdatedPathAnimationState createState() => _UpdatedPathAnimationState();
+  _PathAnimationState createState() => _PathAnimationState();
 }
 
-class _UpdatedPathAnimationState extends State<UpdatedPathAnimation>
+class _PathAnimationState extends State<PathAnimation>
     with TickerProviderStateMixin {
   List<AnimationController> lineControllers = [];
   List<AnimationController> curveControllers = [];
 
   List<AnimationController> lastRoundLineControllers = [];
-  late AnimationController lastRoundCurveController;
+  late AnimationController lastCycleCurveController;
 
   late AnimationController nextLevelController;
   late AnimationController additionalNextLevelController;
@@ -45,13 +45,13 @@ class _UpdatedPathAnimationState extends State<UpdatedPathAnimation>
   void initState() {
     super.initState();
 
-    //tmp
-    lastRoundCurveController =
-        AnimationController(vsync: this, duration: const Duration());
+    lastCycleCurveController = AnimationController(
+        vsync: this,
+        duration: widget.roundDrawSpeed - const Duration(milliseconds: 100));
     nextLevelController =
-        AnimationController(vsync: this, duration: const Duration());
-    additionalNextLevelController =
-        AnimationController(vsync: this, duration: const Duration());
+        AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    additionalNextLevelController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 300));
 
     switch (widget.drawType) {
       case DrawType.firstTimeOpen:
@@ -74,11 +74,6 @@ class _UpdatedPathAnimationState extends State<UpdatedPathAnimation>
 
     // If there exist lower row
     if (widget.lastCycleLevelCount > widget.upperRowCount) {
-      // Arc controller
-      lastRoundCurveController = AnimationController(
-          vsync: this,
-          duration: widget.roundDrawSpeed - const Duration(milliseconds: 100));
-
       // Lower row controller
       lastRoundLineControllers.add(AnimationController(
           vsync: this, duration: widget.lastRoundDrawSpeed));
@@ -89,12 +84,12 @@ class _UpdatedPathAnimationState extends State<UpdatedPathAnimation>
       // draw to the curve
       lastRoundLineControllers[0].addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          lastRoundCurveController.forward();
+          lastCycleCurveController.forward();
         }
       });
 
       // draw the lower line
-      lastRoundCurveController.addStatusListener((status) {
+      lastCycleCurveController.addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           lastRoundLineControllers[1].forward();
         }
@@ -162,16 +157,10 @@ class _UpdatedPathAnimationState extends State<UpdatedPathAnimation>
   }
 
   _setupNextLevelAnimation() {
-    nextLevelController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1));
-
     nextLevelController.forward();
 
     if (widget.lastCycleLevelCount == 1 ||
         widget.lastCycleLevelCount == widget.upperRowCount + 1) {
-      additionalNextLevelController = AnimationController(
-          vsync: this, duration: const Duration(milliseconds: 300));
-
       nextLevelController.addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           additionalNextLevelController.forward();
@@ -192,7 +181,7 @@ class _UpdatedPathAnimationState extends State<UpdatedPathAnimation>
           ...lastRoundLineControllers,
           ...[
             nextLevelController,
-            lastRoundCurveController,
+            lastCycleCurveController,
             additionalNextLevelController,
           ],
         ]),
@@ -200,14 +189,14 @@ class _UpdatedPathAnimationState extends State<UpdatedPathAnimation>
           painter: PathLine(
               drawType: widget.drawType,
               lineColor: widget.lineColor,
-              rounds: widget.rounds,
+              cycles: widget.rounds,
               lastCycleLevelCount: widget.lastCycleLevelCount,
               upperRowCount: widget.upperRowCount,
               lowerRowCount: widget.lowerRoundCount,
               curveControllers: curveControllers,
               lineControllers: lineControllers,
               lastRoundLineControllers: lastRoundLineControllers,
-              lastRoundCurveController: lastRoundCurveController,
+              lastRoundCurveController: lastCycleCurveController,
               nextLevelController: nextLevelController,
               additionalNextLevelController: additionalNextLevelController),
         ),
@@ -225,7 +214,7 @@ class _UpdatedPathAnimationState extends State<UpdatedPathAnimation>
     }
 
     nextLevelController.dispose();
-    lastRoundCurveController.dispose();
+    lastCycleCurveController.dispose();
     super.dispose();
   }
 }
@@ -233,7 +222,7 @@ class _UpdatedPathAnimationState extends State<UpdatedPathAnimation>
 class PathLine extends CustomPainter {
   final DrawType drawType;
   final Color lineColor;
-  final int rounds;
+  final int cycles;
   final int lastCycleLevelCount;
   final int upperRowCount;
   final int lowerRowCount;
@@ -247,7 +236,7 @@ class PathLine extends CustomPainter {
   PathLine(
       {required this.drawType,
       required this.lineColor,
-      required this.rounds,
+      required this.cycles,
       required this.lastCycleLevelCount,
       required this.upperRowCount,
       required this.lowerRowCount,
@@ -289,16 +278,16 @@ class PathLine extends CustomPainter {
     double radius = size.height / 2;
     double roundHeight = size.height / 2;
 
-    // Start drawing rounds
-    for (int i = 1; i <= rounds; i++) {
+    // Start drawing cycles
+    for (int i = 1; i <= cycles; i++) {
       // First Line (1st line of 1st cycle if different)
       startX = i == 1
-          ? size.width - size.width / (lowerRowCount + 1)
+          ? size.width - size.width / (upperRowCount + 1)
           : size.width * 0.8;
       startY = roundHeight;
 
       endX = size.width * 0.2;
-      endY = roundHeight;
+      endY = startY;
 
       if (drawType != DrawType.firstTimeOpen) {
         canvas.drawLine(
@@ -389,7 +378,7 @@ class PathLine extends CustomPainter {
             paint,
           );
         }
-      } else if (lastCycleLevelCount == 1 && i == rounds) {
+      } else if (lastCycleLevelCount == 1 && i == cycles) {
         if (nextLevelController.value > 0) {
           canvas.drawArc(
             Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
@@ -415,7 +404,10 @@ class PathLine extends CustomPainter {
     /// Draw last cycle
     if (drawType != DrawType.nextLevel) {
       if (lastCycleLevelCount <= upperRowCount) {
-        startX = size.width * 0.8;
+        // If there is no previous complete cycles, starting point is different
+        startX = cycles == 0
+            ? size.width - (size.width / (upperRowCount + 1))
+            : size.width * 0.8;
         startY = roundHeight;
 
         endX = size.width -
@@ -439,7 +431,9 @@ class PathLine extends CustomPainter {
           );
         }
       } else {
-        double upperStartX = size.width * 0.8;
+        double upperStartX = cycles == 0
+            ? size.width - (size.width / (upperRowCount + 1))
+            : size.width * 0.8;
         double upperStartY = roundHeight;
 
         double upperEndX = size.width * 0.2;
@@ -514,7 +508,9 @@ class PathLine extends CustomPainter {
       }
     } else {
       if (lastCycleLevelCount == 1) {
-        startX = size.width * 0.8;
+        startX = cycles != 0
+            ? size.width * 0.8
+            : size.width - (size.width / (upperRowCount + 1));
         startY = centerY + size.height / 2;
 
         endX = size.width - (size.width / (upperRowCount + 1));
@@ -533,7 +529,9 @@ class PathLine extends CustomPainter {
           );
         }
       } else if (lastCycleLevelCount <= upperRowCount) {
-        startX = size.width * 0.8;
+        startX = cycles != 0
+            ? size.width * 0.8
+            : size.width - (size.width / (upperRowCount + 1));
         startY = centerY + size.height / 2;
 
         endX = size.width -
@@ -563,7 +561,9 @@ class PathLine extends CustomPainter {
           );
         }
       } else if (lastCycleLevelCount == upperRowCount + 1) {
-        startX = size.width * 0.8;
+        startX = cycles != 0
+            ? size.width * 0.8
+            : size.width - (size.width / (upperRowCount + 1));
         startY = centerY + size.height / 2;
 
         endX = size.width * 0.2;
@@ -608,7 +608,9 @@ class PathLine extends CustomPainter {
           );
         }
       } else {
-        startX = size.width * 0.8;
+        startX = cycles != 0
+            ? size.width * 0.8
+            : size.width - (size.width / (upperRowCount + 1));
         startY = centerY + size.height / 2;
 
         endX = size.width * 0.2;

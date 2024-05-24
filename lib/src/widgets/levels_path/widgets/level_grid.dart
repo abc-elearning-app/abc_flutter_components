@@ -1,32 +1,29 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/levels_path/updated_path_level_screen.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/levels_path/updated_widgets/updated_path_animation.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/levels_path/path_level_screen.dart';
 
-import 'updated_level_widget.dart';
+import 'level_widget.dart';
+import 'path_animation.dart';
 
-class UpdatedLevelGrid extends StatelessWidget {
+class LevelGrid extends StatelessWidget {
   final DrawType drawType;
   final int longRowCount;
   final int shortRowCount;
   final bool isFirstTimeOpen;
+  final Duration drawSpeed;
   final List<UpdatedLevelData> levelDataList;
 
-  const UpdatedLevelGrid({
-    super.key,
-    required this.drawType,
-    required this.isFirstTimeOpen,
-    required this.levelDataList,
-    required this.longRowCount,
-    required this.shortRowCount,
-  });
+  const LevelGrid(
+      {super.key,
+      required this.drawType,
+      required this.isFirstTimeOpen,
+      required this.levelDataList,
+      required this.longRowCount,
+      required this.shortRowCount,
+      required this.drawSpeed});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: _buildLevelWidgets(),
-    );
+    return Center(child: _buildLevelWidgets());
   }
 
   Widget _buildLevelWidgets() {
@@ -38,13 +35,17 @@ class UpdatedLevelGrid extends StatelessWidget {
       int rowCount = row.length % 2 == 0 ? longRowCount : shortRowCount;
       for (int j = 0; j < rowCount; j++) {
         final level = i < levelDataList.length
-            ? UpdatedLevel(
+            ? LevelWidget(
                 index: i,
+                title: levelDataList[i].title,
                 isFirstTimeOpen: isFirstTimeOpen,
                 isFreeToday: levelDataList[i].isFreeToday,
                 isLock: levelDataList[i].isLock,
                 progress: levelDataList[i].progress,
                 isCurrent: levelDataList[i].isCurrent,
+                isFinal: i == levelDataList.length - 1 && j == rowCount - 1,
+                drawType: drawType,
+                drawSpeed: drawSpeed,
               )
             : const PlaceholderLevel();
         levelsInARow.add(level);

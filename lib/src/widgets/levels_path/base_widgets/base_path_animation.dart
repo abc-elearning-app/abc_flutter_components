@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-class DefaultPathAnimation extends StatefulWidget {
+class BasePathAnimation extends StatefulWidget {
   final int longRowCount;
   final int shortRowCount;
   final int lastRoundLevelCount;
@@ -13,7 +13,7 @@ class DefaultPathAnimation extends StatefulWidget {
   final Duration roundDrawSpeed;
   final Duration lastRoundDrawSpeed;
 
-  const DefaultPathAnimation(
+  const BasePathAnimation(
       {super.key,
       required this.rounds,
       required this.lastRoundLevelCount,
@@ -25,10 +25,10 @@ class DefaultPathAnimation extends StatefulWidget {
       this.isFirstTimeOpen = true});
 
   @override
-  _DefaultPathAnimationState createState() => _DefaultPathAnimationState();
+  _BasePathAnimationState createState() => _BasePathAnimationState();
 }
 
-class _DefaultPathAnimationState extends State<DefaultPathAnimation>
+class _BasePathAnimationState extends State<BasePathAnimation>
     with TickerProviderStateMixin {
   List<AnimationController> lineControllers = [];
   List<AnimationController> curveControllers = [];

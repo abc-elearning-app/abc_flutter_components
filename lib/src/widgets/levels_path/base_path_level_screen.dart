@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/levels_path/default_widgets/default_path_animation.dart';
 
-import 'default_widgets/default_level_grid.dart';
+import 'base_widgets/base_level_grid.dart';
+import 'base_widgets/base_path_animation.dart';
 
 class DefaultLevelData {
   double progress;
@@ -93,7 +93,7 @@ class _NewPathLevelScreenState extends State<NewPathLevelScreen> {
                 child: Transform.scale(
                   scale: 0.9,
                   child: Stack(children: [
-                    DefaultPathAnimation(
+                    BasePathAnimation(
                       roundDrawSpeed: roundDrawSpeed,
                       lastRoundDrawSpeed: lastRoundDrawSpeed,
                       longRowCount: longRowCount,
@@ -108,7 +108,7 @@ class _NewPathLevelScreenState extends State<NewPathLevelScreen> {
                           Duration(milliseconds: isFirstTimeOpen ? 500 : 0)),
                       builder: (context, snapShot) =>
                           snapShot.connectionState == ConnectionState.done
-                              ? DefaultPathAnimation(
+                              ? BasePathAnimation(
                                   roundDrawSpeed: roundDrawSpeed,
                                   lastRoundDrawSpeed: lastRoundDrawSpeed,
                                   longRowCount: longRowCount,
@@ -119,7 +119,7 @@ class _NewPathLevelScreenState extends State<NewPathLevelScreen> {
                                 )
                               : const SizedBox(),
                     ),
-                    DefaultLevelGrid(
+                    BaseLevelGrid(
                         isFirstTimeOpen: isFirstTimeOpen,
                         longRowCount: longRowCount,
                         shortRowCount: shortRowCount,

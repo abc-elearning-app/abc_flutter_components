@@ -2,16 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../default_path_level_screen.dart';
-import 'default_level_widget.dart';
+import '../base_path_level_screen.dart';
+import 'base_level_widget.dart';
 
-class DefaultLevelGrid extends StatelessWidget {
+class BaseLevelGrid extends StatelessWidget {
   final int longRowCount;
   final int shortRowCount;
   final bool isFirstTimeOpen;
   final List<DefaultLevelData> levelDataList;
 
-  const DefaultLevelGrid({
+  const BaseLevelGrid({
     super.key,
     required this.isFirstTimeOpen,
     required this.levelDataList,
@@ -35,7 +35,7 @@ class DefaultLevelGrid extends StatelessWidget {
       int rowCount = row.length % 2 == 0 ? longRowCount : shortRowCount;
       for (int j = 0; j < rowCount; j++) {
         final level = i < levelDataList.length
-            ? DefaultLevel(
+            ? BaseLevelWidget(
                 index: i,
                 isFirstTimeOpen: isFirstTimeOpen,
                 isFreeToday: levelDataList[i].isFreeToday,
