@@ -1,34 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'path_animation.dart';
-
 class LevelWidget extends StatefulWidget {
-  final String title;
-  final bool isCurrent;
   final int index;
-  final double progress;
-  final bool isLock;
-  final bool isFreeToday;
+  final LevelData levelData;
   final bool isPlaceholder;
-  final bool isFirstTimeOpen;
   final bool isFinal;
   final DrawType drawType;
   final Duration drawSpeed;
+  final Color startColor;
+  final String finalLevelImage;
 
   const LevelWidget(
       {super.key,
+      required this.levelData,
       this.isPlaceholder = false,
-      required this.title,
-      required this.progress,
-      required this.isCurrent,
-      required this.index,
-      required this.isLock,
-      required this.isFreeToday,
-      required this.isFirstTimeOpen,
       required this.isFinal,
       required this.drawType,
-      required this.drawSpeed});
+      required this.drawSpeed,
+      required this.index,
+      required this.startColor,
+      required this.finalLevelImage});
 
   @override
   State<LevelWidget> createState() => _LevelWidgetState();
@@ -36,100 +29,111 @@ class LevelWidget extends StatefulWidget {
 
 class _LevelWidgetState extends State<LevelWidget>
     with TickerProviderStateMixin {
-  late AnimationController _controller;
+  // Controllers
+  late AnimationController _appearanceController;
+  late AnimationController _splashController;
+  late AnimationController _tooltipController;
+
+  // Animations
+  late Animation<double> _tooltipAnimation;
   late Animation<double> _fadingInAnimation;
   late Animation<double> _landingAnimation;
   late Animation<double> _bouncingAnimation;
 
-  late AnimationController _splashController;
-
   @override
   void initState() {
-    _init();
+    _initAnimation();
     _startAnimation();
     super.initState();
   }
 
-  _init() {
-    // Initialize controller and animations (if exist)
-    if (widget.drawType != DrawType.noAnimation) {
-      _controller = AnimationController(
-        vsync: this,
-        duration: const Duration(milliseconds: 300),
-      );
+  _initAnimation() {
+    /// Animations when appear
+    _appearanceController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
 
-      // Fading and bouncing animation on first time open
-      if (widget.drawType == DrawType.firstTimeOpen) {
-        _fadingInAnimation = Tween<double>(begin: 0, end: 1).animate(
-          CurvedAnimation(
-            parent: _controller,
-            curve: Curves.easeInOut,
-          ),
-        );
-
-        // Offset y 20 is default to match the line
-        _landingAnimation = Tween<double>(begin: -25, end: 0).animate(
-          CurvedAnimation(
-            parent: _controller,
-            curve: Curves.easeInOut,
-          ),
-        );
-      } else {
-        // Bounce animation of next level
-        _bouncingAnimation = Tween<double>(
-          begin: 0,
-          end: -20,
-        ).animate(
-          CurvedAnimation(
-            parent: _controller,
-            curve: Curves.bounceIn,
-          ),
-        );
-      }
+    if (widget.drawType == DrawType.nextLevel) {
+      _appearanceController.addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          _appearanceController.reverse();
+        }
+      });
     }
 
-    // Splash controller for current level
+    _fadingInAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _appearanceController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _landingAnimation = Tween<double>(begin: -25, end: 0).animate(
+      CurvedAnimation(
+        parent: _appearanceController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _bouncingAnimation = Tween<double>(
+      begin: 0,
+      end: -20,
+    ).animate(
+      CurvedAnimation(
+        parent: _appearanceController,
+        curve: Curves.bounceIn,
+      ),
+    );
+
+    /// Animations on current level
     _splashController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
     );
+
+    _splashController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _splashController.forward(from: 0);
+      }
+    });
+
+    _tooltipController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
+
+    _tooltipAnimation =
+        Tween<double>(begin: -40, end: -30).animate(_tooltipController);
+
+    _tooltipController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _tooltipController.reverse();
+      } else if (status == AnimationStatus.dismissed) {
+        _tooltipController.forward();
+      }
+    });
   }
 
   _startAnimation() {
-    // Delay appearance of level widgets
+    /// Start appearance animation
     final delayTime = widget.index * widget.drawSpeed.inMilliseconds;
-
-    // Start animation
     switch (widget.drawType) {
       case DrawType.firstTimeOpen:
-        Future.delayed(
-            Duration(milliseconds: delayTime), () => _controller.forward());
+        Future.delayed(Duration(milliseconds: delayTime),
+            () => _appearanceController.forward());
         break;
       case DrawType.nextLevel:
-        if (widget.isCurrent) {
-          _controller.addStatusListener((status) {
-            if (status == AnimationStatus.completed) {
-              _controller.reverse();
-            }
-          });
-
+        if (widget.levelData.isCurrent) {
           Future.delayed(
               Duration(milliseconds: widget.drawSpeed.inMilliseconds + 900),
-              () => _controller.forward());
+              () => _appearanceController.forward());
         }
         break;
       case DrawType.noAnimation:
         break;
     }
 
-    // Start splash animation
-    if (widget.isCurrent) {
-      _splashController.addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          _splashController.forward(from: 0);
-        }
-      });
-
+    /// Start current level animation
+    if (widget.levelData.isCurrent) {
       Future.delayed(
           Duration(
               milliseconds: widget.drawType != DrawType.noAnimation
@@ -137,12 +141,18 @@ class _LevelWidgetState extends State<LevelWidget>
                   : 0),
           () => _splashController.forward());
     }
+
+    // Start tooltip animation
+    if (widget.index == 0 && widget.levelData.progress == 0) {
+      _tooltipController.forward();
+    }
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _appearanceController.dispose();
     _splashController.dispose();
+    _tooltipController.dispose();
     super.dispose();
   }
 
@@ -151,66 +161,52 @@ class _LevelWidgetState extends State<LevelWidget>
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Splash animation
-        if (widget.isCurrent)
-          CustomPaint(
-              size: const Size(20, 20),
-              painter: SplashCirclePainter(animation: _splashController)),
+        // Splash animation or tooltip animation
+        if (widget.levelData.isCurrent)
+          widget.index == 0 && widget.levelData.progress == 0
+              ? _buildTooltip()
+              : CustomPaint(
+                  size: const Size(20, 20),
+                  painter: SplashCirclePainter(animation: _splashController)),
 
         // Level
-        _levelWidget()
+        AnimatedBuilder(
+            animation: _appearanceController,
+            builder: (_, __) => Opacity(
+                  opacity: _getOpacityValue(),
+                  child: Transform.translate(
+                      offset: Offset(0, _getTranslateValue()),
+                      child: Stack(alignment: Alignment.topCenter, children: [
+                        Transform.translate(
+                          offset: const Offset(0, 18),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              // Regular level or final cup
+                              widget.isFinal ? _finalLevel() : _mainLevel(),
+
+                              // Title
+                              Text(
+                                widget.levelData.title,
+                                style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              )
+                            ],
+                          ),
+                        ),
+                      ])),
+                ))
       ],
     );
   }
 
-  _levelWidget() {
-    switch (widget.drawType) {
-      case DrawType.firstTimeOpen:
-        return AnimatedBuilder(
-            animation: _controller,
-            builder: (_, __) => Opacity(
-                opacity: _fadingInAnimation.value,
-                child: Transform.translate(
-                    offset: Offset(0, _landingAnimation.value),
-                    child: _buildLevelWidget())));
-      case DrawType.nextLevel:
-        return widget.isCurrent
-            ? AnimatedBuilder(
-                animation: _bouncingAnimation,
-                builder: (_, __) => Transform.translate(
-                    offset: Offset(0, _bouncingAnimation.value),
-                    child: _buildLevelWidget()),
-              )
-            : _buildLevelWidget();
-      default:
-        return _buildLevelWidget();
-    }
-  }
-
-  Widget _buildLevelWidget() => Transform.translate(
-        offset: const Offset(0, 15),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            widget.isFinal ? _finalLevel() : _regularLevel(),
-
-            // Title
-            Text(
-              widget.title,
-              style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500),
-            )
-          ],
-        ),
-      );
-
-  Widget _regularLevel() => Stack(
+  Widget _mainLevel() => Stack(
         alignment: Alignment.topRight,
         children: [
           CircleAvatar(
-            radius: 45,
+            radius: 42,
             backgroundColor: _getMainColor().withOpacity(0.2),
             child: CircleAvatar(
               radius: 35,
@@ -219,7 +215,7 @@ class _LevelWidgetState extends State<LevelWidget>
                 radius: 30,
                 backgroundColor: _getMainColor(),
                 child: SvgPicture.asset(
-                  'assets/images/topic_icon_${widget.index % 3}.svg',
+                  widget.levelData.icon,
                   colorFilter:
                       ColorFilter.mode(_getIconColor(), BlendMode.srcIn),
                 ),
@@ -228,7 +224,7 @@ class _LevelWidgetState extends State<LevelWidget>
           ),
 
           // Lock icon if locked
-          if (widget.isLock)
+          if (widget.levelData.isLock)
             Transform.translate(
                 offset: const Offset(-5, 5),
                 child: const Icon(Icons.lock, color: Colors.grey))
@@ -236,17 +232,56 @@ class _LevelWidgetState extends State<LevelWidget>
       );
 
   Widget _finalLevel() => Padding(
-        padding: const EdgeInsets.only(bottom: 15),
-        child: Image.asset(
-          'assets/images/final_cup.png',
-          scale: 0.8,
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Image.asset(widget.finalLevelImage, scale: 0.8));
+
+  Widget _buildTooltip() => AnimatedBuilder(
+        animation: _tooltipAnimation,
+        builder: (_, __) => Transform.translate(
+          offset: Offset(0, _tooltipAnimation.value),
+          child: Column(
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                decoration: BoxDecoration(
+                    color: widget.startColor,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey.shade300,
+                          blurRadius: 5,
+                          spreadRadius: 2,
+                          offset: const Offset(2, 2))
+                    ]),
+                child: const Text('Jump Here',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    )),
+              ),
+              CustomPaint(
+                size: const Size(20, 20),
+                painter: DownwardTrianglePainter(widget.startColor),
+              )
+            ],
+          ),
         ),
       );
 
+  _getOpacityValue() => widget.drawType == DrawType.firstTimeOpen
+      ? _fadingInAnimation.value
+      : 1.0;
+
+  _getTranslateValue() => widget.drawType == DrawType.firstTimeOpen
+      ? _landingAnimation.value
+      : _bouncingAnimation.value;
+
   _getMainColor() {
-    if (widget.isLock) return const Color(0xFFF3F2F2);
-    if (widget.isCurrent) {
-      if (widget.progress > 0 && widget.progress < 20) {
+    if (widget.levelData.isLock) return const Color(0xFFF3F2F2);
+    if (widget.levelData.isCurrent) {
+      if (widget.levelData.progress > 0 && widget.levelData.progress < 20) {
         return const Color(0xFFFC5656);
       }
       return const Color(0xFFE3A651);
@@ -254,7 +289,7 @@ class _LevelWidgetState extends State<LevelWidget>
     return const Color(0xFF3CC079);
   }
 
-  _getIconColor() => widget.isLock ? Colors.grey : Colors.white;
+  _getIconColor() => widget.levelData.isLock ? Colors.grey : Colors.white;
 }
 
 class PlaceholderLevel extends StatelessWidget {
@@ -294,5 +329,32 @@ class SplashCirclePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
+  }
+}
+
+class DownwardTrianglePainter extends CustomPainter {
+  final Color mainColor;
+
+  DownwardTrianglePainter(this.mainColor);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = mainColor
+      ..style = PaintingStyle.fill;
+
+    final path = Path()
+      ..moveTo(size.width / 2, size.height / 3) // Bottom center
+      ..lineTo(0, 0) // Top left
+      ..lineTo(size.width, 0) // Top right
+      ..close();
+
+    // Draw the triangle
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }

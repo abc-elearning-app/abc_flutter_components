@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/levels_path/path_level_screen.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/levels_path/path_level.dart';
 
 import 'level_widget.dart';
 import 'path_animation.dart';
@@ -8,18 +8,20 @@ class LevelGrid extends StatelessWidget {
   final DrawType drawType;
   final int longRowCount;
   final int shortRowCount;
-  final bool isFirstTimeOpen;
   final Duration drawSpeed;
-  final List<UpdatedLevelData> levelDataList;
+  final List<LevelData> levelDataList;
+  final Color startColor;
+  final String finalLevelImage;
 
-  const LevelGrid(
-      {super.key,
-      required this.drawType,
-      required this.isFirstTimeOpen,
-      required this.levelDataList,
-      required this.longRowCount,
-      required this.shortRowCount,
-      required this.drawSpeed});
+  const LevelGrid({
+    super.key,
+    required this.drawType,
+    required this.levelDataList,
+    required this.longRowCount,
+    required this.shortRowCount,
+    required this.drawSpeed,
+    required this.startColor, required this.finalLevelImage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,15 +39,12 @@ class LevelGrid extends StatelessWidget {
         final level = i < levelDataList.length
             ? LevelWidget(
                 index: i,
-                title: levelDataList[i].title,
-                isFirstTimeOpen: isFirstTimeOpen,
-                isFreeToday: levelDataList[i].isFreeToday,
-                isLock: levelDataList[i].isLock,
-                progress: levelDataList[i].progress,
-                isCurrent: levelDataList[i].isCurrent,
-                isFinal: i == levelDataList.length - 1 && j == rowCount - 1,
+                levelData: levelDataList[i],
+                finalLevelImage: finalLevelImage,
+                isFinal: i == levelDataList.length - 1,
                 drawType: drawType,
                 drawSpeed: drawSpeed,
+                startColor: startColor,
               )
             : const PlaceholderLevel();
         levelsInARow.add(level);

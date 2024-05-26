@@ -1,134 +1,133 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/level_grid.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/path_animation.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/start_image.dart';
 
-class UpdatedLevelData {
-  String title;
-  double progress;
-  bool isFreeToday;
-  bool isLock;
-  bool isCurrent;
+import '../../../flutter_abc_jsc_components.dart';
 
-  UpdatedLevelData(
-      {required this.title,
-      required this.progress,
-      this.isCurrent = false,
-      this.isLock = true,
-      this.isFreeToday = false});
-}
-
-class UpdatedPathLevelScreen extends StatefulWidget {
-  final List<UpdatedLevelData> levelList;
+class LevelGroup {
+  final String title;
+  final String startImage;
+  final Color startColor;
+  final List<LevelData> levels;
   final DrawType drawType;
 
-  // Arrangement
-  final int upperRowCount;
-  final int lowerRowCount;
+  LevelGroup(
+      this.title, this.startImage, this.startColor, this.drawType, this.levels);
+}
 
-  // Draw speed
-  final Duration cycleSpeed;
-  final Duration lastCycleSpeed;
+class PathLevelScreen extends StatefulWidget {
+  final List<LevelGroup> levelGroupList;
+  final String backgroundImage;
+  final String finalLevelImage;
+  final Color backgroundColor;
 
-  // Colors
-  final Color mainColor;
-  final Color passColor;
-  final Color failColor;
-  final Color lockColor;
-
-  final String startImage;
-
-  const UpdatedPathLevelScreen({
+  const PathLevelScreen({
     super.key,
-    required this.levelList,
-    required this.drawType,
-    this.upperRowCount = 1,
-    this.lowerRowCount = 2,
-    this.mainColor = const Color(0xFFE3A651),
-    this.passColor = const Color(0xFF3CC079),
-    this.failColor = const Color(0xFFFC5656),
-    this.lockColor = const Color(0xFFF3F2F2),
-    this.cycleSpeed = const Duration(milliseconds: 250),
-    this.lastCycleSpeed = const Duration(milliseconds: 150),
-    this.startImage = 'assets/images/path_start.png',
+    this.backgroundImage = 'assets/images/path_level_background.png',
+    this.finalLevelImage = 'assets/images/final_cup.png',
+    this.backgroundColor = const Color(0xFFF5F4EE),
+    required this.levelGroupList,
   });
 
   @override
-  State<UpdatedPathLevelScreen> createState() => _UpdatedPathLevelScreenState();
+  State<PathLevelScreen> createState() => _PathLevelScreenState();
 }
 
-class _UpdatedPathLevelScreenState extends State<UpdatedPathLevelScreen> {
-  late int totalCycleCount;
-  late int currentCycleCount;
-  late int lastCycleTotalCount;
-  late int lastCycleLevelCount;
+class _PathLevelScreenState extends State<PathLevelScreen> {
+  late ScrollController _scrollController;
+  late ValueNotifier<double> _backgroundOffset;
 
   @override
   void initState() {
-    _calculateData();
+    _scrollController = ScrollController();
+    _backgroundOffset = ValueNotifier<double>(0);
+
+    _scrollController.addListener(
+        () => _backgroundOffset.value = _scrollController.offset / 15);
+
     super.initState();
   }
 
-  _calculateData() {
-    final upperRowCount = widget.upperRowCount;
-    final lowerRowCount = widget.lowerRowCount;
-    final groupCount = upperRowCount + lowerRowCount;
-
-    final totalLength = widget.levelList.length;
-    totalCycleCount = totalLength > groupCount
-        ? totalLength ~/ groupCount - (totalLength % groupCount == 0 ? 1 : 0)
-        : 0;
-
-    final currentLength =
-        widget.levelList.indexWhere((level) => level.isCurrent) + 1;
-    currentCycleCount = currentLength > groupCount
-        ? currentLength ~/ groupCount -
-            (currentLength % groupCount == 0 ? 1 : 0)
-        : 0;
-
-    lastCycleTotalCount = totalLength - totalCycleCount * groupCount;
-    lastCycleLevelCount = currentLength - currentCycleCount * groupCount;
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _backgroundOffset.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      // Start image
-      PathStartImage(drawType: widget.drawType, imagePath: widget.startImage),
-
-      PathAnimation(
-          drawType: widget.drawType == DrawType.nextLevel
-              ? DrawType.noAnimation
-              : widget.drawType,
-          roundDrawSpeed: widget.cycleSpeed,
-          lastRoundDrawSpeed: widget.lastCycleSpeed,
-          upperRowCount: widget.upperRowCount,
-          lowerRoundCount: widget.lowerRowCount,
-          rounds: totalCycleCount,
-          lastCycleLevelCount: lastCycleTotalCount,
-          lineColor: const Color(0xFFF3EADA)),
-      FutureBuilder(
-        future: Future.delayed(Duration(
-            milliseconds: widget.drawType == DrawType.firstTimeOpen ? 500 : 0)),
-        builder: (context, snapShot) =>
-            snapShot.connectionState == ConnectionState.done
-                ? PathAnimation(
-                    drawType: widget.drawType,
-                    roundDrawSpeed: widget.cycleSpeed,
-                    lastRoundDrawSpeed: widget.lastCycleSpeed,
-                    upperRowCount: widget.upperRowCount,
-                    lowerRoundCount: widget.lowerRowCount,
-                    rounds: currentCycleCount,
-                    lastCycleLevelCount: lastCycleLevelCount)
-                : const SizedBox(),
+    return Container(
+      decoration: BoxDecoration(color: widget.backgroundColor),
+      child: Stack(
+        children: [
+          ValueListenableBuilder(
+              valueListenable: _backgroundOffset,
+              builder: (_, value, __) => Transform.translate(
+                  offset: Offset(0, -value),
+                  child: Container(
+                      height: 300,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage(widget.backgroundImage),
+                              fit: BoxFit.fitWidth))))),
+          Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                scrolledUnderElevation: 0,
+              ),
+              body: SafeArea(
+                  child: ListView.builder(
+                      controller: _scrollController,
+                      shrinkWrap: true,
+                      itemCount: widget.levelGroupList.length,
+                      itemBuilder: (_, index) => _buildGroup(index)))),
+        ],
       ),
-      LevelGrid(
-          drawType: widget.drawType,
-          drawSpeed: widget.cycleSpeed,
-          longRowCount: widget.upperRowCount,
-          shortRowCount: widget.lowerRowCount,
-          levelDataList: widget.levelList,
-          isFirstTimeOpen: true),
-    ]);
+    );
   }
+
+  Widget _buildGroup(int index) {
+    final currentGroup = widget.levelGroupList[index];
+    return Column(
+      children: [
+        _buildDivider(currentGroup.title),
+        PathLevel(
+          finalLevelImage: widget.finalLevelImage,
+          startColor: currentGroup.startColor,
+          startImage: currentGroup.startImage,
+          levelList: currentGroup.levels,
+          drawType: currentGroup.drawType,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDivider(String title) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+                child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              width: double.infinity,
+              height: 1,
+              color: Colors.grey.shade400,
+            )),
+            Text(title,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade400,
+                    fontFamily: 'Poppins',
+                    fontSize: 18)),
+            Expanded(
+                child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              width: double.infinity,
+              height: 1,
+              color: Colors.grey.shade400,
+            )),
+          ],
+        ),
+      );
 }
