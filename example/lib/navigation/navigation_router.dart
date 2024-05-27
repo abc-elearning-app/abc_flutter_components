@@ -23,6 +23,7 @@ import 'package:example/screens/new_components/personal_plan_chart.dart';
 import 'package:example/screens/new_components/personal_plan_ready.dart';
 import 'package:example/screens/new_components/practice_test_grid.dart';
 import 'package:example/screens/new_components/pro_purchase_screen.dart';
+import 'package:example/screens/settings_screen/setting_screen.dart';
 import 'package:example/screens/sliders_screen/sliders_screen.dart';
 import 'package:example/screens/tab_views_screen/tab_views_screen.dart';
 import 'package:example/screens/texts_screen/texts_screen.dart';
@@ -183,6 +184,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
           routeName: routeName,
           viewToShow: const TestPersonalPlanChart());
+    case AppRoute.settingsScreen:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestSettingScreen());
     default:
       return MaterialPageRoute(
         builder: (_) => Scaffold(

@@ -13,7 +13,7 @@ class PathAnimation extends StatefulWidget {
   final int lastCycleLevelCount;
   final int rounds;
   final Duration roundDrawSpeed;
-  final Duration lastRoundDrawSpeed;
+  final Duration lastCycleDrawSpeed;
 
   const PathAnimation(
       {super.key,
@@ -23,7 +23,7 @@ class PathAnimation extends StatefulWidget {
       required this.upperRowCount,
       required this.lowerRoundCount,
       required this.roundDrawSpeed,
-      required this.lastRoundDrawSpeed,
+      required this.lastCycleDrawSpeed,
       this.lineColor = const Color(0xFFE3A651)});
 
   @override
@@ -70,13 +70,13 @@ class _PathAnimationState extends State<PathAnimation>
 
     // Controller for upper row
     lastRoundLineControllers.add(
-        AnimationController(vsync: this, duration: widget.lastRoundDrawSpeed));
+        AnimationController(vsync: this, duration: widget.lastCycleDrawSpeed));
 
     // If there exist lower row
     if (widget.lastCycleLevelCount > widget.upperRowCount) {
       // Lower row controller
       lastRoundLineControllers.add(AnimationController(
-          vsync: this, duration: widget.lastRoundDrawSpeed));
+          vsync: this, duration: widget.lastCycleDrawSpeed));
     }
 
     // Connect last cycle controllers
@@ -278,7 +278,7 @@ class PathLine extends CustomPainter {
     double radius = size.height / 2;
     double roundHeight = size.height / 2;
 
-    // Start drawing cycles
+    /// Draw complete cycles
     for (int i = 1; i <= cycles; i++) {
       // First Line (1st line of 1st cycle if different)
       startX = i == 1

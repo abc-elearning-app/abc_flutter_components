@@ -10,8 +10,13 @@ class LevelGrid extends StatelessWidget {
   final int shortRowCount;
   final Duration drawSpeed;
   final List<LevelData> levelDataList;
-  final Color startColor;
   final String finalLevelImage;
+  final bool isFirstGroup;
+
+  final Color mainColor;
+  final Color passColor;
+  final Color lockColor;
+  final Color startColor;
 
   const LevelGrid({
     super.key,
@@ -20,7 +25,12 @@ class LevelGrid extends StatelessWidget {
     required this.longRowCount,
     required this.shortRowCount,
     required this.drawSpeed,
-    required this.startColor, required this.finalLevelImage,
+    required this.startColor,
+    required this.finalLevelImage,
+    required this.isFirstGroup,
+    required this.mainColor,
+    required this.passColor,
+    required this.lockColor,
   });
 
   @override
@@ -45,7 +55,10 @@ class LevelGrid extends StatelessWidget {
                 drawType: drawType,
                 drawSpeed: drawSpeed,
                 startColor: startColor,
-              )
+                isFirstGroup: isFirstGroup,
+                lockColor: lockColor,
+                passColor: passColor,
+                mainColor: mainColor)
             : const PlaceholderLevel();
         levelsInARow.add(level);
         i++;

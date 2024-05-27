@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/progress/custom_linear_progress.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class PassingProbabilityBox extends StatelessWidget {
   final int dayStreak;
@@ -53,26 +53,11 @@ class PassingProbabilityBox extends StatelessWidget {
                 const SizedBox(height: 5),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: LinearPercentIndicator(
-                    padding: EdgeInsets.zero,
-                    lineHeight: 10,
-                    animation: true,
-                    barRadius: const Radius.circular(15),
+                  child: CustomLinearProgress(
+                    mainColor: mainColor,
                     backgroundColor: Colors.white,
-                    progressColor: mainColor,
-                    percent: passingProbability / 100,
-                    widgetIndicator: Transform.translate(
-                        offset: const Offset(-15, 0),
-                        child: Transform.scale(
-                            scale: 0.6,
-                            child: CircleAvatar(
-                              radius: 10,
-                              backgroundColor: mainColor,
-                              child: const CircleAvatar(
-                                radius: 8,
-                                backgroundColor: Colors.white,
-                              ),
-                            ))),
+                    percent: passingProbability,
+                    indicatorColor: Colors.white,
                   ),
                 )
               ],

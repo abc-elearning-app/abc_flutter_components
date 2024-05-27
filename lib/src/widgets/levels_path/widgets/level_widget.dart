@@ -9,8 +9,13 @@ class LevelWidget extends StatefulWidget {
   final bool isFinal;
   final DrawType drawType;
   final Duration drawSpeed;
-  final Color startColor;
   final String finalLevelImage;
+  final bool isFirstGroup;
+
+  final Color startColor;
+  final Color passColor;
+  final Color mainColor;
+  final Color lockColor;
 
   const LevelWidget(
       {super.key,
@@ -21,7 +26,11 @@ class LevelWidget extends StatefulWidget {
       required this.drawSpeed,
       required this.index,
       required this.startColor,
-      required this.finalLevelImage});
+      required this.finalLevelImage,
+      required this.isFirstGroup,
+      required this.passColor,
+      required this.mainColor,
+      required this.lockColor});
 
   @override
   State<LevelWidget> createState() => _LevelWidgetState();
@@ -241,30 +250,29 @@ class _LevelWidgetState extends State<LevelWidget>
           offset: Offset(0, _tooltipAnimation.value),
           child: Column(
             children: [
+              // Tooltip is a rectangle with a triangle below
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                decoration: BoxDecoration(
-                    color: widget.startColor,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.grey.shade300,
-                          blurRadius: 5,
-                          spreadRadius: 2,
-                          offset: const Offset(2, 2))
-                    ]),
-                child: const Text('Jump Here',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    )),
-              ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  decoration: BoxDecoration(
+                      color: widget.startColor,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey.shade300,
+                            blurRadius: 5,
+                            spreadRadius: 2,
+                            offset: const Offset(2, 2))
+                      ]),
+                  child: Text(widget.isFirstGroup ? 'Start' : 'Jump Here',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ))),
               CustomPaint(
-                size: const Size(20, 20),
-                painter: DownwardTrianglePainter(widget.startColor),
-              )
+                  size: const Size(20, 20),
+                  painter: DownwardTrianglePainter(widget.startColor))
             ],
           ),
         ),
@@ -279,14 +287,15 @@ class _LevelWidgetState extends State<LevelWidget>
       : _bouncingAnimation.value;
 
   _getMainColor() {
-    if (widget.levelData.isLock) return const Color(0xFFF3F2F2);
-    if (widget.levelData.isCurrent) {
-      if (widget.levelData.progress > 0 && widget.levelData.progress < 20) {
-        return const Color(0xFFFC5656);
-      }
-      return const Color(0xFFE3A651);
+    if (widget.levelData.isLock) return widget.lockColor;
+
+    if (widget.index == 0 && widget.levelData.progress == 0) {
+      return widget.startColor;
     }
-    return const Color(0xFF3CC079);
+
+    if (widget.levelData.isCurrent) return widget.mainColor;
+
+    return widget.passColor;
   }
 
   _getIconColor() => widget.levelData.isLock ? Colors.grey : Colors.white;

@@ -4,6 +4,7 @@ import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/path_
 import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/start_image.dart';
 
 class LevelData {
+  String id;
   String title;
   double progress;
   bool isFreeToday;
@@ -12,7 +13,8 @@ class LevelData {
   String icon;
 
   LevelData(
-      {required this.title,
+      {required this.id,
+      required this.title,
       required this.progress,
       this.icon = 'assets/images/topic_icon_0.svg',
       this.isCurrent = false,
@@ -35,29 +37,34 @@ class PathLevel extends StatefulWidget {
   // Colors
   final Color mainColor;
   final Color passColor;
-  final Color failColor;
   final Color lockColor;
   final Color startColor;
+  final Color lineColor;
+  final Color lineBackgroundColor;
 
   // Images
   final String startImage;
   final String finalLevelImage;
 
+  final bool isFirstGroup;
+
   const PathLevel({
     super.key,
     required this.levelList,
     required this.drawType,
-    this.upperRowCount = 1,
-    this.lowerRowCount = 2,
-    this.mainColor = const Color(0xFFE3A651),
-    this.passColor = const Color(0xFF3CC079),
-    this.failColor = const Color(0xFFFC5656),
-    this.lockColor = const Color(0xFFF3F2F2),
-    this.cycleSpeed = const Duration(milliseconds: 250),
-    this.lastCycleSpeed = const Duration(milliseconds: 150),
-    this.startImage = 'assets/images/path_start.png',
+    required this.upperRowCount,
+    required this.lowerRowCount,
+    required this.cycleSpeed,
+    required this.lastCycleSpeed,
+    required this.startImage,
     required this.startColor,
     required this.finalLevelImage,
+    required this.isFirstGroup,
+    required this.mainColor,
+    required this.passColor,
+    required this.lockColor,
+    required this.lineColor,
+    required this.lineBackgroundColor,
   });
 
   @override
@@ -68,7 +75,7 @@ class _PathLevelState extends State<PathLevel> {
   late int totalCycleCount;
   late int currentCycleCount;
   late int lastCycleTotalCount;
-  late int lastCycleLevelCount;
+  late int lastCycleCurrentCount;
 
   @override
   void initState() {
@@ -94,7 +101,7 @@ class _PathLevelState extends State<PathLevel> {
         : 0;
 
     lastCycleTotalCount = totalLength - totalCycleCount * groupCount;
-    lastCycleLevelCount = currentLength - currentCycleCount * groupCount;
+    lastCycleCurrentCount = currentLength - currentCycleCount * groupCount;
   }
 
   @override
@@ -108,27 +115,30 @@ class _PathLevelState extends State<PathLevel> {
               ? DrawType.noAnimation
               : widget.drawType,
           roundDrawSpeed: widget.cycleSpeed,
-          lastRoundDrawSpeed: widget.lastCycleSpeed,
+          lastCycleDrawSpeed: widget.lastCycleSpeed,
           upperRowCount: widget.upperRowCount,
           lowerRoundCount: widget.lowerRowCount,
           rounds: totalCycleCount,
           lastCycleLevelCount: lastCycleTotalCount,
-          lineColor: const Color(0xFFF3EADA)),
+          lineColor: widget.lineBackgroundColor),
+
       FutureBuilder(
-        future: Future.delayed(Duration(
-            milliseconds: widget.drawType == DrawType.firstTimeOpen ? 500 : 0)),
-        builder: (context, snapShot) =>
-            snapShot.connectionState == ConnectionState.done
-                ? PathAnimation(
-                    drawType: widget.drawType,
-                    roundDrawSpeed: widget.cycleSpeed,
-                    lastRoundDrawSpeed: widget.lastCycleSpeed,
-                    upperRowCount: widget.upperRowCount,
-                    lowerRoundCount: widget.lowerRowCount,
-                    rounds: currentCycleCount,
-                    lastCycleLevelCount: lastCycleLevelCount)
-                : const SizedBox(),
-      ),
+          future: Future.delayed(Duration(
+              milliseconds:
+                  widget.drawType == DrawType.firstTimeOpen ? 500 : 0)),
+          builder: (context, snapShot) =>
+              snapShot.connectionState == ConnectionState.done
+                  ? PathAnimation(
+                      drawType: widget.drawType,
+                      roundDrawSpeed: widget.cycleSpeed,
+                      lastCycleDrawSpeed: widget.lastCycleSpeed,
+                      upperRowCount: widget.upperRowCount,
+                      lowerRoundCount: widget.lowerRowCount,
+                      rounds: currentCycleCount,
+                      lastCycleLevelCount: lastCycleCurrentCount,
+                      lineColor: widget.lineColor)
+                  : const SizedBox()),
+
       LevelGrid(
           drawType: widget.drawType,
           drawSpeed: widget.cycleSpeed,
@@ -136,7 +146,11 @@ class _PathLevelState extends State<PathLevel> {
           shortRowCount: widget.lowerRowCount,
           levelDataList: widget.levelList,
           finalLevelImage: widget.finalLevelImage,
-          startColor: widget.startColor),
+          startColor: widget.startColor,
+          isFirstGroup: widget.isFirstGroup,
+          mainColor: widget.mainColor,
+          passColor: widget.passColor,
+          lockColor: widget.lockColor),
     ]);
   }
 }

@@ -37,19 +37,23 @@ class _TestLevelsPathScreenState extends State<TestLevelsPathScreen> {
         'Life Science',
         'assets/images/path_start.png',
         const Color(0xFF3CC079),
-        DrawType.nextLevel,
+        DrawType.firstTimeOpen,
         [
-          LevelData(title: 'Anatomy 1', progress: 85, isLock: false),
-          LevelData(title: 'Ecology 1', progress: 65, isLock: false),
+          LevelData(id: 'ABC', title: 'Anatomy 1', progress: 85, isLock: false),
+          LevelData(id: 'ABC', title: 'Ecology 1', progress: 65, isLock: false),
+          LevelData(id: 'ABC', title: 'Biology 2', progress: 0),
+          LevelData(id: 'ABC', title: 'Anatomy 3', progress: 0),
           LevelData(
+            id: 'ABC',
             title: 'Botany 1',
             progress: 10,
             isLock: false,
             isCurrent: true,
           ),
-          LevelData(title: 'Anatomy 2', progress: 0),
-          LevelData(title: 'Anatomy 3', progress: 0),
-          LevelData(title: 'Anatomy 4', progress: 0),
+          LevelData(id: 'ABC', title: 'Anatomy 4', progress: 0),
+          LevelData(id: 'ABC', title: 'Anatomy 4', progress: 0),
+          LevelData(id: 'ABC', title: 'Anatomy 4', progress: 0),
+          LevelData(id: 'ABC', title: 'Anatomy 4', progress: 0),
         ],
       ),
       LevelGroup(
@@ -59,19 +63,19 @@ class _TestLevelsPathScreenState extends State<TestLevelsPathScreen> {
         DrawType.firstTimeOpen,
         [
           LevelData(
-            title: 'Botany 1',
-            progress: 0,
-            isLock: false,
-            isCurrent: true,
-          ),
-          LevelData(title: 'Anatomy 1', progress: 0),
-          LevelData(title: 'Ecology 1', progress: 0),
-          LevelData(title: 'Ecology 1', progress: 0),
-          LevelData(title: 'Ecology 1', progress: 0),
+              id: 'ABC',
+              title: 'Botany 1',
+              progress: 0,
+              isLock: false,
+              isCurrent: true),
+          LevelData(id: 'ABC', title: 'Anatomy 1', progress: 0),
+          LevelData(id: 'ABC', title: 'Ecology 1', progress: 0),
+          LevelData(id: 'ABC', title: 'Ecology 1', progress: 0),
+          LevelData(id: 'ABC', title: 'Ecology 1', progress: 0),
         ],
       ),
     ];
 
-    return PathLevelScreen(levelGroupList: groupList);
+    return PathLevelScreen(levelGroupList: groupList, title: 'General Science');
   }
 }

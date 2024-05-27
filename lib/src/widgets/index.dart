@@ -75,3 +75,4 @@ export 'pro_purchase/pro_purchase_screen.dart';
 export 'pro_purchase/widgets/pro_options.dart';
 export 'new_home_screen/new_statistic_test.dart';
 export 'personal_plan_chart/personal_plan_chart.dart';
+export 'settings/settings_screen.dart';
