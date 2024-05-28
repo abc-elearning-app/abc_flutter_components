@@ -48,6 +48,8 @@ class PathLevel extends StatefulWidget {
 
   final bool isFirstGroup;
 
+  final void Function(String id) onClickLevel;
+
   const PathLevel({
     super.key,
     required this.levelList,
@@ -65,6 +67,7 @@ class PathLevel extends StatefulWidget {
     required this.lockColor,
     required this.lineColor,
     required this.lineBackgroundColor,
+    required this.onClickLevel,
   });
 
   @override
@@ -150,7 +153,8 @@ class _PathLevelState extends State<PathLevel> {
           isFirstGroup: widget.isFirstGroup,
           mainColor: widget.mainColor,
           passColor: widget.passColor,
-          lockColor: widget.lockColor),
+          lockColor: widget.lockColor,
+          onClickLevel: widget.onClickLevel),
     ]);
   }
 }

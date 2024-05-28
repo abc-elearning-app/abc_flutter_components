@@ -17,6 +17,8 @@ class LevelWidget extends StatefulWidget {
   final Color mainColor;
   final Color lockColor;
 
+  final void Function(String id) onClickLevel;
+
   const LevelWidget(
       {super.key,
       required this.levelData,
@@ -30,7 +32,8 @@ class LevelWidget extends StatefulWidget {
       required this.isFirstGroup,
       required this.passColor,
       required this.mainColor,
-      required this.lockColor});
+      required this.lockColor,
+      required this.onClickLevel});
 
   @override
   State<LevelWidget> createState() => _LevelWidgetState();
@@ -187,22 +190,25 @@ class _LevelWidgetState extends State<LevelWidget>
                       offset: Offset(0, _getTranslateValue()),
                       child: Stack(alignment: Alignment.topCenter, children: [
                         Transform.translate(
-                          offset: const Offset(0, 18),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              // Regular level or final cup
-                              widget.isFinal ? _finalLevel() : _mainLevel(),
+                          offset: const Offset(0, 20),
+                          child: GestureDetector(
+                            onTap: () => widget.onClickLevel(widget.levelData.id),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                // Regular level or final cup
+                                widget.isFinal ? _finalLevel() : _mainLevel(),
 
-                              // Title
-                              Text(
-                                widget.levelData.title,
-                                style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500),
-                              )
-                            ],
+                                // Title
+                                Text(
+                                  widget.levelData.title,
+                                  style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ])),
@@ -214,19 +220,29 @@ class _LevelWidgetState extends State<LevelWidget>
   Widget _mainLevel() => Stack(
         alignment: Alignment.topRight,
         children: [
-          CircleAvatar(
-            radius: 42,
-            backgroundColor: _getMainColor().withOpacity(0.2),
+          Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey.shade300,
+                      blurRadius: 2,
+                      spreadRadius: 2)
+                ]),
             child: CircleAvatar(
-              radius: 35,
-              backgroundColor: Colors.white,
+              radius: 40,
+              backgroundColor: Color.lerp(_getMainColor(), Colors.white, 0.6),
               child: CircleAvatar(
-                radius: 30,
-                backgroundColor: _getMainColor(),
-                child: SvgPicture.asset(
-                  widget.levelData.icon,
-                  colorFilter:
-                      ColorFilter.mode(_getIconColor(), BlendMode.srcIn),
+                radius: 33,
+                backgroundColor: Colors.white,
+                child: CircleAvatar(
+                  radius: 29,
+                  backgroundColor: _getMainColor(),
+                  child: SvgPicture.asset(
+                    widget.levelData.icon,
+                    colorFilter:
+                        ColorFilter.mode(_getIconColor(), BlendMode.srcIn),
+                  ),
                 ),
               ),
             ),
@@ -241,7 +257,7 @@ class _LevelWidgetState extends State<LevelWidget>
       );
 
   Widget _finalLevel() => Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 5),
       child: Image.asset(widget.finalLevelImage, scale: 0.8));
 
   Widget _buildTooltip() => AnimatedBuilder(

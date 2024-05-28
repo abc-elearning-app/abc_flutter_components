@@ -1,8 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/floating_pieces.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/gif_icon.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/premium_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -33,78 +30,48 @@ class SettingScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.grey.shade300,
-                          blurRadius: 2,
-                          spreadRadius: 2)
-                    ]),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Stack(alignment: Alignment.center, children: [
-                    Container(
-                        width: double.infinity,
-                        height: buttonHeight,
-                        decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  Color(0xFFFF9840),
-                                  Color(0xFFFF544E)
-                                ]),
-                            borderRadius: BorderRadius.circular(15),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.grey.shade300,
-                                  spreadRadius: 2,
-                                  blurRadius: 2)
-                            ])),
-                    FloatingAnimation(buttonHeight: buttonHeight),
-                    SizedBox(
-                      width: double.infinity,
-                      height: buttonHeight,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            backgroundColor: Colors.transparent,
-                            elevation: 0,
-                            shadowColor: Colors.transparent),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Transform.translate(
-                                offset: const Offset(-15, 0),
-                                child: const GifIcon()),
-                            RichText(
-                              text: const TextSpan(
-                                  style: TextStyle(
-                                      fontFamily: 'Poppins', fontSize: 20),
-                                  children: [
-                                    TextSpan(
-                                        text: 'Upgrade',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    TextSpan(text: ' to the Premium'),
-                                  ]),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ]),
-                ),
-              ),
-            )
+            PremiumButton(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                onClick: () => print('Premium button'),
+                gradientColors: const [Color(0xFFFF9840), Color(0xFFFF544E)],
+                buttonHeight: 70),
+            _buildTitle('Settings Exam'),
+            _tile()
           ],
+        ),
+      ),
+    );
+  }
+
+  _buildTitle(String title) => Padding(
+        padding: const EdgeInsets.only(left: 15, top: 20, bottom: 10),
+        child: Text(
+          title,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+        ),
+      );
+
+  _tile() {
+    bool value = false;
+    return StatefulBuilder(
+      builder: (_, setState) => Container(
+        margin: const EdgeInsets.symmetric(horizontal: 15),
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(15)),
+        child: ListTile(
+          leading: const Icon(Icons.ac_unit, color: Color(0xFF212121)),
+          title: const Text('Dark Mode',
+              style: TextStyle(color: Color(0xFF212121))),
+          trailing: Switch(
+            activeColor: Color(0xFF6C5F4B),
+            activeTrackColor: Color(0xFFF4E8D6),
+            trackOutlineColor: MaterialStateProperty.all(Color(0xFF6C5F4B)),
+            trackOutlineWidth: MaterialStateProperty.all(1),
+            value: value,
+            onChanged: (newValue) => setState(() => value = newValue),
+          ),
         ),
       ),
     );

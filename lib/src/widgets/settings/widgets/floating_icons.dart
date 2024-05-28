@@ -23,6 +23,7 @@ class _FloatingAnimationState extends State<FloatingAnimation> {
   double originalWidth = 0;
   double originalHeight = 0;
 
+  // Initial positions
   double triangleX = 0;
   double triangleY = 0;
 
@@ -35,18 +36,20 @@ class _FloatingAnimationState extends State<FloatingAnimation> {
   double starX = 0;
   double starY = 0;
 
-  final double iconSize = 25.0;
-  double rotationCounter = 0;
-
+  // Initial directions
   FloatDirection starDirection = FloatDirection(-1, 1);
   FloatDirection circleDirection = FloatDirection(-1, -1);
   FloatDirection halfCircleDirection = FloatDirection(1, -1);
   FloatDirection triangleDirection = FloatDirection(1, 1);
 
+  final double iconSize = 25.0;
+  double rotationCounter = 0;
+
   late Timer _animationTimer;
 
   @override
   void initState() {
+    // Setup initial positions
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
         originalWidth = MediaQuery.of(context).size.width;
@@ -66,6 +69,7 @@ class _FloatingAnimationState extends State<FloatingAnimation> {
       });
     });
 
+    // Start animations
     _animationTimer = Timer.periodic(const Duration(milliseconds: 20), (timer) {
       _checkDirection();
       _animate();
@@ -75,22 +79,22 @@ class _FloatingAnimationState extends State<FloatingAnimation> {
   }
 
   _checkDirection() {
-    double xLimit = originalWidth / 2;
-    double yLimit = originalHeight / 2;
+    double xLimit = originalWidth / 2 - 10;
+    double yLimit = originalHeight / 2 - 10;
 
-    _updateDirection(halfCircleX, xLimit, halfCircleDirection, 'x');
-    _updateDirection(circleX, xLimit, circleDirection, 'x');
-    _updateDirection(triangleX, xLimit, triangleDirection, 'x');
-    _updateDirection(starX, xLimit, starDirection, 'x');
+    _updateDirection('x', halfCircleX, xLimit, halfCircleDirection);
+    _updateDirection('x', circleX, xLimit, circleDirection);
+    _updateDirection('x', triangleX, xLimit, triangleDirection);
+    _updateDirection('x', starX, xLimit, starDirection);
 
-    _updateDirection(halfCircleY, yLimit, halfCircleDirection, 'y');
-    _updateDirection(circleY, yLimit, circleDirection, 'y');
-    _updateDirection(triangleY, yLimit, triangleDirection, 'y');
-    _updateDirection(starY, yLimit, starDirection, 'y');
+    _updateDirection('y', halfCircleY, yLimit, halfCircleDirection);
+    _updateDirection('y', circleY, yLimit, circleDirection);
+    _updateDirection('y', triangleY, yLimit, triangleDirection);
+    _updateDirection('y', starY, yLimit, starDirection);
   }
 
   _updateDirection(
-      double position, double limit, FloatDirection direction, String type) {
+      String type, double position, double limit, FloatDirection direction) {
     if (type == 'x') {
       if (position > limit) {
         direction.xDirection = -1;
@@ -135,22 +139,16 @@ class _FloatingAnimationState extends State<FloatingAnimation> {
       alignment: Alignment.topLeft,
       children: [
         _buildIcon(circleX, circleY, 'floating_circle'),
-        _buildIcon(halfCircleX, halfCircleY, 'floating_half_circle',
-            color: Colors.blue),
+        _buildIcon(halfCircleX, halfCircleY, 'floating_dna'),
         _buildIcon(starX, starY, 'floating_star'),
         _buildIcon(triangleX, triangleY, 'floating_triangle'),
       ],
     );
   }
 
-  _buildIcon(double x, double y, String image, {Color? color}) =>
-      Transform.translate(
-          offset: Offset(x, y),
-          child: Transform.rotate(
-              angle: rotationCounter,
-              child: Image.asset(
-                'assets/images/$image.png',
-                height: iconSize,
-                color: color,
-              )));
+  _buildIcon(double x, double y, String image) => Transform.translate(
+      offset: Offset(x, y),
+      child: Transform.rotate(
+          angle: rotationCounter,
+          child: Image.asset('assets/images/$image.png', height: iconSize)));
 }

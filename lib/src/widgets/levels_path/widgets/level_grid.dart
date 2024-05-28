@@ -18,6 +18,8 @@ class LevelGrid extends StatelessWidget {
   final Color lockColor;
   final Color startColor;
 
+  final void Function(String id) onClickLevel;
+
   const LevelGrid({
     super.key,
     required this.drawType,
@@ -31,6 +33,7 @@ class LevelGrid extends StatelessWidget {
     required this.mainColor,
     required this.passColor,
     required this.lockColor,
+    required this.onClickLevel,
   });
 
   @override
@@ -58,7 +61,8 @@ class LevelGrid extends StatelessWidget {
                 isFirstGroup: isFirstGroup,
                 lockColor: lockColor,
                 passColor: passColor,
-                mainColor: mainColor)
+                mainColor: mainColor,
+                onClickLevel: onClickLevel)
             : const PlaceholderLevel();
         levelsInARow.add(level);
         i++;

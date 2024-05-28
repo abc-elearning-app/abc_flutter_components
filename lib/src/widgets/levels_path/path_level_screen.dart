@@ -40,6 +40,8 @@ class PathLevelScreen extends StatefulWidget {
 
   final Duration drawSpeed;
 
+  final void Function(String id) onClickLevel;
+
   const PathLevelScreen({
     super.key,
     required this.levelGroupList,
@@ -56,6 +58,7 @@ class PathLevelScreen extends StatefulWidget {
     this.lowerRowCount = 2,
     this.drawSpeed = const Duration(milliseconds: 250),
     required this.title,
+    required this.onClickLevel,
   });
 
   @override
@@ -188,7 +191,8 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
             lineColor: widget.lineColor,
             lineBackgroundColor: widget.lineBackgroundColor,
             upperRowCount: widget.upperRowCount,
-            lowerRowCount: widget.lowerRowCount),
+            lowerRowCount: widget.lowerRowCount,
+            onClickLevel: widget.onClickLevel),
       ],
     );
   }

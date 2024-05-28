@@ -37,12 +37,10 @@ class _TestLevelsPathScreenState extends State<TestLevelsPathScreen> {
         'Life Science',
         'assets/images/path_start.png',
         const Color(0xFF3CC079),
-        DrawType.firstTimeOpen,
+        DrawType.nextLevel,
         [
           LevelData(id: 'ABC', title: 'Anatomy 1', progress: 85, isLock: false),
-          LevelData(id: 'ABC', title: 'Ecology 1', progress: 65, isLock: false),
-          LevelData(id: 'ABC', title: 'Biology 2', progress: 0),
-          LevelData(id: 'ABC', title: 'Anatomy 3', progress: 0),
+          LevelData(id: 'ABC', title: 'Anatomy 3', progress: 0, isLock: false),
           LevelData(
             id: 'ABC',
             title: 'Botany 1',
@@ -50,7 +48,6 @@ class _TestLevelsPathScreenState extends State<TestLevelsPathScreen> {
             isLock: false,
             isCurrent: true,
           ),
-          LevelData(id: 'ABC', title: 'Anatomy 4', progress: 0),
           LevelData(id: 'ABC', title: 'Anatomy 4', progress: 0),
           LevelData(id: 'ABC', title: 'Anatomy 4', progress: 0),
           LevelData(id: 'ABC', title: 'Anatomy 4', progress: 0),
@@ -76,6 +73,10 @@ class _TestLevelsPathScreenState extends State<TestLevelsPathScreen> {
       ),
     ];
 
-    return PathLevelScreen(levelGroupList: groupList, title: 'General Science');
+    return PathLevelScreen(
+      levelGroupList: groupList,
+      title: 'General Science',
+      onClickLevel: (id) => print(id),
+    );
   }
 }
