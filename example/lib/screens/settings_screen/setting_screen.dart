@@ -16,9 +16,27 @@ class _TestSettingScreenState extends State<TestSettingScreen> {
   @override
   Widget build(BuildContext context) {
     return SettingScreen(
-        isDarkMode: AppTheme.isDarkMode,
-        onClick: () => setState(() =>
-            Provider.of<AppThemeProvider>(context, listen: false)
-                .changeAppTheme()));
+      isPro: false,
+      notificationOn: true,
+      isDarkMode: AppTheme.isDarkMode,
+      onToggleDarkMode: () => setState(() =>
+          Provider.of<AppThemeProvider>(context, listen: false)
+              .changeAppTheme()),
+      onClickPremium: () => print('Go Premium'),
+      onProPurchase: () => print('Buy Pro'),
+      onChangeExamDate: (date) => print(date),
+      onChangeRemindTime: (time) => print(time),
+      onToggleNotification: () => print('Toggle notification'),
+      onClickAppVersion: () => print('App version'),
+      onClickContact: () => print('Contact'),
+      onClickPolicy: () => print('Policy'),
+      onClickRate: () => print('Rate'),
+      onDisableReminder: () => print('Disable reminder'),
+      onClickReset: () => print('Click reset'),
+      onShare: () => print('Sharing is caring'),
+      appVersion: '1.6.9',
+      examDate: DateTime.now(),
+      remindTime: TimeOfDay.now(),
+    );
   }
 }

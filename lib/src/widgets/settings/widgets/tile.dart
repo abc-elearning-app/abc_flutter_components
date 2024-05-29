@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../../utils/image_utils.dart';
+import '../../../utils/image_utils.dart';
 
 enum SettingTileType { chevronTile, switchTile, timeTile, informationTile }
 
-class SwitchTile extends StatelessWidget {
+class SettingTile extends StatelessWidget {
   final SettingTileType type;
 
   final String iconString;
@@ -22,8 +22,9 @@ class SwitchTile extends StatelessWidget {
   final Color? activeTrackColor;
 
   final void Function() onClick;
+  final void Function()? onProPurchase;
 
-  const SwitchTile(
+  const SettingTile(
       {super.key,
       this.value,
       this.information,
@@ -34,15 +35,20 @@ class SwitchTile extends StatelessWidget {
       required this.iconString,
       required this.title,
       required this.onClick,
-      required this.type});
+      required this.type,
+      this.onProPurchase});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: () => showPro ? onProPurchase!() : onClick(),
       leading: ResponsiveIcon(
           content: iconString, color: isDarkMode ? 'white' : ' black'),
       title: Text(title,
-          style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 18)),
+          style: const TextStyle(
+            fontWeight: FontWeight.w400,
+            fontSize: 18,
+          )),
       trailing: _buildTrailing(),
     );
   }
@@ -50,8 +56,11 @@ class SwitchTile extends StatelessWidget {
   Widget _buildTrailing() {
     switch (type) {
       case SettingTileType.chevronTile:
-        return const Icon(Icons.chevron_right_rounded,
-            size: 35, color: Colors.grey);
+        return const Icon(
+          Icons.chevron_right_rounded,
+          size: 35,
+          color: Colors.grey,
+        );
       case SettingTileType.switchTile:
         return Row(
           mainAxisSize: MainAxisSize.min,
@@ -72,7 +81,7 @@ class SwitchTile extends StatelessWidget {
                     isDarkMode ? Colors.white : mainColor),
                 trackOutlineWidth: MaterialStateProperty.all(1),
                 value: value!,
-                onChanged: (_) => onClick(),
+                onChanged: (_) => showPro ? null : onClick(),
               ),
             ),
           ],

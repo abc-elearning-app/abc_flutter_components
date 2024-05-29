@@ -54,7 +54,7 @@ class _GifIconState extends State<GifIcon> with SingleTickerProviderStateMixin {
         controller: _gifController,
         duration: const Duration(milliseconds: 2500),
         autostart: Autostart.no,
-        placeholder: (_) => const Text(''),
+        placeholder: (_) => const Text('Loading...'),
         onFetchCompleted: () {
           _gifController.reset();
           Future.delayed(const Duration(milliseconds: 200),

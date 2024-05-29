@@ -1,41 +1,104 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/src/constants/app_svg_icons.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/premium_button.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/tiles/switch_tile.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/tile.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
-class SettingScreen extends StatelessWidget {
-  final void Function() onClick;
+class SettingScreen extends StatefulWidget {
   final bool isDarkMode;
+  final bool isPro;
+  final DateTime examDate;
+  final TimeOfDay remindTime;
+  final String appVersion;
+  final bool notificationOn;
 
   final Color mainColor;
+  final Color backgroundColor;
   final Color switchActiveTrackColor;
+
+  // Callbacks
+  final void Function() onToggleNotification;
+  final void Function() onProPurchase;
+  final void Function() onDisableReminder;
+  final void Function() onClickReset;
+  final void Function() onToggleDarkMode;
+  final void Function() onClickPremium;
+  final void Function() onClickPolicy;
+  final void Function() onClickAppVersion;
+  final void Function() onClickContact;
+  final void Function() onClickRate;
+  final void Function() onShare;
+  final void Function(DateTime date) onChangeExamDate;
+  final void Function(TimeOfDay time) onChangeRemindTime;
 
   const SettingScreen({
     super.key,
-    required this.onClick,
-    required this.isDarkMode,
     this.mainColor = const Color(0xFF6C5F4B),
     this.switchActiveTrackColor = const Color(0xFFF4E8D6),
+    this.backgroundColor = const Color(0xFFF5F4EE),
+    required this.isDarkMode,
+    required this.isPro,
+    required this.examDate,
+    required this.remindTime,
+    required this.onToggleDarkMode,
+    required this.onProPurchase,
+    required this.onToggleNotification,
+    required this.onChangeRemindTime,
+    required this.onDisableReminder,
+    required this.onClickReset,
+    required this.onClickPolicy,
+    required this.onClickAppVersion,
+    required this.onClickContact,
+    required this.onClickRate,
+    required this.onClickPremium,
+    required this.onChangeExamDate,
+    required this.onShare,
+    required this.appVersion,
+    required this.notificationOn,
   });
 
-  final double buttonHeight = 70.0;
+  @override
+  State<SettingScreen> createState() => _SettingScreenState();
+}
+
+class _SettingScreenState extends State<SettingScreen> {
+  final double buttonHeight = 70;
+  late ValueNotifier _remindTime;
+  late ValueNotifier _examDate;
+  late ValueNotifier _notificationOn;
+
+  @override
+  void initState() {
+    _examDate = ValueNotifier<DateTime>(widget.examDate);
+    _remindTime = ValueNotifier<TimeOfDay>(widget.remindTime);
+    _notificationOn = ValueNotifier<bool>(widget.notificationOn);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _examDate.dispose();
+    _remindTime.dispose();
+    _notificationOn.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: isDarkMode ? Colors.black : const Color(0xFFF5F4EE),
+      backgroundColor:
+          widget.isDarkMode ? Colors.black : widget.backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: const Text(
-          'Settings',
-          style: TextStyle(fontWeight: FontWeight.w500),
-        ),
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop()),
+        title: const Text('Settings',
+            style: TextStyle(fontWeight: FontWeight.w500)),
         actions: [
           Padding(
               padding: const EdgeInsets.only(right: 10),
@@ -48,112 +111,127 @@ class SettingScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               PremiumButton(
-                  isDarkMode: isDarkMode,
+                  isDarkMode: widget.isDarkMode,
                   margin: const EdgeInsets.only(left: 10, right: 10, top: 20),
-                  onClick: () => print('Premium button'),
+                  onClick: () => widget.onClickPremium(),
                   gradientColors: const [Color(0xFFFF9840), Color(0xFFFF544E)],
-                  buttonHeight: 70),
+                  buttonHeight: buttonHeight),
               _buildTitle('Settings Exam'),
               _buildTileGroup([
-                SwitchTile(
-                    type: SettingTileType.informationTile,
-                    title: 'Exam Date',
-                    information: 'Jun 26 2024',
-                    iconString: AppSvgIcons.settingIcons.examDate,
-                    isDarkMode: isDarkMode,
-                    onClick: onClick,
-                    mainColor: mainColor,
-                    activeTrackColor: switchActiveTrackColor),
+                ValueListenableBuilder(
+                  valueListenable: _examDate,
+                  builder: (_, value, __) => SettingTile(
+                      type: SettingTileType.informationTile,
+                      title: 'Exam Date',
+                      information: _formatDate(value),
+                      iconString: AppSvgIcons.settingIcons.examDate,
+                      isDarkMode: widget.isDarkMode,
+                      onClick: () => _changeDate(context),
+                      mainColor: widget.mainColor,
+                      activeTrackColor: widget.switchActiveTrackColor),
+                ),
               ]),
               _buildTitle('General Settings'),
               _buildTileGroup([
-                SwitchTile(
-                    type: SettingTileType.switchTile,
-                    value: true,
-                    title: 'Notification',
-                    iconString: AppSvgIcons.settingIcons.notification,
-                    isDarkMode: isDarkMode,
-                    onClick: () {},
-                    mainColor: mainColor,
-                    activeTrackColor: switchActiveTrackColor),
+                ValueListenableBuilder(
+                  valueListenable: _notificationOn,
+                  builder: (_, value, __) => SettingTile(
+                      type: SettingTileType.switchTile,
+                      value: value,
+                      title: 'Notification',
+                      iconString: AppSvgIcons.settingIcons.notification,
+                      isDarkMode: widget.isDarkMode,
+                      onClick: _toggleNotification,
+                      mainColor: widget.mainColor,
+                      activeTrackColor: widget.switchActiveTrackColor),
+                ),
                 _buildDivider(),
-                SwitchTile(
-                    type: SettingTileType.informationTile,
-                    title: 'Remind Me At',
-                    information: '17:34',
-                    iconString: AppSvgIcons.settingIcons.remindAt,
-                    isDarkMode: isDarkMode,
-                    onClick: () {}),
+                ValueListenableBuilder(
+                  valueListenable: _remindTime,
+                  builder: (_, value, __) => SettingTile(
+                      type: SettingTileType.informationTile,
+                      title: 'Remind Me At',
+                      information: _formatTime(value),
+                      iconString: AppSvgIcons.settingIcons.remindAt,
+                      isDarkMode: widget.isDarkMode,
+                      onClick: () => _changeTime(context)),
+                ),
                 _buildDivider(),
-                SwitchTile(
+                SettingTile(
                     type: SettingTileType.chevronTile,
                     title: 'Disable Calendar Reminder',
                     iconString: AppSvgIcons.settingIcons.disableCalendar,
-                    isDarkMode: isDarkMode,
-                    onClick: () {},
-                    mainColor: mainColor,
-                    activeTrackColor: switchActiveTrackColor),
+                    isDarkMode: widget.isDarkMode,
+                    onClick: widget.onDisableReminder,
+                    mainColor: widget.mainColor,
+                    activeTrackColor: widget.switchActiveTrackColor),
                 _buildDivider(),
-                SwitchTile(
+                SettingTile(
                     type: SettingTileType.chevronTile,
                     title: 'Reset Progress',
                     iconString: AppSvgIcons.settingIcons.reset,
-                    isDarkMode: isDarkMode,
-                    onClick: () {},
-                    mainColor: mainColor,
-                    activeTrackColor: switchActiveTrackColor),
+                    isDarkMode: widget.isDarkMode,
+                    onClick: widget.onClickReset,
+                    mainColor: widget.mainColor,
+                    activeTrackColor: widget.switchActiveTrackColor),
                 _buildDivider(),
-                SwitchTile(
-                    type: SettingTileType.switchTile,
-                    value: isDarkMode,
-                    title: 'Dark Mode',
-                    iconString: AppSvgIcons.settingIcons.darkMode,
-                    isDarkMode: isDarkMode,
-                    showPro: true,
-                    onClick: onClick,
-                    mainColor: mainColor,
-                    activeTrackColor: switchActiveTrackColor),
+                SettingTile(
+                  type: SettingTileType.switchTile,
+                  value: widget.isDarkMode,
+                  title: 'Dark Mode',
+                  iconString: AppSvgIcons.settingIcons.darkMode,
+                  isDarkMode: widget.isDarkMode,
+                  showPro: !widget.isPro,
+                  mainColor: widget.mainColor,
+                  activeTrackColor: widget.switchActiveTrackColor,
+                  onClick: widget.onToggleDarkMode,
+                  onProPurchase: widget.onProPurchase,
+                ),
               ]),
-          
               _buildTitle('App Information'),
               _buildTileGroup([
-                SwitchTile(
+                SettingTile(
                     type: SettingTileType.chevronTile,
                     title: 'Privacy Policy',
                     iconString: AppSvgIcons.settingIcons.privacyPolicy,
-                    isDarkMode: isDarkMode,
-                    onClick: () {},
-                    mainColor: mainColor,
-                    activeTrackColor: switchActiveTrackColor),
+                    isDarkMode: widget.isDarkMode,
+                    onClick: widget.onClickPolicy,
+                    mainColor: widget.mainColor,
+                    activeTrackColor: widget.switchActiveTrackColor),
                 _buildDivider(),
-                SwitchTile(
+                SettingTile(
                     type: SettingTileType.informationTile,
                     title: 'App Version',
-                    information: '1.5.3',
+                    information: widget.appVersion,
                     iconString: AppSvgIcons.settingIcons.appVersion,
-                    isDarkMode: isDarkMode,
-                    onClick: () {},
-                    mainColor: mainColor,
-                    activeTrackColor: switchActiveTrackColor),
+                    isDarkMode: widget.isDarkMode,
+                    onClick: widget.onClickAppVersion,
+                    mainColor: widget.mainColor,
+                    activeTrackColor: widget.switchActiveTrackColor),
               ]),
-          
               _buildTitle('Feedback And Sharing'),
               _buildTileGroup([
-                SwitchTile(
+                SettingTile(
                     type: SettingTileType.chevronTile,
                     title: 'Contact Us',
                     iconString: AppSvgIcons.settingIcons.contact,
-                    isDarkMode: isDarkMode,
-                    onClick: () {},
-                    mainColor: mainColor),
+                    isDarkMode: widget.isDarkMode,
+                    onClick: widget.onClickContact,
+                    mainColor: widget.mainColor),
                 _buildDivider(),
-                SwitchTile(
-                    type: SettingTileType.chevronTile,
-                    title: 'Rate Our App',
+                SettingTile(
+                    isDarkMode: widget.isDarkMode,
                     iconString: AppSvgIcons.settingIcons.rate,
-                    isDarkMode: isDarkMode,
-                    onClick: () {},
-                    mainColor: mainColor),
+                    title: 'Rate Our App',
+                    onClick: widget.onClickRate,
+                    type: SettingTileType.chevronTile),
+                _buildDivider(),
+                SettingTile(
+                    isDarkMode: widget.isDarkMode,
+                    iconString: AppSvgIcons.settingIcons.share,
+                    title: 'Share App With Friends',
+                    onClick: widget.onShare,
+                    type: SettingTileType.chevronTile)
               ]),
             ],
           ),
@@ -162,24 +240,55 @@ class SettingScreen extends StatelessWidget {
     );
   }
 
-  _buildTileGroup(List<Widget> tiles) => Container(
+  Widget _buildTitle(String title) => Padding(
+      padding: const EdgeInsets.only(left: 15, top: 20, bottom: 10),
+      child: Text(title,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500)));
+
+  Widget _buildTileGroup(List<Widget> tiles) => Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       margin: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: isDarkMode ? Colors.grey.shade800 : Colors.white,
-      ),
+          borderRadius: BorderRadius.circular(20),
+          color: widget.isDarkMode ? Colors.grey.shade800 : Colors.white),
       child: Column(children: tiles));
 
-  _buildTitle(String title) => Padding(
-        padding: const EdgeInsets.only(left: 15, top: 20, bottom: 10),
-        child: Text(
-          title,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-        ),
-      );
-
-  _buildDivider() => const Padding(
+  Widget _buildDivider() => const Padding(
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: Divider(color: Colors.grey));
+
+  _formatDate(DateTime date) => DateFormat('MMM dd yyyy').format(date);
+
+  _formatTime(TimeOfDay time) {
+    final displayHour = time.hour < 10 ? '0${time.hour}' : time.hour.toString();
+    final displayMinute =
+        time.minute < 10 ? '0${time.minute}' : time.minute.toString();
+    return '$displayHour:$displayMinute';
+  }
+
+  _toggleNotification() {
+    _notificationOn.value = !_notificationOn.value;
+    widget.onToggleNotification();
+  }
+
+  _changeDate(BuildContext context) async {
+    final date = await showDatePicker(
+        context: context,
+        firstDate: DateTime(DateTime.now().year, 1, 1),
+        lastDate: DateTime(DateTime.now().year, 12, 31));
+
+    _examDate.value = date;
+    widget.onChangeExamDate(date!);
+  }
+
+  _changeTime(BuildContext context) async {
+    final time = await showTimePicker(
+        context: context,
+        initialTime: const TimeOfDay(hour: 0, minute: 0),
+        builder: (_, child) =>
+            Theme(data: ThemeData(useMaterial3: false), child: child!));
+
+    _remindTime.value = time!;
+    widget.onChangeRemindTime(time);
+  }
 }

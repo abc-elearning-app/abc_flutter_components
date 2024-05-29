@@ -102,4 +102,15 @@ class _SettingIcons {
     <path fill-rule="evenodd" clip-rule="evenodd" d="M12.8713 9.06303L13.4873 10.31C13.5473 10.432 13.6633 10.517 13.7983 10.537L15.1753 10.738C15.5163 10.788 15.6513 11.206 15.4053 11.445L14.4093 12.415C14.3113 12.51 14.2673 12.647 14.2893 12.782L14.5243 14.152C14.5823 14.491 14.2273 14.749 13.9233 14.589L12.6923 13.942C12.5713 13.878 12.4273 13.878 12.3063 13.942L11.0763 14.589C10.7713 14.749 10.4163 14.491 10.4743 14.152L10.7093 12.782C10.7323 12.647 10.6873 12.51 10.5893 12.415L9.59434 11.445C9.34834 11.206 9.48334 10.788 9.82334 10.738L11.2003 10.537C11.3353 10.517 11.4523 10.432 11.5123 10.31L12.1273 9.06303C12.2793 8.75503 12.7193 8.75503 12.8713 9.06303Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
   ''';
+
+  final share = '''
+  <svg width="23" height="18" viewBox="0 0 23 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.2192 7.89673C18.6142 7.70073 19.6882 6.50473 19.6912 5.05573C19.6912 3.62773 18.6502 2.44373 17.2852 2.21973" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M19.0601 11.2505C20.4111 11.4525 21.3541 11.9255 21.3541 12.9005C21.3541 13.5715 20.9101 14.0075 20.1921 14.2815" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2183 11.6641C8.00428 11.6641 5.25928 12.1511 5.25928 14.0961C5.25928 16.0401 7.98728 16.5411 11.2183 16.5411C14.4323 16.5411 17.1763 16.0591 17.1763 14.1131C17.1763 12.1671 14.4493 11.6641 11.2183 11.6641Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2184 8.888C13.3274 8.888 15.0374 7.179 15.0374 5.069C15.0374 2.96 13.3274 1.25 11.2184 1.25C9.10944 1.25 7.39944 2.96 7.39944 5.069C7.39144 7.171 9.08844 8.881 11.1904 8.888H11.2184Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M5.21638 7.89673C3.82038 7.70073 2.74738 6.50473 2.74438 5.05573C2.74438 3.62773 3.78538 2.44373 5.15038 2.21973" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M3.37554 11.2505C2.02454 11.4525 1.08154 11.9255 1.08154 12.9005C1.08154 13.5715 1.52554 14.0075 2.24354 14.2815" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  ''';
 }
