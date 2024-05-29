@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'floating_icons.dart';
@@ -7,15 +6,19 @@ import 'gif_icon.dart';
 class PremiumButton extends StatelessWidget {
   final double buttonHeight;
   final List<Color> gradientColors;
-  final void Function() onClick;
   final EdgeInsets? margin;
+
+  final bool isDarkMode;
+
+  final void Function() onClick;
 
   const PremiumButton({
     super.key,
-    required this.onClick,
+    this.margin,
     required this.gradientColors,
     required this.buttonHeight,
-    this.margin,
+    required this.isDarkMode,
+    required this.onClick,
   });
 
   @override
@@ -24,7 +27,10 @@ class PremiumButton extends StatelessWidget {
       margin: margin,
       decoration:
           BoxDecoration(borderRadius: BorderRadius.circular(15), boxShadow: [
-        BoxShadow(color: Colors.grey.shade300, blurRadius: 2, spreadRadius: 2)
+        BoxShadow(
+            color: isDarkMode ? Colors.black : Colors.grey.shade300,
+            blurRadius: 2,
+            spreadRadius: 2)
       ]),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),

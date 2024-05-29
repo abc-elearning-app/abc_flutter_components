@@ -70,7 +70,7 @@ class _FloatingAnimationState extends State<FloatingAnimation> {
     });
 
     // Start animations
-    _animationTimer = Timer.periodic(const Duration(milliseconds: 20), (timer) {
+    _animationTimer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
       _checkDirection();
       _animate();
     });
