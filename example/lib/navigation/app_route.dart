@@ -46,9 +46,11 @@ class AppRoute {
   static const String proPurchaseScreen = '/pro_purchase';
   static const String personalPlanChart = '/personal_plan_chart';
   static const String settingsScreen = '/settings_screen';
+  static const String streakScreen = '/streak_screen';
 
   static List<String> getAppRoute() {
     return [
+      AppRoute.streakScreen,
       AppRoute.personalPlanChart,
       AppRoute.newLogin,
       AppRoute.introPersonalPlan,
@@ -68,7 +70,7 @@ class AppRoute {
       AppRoute.newStatisticTab,
       AppRoute.practiceTestGrid,
       AppRoute.proPurchaseScreen,
-      AppRoute.settingsScreen
+      AppRoute.settingsScreen,
     ];
   }
 }

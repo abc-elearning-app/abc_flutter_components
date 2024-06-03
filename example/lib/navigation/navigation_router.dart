@@ -25,6 +25,7 @@ import 'package:example/screens/new_components/practice_test_grid.dart';
 import 'package:example/screens/new_components/pro_purchase_screen.dart';
 import 'package:example/screens/settings_screen/setting_screen.dart';
 import 'package:example/screens/sliders_screen/sliders_screen.dart';
+import 'package:example/screens/streak_screen/streak_screen.dart';
 import 'package:example/screens/tab_views_screen/tab_views_screen.dart';
 import 'package:example/screens/texts_screen/texts_screen.dart';
 import 'package:flutter/material.dart';
@@ -188,6 +189,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(
           routeName: routeName,
           viewToShow: const TestSettingScreen());
+    case AppRoute.streakScreen:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestStreakScreen());
     default:
       return MaterialPageRoute(
         builder: (_) => Scaffold(

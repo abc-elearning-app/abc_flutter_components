@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/src/constants/app_svg_icons.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/premium_button.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/tile.dart';
@@ -65,7 +63,7 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  final double buttonHeight = 70;
+  final double _buttonHeight = 70;
   late ValueNotifier _remindTime;
   late ValueNotifier _examDate;
   late ValueNotifier _notificationOn;
@@ -115,7 +113,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   margin: const EdgeInsets.only(left: 10, right: 10, top: 20),
                   onClick: () => widget.onClickPremium(),
                   gradientColors: const [Color(0xFFFF9840), Color(0xFFFF544E)],
-                  buttonHeight: buttonHeight),
+                  buttonHeight: _buttonHeight),
               _buildTitle('Settings Exam'),
               _buildTileGroup([
                 ValueListenableBuilder(
@@ -129,7 +127,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       onClick: () => _changeDate(context),
                       mainColor: widget.mainColor,
                       activeTrackColor: widget.switchActiveTrackColor),
-                ),
+                )
               ]),
               _buildTitle('General Settings'),
               _buildTileGroup([
@@ -277,18 +275,28 @@ class _SettingScreenState extends State<SettingScreen> {
         firstDate: DateTime(DateTime.now().year, 1, 1),
         lastDate: DateTime(DateTime.now().year, 12, 31));
 
-    _examDate.value = date;
-    widget.onChangeExamDate(date!);
+    if (date != null) {
+      _examDate.value = date;
+      widget.onChangeExamDate(date);
+    }
   }
 
   _changeTime(BuildContext context) async {
     final time = await showTimePicker(
         context: context,
         initialTime: const TimeOfDay(hour: 0, minute: 0),
-        builder: (_, child) =>
-            Theme(data: ThemeData(useMaterial3: false), child: child!));
+        builder: (_, child) => Theme(
+            data: ThemeData(
+              useMaterial3: false,
+              colorScheme: widget.isDarkMode
+                  ? const ColorScheme.dark()
+                  : const ColorScheme.light(),
+            ),
+            child: child!));
 
-    _remindTime.value = time!;
-    widget.onChangeRemindTime(time);
+    if (time != null) {
+      _remindTime.value = time;
+      widget.onChangeRemindTime(time);
+    }
   }
 }

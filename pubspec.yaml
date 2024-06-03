@@ -32,6 +32,7 @@ dependencies:
   provider: ^6.1.2
   syncfusion_flutter_charts: ^25.2.4
   gif: ^2.3.0
+  stroke_text: ^0.0.3
 
 dev_dependencies:
   flutter_test:
