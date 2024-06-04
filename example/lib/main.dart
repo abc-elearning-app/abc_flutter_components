@@ -8,8 +8,11 @@ import 'navigation/app_route.dart';
 import 'navigation/navigation_router.dart';
 import 'navigation/navigation_service.dart';
 
+import 'package:intl/date_symbol_data_local.dart';
+
 void main() {
-  runApp(MyApp());
+  initializeDateFormatting().then((_) => runApp(MyApp()));
+  // runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
