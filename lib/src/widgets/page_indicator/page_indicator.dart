@@ -5,21 +5,27 @@ class PageIndicator extends StatelessWidget {
   final int currentPage;
   final Color color;
 
+  final double unselectedSize;
+  final double selectedWidth;
+  final double selectHeight;
+
   const PageIndicator({
     super.key,
     required this.pageCount,
     required this.currentPage,
     required this.color,
+    this.unselectedSize = 10,
+    this.selectedWidth = 32,
+    this.selectHeight = 12,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         for (int i = 0; i < currentPage; i++) _buildUnselectedDot(),
-
         _buildSelectedDot(),
-
         for (int i = 0; i < pageCount - currentPage - 1; i++)
           _buildUnselectedDot()
       ],
@@ -27,19 +33,19 @@ class PageIndicator extends StatelessWidget {
   }
 
   _buildUnselectedDot() => Container(
-    height: 10,
-    width: 10,
-    margin: const EdgeInsets.symmetric(horizontal: 8),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(10),
-      border: Border.all(width: 1, color: color),
-    ),
-  );
+        height: unselectedSize,
+        width: unselectedSize,
+        margin: const EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(width: 1, color: color),
+        ),
+      );
 
   _buildSelectedDot() => Container(
-    height: 12,
-    width: 32,
-    decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10), color: color),
-  );
+        height: selectHeight,
+        width: selectedWidth,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10), color: color),
+      );
 }

@@ -1,11 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/streak/widgets/challenge_section.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stroke_text/stroke_text.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class StreakScreen extends StatefulWidget {
-  const StreakScreen({super.key});
+  final bool isStarted;
+
+  const StreakScreen({
+    super.key,
+    required this.isStarted,
+  });
 
   @override
   State<StreakScreen> createState() => _StreakScreenState();
@@ -21,7 +28,7 @@ class _StreakScreenState extends State<StreakScreen> {
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
 
-  final mainColor = const Color(0xFFE3A651);
+  final mainColor = const Color(0xFFEEAF56);
 
   late DateTime kToday;
   late DateTime kFirstDay;
@@ -29,6 +36,8 @@ class _StreakScreenState extends State<StreakScreen> {
 
   @override
   void initState() {
+    _rangeStart = DateTime(2024, 6, 4);
+    _rangeEnd = DateTime(2024, 6, 12);
     kToday = DateTime.now();
     kFirstDay = DateTime(kToday.year - 10, kToday.month, kToday.day);
     kLastDay = DateTime(kToday.year + 10, kToday.month, kToday.day);
@@ -117,48 +126,9 @@ class _StreakScreenState extends State<StreakScreen> {
                           TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 15,
-                      vertical: 20,
-                    ),
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: mainColor),
-                        borderRadius: BorderRadius.circular(16)),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Image.asset('assets/images/join_challenge.png'),
-                        const SizedBox(width: 20),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Keep the streak going!',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              SizedBox(
-                                width: double.infinity,
-                                child: MainButton(
-                                    title: 'Join Challenge',
-                                    backgroundColor: mainColor,
-                                    onPressed: () {},
-                                    textStyle: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    )),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+                  ChallengeSection(
+                    isStarted: widget.isStarted,
+                    mainColor: mainColor,
                   ),
                   TableCalendar(
                     shieldedDays: [
@@ -166,7 +136,7 @@ class _StreakScreenState extends State<StreakScreen> {
                       DateTime.now().add(const Duration(days: 2)),
                       DateTime.now().add(const Duration(days: 5)),
                     ],
-                    headerStyle: HeaderStyle(
+                    headerStyle: const HeaderStyle(
                       formatButtonVisible: false,
                       titleCentered: true,
                     ),
@@ -178,7 +148,7 @@ class _StreakScreenState extends State<StreakScreen> {
                       rangeHighlightColor: mainColor.withOpacity(0.2),
                       rangeStartDecoration: BoxDecoration(
                         color: mainColor.withOpacity(0.2),
-                        borderRadius: BorderRadius.horizontal(
+                        borderRadius: const BorderRadius.horizontal(
                           left: Radius.circular(60),
                           right: Radius.zero,
                         ),

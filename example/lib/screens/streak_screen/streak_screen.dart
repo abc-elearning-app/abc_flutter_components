@@ -6,6 +6,8 @@ class TestStreakScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreakScreen();
+    return StreakScreen(
+      isStarted: true,
+    );
   }
 }

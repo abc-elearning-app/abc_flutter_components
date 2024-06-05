@@ -938,7 +938,7 @@ packages:
     description:
       path: "."
       ref: new_version
-      resolved-ref: a65f48857c9b33f52d071b1bc78ce421d3e7108f
+      resolved-ref: b74cc0a296fb386c53cd88e0299288797a8b15b4
       url: "https://github.com/tienanh306201z/table_calendar.git"
     source: git
     version: "3.0.8"
