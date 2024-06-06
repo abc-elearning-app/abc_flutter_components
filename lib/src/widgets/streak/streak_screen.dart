@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/streak/widgets/challenge_section.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/streak/widgets/general_section.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/streak/widgets/popup.dart';
 import 'package:gif/gif.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -65,6 +69,12 @@ class _StreakScreenState extends State<StreakScreen>
       dayStreak =
           widget.rangeEndDate!.difference(widget.rangeStartDate!).inDays;
     }
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        _joinChallengePopUp(context);
+      });
+    });
 
     super.initState();
   }
@@ -194,4 +204,20 @@ class _StreakScreenState extends State<StreakScreen>
           style: TextStyle(fontWeight: FontWeight.w500),
         ),
       );
+
+  _joinChallengePopUp(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => Wrap(children: [
+        StreakPopup(
+          mainColor: widget.mainColor,
+          shieldColor: widget.shieldColor,
+          isShield: false,
+          onClick: () {},
+        )
+      ]),
+    );
+  }
 }

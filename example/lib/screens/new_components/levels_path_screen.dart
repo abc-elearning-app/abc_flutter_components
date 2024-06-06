@@ -9,24 +9,24 @@ class TestLevelsPathScreen extends StatefulWidget {
 }
 
 class _TestLevelsPathScreenState extends State<TestLevelsPathScreen> {
-  late ScrollController _scrollController;
-  late ValueNotifier<double> _backgroundOffset;
+  // late ScrollController _scrollController;
+  // late ValueNotifier<double> _backgroundOffset;
 
   @override
   void initState() {
-    _scrollController = ScrollController();
-    _backgroundOffset = ValueNotifier<double>(0);
+    // _scrollController = ScrollController();
+    // _backgroundOffset = ValueNotifier<double>(0);
 
-    _scrollController.addListener(
-        () => _backgroundOffset.value = _scrollController.offset / 15);
+    // _scrollController.addListener(
+    //     () => _backgroundOffset.value = _scrollController.offset / 15);
 
     super.initState();
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
-    _backgroundOffset.dispose();
+    // _scrollController.dispose();
+    // _backgroundOffset.dispose();
     super.dispose();
   }
 
@@ -37,7 +37,7 @@ class _TestLevelsPathScreenState extends State<TestLevelsPathScreen> {
         'Life Science',
         'assets/images/path_start.png',
         const Color(0xFF3CC079),
-        DrawType.nextLevel,
+        DrawType.firstTimeOpen,
         [
           LevelData(id: 'ABC', title: 'Anatomy 1', progress: 85, isLock: false),
           LevelData(id: 'ABC', title: 'Anatomy 3', progress: 0, isLock: false),
