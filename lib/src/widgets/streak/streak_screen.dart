@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/streak/widgets/challenge_section.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stroke_text/stroke_text.dart';
@@ -36,7 +34,7 @@ class _StreakScreenState extends State<StreakScreen> {
 
   @override
   void initState() {
-    _rangeStart = DateTime(2024, 6, 4);
+    _rangeStart = DateTime(2024, 5, 28);
     _rangeEnd = DateTime(2024, 6, 12);
     kToday = DateTime.now();
     kFirstDay = DateTime(kToday.year - 10, kToday.month, kToday.day);
@@ -112,93 +110,89 @@ class _StreakScreenState extends State<StreakScreen> {
                     ],
                   ),
                 )),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.03),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10, bottom: 10, top: 15),
-                    child: Text(
-                      'Streak Challenge',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                    ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 10, bottom: 10, top: 15),
+                  child: Text(
+                    'Streak Challenge',
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                   ),
-                  ChallengeSection(
-                    isStarted: widget.isStarted,
-                    mainColor: mainColor,
+                ),
+                ChallengeSection(
+                  isStarted: widget.isStarted,
+                  mainColor: mainColor,
+                ),
+                TableCalendar(
+                  shieldedDays: [
+                    DateTime.now(),
+                    DateTime.now().add(const Duration(days: 2)),
+                    DateTime.now().add(const Duration(days: 5)),
+                  ],
+                  headerStyle: const HeaderStyle(
+                    formatButtonVisible: false,
+                    titleCentered: true,
                   ),
-                  TableCalendar(
-                    shieldedDays: [
-                      DateTime.now(),
-                      DateTime.now().add(const Duration(days: 2)),
-                      DateTime.now().add(const Duration(days: 5)),
-                    ],
-                    headerStyle: const HeaderStyle(
-                      formatButtonVisible: false,
-                      titleCentered: true,
-                    ),
-                    calendarStyle: CalendarStyle(
-                      withinRangeTextStyle:
-                          TextStyle(fontSize: 16, color: mainColor),
-                      rangeStartTextStyle:
-                          TextStyle(fontSize: 16, color: mainColor),
-                      rangeHighlightColor: mainColor.withOpacity(0.2),
-                      rangeStartDecoration: BoxDecoration(
-                        color: mainColor.withOpacity(0.2),
-                        borderRadius: const BorderRadius.horizontal(
-                          left: Radius.circular(60),
-                          right: Radius.zero,
-                        ),
-                      ),
-                      rangeEndDecoration: BoxDecoration(
-                        color: mainColor,
-                        borderRadius: BorderRadius.circular(60),
+                  calendarStyle: CalendarStyle(
+                    withinRangeTextStyle:
+                        TextStyle(fontSize: 16, color: mainColor),
+                    rangeStartTextStyle:
+                        TextStyle(fontSize: 16, color: mainColor),
+                    rangeHighlightColor: mainColor.withOpacity(0.2),
+                    rangeStartDecoration: BoxDecoration(
+                      color: mainColor.withOpacity(0.2),
+                      borderRadius: const BorderRadius.horizontal(
+                        left: Radius.circular(60),
+                        right: Radius.zero,
                       ),
                     ),
-                    firstDay: kFirstDay,
-                    lastDay: kLastDay,
-                    focusedDay: _focusedDay,
-                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                    rangeStartDay: _rangeStart,
-                    rangeEndDay: _rangeEnd,
-                    calendarFormat: _calendarFormat,
-                    rangeSelectionMode: _rangeSelectionMode,
-                    onDaySelected: (selectedDay, focusedDay) {
-                      if (!isSameDay(_selectedDay, selectedDay)) {
-                        setState(() {
-                          _selectedDay = selectedDay;
-                          _focusedDay = focusedDay;
-                          _rangeStart = null; // Important to clean those
-                          _rangeEnd = null;
-                          _rangeSelectionMode = RangeSelectionMode.toggledOff;
-                        });
-                      }
-                    },
-                    onRangeSelected: (start, end, focusedDay) {
+                    rangeEndDecoration: BoxDecoration(
+                      color: mainColor,
+                      borderRadius: BorderRadius.circular(60),
+                    ),
+                  ),
+                  firstDay: kFirstDay,
+                  lastDay: kLastDay,
+                  focusedDay: _focusedDay,
+                  selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                  rangeStartDay: _rangeStart,
+                  rangeEndDay: _rangeEnd,
+                  calendarFormat: _calendarFormat,
+                  rangeSelectionMode: _rangeSelectionMode,
+                  onDaySelected: (selectedDay, focusedDay) {
+                    if (!isSameDay(_selectedDay, selectedDay)) {
                       setState(() {
-                        _selectedDay = null;
+                        _selectedDay = selectedDay;
                         _focusedDay = focusedDay;
-                        _rangeStart = start;
-                        _rangeEnd = end;
-                        _rangeSelectionMode = RangeSelectionMode.toggledOn;
+                        _rangeStart = null; // Important to clean those
+                        _rangeEnd = null;
+                        _rangeSelectionMode = RangeSelectionMode.toggledOff;
                       });
-                    },
-                    onFormatChanged: (format) {
-                      if (_calendarFormat != format) {
-                        setState(() {
-                          _calendarFormat = format;
-                        });
-                      }
-                    },
-                    onPageChanged: (focusedDay) {
+                    }
+                  },
+                  onRangeSelected: (start, end, focusedDay) {
+                    setState(() {
+                      _selectedDay = null;
                       _focusedDay = focusedDay;
-                    },
-                  ),
-                ],
-              ),
+                      _rangeStart = start;
+                      _rangeEnd = end;
+                      _rangeSelectionMode = RangeSelectionMode.toggledOn;
+                    });
+                  },
+                  onFormatChanged: (format) {
+                    if (_calendarFormat != format) {
+                      setState(() {
+                        _calendarFormat = format;
+                      });
+                    }
+                  },
+                  onPageChanged: (focusedDay) {
+                    _focusedDay = focusedDay;
+                  },
+                ),
+              ],
             )
           ],
         ),

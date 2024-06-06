@@ -22,6 +22,7 @@ class PageIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         for (int i = 0; i < currentPage; i++) _buildUnselectedDot(),
@@ -35,7 +36,7 @@ class PageIndicator extends StatelessWidget {
   _buildUnselectedDot() => Container(
         height: unselectedSize,
         width: unselectedSize,
-        margin: const EdgeInsets.symmetric(horizontal: 8),
+        margin: const EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           border: Border.all(width: 1, color: color),
@@ -45,6 +46,7 @@ class PageIndicator extends StatelessWidget {
   _buildSelectedDot() => Container(
         height: selectHeight,
         width: selectedWidth,
+        margin: const EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10), color: color),
       );
