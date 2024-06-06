@@ -46,8 +46,10 @@ class _GifIconState extends State<GifIcon> with SingleTickerProviderStateMixin {
         valueListenable: _rotation,
         builder: (_, value, __) => Transform.rotate(
             angle: value,
-            child:
-                Image.asset('assets/images/premium_background.png', width: 80)),
+            child: Image.asset(
+              'assets/images/premium_background.png',
+              width: 80,
+            )),
       ),
       Gif(
         image: const AssetImage("assets/images/premium.gif"),

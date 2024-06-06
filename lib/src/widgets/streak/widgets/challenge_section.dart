@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
@@ -6,11 +9,18 @@ import '../../../../flutter_abc_jsc_components.dart';
 class ChallengeSection extends StatefulWidget {
   final bool isStarted;
   final Color mainColor;
+  final Color shieldColor;
+
+  final void Function() onJoinChallenge;
+  final void Function() onUseShield;
 
   const ChallengeSection({
     super.key,
     required this.isStarted,
     required this.mainColor,
+    required this.onJoinChallenge,
+    required this.onUseShield,
+    required this.shieldColor,
   });
 
   @override
@@ -19,155 +29,137 @@ class ChallengeSection extends StatefulWidget {
 
 class _ChallengeSectionState extends State<ChallengeSection> {
   late ValueNotifier<int> _currentPageIndex;
-  late PageController _pageController;
   late ScrollController _scrollController;
-
-  double _maxScrollValue = 0;
+  Timer _stopTimer = Timer(const Duration(), () {});
 
   @override
   void initState() {
     _currentPageIndex = ValueNotifier(0);
-    _pageController = PageController();
     _scrollController = ScrollController();
+    _setupCarouselAnimation();
+    super.initState();
+  }
 
-    _pageController.addListener(() {
-      _currentPageIndex.value = _pageController.page?.toInt() ?? 0;
-    });
-
+  _setupCarouselAnimation() {
     _scrollController.addListener(() {
       _currentPageIndex.value = _scrollController.offset <
               _scrollController.position.maxScrollExtent / 2
           ? 0
           : 1;
-    });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _maxScrollValue = _scrollController.position.maxScrollExtent;
-    });
-    super.initState();
-  }
+      if (_stopTimer != null) _stopTimer.cancel();
 
-  _onCenteredScroll() {
-    if (_scrollController.offset < _maxScrollValue / 2) {
-      // _currentPageIndex.value = 0;
-      print('scroll back');
-      if (_scrollController.offset != 0) {
-        _scrollController.animateTo(0,
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut);
-      }
-    } else {
-      // _currentPageIndex.value = 1;
-      print('scroll forward');
-      if (_scrollController.offset != _maxScrollValue) {
-        _scrollController.animateTo(_maxScrollValue,
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut);
-      }
-    }
+      double maxExtent = _scrollController.position.maxScrollExtent;
+
+      _stopTimer = Timer(const Duration(milliseconds: 300), () {
+        _scrollController.animateTo(
+          _scrollController.offset < maxExtent / 2 ? 0 : maxExtent,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+        );
+      });
+    });
   }
 
   @override
   void dispose() {
     _currentPageIndex.dispose();
-    _pageController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        widget.isStarted
-            ? SizedBox(
-                height: 150,
-                child: NotificationListener<ScrollNotification>(
-                  onNotification: (notification) {
-                    if (notification is ScrollEndNotification) {
-                      _onCenteredScroll();
-                    }
-                    return true;
-                  },
-                  child: ListView(
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          widget.isStarted
+              ? SizedBox(
+                  height: 150,
+                  width: double.infinity,
+                  child: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
                     controller: _scrollController,
                     scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width * 0.03),
-                    shrinkWrap: true,
-                    children: [
-                      _borderedBox(child: _challengeContent(14, 12)),
-                      _borderedBox(child: _shieldContent())
-                    ],
-                  ),
-                ),
-              )
-            : _borderedBox(
-                child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Image.asset('assets/images/join_challenge.png'),
-                  const SizedBox(width: 20),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
                       children: [
-                        const Text(
-                          'Keep the streak going!',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        SizedBox(
-                          width: double.infinity,
-                          child: MainButton(
-                              title: 'Join Challenge',
-                              backgroundColor: widget.mainColor,
-                              onPressed: () {},
-                              textStyle: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              )),
-                        )
+                        _borderedBox(child: _challengeContent(18, 12)),
+                        const SizedBox(width: 20),
+                        _borderedBox(child: _shieldContent()),
                       ],
                     ),
-                  )
-                ],
-              )),
-        Align(
-          alignment: Alignment.center,
-          child: ValueListenableBuilder(
-            valueListenable: _currentPageIndex,
-            builder: (_, value, __) => PageIndicator(
-              pageCount: 2,
-              currentPage: value,
-              color: widget.mainColor,
-              selectedWidth: 10,
-              selectHeight: 10,
+                  ),
+                )
+              : _borderedBox(
+                  child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    children: [
+                      Image.asset('assets/images/join_challenge.png'),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Keep the streak going!',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            SizedBox(
+                              width: double.infinity,
+                              child: MainButton(
+                                title: 'Join Challenge',
+                                textStyle: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                backgroundColor: widget.mainColor,
+                                onPressed: widget.onJoinChallenge,
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                )),
+          if (widget.isStarted)
+            Align(
+              alignment: Alignment.center,
+              child: ValueListenableBuilder(
+                valueListenable: _currentPageIndex,
+                builder: (_, value, __) => PageIndicator(
+                  pageCount: 2,
+                  currentPage: value,
+                  color: widget.mainColor,
+                  selectedWidth: 10,
+                  selectHeight: 10,
+                ),
+              ),
             ),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   _borderedBox({required Widget child}) => Container(
-        width: MediaQuery.of(context).size.width * 0.93,
-        margin: const EdgeInsets.only(bottom: 10, right: 10),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 20,
-        ),
-        decoration: BoxDecoration(
-            border: Border.all(width: 1, color: widget.mainColor),
-            borderRadius: BorderRadius.circular(16)),
-        child: child,
-      );
+      width: MediaQuery.of(context).size.width * 0.9,
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+          border: Border.all(width: 1, color: widget.mainColor),
+          borderRadius: BorderRadius.circular(16)),
+      child: child);
 
   _challengeContent(int challengeDays, int currentDay) => Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
             child: Row(
@@ -195,170 +187,100 @@ class _ChallengeSectionState extends State<ChallengeSection> {
             builder: (_, constraints) =>
                 Stack(alignment: Alignment.center, children: [
               SizedBox(
-                height: 40,
+                height: 50,
                 child: LinearPercentIndicator(
                   lineHeight: 12,
                   padding: EdgeInsets.zero,
                   barRadius: const Radius.circular(100),
-                  percent: 12 / 14,
+                  percent: currentDay / 30,
                   progressColor: widget.mainColor,
                   backgroundColor: const Color(0xFF212121).withOpacity(0.08),
                 ),
               ),
-              Positioned(
-                  left: constraints.maxWidth * 7 / 30,
-                  child: Container(
-                    height: 40,
-                    width: 40,
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: widget.mainColor,
-                    ),
-                    child: Container(
-                      decoration:
-                          BoxDecoration(borderRadius: BorderRadius.circular(8)),
-                      child: Column(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(5),
-                                      topRight: Radius.circular(5))),
-                            ),
-                          ),
-                          Expanded(
-                              flex: 3,
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(5),
-                                        bottomRight: Radius.circular(5))),
-                                child: const Center(
-                                  child: Text(
-                                    '7',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ))
-                        ],
-                      ),
-                    ),
-                  )),
-              Positioned(
-                  left: constraints.maxWidth * 14 / 30,
-                  child: Container(
-                    height: 40,
-                    width: 40,
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: widget.mainColor,
-                    ),
-                    child: Container(
-                      decoration:
-                          BoxDecoration(borderRadius: BorderRadius.circular(8)),
-                      child: Column(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(5),
-                                      topRight: Radius.circular(5))),
-                            ),
-                          ),
-                          Expanded(
-                              flex: 3,
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(5),
-                                        bottomRight: Radius.circular(5))),
-                                child: const Center(
-                                  child: Text(
-                                    '14',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ))
-                        ],
-                      ),
-                    ),
-                  )),
-              Positioned(
-                  left: constraints.maxWidth - 40,
-                  child: Container(
-                    height: 40,
-                    width: 40,
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: widget.mainColor,
-                    ),
-                    child: Container(
-                      decoration:
-                          BoxDecoration(borderRadius: BorderRadius.circular(8)),
-                      child: Column(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(5),
-                                      topRight: Radius.circular(5))),
-                            ),
-                          ),
-                          Expanded(
-                              flex: 3,
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(5),
-                                        bottomRight: Radius.circular(5))),
-                                child: const Center(
-                                  child: Text(
-                                    '30',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ))
-                        ],
-                      ),
-                    ),
-                  )),
+              _buildCheckpoint(6, constraints, true),
+              _buildCheckpoint(18, constraints, currentDay >= 6),
+              _buildCheckpoint(30, constraints, currentDay >= 18),
             ]),
           )
         ],
       );
 
+  _buildCheckpoint(int day, BoxConstraints constraints, bool isActive) =>
+      Positioned(
+          left: constraints.maxWidth * day / 30 -
+              (day == 18
+                  ? 20
+                  : day == 30
+                      ? 40
+                      : 10),
+          child: Stack(alignment: Alignment.center, children: [
+            if (isActive)
+              Transform.translate(
+                  offset: const Offset(0, -18),
+                  child: Image.asset(
+                    'assets/images/red_fire.png',
+                    height: 40,
+                  )),
+            Container(
+              height: 40,
+              width: 40,
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: isActive ? widget.mainColor : Colors.grey.shade300,
+              ),
+              child: Container(
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(8)),
+                child: Column(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: isActive ? Colors.red : Colors.grey.shade500,
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(5),
+                                topRight: Radius.circular(5))),
+                      ),
+                    ),
+                    Expanded(
+                        flex: 3,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: isActive
+                                  ? Colors.white
+                                  : Colors.grey.shade400,
+                              borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(5),
+                                  bottomRight: Radius.circular(5))),
+                          child: Center(
+                            child: Text(
+                              day.toString(),
+                              style: TextStyle(
+                                color: isActive
+                                    ? Colors.red
+                                    : Colors.grey.shade600,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ))
+                  ],
+                ),
+              ),
+            ),
+          ]));
+
   _shieldContent() => Row(
         children: [
-          Image.asset('assets/images/shields.png'),
+          Expanded(
+              flex: 2,
+              child: Image.asset('assets/images/sparkling_shield.gif')),
           const SizedBox(width: 10),
           Expanded(
+            flex: 5,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -374,13 +296,14 @@ class _ChallengeSectionState extends State<ChallengeSection> {
                 SizedBox(
                     width: double.infinity,
                     child: MainButton(
-                        title: 'Join Challenge',
-                        backgroundColor: const Color(0xFF39ACF0),
-                        textStyle: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        onPressed: () {}))
+                      title: 'Use Now',
+                      backgroundColor: widget.shieldColor,
+                      onPressed: widget.onUseShield,
+                      textStyle: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ))
               ],
             ),
           )
