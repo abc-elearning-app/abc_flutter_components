@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/streak/widgets/challenge_section.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/streak/widgets/general_section.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/streak/widgets/popup.dart';
@@ -11,6 +9,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 class StreakScreen extends StatefulWidget {
   final bool isStarted;
+  final bool refillShield;
   final List<DateTime> shieldedDays;
 
   final DateTime? rangeStartDate;
@@ -26,6 +25,7 @@ class StreakScreen extends StatefulWidget {
   const StreakScreen({
     super.key,
     required this.isStarted,
+    required this.refillShield,
     required this.shieldedDays,
     this.rangeStartDate,
     this.rangeEndDate,
@@ -41,11 +41,11 @@ class StreakScreen extends StatefulWidget {
 }
 
 class _StreakScreenState extends State<StreakScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
+  // Table calendar data
   CalendarFormat _calendarFormat = CalendarFormat.month;
   final RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOn;
 
-  // Can be toggled on/off by long pressing a date
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
@@ -57,26 +57,59 @@ class _StreakScreenState extends State<StreakScreen>
 
   late GifController _gifController;
 
+  // Other data
+  late ValueNotifier<ChallengeBoxType> _challengeBoxType;
+  late AnimationController _darkenController;
+  late Animation<double> _darkenAnimation;
+
   @override
   void initState() {
     kToday = DateTime.now();
     kFirstDay = DateTime(kToday.year - 10, kToday.month, kToday.day);
     kLastDay = DateTime(kToday.year + 10, kToday.month, kToday.day);
-
     _gifController = GifController(vsync: this);
 
-    if (widget.rangeStartDate == null || widget.rangeEndDate == null) {
+    if (widget.rangeStartDate != null && widget.rangeEndDate != null) {
       dayStreak =
           widget.rangeEndDate!.difference(widget.rangeStartDate!).inDays;
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Future.delayed(const Duration(milliseconds: 300), () {
-        _joinChallengePopUp(context);
-      });
+    _challengeBoxType = ValueNotifier(widget.isStarted
+        ? ChallengeBoxType.started
+        : ChallengeBoxType.notStarted);
+
+    _darkenController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    _darkenAnimation =
+        Tween<double>(begin: 0, end: 0.5).animate(_darkenController);
+    _darkenController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        Future.delayed(
+            const Duration(seconds: 2), () => _darkenController.reverse());
+      }
+    });
+
+    // Display popup
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!widget.isStarted) {
+        Future.delayed(const Duration(milliseconds: 500),
+                () => _showPopUp(context, false));
+      } else if (widget.refillShield) {
+        Future.delayed(
+            const Duration(milliseconds: 500), () => _showPopUp(context, true));
+      }
     });
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _challengeBoxType.dispose();
+    _darkenController.dispose();
+    super.dispose();
   }
 
   @override
@@ -98,29 +131,28 @@ class _StreakScreenState extends State<StreakScreen>
                 dayStreak: dayStreak,
               ),
 
-              // Title
               const Padding(
-                padding: EdgeInsets.only(left: 25, top: 20, bottom: 10),
-                child: Text(
-                  'Streak Challenge',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                ),
-              ),
+                  padding: EdgeInsets.only(left: 25, top: 20, bottom: 10),
+                  child: Text('Streak Challenge',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                      ))),
 
               // Challenge boxes
-              ChallengeSection(
-                isStarted: widget.isStarted,
-                mainColor: widget.progressColor,
-                shieldColor: widget.shieldColor,
-                onJoinChallenge: widget.onJoinChallenge,
-                onUseShield: () {
-                  widget.onUseShield;
-                  Future.delayed(
-                      const Duration(milliseconds: 300),
-                      () => _gifController
-                          .forward()
-                          .then((_) => _gifController.reset()));
-                },
+              ValueListenableBuilder(
+                valueListenable: _challengeBoxType,
+                builder: (_, value, __) => ChallengeSection(
+                  type: value,
+                  dayStreak: dayStreak,
+                  mainColor: widget.progressColor,
+                  shieldColor: widget.shieldColor,
+                  onJoinChallenge: () {
+                    _challengeBoxType.value = ChallengeBoxType.justStart;
+                    widget.onJoinChallenge;
+                  },
+                  onUseShield: () => _handleUseShield(),
+                ),
               ),
 
               // Main table calendar
@@ -175,18 +207,21 @@ class _StreakScreenState extends State<StreakScreen>
         ),
       ),
       IgnorePointer(
-        child: Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: Colors.black.withOpacity(0),
-            child: Center(
-                child: Gif(
-              image: const AssetImage('assets/images/use_shield.gif'),
-              controller: _gifController,
-              onFetchCompleted: () {
-                _gifController.reset();
-              },
-            ))),
+        child: AnimatedBuilder(
+          animation: _darkenAnimation,
+          builder: (_, __) => Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: Colors.black.withOpacity(_darkenAnimation.value),
+              child: Center(
+                  child: Gif(
+                image: const AssetImage('assets/images/merging_shield.gif'),
+                controller: _gifController,
+                onFetchCompleted: () {
+                  _gifController.reset();
+                },
+              ))),
+        ),
       )
     ]);
   }
@@ -205,7 +240,7 @@ class _StreakScreenState extends State<StreakScreen>
         ),
       );
 
-  _joinChallengePopUp(BuildContext context) {
+  _showPopUp(BuildContext context, bool isShield) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -214,10 +249,29 @@ class _StreakScreenState extends State<StreakScreen>
         StreakPopup(
           mainColor: widget.mainColor,
           shieldColor: widget.shieldColor,
-          isShield: false,
-          onClick: () {},
+          isShield: isShield,
+          onClick: () {
+            if (isShield) {
+              Future.delayed(
+                  const Duration(milliseconds: 300), () => _handleUseShield());
+            } else {
+              Future.delayed(const Duration(milliseconds: 300),
+                  () => _challengeBoxType.value = ChallengeBoxType.justStart);
+              widget.onJoinChallenge();
+            }
+            Navigator.of(context).pop();
+          },
         )
       ]),
     );
+  }
+
+  _handleUseShield() {
+    // Callback
+    widget.onUseShield;
+
+    _darkenController.forward();
+    Future.delayed(const Duration(milliseconds: 300),
+        () => _gifController.forward().then((_) => _gifController.reset()));
   }
 }

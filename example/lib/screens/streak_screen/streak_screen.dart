@@ -10,23 +10,20 @@ class TestStreakScreen extends StatefulWidget {
 
 class _TestStreakScreenState extends State<TestStreakScreen> {
   bool isStarted = false;
+  bool refillShield = false;
 
   @override
   Widget build(BuildContext context) {
     return StreakScreen(
-      isStarted: isStarted,
-      rangeStartDate: DateTime(2024, 5, 28),
-      rangeEndDate: DateTime(2024, 6, 12),
-      shieldedDays: [
-        DateTime.now(),
-        DateTime.now().add(const Duration(days: 5)),
-      ],
-      onUseShield: () => print('Shield used'),
-      onJoinChallenge: () {
-        setState(() {
-          isStarted = !isStarted;
-        });
-      },
-    );
+        isStarted: isStarted,
+        refillShield: refillShield,
+        rangeStartDate: DateTime(2024, 6, 12),
+        rangeEndDate: DateTime(2024, 6, 12),
+        shieldedDays: [
+          DateTime.now(),
+          DateTime.now().add(const Duration(days: 5)),
+        ],
+        onUseShield: () => print('Shield used'),
+        onJoinChallenge: () => print('Join Challenge'));
   }
 }

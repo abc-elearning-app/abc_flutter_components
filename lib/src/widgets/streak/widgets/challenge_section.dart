@@ -1,26 +1,31 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/animations/page_animation.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../../../../flutter_abc_jsc_components.dart';
 
+enum ChallengeBoxType { notStarted, started, justStart }
+
 class ChallengeSection extends StatefulWidget {
-  final bool isStarted;
+  final ChallengeBoxType type;
   final Color mainColor;
   final Color shieldColor;
+
+  final int dayStreak;
 
   final void Function() onJoinChallenge;
   final void Function() onUseShield;
 
   const ChallengeSection({
     super.key,
-    required this.isStarted,
+    required this.type,
     required this.mainColor,
     required this.onJoinChallenge,
     required this.onUseShield,
     required this.shieldColor,
+    required this.dayStreak,
   });
 
   @override
@@ -70,87 +75,25 @@ class _ChallengeSectionState extends State<ChallengeSection> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          widget.isStarted
-              ? SizedBox(
-                  height: 150,
-                  width: double.infinity,
-                  child: SingleChildScrollView(
-                    physics: const ClampingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    controller: _scrollController,
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        _borderedBox(child: _challengeContent(18, 12)),
-                        const SizedBox(width: 20),
-                        _borderedBox(child: _shieldContent()),
-                      ],
-                    ),
-                  ),
-                )
-              : _borderedBox(
-                  child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    children: [
-                      Image.asset('assets/images/join_challenge.png'),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Keep the streak going!',
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            SizedBox(
-                              width: double.infinity,
-                              child: MainButton(
-                                title: 'Join Challenge',
-                                textStyle: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                backgroundColor: widget.mainColor,
-                                onPressed: widget.onJoinChallenge,
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                )),
-          if (widget.isStarted)
-            Align(
-              alignment: Alignment.center,
-              child: ValueListenableBuilder(
-                valueListenable: _currentPageIndex,
-                builder: (_, value, __) => PageIndicator(
-                  pageCount: 2,
-                  currentPage: value,
-                  color: widget.mainColor,
-                  selectedWidth: 10,
-                  selectHeight: 10,
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
+    return SizedBox(width: double.infinity, child: _getChild());
+  }
+
+  _getChild() {
+    switch (widget.type) {
+      case ChallengeBoxType.notStarted:
+        return _joinChallengeBox();
+      case ChallengeBoxType.started:
+        return _streakBox();
+      case ChallengeBoxType.justStart:
+        return PageAnimation(
+          prevChild: _joinChallengeBox(),
+          nextChild: _streakBox(),
+        );
+    }
   }
 
   _borderedBox({required Widget child}) => Container(
-      width: MediaQuery.of(context).size.width * 0.9,
+      width: MediaQuery.of(context).size.width * 0.91,
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
@@ -158,52 +101,55 @@ class _ChallengeSectionState extends State<ChallengeSection> {
           borderRadius: BorderRadius.circular(16)),
       child: child);
 
-  _challengeContent(int challengeDays, int currentDay) => Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$challengeDays Day Challenge',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Text(
-                  'Day $currentDay Of $challengeDays',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          LayoutBuilder(
-            builder: (_, constraints) =>
-                Stack(alignment: Alignment.center, children: [
-              SizedBox(
-                height: 50,
-                child: LinearPercentIndicator(
-                  lineHeight: 12,
-                  padding: EdgeInsets.zero,
-                  barRadius: const Radius.circular(100),
-                  percent: currentDay / 30,
-                  progressColor: widget.mainColor,
-                  backgroundColor: const Color(0xFF212121).withOpacity(0.08),
+  _challengeContent(int currentDay) {
+    int challengeDay = currentDay < 6 ? 6 : currentDay < 18 ? 18 : 30;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$challengeDay Day Challenge',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-              _buildCheckpoint(6, constraints, true),
-              _buildCheckpoint(18, constraints, currentDay >= 6),
-              _buildCheckpoint(30, constraints, currentDay >= 18),
-            ]),
-          )
-        ],
-      );
+              Text(
+                'Day $currentDay Of $challengeDay',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+        LayoutBuilder(
+          builder: (_, constraints) =>
+              Stack(alignment: Alignment.center, children: [
+            SizedBox(
+              height: 50,
+              child: LinearPercentIndicator(
+                lineHeight: 12,
+                padding: EdgeInsets.zero,
+                barRadius: const Radius.circular(100),
+                percent: currentDay / 30,
+                progressColor: widget.mainColor,
+                backgroundColor: Colors.black.withOpacity(0.08),
+              ),
+            ),
+            _buildCheckpoint(6, constraints, true),
+            _buildCheckpoint(18, constraints, currentDay >= 6),
+            _buildCheckpoint(30, constraints, currentDay >= 18),
+          ]),
+        )
+      ],
+    );
+  }
 
   _buildCheckpoint(int day, BoxConstraints constraints, bool isActive) =>
       Positioned(
@@ -307,6 +253,84 @@ class _ChallengeSectionState extends State<ChallengeSection> {
               ],
             ),
           )
+        ],
+      );
+
+  _joinChallengeBox() => Container(
+        height: 160,
+        padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+        child: _borderedBox(
+            child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            children: [
+              Image.asset('assets/images/join_challenge.png'),
+              const SizedBox(width: 20),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Keep the streak going!',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: MainButton(
+                        title: 'Join Challenge',
+                        textStyle: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        backgroundColor: widget.mainColor,
+                        onPressed: widget.onJoinChallenge,
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        )),
+      );
+
+  _streakBox() => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 150,
+            width: double.infinity,
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  _borderedBox(child: _challengeContent(widget.dayStreak)),
+                  const SizedBox(width: 15),
+                  _borderedBox(child: _shieldContent()),
+                ],
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: ValueListenableBuilder(
+              valueListenable: _currentPageIndex,
+              builder: (_, value, __) => PageIndicator(
+                pageCount: 2,
+                currentPage: value,
+                color: widget.mainColor,
+                selectedWidth: 10,
+                selectHeight: 10,
+              ),
+            ),
+          ),
         ],
       );
 }
