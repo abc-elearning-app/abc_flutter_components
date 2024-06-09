@@ -779,10 +779,10 @@ packages:
     dependency: transitive
     description:
       name: rive
-      sha256: "03bae056e67a5c98f9523c34f8ea63c15b323426a7e8d76d7ebb93066d4df6dc"
+      sha256: "24868d5e5ad7e7937dbaaed508e48ca96d164fb4fbeac3400be119596588ab72"
       url: "https://pub.dev"
     source: hosted
-    version: "0.13.5"
+    version: "0.13.7"
   rive_common:
     dependency: transitive
     description:
@@ -949,11 +949,11 @@ packages:
     source: hosted
     version: "3.1.0+1"
   table_calendar:
-    dependency: transitive
+    dependency: "direct main"
     description:
       path: "."
       ref: new_version
-      resolved-ref: "802fba408cb472b03e910741162c0dd592f48fc4"
+      resolved-ref: "19af998b0f26073a15eea124a2bc4afb03e6be71"
       url: "https://github.com/tienanh306201z/table_calendar.git"
     source: git
     version: "3.0.8"

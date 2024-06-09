@@ -62,6 +62,8 @@ class _StreakScreenState extends State<StreakScreen>
   late AnimationController _darkenController;
   late Animation<double> _darkenAnimation;
 
+  late ValueNotifier<OpenType> _openType;
+
   @override
   void initState() {
     kToday = DateTime.now();
@@ -91,11 +93,13 @@ class _StreakScreenState extends State<StreakScreen>
       }
     });
 
+    _openType = ValueNotifier(OpenType.normal);
+
     // Display popup
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!widget.isStarted) {
         Future.delayed(const Duration(milliseconds: 500),
-                () => _showPopUp(context, false));
+            () => _showPopUp(context, false));
       } else if (widget.refillShield) {
         Future.delayed(
             const Duration(milliseconds: 500), () => _showPopUp(context, true));
@@ -109,6 +113,7 @@ class _StreakScreenState extends State<StreakScreen>
   void dispose() {
     _challengeBoxType.dispose();
     _darkenController.dispose();
+    _openType.dispose();
     super.dispose();
   }
 
@@ -145,6 +150,7 @@ class _StreakScreenState extends State<StreakScreen>
                 builder: (_, value, __) => ChallengeSection(
                   type: value,
                   dayStreak: dayStreak,
+                  isShieldUsed: _checkIsShieldUsed(),
                   mainColor: widget.progressColor,
                   shieldColor: widget.shieldColor,
                   onJoinChallenge: () {
@@ -158,48 +164,55 @@ class _StreakScreenState extends State<StreakScreen>
               // Main table calendar
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: TableCalendar(
-                  shieldedDays: widget.shieldedDays,
-                  headerStyle: const HeaderStyle(
-                    formatButtonVisible: false,
-                    titleCentered: true,
-                  ),
-                  calendarStyle: CalendarStyle(
-                    withinRangeTextStyle:
-                        TextStyle(fontSize: 16, color: widget.progressColor),
-                    rangeStartTextStyle:
-                        TextStyle(fontSize: 16, color: widget.progressColor),
-                    rangeHighlightColor: widget.progressColor.withOpacity(0.2),
-                    rangeStartDecoration: BoxDecoration(
-                      color: widget.progressColor.withOpacity(0.2),
-                      borderRadius: const BorderRadius.horizontal(
-                        left: Radius.circular(60),
-                        right: Radius.zero,
+                child: ValueListenableBuilder(
+                  valueListenable: _openType,
+                  builder: (_, value, __) => TableCalendar(
+                    key: GlobalKey(),
+                    shieldAnimationDelay: 150,
+                    openType: value,
+                    shieldedDays: widget.shieldedDays,
+                    headerStyle: const HeaderStyle(
+                      formatButtonVisible: false,
+                      titleCentered: true,
+                    ),
+                    calendarStyle: CalendarStyle(
+                      withinRangeTextStyle:
+                          TextStyle(fontSize: 16, color: widget.progressColor),
+                      rangeStartTextStyle:
+                          TextStyle(fontSize: 16, color: widget.progressColor),
+                      rangeHighlightColor:
+                          widget.progressColor.withOpacity(0.2),
+                      rangeStartDecoration: BoxDecoration(
+                        color: widget.progressColor.withOpacity(0.2),
+                        borderRadius: const BorderRadius.horizontal(
+                          left: Radius.circular(60),
+                          right: Radius.zero,
+                        ),
+                      ),
+                      rangeEndDecoration: BoxDecoration(
+                        color: widget.progressColor,
+                        borderRadius: BorderRadius.circular(60),
                       ),
                     ),
-                    rangeEndDecoration: BoxDecoration(
-                      color: widget.progressColor,
-                      borderRadius: BorderRadius.circular(60),
-                    ),
+                    firstDay: kFirstDay,
+                    lastDay: kLastDay,
+                    focusedDay: _focusedDay,
+                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                    rangeStartDay: widget.rangeStartDate,
+                    rangeEndDay: widget.rangeEndDate,
+                    calendarFormat: _calendarFormat,
+                    rangeSelectionMode: _rangeSelectionMode,
+                    onDaySelected: (selectedDay, focusedDay) {},
+                    onRangeSelected: (start, end, focusedDay) {},
+                    onPageChanged: (focusedDay) => _focusedDay = focusedDay,
+                    onFormatChanged: (format) {
+                      if (_calendarFormat != format) {
+                        setState(() {
+                          _calendarFormat = format;
+                        });
+                      }
+                    },
                   ),
-                  firstDay: kFirstDay,
-                  lastDay: kLastDay,
-                  focusedDay: _focusedDay,
-                  selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                  rangeStartDay: widget.rangeStartDate,
-                  rangeEndDay: widget.rangeEndDate,
-                  calendarFormat: _calendarFormat,
-                  rangeSelectionMode: _rangeSelectionMode,
-                  onDaySelected: (selectedDay, focusedDay) {},
-                  onRangeSelected: (start, end, focusedDay) {},
-                  onPageChanged: (focusedDay) => _focusedDay = focusedDay,
-                  onFormatChanged: (format) {
-                    if (_calendarFormat != format) {
-                      setState(() {
-                        _calendarFormat = format;
-                      });
-                    }
-                  },
                 ),
               ),
             ],
@@ -271,7 +284,24 @@ class _StreakScreenState extends State<StreakScreen>
     widget.onUseShield;
 
     _darkenController.forward();
-    Future.delayed(const Duration(milliseconds: 300),
-        () => _gifController.forward().then((_) => _gifController.reset()));
+    Future.delayed(
+        const Duration(milliseconds: 500),
+        () => _gifController.forward().then((_) {
+              _gifController.reset();
+            }));
+    Future.delayed(const Duration(milliseconds: 2000), () {
+      _openType.value = OpenType.useShield;
+    });
+  }
+
+  _checkIsShieldUsed() {
+    final currentDate = DateTime.now();
+    for (DateTime date in widget.shieldedDays) {
+      if (date.day == currentDate.day && date.month == currentDate.month && date.year == currentDate.year) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

@@ -42,6 +42,11 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+  table_calendar:
+    git:
+      url: https://github.com/tienanh306201z/table_calendar.git
+      ref: new_version
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -15,6 +15,8 @@ class ChallengeSection extends StatefulWidget {
 
   final int dayStreak;
 
+  final bool isShieldUsed;
+
   final void Function() onJoinChallenge;
   final void Function() onUseShield;
 
@@ -26,6 +28,7 @@ class ChallengeSection extends StatefulWidget {
     required this.onUseShield,
     required this.shieldColor,
     required this.dayStreak,
+    required this.isShieldUsed,
   });
 
   @override
@@ -37,11 +40,14 @@ class _ChallengeSectionState extends State<ChallengeSection> {
   late ScrollController _scrollController;
   Timer _stopTimer = Timer(const Duration(), () {});
 
+  bool isShieldUsed = false;
+
   @override
   void initState() {
     _currentPageIndex = ValueNotifier(0);
     _scrollController = ScrollController();
     _setupCarouselAnimation();
+    isShieldUsed = widget.isShieldUsed;
     super.initState();
   }
 
@@ -102,7 +108,11 @@ class _ChallengeSectionState extends State<ChallengeSection> {
       child: child);
 
   _challengeContent(int currentDay) {
-    int challengeDay = currentDay < 6 ? 6 : currentDay < 18 ? 18 : 30;
+    int challengeDay = currentDay < 6
+        ? 6
+        : currentDay < 18
+            ? 18
+            : 30;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -241,13 +251,19 @@ class _ChallengeSectionState extends State<ChallengeSection> {
                 ),
                 SizedBox(
                     width: double.infinity,
-                    child: MainButton(
-                      title: 'Use Now',
-                      backgroundColor: widget.shieldColor,
-                      onPressed: widget.onUseShield,
-                      textStyle: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
+                    child: StatefulBuilder(
+                      builder: (_, setState) => MainButton(
+                        title: isShieldUsed ? 'Used' : 'Use Now',
+                        disabled: isShieldUsed,
+                        backgroundColor: widget.shieldColor,
+                        onPressed: () {
+                          widget.onUseShield.call();
+                          setState(() => isShieldUsed = true);
+                        },
+                        textStyle: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ))
               ],
