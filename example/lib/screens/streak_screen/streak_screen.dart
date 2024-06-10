@@ -10,7 +10,7 @@ class TestStreakScreen extends StatefulWidget {
 }
 
 class _TestStreakScreenState extends State<TestStreakScreen> {
-  bool isStarted = true;
+  bool isStarted = false;
   bool refillShield = false;
 
   @override
@@ -18,7 +18,7 @@ class _TestStreakScreenState extends State<TestStreakScreen> {
     return StreakScreen(
         isStarted: isStarted,
         refillShield: refillShield,
-        rangeStartDate: DateTime(2024, 6, 1),
+        rangeStartDate: DateTime.now(),
         rangeEndDate: DateTime.now(),
         shieldedDays: [
           // DateTime.now(),

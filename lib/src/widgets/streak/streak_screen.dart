@@ -93,7 +93,8 @@ class _StreakScreenState extends State<StreakScreen>
       }
     });
 
-    _openType = ValueNotifier(OpenType.normal);
+    _openType =
+        ValueNotifier(widget.isStarted ? OpenType.normal : OpenType.notStarted);
 
     // Display popup
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -268,8 +269,10 @@ class _StreakScreenState extends State<StreakScreen>
               Future.delayed(
                   const Duration(milliseconds: 300), () => _handleUseShield());
             } else {
-              Future.delayed(const Duration(milliseconds: 300),
-                  () => _challengeBoxType.value = ChallengeBoxType.justStart);
+              Future.delayed(const Duration(milliseconds: 300), () {
+                _challengeBoxType.value = ChallengeBoxType.justStart;
+                _openType.value = OpenType.joinChallenge;
+              });
               widget.onJoinChallenge();
             }
             Navigator.of(context).pop();
@@ -297,7 +300,9 @@ class _StreakScreenState extends State<StreakScreen>
   _checkIsShieldUsed() {
     final currentDate = DateTime.now();
     for (DateTime date in widget.shieldedDays) {
-      if (date.day == currentDate.day && date.month == currentDate.month && date.year == currentDate.year) {
+      if (date.day == currentDate.day &&
+          date.month == currentDate.month &&
+          date.year == currentDate.year) {
         return true;
       }
     }
