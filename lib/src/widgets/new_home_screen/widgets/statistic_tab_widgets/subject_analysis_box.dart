@@ -72,8 +72,10 @@ class SubjectAnalysisBox extends StatelessWidget {
                 // Dropdown button
                 SvgPicture.asset(
                   'assets/images/chevron_down.svg',
-                  colorFilter:
-                      const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                  color: Colors.black,
+                  colorBlendMode: BlendMode.srcIn,
+                  // colorFilter:
+                  //     const ColorFilter.mode(Colors.black, BlendMode.srcIn),
                   height: 10,
                 )
               ],

@@ -38,7 +38,7 @@ class ChallengeSection extends StatefulWidget {
 class _ChallengeSectionState extends State<ChallengeSection> {
   late ValueNotifier<int> _currentPageIndex;
   late ScrollController _scrollController;
-  Timer _stopTimer = Timer(const Duration(), () {});
+  Timer? _stopTimer;
 
   bool isShieldUsed = false;
 
@@ -58,7 +58,7 @@ class _ChallengeSectionState extends State<ChallengeSection> {
           ? 0
           : 1;
 
-      if (_stopTimer != null) _stopTimer.cancel();
+      _stopTimer?.cancel();
 
       double maxExtent = _scrollController.position.maxScrollExtent;
 

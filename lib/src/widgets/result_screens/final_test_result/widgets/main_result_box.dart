@@ -200,11 +200,13 @@ class MainResultBox extends StatelessWidget {
             SvgPicture.asset(
               'assets/images/banner_shape.svg',
               height: 50,
-              colorFilter: ColorFilter.mode(
-                  progress >= 90
-                      ? correctColor
-                      : Color.lerp(incorrectColor, Colors.white, 0.8)!,
-                  BlendMode.srcIn),
+              color: progress >= 90 ? correctColor : Color.lerp(incorrectColor, Colors.white, 0.8)!,
+              colorBlendMode: BlendMode.srcIn,
+              // colorFilter: ColorFilter.mode(
+              //     progress >= 90
+              //         ? correctColor
+              //         : Color.lerp(incorrectColor, Colors.white, 0.8)!,
+              //     BlendMode.srcIn),
             ),
             Text(
               progress >= 90 ? 'Excellent Performance!' : 'Not Enough To Pass!',
@@ -235,8 +237,10 @@ class MainResultBox extends StatelessWidget {
                       setState(() => isShowingDetail = !isShowingDetail),
                   child: SvgPicture.asset(
                     'assets/images/info_icon.svg',
-                    colorFilter: const ColorFilter.mode(
-                        Color(0xFF212121), BlendMode.srcIn),
+                    color: Color(0xFF212121),
+                    colorBlendMode: BlendMode.srcIn,
+                    // colorFilter: const ColorFilter.mode(
+                    //     Color(0xFF212121), BlendMode.srcIn),
                   ),
                 )
               ]),

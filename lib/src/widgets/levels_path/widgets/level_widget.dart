@@ -240,8 +240,9 @@ class _LevelWidgetState extends State<LevelWidget>
                   backgroundColor: _getMainColor(),
                   child: SvgPicture.asset(
                     widget.levelData.icon,
-                    colorFilter:
-                        ColorFilter.mode(_getIconColor(), BlendMode.srcIn),
+                    color: _getIconColor(),
+                    colorBlendMode: BlendMode.srcIn,
+                    // colorFilter: ColorFilter.mode(_getIconColor(), BlendMode.srcIn),
                   ),
                 ),
               ),
