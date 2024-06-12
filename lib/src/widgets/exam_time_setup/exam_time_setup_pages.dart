@@ -1,19 +1,17 @@
 import 'pages/select_exam_date.dart';
 import 'pages/select_reminder_time_page.dart';
 import 'pages/start_diagnostic_page.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class ExamTimeSelectPages extends StatefulWidget {
-  final List<Widget> pageImages;
+class ExamTimeSetupPages extends StatefulWidget {
+  final List<String> pageImages;
+  final bool isDarkMode;
   final Color upperBackgroundColor;
   final Color lowerBackgroundColor;
   final Color mainColor;
-  final Color appBarColor;
+  final Color secondaryColor;
   final Color optionBoxFillColor;
   final Color mainButtonTextColor;
-  final Color notNowButtonTextColor;
-  final bool showBackButton;
 
   // Callbacks
   final void Function() onStartDiagnostic;
@@ -21,63 +19,67 @@ class ExamTimeSelectPages extends StatefulWidget {
   final void Function(DateTime selectedDate) onSelectExamDate;
   final void Function(TimeOfDay selectedReminderTime) onSelectReminderTime;
 
-  const ExamTimeSelectPages(
-      {super.key,
-      required this.pageImages,
-      this.upperBackgroundColor = const Color(0xFFEEFFFA),
-      this.lowerBackgroundColor = Colors.white,
-      this.mainColor = const Color(0xFF579E89),
-      this.mainButtonTextColor = Colors.white,
-      this.notNowButtonTextColor = Colors.black,
-      this.showBackButton = false,
-      required this.onStartDiagnostic,
-      required this.onSkipDiagnostic,
-      required this.onSelectExamDate,
-      required this.onSelectReminderTime,
-      this.appBarColor = Colors.black,
-      this.optionBoxFillColor = Colors.white});
+  const ExamTimeSetupPages({
+    super.key,
+    required this.pageImages,
+    this.upperBackgroundColor = const Color(0xFFF5F4EE),
+    this.lowerBackgroundColor = Colors.white,
+    this.mainColor = const Color(0xFFE3A651),
+    this.secondaryColor = const Color(0xFF7C6F5B),
+    this.mainButtonTextColor = Colors.white,
+    this.optionBoxFillColor = Colors.white,
+    required this.onStartDiagnostic,
+    required this.onSkipDiagnostic,
+    required this.onSelectExamDate,
+    required this.onSelectReminderTime,
+    required this.isDarkMode,
+  });
 
   @override
-  State<ExamTimeSelectPages> createState() => _ExamTimeSelectPagesState();
+  State<ExamTimeSetupPages> createState() => _ExamTimeSetupPagesState();
 }
 
-class _ExamTimeSelectPagesState extends State<ExamTimeSelectPages> {
-  final List<Widget> tabList = [];
-  final pageController = PageController(keepPage: true);
-  final pageIndex = ValueNotifier(-1);
+class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
+  late List<Widget> tabList;
+  late PageController pageController;
+  late ValueNotifier<int> pageIndex;
 
   // To store selected date and time at multiple screen
   Map<String, dynamic> selectedTime = {};
 
   @override
   void initState() {
-    tabList.addAll([
+    pageController = PageController(keepPage: true);
+    pageIndex = ValueNotifier(-1);
+
+    tabList = [
       SelectExamDatePage(
-        showBackButton: widget.showBackButton,
         title: 'When Is Your Exam ?',
+        isDarkMode: widget.isDarkMode,
         image: widget.pageImages[0],
         mainColor: widget.mainColor,
-        appBarColor: widget.appBarColor,
+        secondaryColor: widget.secondaryColor,
         optionBoxFillColor: widget.optionBoxFillColor,
         pageController: pageController,
         selectedTime: selectedTime,
         pageIndex: pageIndex,
       ),
       SelectReminderTimePage(
-        showBackButton: widget.showBackButton,
         title: 'Would You Like To Set Study Reminders?',
+        isDarkMode: widget.isDarkMode,
         image: widget.pageImages[1],
         selectedTime: selectedTime,
         pageController: pageController,
       ),
       StartDiagnosticPage(
-          pageController: pageController,
-          showBackButton: widget.showBackButton,
-          title: 'Diagnostic Test',
-          subTitle:
-              'Take our diagnostic test to assess your current level and get a personalized study plan.',
-          image: widget.pageImages[1])
-    ]);
+        pageController: pageController,
+        isDarkMode: widget.isDarkMode,
+        title: 'Diagnostic Test',
+        subTitle:
+            'Take our diagnostic test to assess your current level and get a personalized study plan.',
+        image: widget.pageImages[1],
+      )
+    ];
 
     // Initial selected time
     selectedTime['exam_date'] = DateTime.now().toIso8601String();
@@ -110,10 +112,15 @@ class _ExamTimeSelectPagesState extends State<ExamTimeSelectPages> {
           Expanded(
             flex: 4,
             child: Stack(alignment: Alignment.center, children: [
-              Container(color: widget.lowerBackgroundColor),
+              Container(
+                  color: widget.isDarkMode
+                      ? Colors.grey.shade800
+                      : widget.lowerBackgroundColor),
               Container(
                 decoration: BoxDecoration(
-                    color: widget.upperBackgroundColor,
+                    color: widget.isDarkMode
+                        ? Colors.black
+                        : widget.upperBackgroundColor,
                     borderRadius: const BorderRadius.only(
                         bottomRight: Radius.circular(50))),
               ),
@@ -137,10 +144,15 @@ class _ExamTimeSelectPagesState extends State<ExamTimeSelectPages> {
                     duration: const Duration(milliseconds: 200),
                     child: Stack(children: [
                       // Background
-                      Container(color: widget.upperBackgroundColor),
+                      Container(
+                          color: widget.isDarkMode
+                              ? Colors.black
+                              : widget.upperBackgroundColor),
                       Container(
                         decoration: BoxDecoration(
-                            color: widget.lowerBackgroundColor,
+                            color: widget.isDarkMode
+                                ? Colors.grey.shade800
+                                : widget.lowerBackgroundColor,
                             borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(50))),
                       ),
@@ -177,7 +189,11 @@ class _ExamTimeSelectPagesState extends State<ExamTimeSelectPages> {
                   borderRadius: BorderRadius.circular(15))),
           child: Text(
             _getButtonText(pageIndexValue),
-            style: TextStyle(fontSize: 20, color: widget.mainButtonTextColor),
+            style: TextStyle(
+              fontSize: 20,
+              color: widget.mainButtonTextColor,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       );
@@ -198,7 +214,7 @@ class _ExamTimeSelectPagesState extends State<ExamTimeSelectPages> {
             child: Text(
               'Not Now',
               style: TextStyle(
-                  color: widget.notNowButtonTextColor,
+                  color: widget.isDarkMode ? Colors.white : Colors.black,
                   fontSize: 18,
                   fontWeight: FontWeight.w300),
             )),

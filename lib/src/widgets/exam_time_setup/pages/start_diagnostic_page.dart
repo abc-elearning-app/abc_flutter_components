@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 class StartDiagnosticPage extends StatelessWidget {
   final String title;
   final String subTitle;
-  final Widget image;
-  final bool showBackButton;
+  final String image;
+  final bool isDarkMode;
   final PageController pageController;
 
   const StartDiagnosticPage(
@@ -14,8 +14,8 @@ class StartDiagnosticPage extends StatelessWidget {
       required this.title,
       required this.image,
       required this.subTitle,
-      required this.showBackButton,
-      required this.pageController});
+      required this.pageController,
+      required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -23,46 +23,30 @@ class StartDiagnosticPage extends StatelessWidget {
         child: Column(
       children: [
         // Title
-        Stack(alignment: Alignment.center, children: [
-          if (showBackButton)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: IconButton(
-                  onPressed: () => pageController.previousPage(
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.easeInOut),
-                  icon: const Icon(
-                    Icons.chevron_left,
-                    size: 30,
-                  )),
-            ),
-          Padding(
+        Padding(
             padding: const EdgeInsets.all(20),
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ]),
+            child: Text(title,
+                style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: isDarkMode ? Colors.white : Colors.black),
+                textAlign: TextAlign.center)),
 
         // Image
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 40),
-          child: image,
-        ),
+            padding: const EdgeInsets.symmetric(vertical: 40),
+            child: Image.asset(image)),
 
         // Subtitle
         Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Text(
-              subTitle,
-              style: TextStyle(fontSize: 18, color: Colors.grey.shade700),
-              textAlign: TextAlign.center,
-            ))
+            child: Text(subTitle,
+                style: TextStyle(
+                    fontSize: 18,
+                    color: isDarkMode
+                        ? Colors.white.withOpacity(0.6)
+                        : Colors.black),
+                textAlign: TextAlign.center))
       ],
     ));
   }

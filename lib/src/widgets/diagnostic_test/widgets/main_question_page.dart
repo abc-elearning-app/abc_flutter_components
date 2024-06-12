@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/animations/blur_effect.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/buttons/toggle_button.dart';
@@ -44,6 +45,8 @@ class MainQuestionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Column(
       children: [
         Expanded(
@@ -51,7 +54,7 @@ class MainQuestionPage extends StatelessWidget {
             child: Column(
               children: [
                 // Question
-                _buildQuestionBox(),
+                _buildQuestionBox(isDarkMode),
 
                 StatefulBuilder(
                   builder: (_, setState) => Column(
@@ -62,8 +65,12 @@ class MainQuestionPage extends StatelessWidget {
                           physics: const NeverScrollableScrollPhysics(),
                           padding: const EdgeInsets.only(top: 15),
                           itemCount: questionData.answers.length,
-                          itemBuilder: (_, index) =>
-                              _buildAnswer(context, index, setState)),
+                          itemBuilder: (_, index) => _buildAnswer(
+                                context,
+                                index,
+                                isDarkMode,
+                                setState,
+                              )),
 
                       // Explanation
                       _buildExplanation()
@@ -76,38 +83,46 @@ class MainQuestionPage extends StatelessWidget {
         ),
 
         // Bookmark, like and dislike buttons
-        _buildOptions()
+        _buildOptions(padding: const EdgeInsets.symmetric(vertical: 10))
       ],
     );
   }
 
-  Widget _buildQuestionBox() => Container(
+  Widget _buildQuestionBox(bool isDarkMode) => Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         padding:
-            const EdgeInsets.only(left: 15, top: 15, bottom: 15, right: 30),
+            const EdgeInsets.only(left: 15, top: 15, bottom: 15, right: 10),
         width: double.infinity,
         decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDarkMode ? Colors.white.withOpacity(0.16) : Colors.white,
             borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.grey.shade300,
-                  spreadRadius: 1,
-                  offset: const Offset(0, 3),
-                  blurRadius: 5)
-            ]),
+            boxShadow: !isDarkMode
+                ? [
+                    BoxShadow(
+                        color: Colors.grey.shade300,
+                        spreadRadius: 1,
+                        offset: const Offset(0, 3),
+                        blurRadius: 5)
+                  ]
+                : null),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('NEW QUESTION',
-                style: TextStyle(
-                    color: const Color(0xFF212121).withOpacity(0.52),
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('NEW QUESTION',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Transform.scale(scale: 0.8, child: _buildOptions())
+              ],
+            ),
             const SizedBox(height: 10),
             Text(questionData.question,
-                style:
-                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 16))
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: isDarkMode ? Colors.white : Colors.black,
+                  fontSize: 18,
+                ))
           ],
         ),
       );
@@ -115,6 +130,7 @@ class MainQuestionPage extends StatelessWidget {
   Widget _buildAnswer(
     BuildContext context,
     int answerIndex,
+    bool isDarkMode,
     void Function(void Function() action) setState,
   ) {
     final currentAnswer = questionData.answers[answerIndex];
@@ -133,14 +149,25 @@ class MainQuestionPage extends StatelessWidget {
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: _answerBackgroundColor(answerIndex, currentAnswer.isCorrect),
+            color: _answerBackgroundColor(
+              isDarkMode,
+              answerIndex,
+              currentAnswer.isCorrect,
+            ),
             border: _answerBorder(answerIndex, currentAnswer.isCorrect)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               currentAnswer.content,
-              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+              style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                  color: _answerTextColor(
+                    isDarkMode,
+                    answerIndex,
+                    currentAnswer.isCorrect,
+                  )),
             ),
 
             // Icon (after selected)
@@ -201,43 +228,55 @@ class MainQuestionPage extends StatelessWidget {
           : CrossFadeState.showFirst,
       duration: const Duration(milliseconds: 200));
 
-  Widget _buildOptions() => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ToggleButton(
-              iconSize: 30,
-              unselectedIcon: 'bookmark',
-              selectedIcon: 'bookmarked',
-              isSelected: questionData.bookmarked,
-              onToggle: (isSelected) => onToggleBookmark != null
-                  ? onToggleBookmark!(isSelected)
-                  : null),
-          ToggleButton(
-              iconSize: 30,
-              unselectedIcon: 'like',
-              selectedIcon: 'liked',
-              isSelected: questionData.liked,
-              onToggle: (isSelected) =>
-                  onToggleLike != null ? onToggleLike!(isSelected) : null),
-          ToggleButton(
-              iconSize: 30,
-              unselectedIcon: 'dislike',
-              selectedIcon: 'disliked',
-              isSelected: questionData.disliked,
-              onToggle: (isSelected) => onToggleDislike != null
-                  ? onToggleDislike!(isSelected)
-                  : null),
-        ],
-      );
+  Widget _buildOptions({EdgeInsetsGeometry? padding}) => Padding(
+    padding: padding ?? EdgeInsets.zero,
+    child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ToggleButton(
+                iconSize: 30,
+                unselectedIcon: 'bookmark',
+                selectedIcon: 'bookmarked',
+                isSelected: questionData.bookmarked,
+                onToggle: (isSelected) => onToggleBookmark != null
+                    ? onToggleBookmark!(isSelected)
+                    : null),
+            ToggleButton(
+                iconSize: 30,
+                unselectedIcon: 'like',
+                selectedIcon: 'liked',
+                isSelected: questionData.liked,
+                onToggle: (isSelected) =>
+                    onToggleLike != null ? onToggleLike!(isSelected) : null),
+            ToggleButton(
+                iconSize: 30,
+                unselectedIcon: 'dislike',
+                selectedIcon: 'disliked',
+                isSelected: questionData.disliked,
+                onToggle: (isSelected) => onToggleDislike != null
+                    ? onToggleDislike!(isSelected)
+                    : null),
+          ],
+        ),
+  );
 
-  _answerBackgroundColor(int answerIndex, bool? isCorrect) {
+  _answerBackgroundColor(bool isDarkMode, int answerIndex, bool? isCorrect) {
     switch (_checkAnswer(answerIndex, isCorrect)) {
       case 0:
-        return Colors.white;
+        return isDarkMode ? Colors.white.withOpacity(0.24) : Colors.white;
       case 1:
         return Color.lerp(correctColor, Colors.white, 0.8);
       case 2:
         return Color.lerp(incorrectColor, Colors.white, 0.8);
+    }
+  }
+
+  _answerTextColor(bool isDarkMode, int answerIndex, bool isCorrect) {
+    switch (_checkAnswer(answerIndex, isCorrect)) {
+      case 0:
+        return isDarkMode ? Colors.white : Colors.black;
+      default:
+        return Colors.black;
     }
   }
 

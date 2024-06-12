@@ -15,11 +15,11 @@ class _TestDiagnosticQuestionsPageState
   int correctQuestions = 0;
   int incorrectQuestions = 0;
 
-  final questionValueNotifier = ValueNotifier<List<QuestionData>>([]);
+  late ValueNotifier<List<QuestionData>> questionValueNotifier;
 
   @override
   void initState() {
-    questionValueNotifier.value = [
+    questionValueNotifier = ValueNotifier<List<QuestionData>>([
       QuestionData(
           'Some city transit buses may have a brake-door interlock system, this system _____.',
           <AnswerData>[
@@ -56,16 +56,32 @@ class _TestDiagnosticQuestionsPageState
             AnswerData('Inside HUST'),
           ],
           "Very simple question"),
-    ];
+    ]);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F4EE),
+      backgroundColor: isDarkMode ? Colors.black : const Color(0xFFF5F4EE),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF5F4EE),
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            size: 25,
+            color: isDarkMode ? Colors.white : Colors.black,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          'Diagnostic Test',
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: isDarkMode ? Colors.white : Colors.black),
+        ),
       ),
       body: SafeArea(
         child: Column(
@@ -76,6 +92,8 @@ class _TestDiagnosticQuestionsPageState
               builder: (_, value, __) => ProgressLine(
                   lineHeight: 4,
                   totalQuestions: value.length,
+                  backgroundColor:
+                      isDarkMode ? Colors.white.withOpacity(0.5) : Colors.white,
                   correctQuestions: value
                       .where((element) => element.isCorrectlyChosen == true)
                       .length,
@@ -87,6 +105,7 @@ class _TestDiagnosticQuestionsPageState
             // Question
             Expanded(
               child: DiagnosticQuestion(
+                isDarkMode: isDarkMode,
                 prevQuestion: currentIndex == 0
                     ? null
                     : questionValueNotifier.value[currentIndex - 1],
@@ -123,9 +142,7 @@ class _TestDiagnosticQuestionsPageState
 
   _handleContinue() {
     if (currentIndex < questionValueNotifier.value.length - 1) {
-      setState(() {
-        currentIndex++;
-      });
+      setState(() => currentIndex++);
     } else {
       Navigator.of(context).pop();
     }

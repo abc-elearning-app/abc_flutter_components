@@ -37,7 +37,7 @@ class _ToggleButtonState extends State<ToggleButton> {
               widget.onToggle(isSelected);
             }),
         child: Padding(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: SvgPicture.asset(
             'assets/images/${isSelected ? widget.selectedIcon : widget.unselectedIcon}.svg',
             height: widget.iconSize,

@@ -22,9 +22,9 @@ class QuestionData {
 
 class AnswerData {
   final String content;
-  final bool? isCorrect;
+  final bool isCorrect;
 
-  AnswerData(this.content, {this.isCorrect});
+  AnswerData(this.content, {this.isCorrect = false});
 }
 
 enum ButtonStatus { disabled, correct, incorrect }
@@ -36,6 +36,7 @@ class DiagnosticQuestion extends StatefulWidget {
   final int currentQuestionIndex;
   final int totalQuestions;
   final bool isPro;
+  final bool isDarkMode;
 
   // Callbacks
   final void Function() onClickExplanation;
@@ -70,8 +71,9 @@ class DiagnosticQuestion extends StatefulWidget {
     required this.onToggleBookmark,
     required this.onToggleLike,
     required this.onToggleDislike,
+    required this.isDarkMode,
     this.correctIcon,
-    this.incorrectIcon
+    this.incorrectIcon,
   });
 
   @override
@@ -79,7 +81,14 @@ class DiagnosticQuestion extends StatefulWidget {
 }
 
 class _DiagnosticQuestionState extends State<DiagnosticQuestion> {
-  final _buttonStatus = ValueNotifier<ButtonStatus>(ButtonStatus.disabled);
+  late ValueNotifier _buttonStatus;
+
+  @override
+  void initState() {
+    _buttonStatus = ValueNotifier<ButtonStatus>(ButtonStatus.disabled);
+
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -99,7 +108,11 @@ class _DiagnosticQuestionState extends State<DiagnosticQuestion> {
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Text(
             'Question ${widget.currentQuestionIndex + 1}/${widget.totalQuestions}',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: widget.isDarkMode ? Colors.white : Colors.black,
+            ),
           ),
         ),
 

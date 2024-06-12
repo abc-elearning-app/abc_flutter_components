@@ -5,8 +5,8 @@ import '../../custom_datetime_picker/custom_time_picker.dart';
 
 class SelectReminderTimePage extends StatelessWidget {
   final String title;
-  final Widget image;
-  final bool showBackButton;
+  final String image;
+  final bool isDarkMode;
   final Map<String, dynamic> selectedTime;
   final PageController pageController;
 
@@ -16,7 +16,7 @@ class SelectReminderTimePage extends StatelessWidget {
       required this.image,
       required this.pageController,
       required this.selectedTime,
-      required this.showBackButton});
+      required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -26,37 +26,22 @@ class SelectReminderTimePage extends StatelessWidget {
       child: Column(
         children: [
           // Title
-          Stack(alignment: Alignment.center, children: [
-            if (showBackButton)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Transform.translate(
-                  offset: const Offset(-15, 0),
-                  child: IconButton(
-                      onPressed: () => pageController.previousPage(
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeInOut),
-                      icon: const Icon(
-                        Icons.chevron_left,
-                        size: 30,
-                      )),
-                ),
-              ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Text(
-                title,
-                style:
-                    const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Text(
+              title,
+              style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: isDarkMode ? Colors.white : Colors.black),
+              textAlign: TextAlign.center,
             ),
-          ]),
+          ),
 
           // Image
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 30),
-            child: image,
+            child: Image.asset(image),
           ),
           Expanded(
               child: Transform.scale(
