@@ -4,11 +4,12 @@ import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/s
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/study_tab_widgets/today_question_button.dart';
 
 class SubjectData {
+  final String id;
   final String icon;
   final String title;
   final double progress;
 
-  SubjectData(this.icon, this.title, this.progress);
+  SubjectData(this.id, this.icon, this.title, this.progress);
 }
 
 class NewStudyTab extends StatelessWidget {
@@ -27,6 +28,7 @@ class NewStudyTab extends StatelessWidget {
   final String buttonText;
 
   final void Function() onClickTodayQuestion;
+  final void Function(SubjectData item) onSelected;
 
   const NewStudyTab({
     super.key,
@@ -42,6 +44,7 @@ class NewStudyTab extends StatelessWidget {
     required this.passingProbability,
     required this.onClickTodayQuestion,
     required this.subjectDataList,
+    required this.onSelected,
   });
 
   @override
@@ -68,13 +71,16 @@ class NewStudyTab extends StatelessWidget {
 
           // Subject list
           Expanded(
-              child: ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: subjectDataList.length,
-                  itemBuilder: (_, index) => SubjectTile(
-                      subjectData: subjectDataList[index],
-                      tileColor:
-                          _getLevelColor(subjectDataList[index].progress))))
+            child: ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: subjectDataList.length,
+              itemBuilder: (_, index) => SubjectTile(
+                onPressed: () => onSelected(subjectDataList[index]),
+                subjectData: subjectDataList[index],
+                tileColor: _getLevelColor(subjectDataList[index].progress)
+              )
+            )
+          )
         ],
       ),
     );

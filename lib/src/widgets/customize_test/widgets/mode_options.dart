@@ -57,10 +57,12 @@ class ModeOptions extends StatelessWidget {
                 // Info icon
                 leading: SvgPicture.asset('assets/images/info.svg',
                     height: 20,
-                    colorFilter: ColorFilter.mode(
-                        selectedIndex == modeValue ? Colors.white : Colors.grey,
-                        BlendMode.srcIn)),
-
+                    color: selectedIndex == modeValue ? Colors.white : Colors.grey,
+                    colorBlendMode: BlendMode.srcIn,
+                    // colorFilter: ColorFilter.mode(
+                    //     selectedIndex == modeValue ? Colors.white : Colors.grey,
+                    //     BlendMode.srcIn)
+                ),
                 title: Text(modeData.title,
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
