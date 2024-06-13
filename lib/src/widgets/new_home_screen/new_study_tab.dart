@@ -4,7 +4,7 @@ import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/s
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/study_tab_widgets/today_question_button.dart';
 
 class SubjectData {
-  final String id;
+  final int id;
   final String icon;
   final String title;
   final double progress;
@@ -49,10 +49,6 @@ class NewStudyTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Sort the received list
-    subjectDataList.sort(
-        (subject1, subject2) => subject1.progress < subject2.progress ? 0 : 1);
-
     return Padding(
       padding: const EdgeInsets.all(15),
       child: Column(
