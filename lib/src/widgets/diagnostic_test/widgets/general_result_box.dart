@@ -4,50 +4,59 @@ import 'package:percent_indicator/percent_indicator.dart';
 enum LevelType { beginner, intermediate, advanced }
 
 class GeneralResultBox extends StatelessWidget {
-  final Color boxColor;
+  final DateTime testDate;
+  final double mainProgress;
+  final bool isDarkMode;
+
+  // Colors
   final Color beginnerColor;
   final Color intermediateColor;
   final Color advancedColor;
-  final Color linearProgressColor;
-  final String? beginnerImage;
-  final String? intermediateImage;
-  final String? advancedImage;
-  final String? circleProgressImage;
-  final double levelImageScale;
-  final DateTime testDate;
-  final double mainProgress;
+  final Color beginnerBackgroundColor;
+  final Color intermediateBackgroundColor;
+  final Color advancedBackgroundColor;
+
+  // Images
+  final String beginnerImage;
+  final String intermediateImage;
+  final String advancedImage;
+  final String circleProgressImage;
 
   const GeneralResultBox({
     super.key,
-    this.boxColor = Colors.white,
     required this.beginnerColor,
     required this.intermediateColor,
     required this.advancedColor,
-    this.circleProgressImage,
-    this.linearProgressColor = const Color(0xFF77C4FC),
-    this.beginnerImage,
-    this.intermediateImage,
-    this.advancedImage,
-    this.levelImageScale = 1.2,
+    required this.circleProgressImage,
+    required this.beginnerImage,
+    required this.intermediateImage,
+    required this.advancedImage,
     required this.testDate,
     required this.mainProgress,
+    required this.beginnerBackgroundColor,
+    required this.intermediateBackgroundColor,
+    required this.advancedBackgroundColor,
+    required this.isDarkMode,
   });
 
   @override
   Widget build(BuildContext context) {
-    final levelType = _getLevel();
+    final levelType = _getLevelType();
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 50),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.grey.shade300,
-              blurRadius: 1,
-              offset: const Offset(0, 1))
-        ],
-        color: boxColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: !isDarkMode
+            ? [
+                BoxShadow(
+                    color: Colors.grey.shade300,
+                    blurRadius: 1,
+                    offset: const Offset(0, 1))
+              ]
+            : null,
+        color: Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
       ),
       child: Column(
         children: [
@@ -56,27 +65,29 @@ class GeneralResultBox extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Date Of Test :',
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: isDarkMode ? Colors.white : Colors.black),
                 ),
                 Text(
                   _getDisplayDate(testDate),
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 18),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: isDarkMode ? Colors.white : Colors.black),
                 ),
                 const SizedBox(height: 10),
-                const Text(
-                  'Your Level :',
-                  style: TextStyle(fontSize: 16),
-                ),
-                Text(
-                  _getLevelTitle(levelType),
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: _getLevelColor(levelType),
-                      fontWeight: FontWeight.bold),
-                ),
+                Text('Your Level :',
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: isDarkMode ? Colors.white : Colors.black)),
+                Text(_getLevelTitle(levelType),
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: _getLevelColor(levelType),
+                        fontWeight: FontWeight.bold)),
               ],
             ),
           ),
@@ -90,7 +101,7 @@ class GeneralResultBox extends StatelessWidget {
               lineHeight: 8,
               animation: true,
               percent: _getLinearValue(levelType),
-              progressColor: linearProgressColor,
+              progressColor: _getProgressLineColor(levelType),
               backgroundColor: Colors.grey.withOpacity(0.2),
             ),
             _buildLevelRow(levelType)
@@ -101,102 +112,96 @@ class GeneralResultBox extends StatelessWidget {
   }
 
   Widget _buildCircleProgress(LevelType levelType) {
-    const outerRadius = 130.0;
-    const lineWidth = 18.0;
+    const double outerRadius = 125;
+    const double lineWidth = 16;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: CircularPercentIndicator(
-        radius: outerRadius,
-        lineWidth: lineWidth,
-        backgroundColor: _getLevelColor(levelType).withOpacity(0.2),
-        center: CircularPercentIndicator(
-          radius: outerRadius - lineWidth,
+    return Stack(alignment: Alignment.center, children: [
+      const CircleAvatar(radius: outerRadius, backgroundColor: Colors.white),
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: CircularPercentIndicator(
+          radius: outerRadius,
           lineWidth: lineWidth,
-          circularStrokeCap: CircularStrokeCap.round,
-          percent: mainProgress / 100,
-          animation: true,
-          backgroundColor: _getLevelColor(levelType).withOpacity(0.5),
-          progressColor: _getLevelColor(levelType),
-          center: CircleAvatar(
-            radius: outerRadius - 2 * lineWidth,
-            backgroundColor: _getLevelColor(levelType).withOpacity(0.05),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (circleProgressImage != null)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    child: Transform.scale(
-                        scale: 1.5, child: Image.asset(circleProgressImage!)),
+          backgroundColor: _getLevelColor(levelType).withOpacity(0.2),
+          center: CircularPercentIndicator(
+            radius: outerRadius - lineWidth,
+            lineWidth: lineWidth,
+            circularStrokeCap: CircularStrokeCap.round,
+            percent: mainProgress / 100,
+            animation: true,
+            backgroundColor: _getLevelColor(levelType).withOpacity(0.5),
+            progressColor: _getLevelColor(levelType),
+            center: CircleAvatar(
+              radius: outerRadius - 2 * lineWidth,
+              backgroundColor: _getLevelColor(levelType).withOpacity(0.05),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(circleProgressImage),
+                  Text(
+                    'Your result is',
+                    style: TextStyle(color: _getLevelColor(levelType)),
                   ),
-                Text(
-                  'Your result is',
-                  style: TextStyle(color: _getLevelColor(levelType)),
-                ),
-                Text(
-                  '${mainProgress.toInt()}%',
-                  style: TextStyle(
-                      color: _getLevelColor(levelType),
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold),
-                )
-              ],
+                  Text(
+                    '${mainProgress.toInt()}%',
+                    style: TextStyle(
+                        color: _getLevelColor(levelType),
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
             ),
           ),
         ),
       ),
-    );
+    ]);
   }
 
   Widget _buildLevelRow(LevelType levelType) =>
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        _buildLevel(LevelType.beginner, beginnerImage, true),
         _buildLevel(
-            LevelType.intermediate, intermediateImage, mainProgress >= 20),
-        _buildLevel(LevelType.advanced, advancedImage, mainProgress >= 80),
+          LevelType.beginner,
+          beginnerImage,
+          true,
+        ),
+        _buildLevel(
+          LevelType.intermediate,
+          intermediateImage,
+          mainProgress >= 20,
+        ),
+        _buildLevel(
+          LevelType.advanced,
+          advancedImage,
+          mainProgress >= 80,
+        ),
       ]);
 
-  Widget _buildLevel(LevelType type, String? image, bool isUnlocked) {
-    const lockOpacity = 0.5;
-    const radius = 40.0;
-    const backGroundOpacity = 0.7;
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        const CircleAvatar(
-          radius: radius,
-          backgroundColor: Colors.white,
-        ),
-        Opacity(
-          opacity: isUnlocked ? 1 : lockOpacity,
-          child: CircleAvatar(
-            radius: radius,
-            backgroundColor:
-                _getLevelColor(type).withOpacity(backGroundOpacity),
-            child: Transform.scale(
-                scale: levelImageScale,
-                child: image != null ? Image.asset(image) : const SizedBox()),
-          ),
-        ),
-        Transform.translate(
-            offset: const Offset(0, 50),
-            child: Opacity(
-              opacity: isUnlocked ? 1 : lockOpacity,
-              child: Text(
-                _getLevelTitle(type),
-                style: TextStyle(
-                    color: _getLevelColor(type),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500),
-              ),
-            ))
-      ],
-    );
-  }
+  Widget _buildLevel(LevelType type, String image, bool isUnlocked) => Stack(
+        alignment: Alignment.center,
+        children: [
+          CircleAvatar(
+              radius: 35,
+              backgroundColor: Color.lerp(_getLevelBackgroundColor(type),
+                  Colors.white, isUnlocked ? 0 : 0.5),
+              child: Opacity(
+                  opacity: isUnlocked ? 1 : 0.5, child: Image.asset(image))),
+          Transform.translate(
+              offset: const Offset(0, 50),
+              child: Text(_getLevelTitle(type),
+                  style: TextStyle(
+                      color: Color.lerp(
+                        _getLevelColor(type),
+                        Colors.white,
+                        isUnlocked ? 0 : 0.5,
+                      ),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500)))
+        ],
+      );
 
-  _getLevel() {
+  _getLevelType() {
     if (mainProgress < 20) {
       return LevelType.beginner;
     } else if (mainProgress < 80) {
@@ -239,6 +244,22 @@ class GeneralResultBox extends StatelessWidget {
     }
   }
 
+  Color _getLevelBackgroundColor(LevelType type) {
+    switch (type) {
+      case LevelType.beginner:
+        return beginnerBackgroundColor;
+      case LevelType.intermediate:
+        return intermediateBackgroundColor;
+      case LevelType.advanced:
+        return advancedBackgroundColor;
+    }
+  }
+
+  Color _getProgressLineColor(LevelType type) {
+    if (type == LevelType.intermediate) return beginnerBackgroundColor;
+    return advancedBackgroundColor;
+  }
+
   _getDisplayDate(DateTime time) {
     const List<String> monthNames = [
       '', // Placeholder for 1-based indexing
@@ -255,11 +276,6 @@ class GeneralResultBox extends StatelessWidget {
       'November',
       'December',
     ];
-
-    // Ensure the month value is between 1 and 12
-    if (time.month < 1 || time.month > 12) {
-      throw ArgumentError('Month must be between 1 and 12');
-    }
 
     return '${monthNames[time.month]} ${time.day}, ${time.year}';
   }

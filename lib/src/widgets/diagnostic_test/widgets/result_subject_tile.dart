@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class SubjectTile extends StatelessWidget {
+class ResultSubjectTile extends StatelessWidget {
   final String title;
   final String icon;
   final double progress;
   final Color color;
-  final Color boxColor;
+  final Color iconBackgroundColor;
+  final bool isDarkMode;
 
-  const SubjectTile(
+  final String beginnerIcon;
+  final String intermediateIcon;
+  final String advancedIcon;
+
+  const ResultSubjectTile(
       {super.key,
       required this.title,
       required this.icon,
       required this.progress,
       required this.color,
-      required this.boxColor});
+      required this.beginnerIcon,
+      required this.intermediateIcon,
+      required this.advancedIcon,
+      required this.isDarkMode,
+      required this.iconBackgroundColor});
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +31,16 @@ class SubjectTile extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-              color: Colors.grey.shade300,
-              blurRadius: 1,
-              offset: const Offset(0, 1))
-        ],
+        color: Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
+        boxShadow: !isDarkMode
+            ? [
+                BoxShadow(
+                    color: Colors.grey.shade300,
+                    blurRadius: 1,
+                    offset: const Offset(0, 1))
+              ]
+            : null,
         borderRadius: BorderRadius.circular(15),
-        color: boxColor,
       ),
       child: Column(
         children: [
@@ -37,17 +48,17 @@ class SubjectTile extends StatelessWidget {
             children: [
               // Icon
               Container(
+                margin: const EdgeInsets.only(right: 10),
                 padding: const EdgeInsets.all(3),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  color: color.withOpacity(0.3),
+                  color: Color.lerp(iconBackgroundColor, Colors.white, 0.7),
                 ),
                 child: SvgPicture.asset(
                   icon,
-                  color: color,
+                  colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
                 ),
               ),
-              const SizedBox(width: 10),
 
               // Title
               Expanded(
@@ -80,7 +91,9 @@ class SubjectTile extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10),
                               color: index < progress / 10
                                   ? color
-                                  : Colors.grey.shade200),
+                                  : isDarkMode
+                                      ? Colors.white.withOpacity(0.12)
+                                      : Colors.black.withOpacity(0.08)),
                         ),
                       )),
             ),
@@ -92,14 +105,16 @@ class SubjectTile extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 _getLevelIcon(),
-                color: color,
+                colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
                 width: 20,
                 height: 20,
               ),
               const SizedBox(width: 5),
               Text(
                 _getLevelTitle(),
-                style: TextStyle(color: Colors.grey.shade700),
+                style: TextStyle(
+                    color: (isDarkMode ? Colors.white : Colors.black)
+                        .withOpacity(0.5)),
               ),
             ],
           )
@@ -110,11 +125,11 @@ class SubjectTile extends StatelessWidget {
 
   _getLevelIcon() {
     if (progress < 20) {
-      return 'assets/images/beginner.svg';
+      return beginnerIcon;
     } else if (progress < 80) {
-      return 'assets/images/intermediate.svg';
+      return intermediateIcon;
     } else {
-      return 'assets/images/advanced.svg';
+      return advancedIcon;
     }
   }
 

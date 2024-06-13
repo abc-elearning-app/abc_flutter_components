@@ -6,6 +6,7 @@ class ToggleButton extends StatefulWidget {
   final String unselectedIcon;
   final String selectedIcon;
   final bool isSelected;
+  final Color color;
   final void Function(bool isSelected) onToggle;
 
   const ToggleButton(
@@ -14,7 +15,8 @@ class ToggleButton extends StatefulWidget {
       required this.unselectedIcon,
       required this.selectedIcon,
       required this.isSelected,
-      required this.onToggle});
+      required this.onToggle,
+      required this.color});
 
   @override
   State<ToggleButton> createState() => _ToggleButtonState();
@@ -38,10 +40,16 @@ class _ToggleButtonState extends State<ToggleButton> {
             }),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: SvgPicture.asset(
-            'assets/images/${isSelected ? widget.selectedIcon : widget.unselectedIcon}.svg',
-            height: widget.iconSize,
-          ),
+          child: isSelected
+              ? SvgPicture.asset(
+                  'assets/images/${widget.selectedIcon}.svg',
+                  height: widget.iconSize,
+                )
+              : SvgPicture.asset(
+                  'assets/images/${widget.unselectedIcon}.svg',
+                  height: widget.iconSize,
+                  colorFilter: ColorFilter.mode(widget.color, BlendMode.srcIn),
+                ),
         ));
   }
 }

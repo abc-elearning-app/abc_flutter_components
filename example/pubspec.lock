@@ -691,10 +691,10 @@ packages:
     dependency: transitive
     description:
       name: platform
-      sha256: "12220bb4b65720483f8fa9450b4332347737cf8213dd2840d8b2c823e47243ec"
+      sha256: "9b71283fc13df574056616011fb138fd3b793ea47cc509c189a6c3fa5f8a1a65"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.4"
+    version: "3.1.5"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -953,7 +953,7 @@ packages:
     description:
       path: "."
       ref: new_version
-      resolved-ref: "19af998b0f26073a15eea124a2bc4afb03e6be71"
+      resolved-ref: "05c2c4bfa9d2208e4da2c7b7791828e33f510915"
       url: "https://github.com/tienanh306201z/table_calendar.git"
     source: git
     version: "3.0.8"
@@ -1113,10 +1113,10 @@ packages:
     dependency: transitive
     description:
       name: video_player
-      sha256: db6a72d8f4fd155d0189845678f55ad2fd54b02c10dcafd11c068dbb631286c0
+      sha256: aced48e701e24c02b0b7f881a8819e4937794e46b5a5821005e2bf3b40a324cc
       url: "https://pub.dev"
     source: hosted
-    version: "2.8.6"
+    version: "2.8.7"
   video_player_android:
     dependency: transitive
     description:

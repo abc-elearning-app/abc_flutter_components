@@ -15,11 +15,13 @@ class _TestDiagnosticQuestionsPageState
   int correctQuestions = 0;
   int incorrectQuestions = 0;
 
-  late ValueNotifier<List<QuestionData>> questionValueNotifier;
+  late ValueNotifier<List<QuestionData>> _questions;
+
+  bool isDarkMode = false;
 
   @override
   void initState() {
-    questionValueNotifier = ValueNotifier<List<QuestionData>>([
+    _questions = ValueNotifier<List<QuestionData>>([
       QuestionData(
           'Some city transit buses may have a brake-door interlock system, this system _____.',
           <AnswerData>[
@@ -30,40 +32,65 @@ class _TestDiagnosticQuestionsPageState
           ],
           "There are four pieces in the assembled puzzle, two of which are triangles and the other pieces are 2 rectangles with different length."),
       QuestionData(
-          'Who was in Paris ?',
+          'Hắc Hường là gì?',
           <AnswerData>[
-            AnswerData('Joe Cinema'),
-            AnswerData('Kayne West', isCorrect: true),
-            AnswerData('Mickey Trump'),
-            AnswerData('Charles Dicken'),
+            AnswerData('Black Pink', isCorrect: true),
+            AnswerData("2 Màu sắc"),
+            AnswerData('ABC'),
+            AnswerData('KS'),
           ],
-          "Anyone could be in Paris !!!"),
+          "A South Korean girl group, formed by YG Entertainment, in August 2016"),
       QuestionData(
-          'Who is Kim Jisoo ?',
+          'Hắc Hường là gì?',
           <AnswerData>[
-            AnswerData('Kpop Idol', isCorrect: true),
-            AnswerData("Korean's president"),
-            AnswerData('Vietnamese singer'),
-            AnswerData('Teacher'),
+            AnswerData('Black Pink', isCorrect: true),
+            AnswerData("2 Màu sắc"),
+            AnswerData('ABC'),
+            AnswerData('KS'),
           ],
-          "A member of the South Korean girl group Blackpink, formed by YG Entertainment, in August 2016"),
+          "A South Korean girl group, formed by YG Entertainment, in August 2016"),
       QuestionData(
-          'Where is ABC ?',
+          'Hắc Hường là gì?',
           <AnswerData>[
-            AnswerData('Thành Đông kindergarten', isCorrect: true),
-            AnswerData("19 Tố Hữu"),
-            AnswerData('Inside the white house'),
-            AnswerData('Inside HUST'),
+            AnswerData('Black Pink', isCorrect: true),
+            AnswerData("2 Màu sắc"),
+            AnswerData('ABC'),
+            AnswerData('KS'),
           ],
-          "Very simple question"),
+          "A South Korean girl group, formed by YG Entertainment, in August 2016"),
+      QuestionData(
+          'Hắc Hường là gì?',
+          <AnswerData>[
+            AnswerData('Black Pink', isCorrect: true),
+            AnswerData("2 Màu sắc"),
+            AnswerData('ABC'),
+            AnswerData('KS'),
+          ],
+          "A South Korean girl group, formed by YG Entertainment, in August 2016"),
+      QuestionData(
+          'Hắc Hường là gì?',
+          <AnswerData>[
+            AnswerData('Black Pink', isCorrect: true),
+            AnswerData("2 Màu sắc"),
+            AnswerData('ABC'),
+            AnswerData('KS'),
+          ],
+          "A South Korean girl group, formed by YG Entertainment, in August 2016"),
+      QuestionData(
+          'Hắc Hường là gì?',
+          <AnswerData>[
+            AnswerData('Black Pink', isCorrect: true),
+            AnswerData("2 Màu sắc"),
+            AnswerData('ABC'),
+            AnswerData('KS'),
+          ],
+          "A South Korean girl group, formed by YG Entertainment, in August 2016"),
     ]);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : const Color(0xFFF5F4EE),
       appBar: AppBar(
@@ -84,13 +111,13 @@ class _TestDiagnosticQuestionsPageState
         ),
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            // Progress line
-            ValueListenableBuilder(
-              valueListenable: questionValueNotifier,
-              builder: (_, value, __) => ProgressLine(
-                  lineHeight: 4,
+        child: ValueListenableBuilder(
+          valueListenable: _questions,
+          builder: (_, value, __) => Column(
+            children: [
+              // Progress line
+              ProgressLine(
+                  lineHeight: 5,
                   totalQuestions: value.length,
                   backgroundColor:
                       isDarkMode ? Colors.white.withOpacity(0.5) : Colors.white,
@@ -100,38 +127,42 @@ class _TestDiagnosticQuestionsPageState
                   incorrectQuestions: value
                       .where((element) => element.isCorrectlyChosen == false)
                       .length),
-            ),
 
-            // Question
-            Expanded(
-              child: DiagnosticQuestion(
-                isDarkMode: isDarkMode,
-                prevQuestion: currentIndex == 0
-                    ? null
-                    : questionValueNotifier.value[currentIndex - 1],
-                isPro: false,
-                nextQuestion: questionValueNotifier.value[currentIndex],
-                totalQuestions: questionValueNotifier.value.length,
-                currentQuestionIndex: currentIndex,
-                onContinue: () => _handleContinue(),
-                onClickExplanation: () => print('buyPro'),
-                onReport: (reportDataList, otherReason) {},
-                onSelectAnswer: (isCorrect) => _handleOnSelectAnswer(isCorrect),
-                onToggleLike: (isSelected) => print('Like $isSelected'),
-                onToggleDislike: (isSelected) => print('Dislike $isSelected'),
-                onToggleBookmark: (isSelected) => print('Bookmark $isSelected'),
+              // Question
+              Expanded(
+                child: DiagnosticQuestion(
+                  isDarkMode: isDarkMode,
+                  prevQuestion: currentIndex == 0
+                      ? null
+                      : value[currentIndex - 1],
+                  isPro: true,
+                  nextQuestion: value[currentIndex],
+                  totalQuestions: value.length,
+                  currentQuestionIndex: currentIndex,
+                  onContinue: () => _handleContinue(),
+                  onClickExplanation: () => print('buyPro'),
+                  onReport: (reportDataList, otherReason) {},
+                  onSelectAnswer: (isCorrect) =>
+                      _handleOnSelectAnswer(isCorrect),
+                  onToggleLike: (isSelected) => _handleOnLike(isSelected),
+                  onToggleDislike: (isSelected) => _handleOnDislike(isSelected),
+                  onToggleBookmark: (isSelected) =>
+                      print('Bookmark $isSelected'),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   _handleOnSelectAnswer(bool isCorrect) {
-    final tmpQuestionList = questionValueNotifier.value;
+    final tmpQuestionList = _questions.value;
     tmpQuestionList[currentIndex].isCorrectlyChosen = isCorrect;
-    questionValueNotifier.value = tmpQuestionList
+
+    // Update the progress line
+    _questions.value = tmpQuestionList
         .map((e) => QuestionData(e.question, e.answers, e.explanation,
             bookmarked: e.bookmarked,
             liked: e.liked,
@@ -140,8 +171,30 @@ class _TestDiagnosticQuestionsPageState
         .toList();
   }
 
+  _handleOnLike(bool isSelected) {}
+
+  _handleOnDislike(bool isSelected) {
+    if (isSelected) {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        isScrollControlled: true,
+        builder: (_) => ReportMistakePopup(
+          isDarkMode: isDarkMode,
+          onClick: (List<MistakeData> mistakeData, String otherReasons) {
+            for (var element in mistakeData) {
+              print(element.isSelected);
+            }
+            print(otherReasons);
+          },
+        ),
+      );
+    }
+  }
+
   _handleContinue() {
-    if (currentIndex < questionValueNotifier.value.length - 1) {
+    if (currentIndex < _questions.value.length - 1) {
       setState(() => currentIndex++);
     } else {
       Navigator.of(context).pop();

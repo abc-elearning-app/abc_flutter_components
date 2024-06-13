@@ -1,3 +1,4 @@
+import 'package:example/constants/app_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
@@ -8,36 +9,38 @@ class TestDiagnosticScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final subjectDataList = <SubjectResultData>[
       SubjectResultData(
-        'Electrical Engineering',
-        70,
-        'assets/images/subject_icon.svg',
+        title: 'Electrical Engineering',
+        progress: 70,
+        icon: 'assets/images/subject_icon.svg',
       ),
       SubjectResultData(
-        'Arithmetic Reasoning',
-        10,
-        'assets/images/subject_icon.svg',
+        title: 'Arithmetic Reasoning',
+        progress: 10,
+        icon: 'assets/images/subject_icon.svg',
       ),
       SubjectResultData(
-        'Electrical Engineering',
-        60,
-        'assets/images/subject_icon.svg',
+        title: 'Electrical Engineering',
+        progress: 60,
+        icon: 'assets/images/subject_icon.svg',
       ),
       SubjectResultData(
-        'Haz Mat',
-        90,
-        'assets/images/subject_icon.svg',
+        title: 'Haz Mat',
+        progress: 90,
+        icon: 'assets/images/subject_icon.svg',
       ),
       SubjectResultData(
-        'Arithmetic Reasoning',
-        20,
-        'assets/images/subject_icon.svg',
+        title: 'Arithmetic Reasoning',
+        progress: 20,
+        icon: 'assets/images/subject_icon.svg',
       ),
     ];
 
     return DiagnosticResult(
-        subjectList: subjectDataList,
-        onNext: () => print('onNext'),
-        testDate: DateTime.now(),
-        mainProgress: 90);
+      subjectList: subjectDataList,
+      onNext: () => Navigator.of(context).pop(),
+      testDate: DateTime.now(),
+      mainProgress: 60,
+      isDarkMode: AppTheme.isDarkMode,
+    );
   }
 }

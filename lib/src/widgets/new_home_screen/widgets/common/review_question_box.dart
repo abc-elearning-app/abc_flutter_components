@@ -152,16 +152,19 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             ToggleButton(
+                color: Colors.red,
                 unselectedIcon: 'bookmark',
                 selectedIcon: 'bookmarked',
                 isSelected: isBookmarked,
                 onToggle: (isSelected) => widget.onBookmarkClick(isSelected)),
             ToggleButton(
+                color: Colors.red,
                 unselectedIcon: 'like',
                 selectedIcon: 'liked',
                 isSelected: isLiked,
                 onToggle: (isSelected) => widget.onLikeClick(isSelected)),
             ToggleButton(
+                color: Colors.red,
                 unselectedIcon: 'dislike',
                 selectedIcon: 'disliked',
                 isSelected: isDisliked,

@@ -83,7 +83,7 @@ class SubjectsBox extends StatelessWidget {
                 selector: (_, provider) => provider.subjectSelection[index],
                 builder: (_, value, __) => MyCheckBox(
                     activeColor: mainColor,
-                    checkColor: mainColor,
+                    borderColor: mainColor,
                     value: value,
                     onChanged: (_) => _toggle(context, index)))
           ],

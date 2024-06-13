@@ -223,7 +223,7 @@ class CustomizeTest extends StatelessWidget {
               padding: const EdgeInsets.only(right: 3),
               child: MyCheckBox(
                 activeColor: mainColor,
-                checkColor: mainColor,
+                borderColor: mainColor,
                 value: value,
                 onChanged: (value) => context
                     .read<CustomizeTestProvider>()
