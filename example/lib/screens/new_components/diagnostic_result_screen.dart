@@ -36,10 +36,10 @@ class TestDiagnosticScreen extends StatelessWidget {
     ];
 
     return DiagnosticResult(
+      mainProgress: 60,
       subjectList: subjectDataList,
       onNext: () => Navigator.of(context).pop(),
       testDate: DateTime.now(),
-      mainProgress: 60,
       isDarkMode: AppTheme.isDarkMode,
     );
   }

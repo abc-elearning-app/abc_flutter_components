@@ -21,18 +21,20 @@ class PersonalPlanAnalyzingScreen extends StatefulWidget {
   final int loadingTime;
   final int floatingTextAnimationTime;
   final TextStyle? floatingTextStyle;
+  final bool isDarkMode;
   final void Function() onFinish;
 
   const PersonalPlanAnalyzingScreen({
     super.key,
-    this.backgroundColor = const Color(0xFFEEFFFA),
-    this.mainColor = const Color(0xFF579E89),
+    this.backgroundColor = const Color(0xFFF5F4EE),
+    this.mainColor = const Color(0xFF7C6F5B),
     this.loadingImage,
     this.finishImage,
     this.loadingTime = 2000,
-    this.floatingTextAnimationTime = 3000,
+    this.floatingTextAnimationTime = 2000,
     this.floatingTextStyle,
     required this.onFinish,
+    required this.isDarkMode,
   });
 
   @override
@@ -40,8 +42,8 @@ class PersonalPlanAnalyzingScreen extends StatefulWidget {
       _PersonalPlanAnalyzingScreenState();
 }
 
-class _PersonalPlanAnalyzingScreenState extends State<PersonalPlanAnalyzingScreen>
-    with TickerProviderStateMixin {
+class _PersonalPlanAnalyzingScreenState
+    extends State<PersonalPlanAnalyzingScreen> with TickerProviderStateMixin {
   final _progressValue = ValueNotifier<int>(0);
   late Timer _timer;
 
@@ -120,7 +122,8 @@ class _PersonalPlanAnalyzingScreenState extends State<PersonalPlanAnalyzingScree
   Widget build(BuildContext context) {
     return Stack(children: [
       Scaffold(
-        backgroundColor: widget.backgroundColor,
+        backgroundColor:
+            widget.isDarkMode ? Colors.black : widget.backgroundColor,
         body: SafeArea(
           child: SizedBox(
             width: double.infinity,
@@ -176,59 +179,65 @@ class _PersonalPlanAnalyzingScreenState extends State<PersonalPlanAnalyzingScree
   }
 
   Widget _buildCircularLoadingProgress() {
-    const outerRadius = 140.0;
-    const lineWidth = 20.0;
+    const double outerRadius = 140;
+    const double lineWidth = 20;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 40),
-      child: CircleAvatar(
-        backgroundColor: widget.mainColor.withOpacity(0.3),
-        radius: outerRadius,
-        child: CircularPercentIndicator(
-            radius: outerRadius - lineWidth,
-            circularStrokeCap: CircularStrokeCap.round,
-            lineWidth: lineWidth,
-            backgroundColor: widget.mainColor.withOpacity(0.4),
-            progressColor: widget.mainColor,
-            percent: 1,
-            animation: true,
-            animationDuration: widget.loadingTime,
-            onAnimationEnd: () => Future.delayed(
-                const Duration(milliseconds: 200), () => widget.onFinish()),
-            center: CircleAvatar(
-                radius: outerRadius - 2 * lineWidth,
-                backgroundColor: Colors.white.withOpacity(0.4),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // Image icon
-                    ValueListenableBuilder(
-                        valueListenable: _progressValue,
-                        builder: (_, value, __) => Transform.scale(
-                            scale: 1.2,
-                            child: Image.asset(_getImagePath(value)))),
+      child: Stack(children: [
+        const CircleAvatar(radius: outerRadius, backgroundColor: Colors.white),
+        CircleAvatar(
+          backgroundColor: widget.mainColor.withOpacity(0.3),
+          radius: outerRadius,
+          child: CircularPercentIndicator(
+              radius: outerRadius - lineWidth,
+              circularStrokeCap: CircularStrokeCap.round,
+              lineWidth: lineWidth,
+              backgroundColor: widget.mainColor.withOpacity(0.4),
+              progressColor: widget.mainColor,
+              percent: 1,
+              animation: true,
+              animationDuration: widget.loadingTime,
+              onAnimationEnd: () => Future.delayed(
+                  const Duration(milliseconds: 300), () => widget.onFinish()),
+              center: CircleAvatar(
+                  radius: outerRadius - 2 * lineWidth,
+                  backgroundColor: Colors.white.withOpacity(0.4),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Image icon
+                      ValueListenableBuilder(
+                          valueListenable: _progressValue,
+                          builder: (_, value, __) => Transform.scale(
+                              scale: 1.2,
+                              child: Image.asset(_getImagePath(value)))),
 
-                    // Floating texts
-                    Stack(
-                        children: List.generate(
-                            3,
-                            (index) => AnimatedBuilder(
-                                animation: _animControllers[index],
-                                builder: (_, __) => Transform.translate(
-                                    offset: Offset(
-                                      _calculateOffsetX(index),
-                                      _calculateOffsetY(index),
-                                    ),
-                                    child: Opacity(
-                                      opacity: _calculateFadeOpacity(index),
-                                      child: Text(floatingTextList[index].text,
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                          )),
-                                    )))))
-                  ],
-                ))),
-      ),
+                      // Floating texts
+                      Stack(
+                          children: List.generate(
+                              3,
+                              (index) => AnimatedBuilder(
+                                  animation: _animControllers[index],
+                                  builder: (_, __) => Transform.translate(
+                                      offset: Offset(
+                                        _calculateOffsetX(index),
+                                        _calculateOffsetY(index),
+                                      ),
+                                      child: Opacity(
+                                        opacity: _calculateFadeOpacity(index),
+                                        child: Text(
+                                            floatingTextList[index].text,
+                                            style: widget.floatingTextStyle ??
+                                                const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 20
+                                                )),
+                                      )))))
+                    ],
+                  ))),
+        ),
+      ]),
     );
   }
 
