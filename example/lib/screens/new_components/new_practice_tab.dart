@@ -8,35 +8,40 @@ class TestNewPracticeTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final groupList = <QuestionGroupData>[
       QuestionGroupData(
-          'Random Questions',
-          'Select questions randomly from the question bank.',
-          'random_questions',
+          title: 'Random Questions',
+          subtitle: 'Select questions randomly from the question bank.',
+          icon: 'assets/images/random_questions.svg',
           iconBackgroundColor: const Color(0xFFBAE8DB),
-          () => _handleOpenDialog(context)),
-      QuestionGroupData(
-          'Weak Questions',
-          'Retake missed questions to improve your score.',
-          'weak_questions',
+          onClick: () => _handleOpenDialog(context)
+        ),
+        QuestionGroupData(
+          title: 'Weak Questions',
+          subtitle: 'Retake missed questions to improve your score.',
+          icon: 'weak_questions',
           iconBackgroundColor: const Color(0xFFFFC7C7),
-          () => _handleOpenDialog(context)),
-      QuestionGroupData(
-          'Hardest Questions',
-          'Practice commonly answered incorrectly questions.',
-          'hardest_questions',
+          onClick: () => _handleOpenDialog(context)
+        ),
+        QuestionGroupData(
+          title: 'Hardest Questions',
+          subtitle: 'Practice commonly answered incorrectly questions.',
+          icon: 'hardest_questions',
           iconBackgroundColor: const Color(0xFFD3F7FF),
-          () => _handleOpenDialog(context)),
-      QuestionGroupData(
-          'Saved Questions',
-          'Practice saved questions from lessons.',
-          'saved_questions',
+          onClick: () => _handleOpenDialog(context)
+        ),
+        QuestionGroupData(
+          title: 'Saved Questions',
+          subtitle: 'Practice saved questions from lessons.',
+          icon: 'saved_questions',
           iconBackgroundColor: const Color(0xFFFEEDD5),
-          () => _handleOpenDialog(context)),
-      QuestionGroupData(
-          'Exam Simulator',
-          'Customize the test according to your preferences.',
-          'exam_simulator',
+          onClick: () => _handleOpenDialog(context)
+        ),
+        QuestionGroupData(
+          title: 'Exam Simulator',
+          subtitle: 'Customize the test according to your preferences.',
+          icon: 'exam_simulator',
           iconBackgroundColor: const Color(0xFFDEEBFF),
-          () {}),
+          onClick: () => _handleOpenDialog(context)
+        ),
     ];
 
     return Scaffold(

@@ -10,15 +10,19 @@ class QuestionGroupData {
   final Color textColor;
   final void Function() onClick;
 
-  QuestionGroupData(this.title, this.subtitle, this.icon, this.onClick,
-      {this.textColor = Colors.black,
-      this.iconBackgroundColor = Colors.grey,
-      this.backgroundColor = Colors.white});
+  QuestionGroupData({
+    required this.title, 
+    required this.subtitle, 
+    required this.icon, 
+    required this.onClick,
+    this.textColor = Colors.black,
+    this.iconBackgroundColor = Colors.grey,
+    this.backgroundColor = Colors.white
+  });
 }
 
 class NewPracticeTab extends StatelessWidget {
   final List<QuestionGroupData> groupList;
-
   const NewPracticeTab({super.key, required this.groupList});
 
   @override
@@ -53,8 +57,7 @@ class NewPracticeTab extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: questionGroupData.iconBackgroundColor,
                       borderRadius: BorderRadius.circular(15)),
-                  child: SvgPicture.asset(
-                      'assets/images/${questionGroupData.icon}.svg')),
+                  child: SvgPicture.asset(questionGroupData.icon, width: 24, height: 24)),
               const SizedBox(width: 15),
               Expanded(
                 child: Column(
