@@ -12,6 +12,7 @@ class LevelGrid extends StatelessWidget {
   final List<LevelData> levelDataList;
   final String finalLevelImage;
   final bool isFirstGroup;
+  final bool isDarkMode;
 
   final Color mainColor;
   final Color passColor;
@@ -34,6 +35,7 @@ class LevelGrid extends StatelessWidget {
     required this.passColor,
     required this.lockColor,
     required this.onClickLevel,
+    required this.isDarkMode,
   });
 
   @override
@@ -52,6 +54,7 @@ class LevelGrid extends StatelessWidget {
         final level = i < levelDataList.length
             ? LevelWidget(
                 index: i,
+                isDarkMode: isDarkMode,
                 levelData: levelDataList[i],
                 finalLevelImage: finalLevelImage,
                 isFinal: i == levelDataList.length - 1,

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,6 +14,7 @@ class LevelWidget extends StatefulWidget {
   final Duration drawSpeed;
   final String finalLevelImage;
   final bool isFirstGroup;
+  final bool isDarkMode;
 
   final Color startColor;
   final Color passColor;
@@ -33,7 +37,8 @@ class LevelWidget extends StatefulWidget {
       required this.passColor,
       required this.mainColor,
       required this.lockColor,
-      required this.onClickLevel});
+      required this.onClickLevel,
+      required this.isDarkMode});
 
   @override
   State<LevelWidget> createState() => _LevelWidgetState();
@@ -114,7 +119,7 @@ class _LevelWidgetState extends State<LevelWidget>
         vsync: this, duration: const Duration(milliseconds: 500));
 
     _tooltipAnimation =
-        Tween<double>(begin: -40, end: -30).animate(_tooltipController);
+        Tween<double>(begin: -30, end: -20).animate(_tooltipController);
 
     _tooltipController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -173,13 +178,12 @@ class _LevelWidgetState extends State<LevelWidget>
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Splash animation or tooltip animation
-        if (widget.levelData.isCurrent)
-          widget.index == 0 && widget.levelData.progress == 0
-              ? _buildTooltip()
-              : CustomPaint(
-                  size: const Size(20, 20),
-                  painter: SplashCirclePainter(animation: _splashController)),
+        // Splash animation
+        if (widget.levelData.isCurrent &&
+            (widget.index != 0 || widget.levelData.progress != 0))
+          CustomPaint(
+              size: const Size(20, 20),
+              painter: SplashCirclePainter(animation: _splashController)),
 
         // Level
         AnimatedBuilder(
@@ -192,12 +196,17 @@ class _LevelWidgetState extends State<LevelWidget>
                         Transform.translate(
                           offset: const Offset(0, 20),
                           child: GestureDetector(
-                            onTap: () => widget.onClickLevel(widget.levelData.id),
+                            onTap: () =>
+                                widget.onClickLevel(widget.levelData.id),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 // Regular level or final cup
-                                widget.isFinal ? _finalLevel() : _mainLevel(),
+                                widget.isFinal
+                                    ? _finalLevel()
+                                    : widget.levelData.isLock
+                                        ? _lockLevel()
+                                        : _mainLevel(),
 
                                 // Title
                                 Text(
@@ -212,12 +221,44 @@ class _LevelWidgetState extends State<LevelWidget>
                           ),
                         ),
                       ])),
-                ))
+                )),
+
+        // Tooltip animation
+        if (widget.levelData.isCurrent &&
+            (widget.index == 0 && widget.levelData.progress == 0))
+          _tooltip(),
       ],
     );
   }
 
-  Widget _mainLevel() => Stack(
+  Widget _mainLevel() => Container(
+        decoration:
+            BoxDecoration(borderRadius: BorderRadius.circular(100), boxShadow: [
+          BoxShadow(color: Colors.grey.shade300, blurRadius: 1, spreadRadius: 1)
+        ]),
+        child: CircleAvatar(
+          radius: 40,
+          backgroundColor: Color.lerp(_getMainColor(), Colors.white, 0.4),
+          child: CircleAvatar(
+            radius: 33,
+            backgroundColor: Colors.white,
+            child: CircleAvatar(
+              radius: 29,
+              backgroundColor: _getMainColor(),
+              child: SvgPicture.asset(
+                widget.levelData.icon,
+                height: 35,
+                colorFilter: ColorFilter.mode(
+                  _getIconColor(),
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+  Widget _lockLevel() => Stack(
         alignment: Alignment.topRight,
         children: [
           Container(
@@ -226,22 +267,21 @@ class _LevelWidgetState extends State<LevelWidget>
                 boxShadow: [
                   BoxShadow(
                       color: Colors.grey.shade300,
-                      blurRadius: 2,
-                      spreadRadius: 2)
+                      blurRadius: 1,
+                      spreadRadius: 1)
                 ]),
             child: CircleAvatar(
               radius: 40,
-              backgroundColor: Color.lerp(_getMainColor(), Colors.white, 0.6),
+              backgroundColor: Colors.white,
               child: CircleAvatar(
-                radius: 33,
-                backgroundColor: Colors.white,
-                child: CircleAvatar(
-                  radius: 29,
-                  backgroundColor: _getMainColor(),
-                  child: SvgPicture.asset(
-                    widget.levelData.icon,
-                    colorFilter:
-                        ColorFilter.mode(_getIconColor(), BlendMode.srcIn),
+                radius: 32,
+                backgroundColor: _getMainColor(),
+                child: SvgPicture.asset(
+                  widget.levelData.icon,
+                  height: 40,
+                  colorFilter: ColorFilter.mode(
+                    _getIconColor(),
+                    BlendMode.srcIn,
                   ),
                 ),
               ),
@@ -250,9 +290,7 @@ class _LevelWidgetState extends State<LevelWidget>
 
           // Lock icon if locked
           if (widget.levelData.isLock)
-            Transform.translate(
-                offset: const Offset(-5, 5),
-                child: const Icon(Icons.lock, color: Colors.grey))
+            const Icon(Icons.lock, color: Colors.grey)
         ],
       );
 
@@ -260,37 +298,57 @@ class _LevelWidgetState extends State<LevelWidget>
       padding: const EdgeInsets.only(bottom: 5),
       child: Image.asset(widget.finalLevelImage, scale: 0.8));
 
-  Widget _buildTooltip() => AnimatedBuilder(
+  Widget _tooltip() => AnimatedBuilder(
         animation: _tooltipAnimation,
         builder: (_, __) => Transform.translate(
           offset: Offset(0, _tooltipAnimation.value),
-          child: Column(
-            children: [
-              // Tooltip is a rectangle with a triangle below
-              Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  decoration: BoxDecoration(
-                      color: widget.startColor,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.grey.shade300,
-                            blurRadius: 5,
-                            spreadRadius: 2,
-                            offset: const Offset(2, 2))
-                      ]),
-                  child: Text(widget.isFirstGroup ? 'Start' : 'Jump Here',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ))),
-              CustomPaint(
-                  size: const Size(20, 20),
-                  painter: DownwardTrianglePainter(widget.startColor))
-            ],
-          ),
+          child: Stack(children: [
+            Column(
+              children: [
+                // Tooltip is a rectangle with a triangle below
+                Container(
+                    width: 130,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 12),
+                    decoration: BoxDecoration(
+                        image: widget.isFirstGroup
+                            ? const DecorationImage(
+                                image:
+                                    AssetImage('assets/images/level_start.gif'),
+                                fit: BoxFit.cover)
+                            : null,
+                        color: widget.startColor,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white, width: 1),
+                        boxShadow: !widget.isDarkMode
+                            ? [
+                                BoxShadow(
+                                    color: Colors.grey.shade300,
+                                    blurRadius: 5,
+                                    spreadRadius: 2,
+                                    offset: const Offset(2, 2))
+                              ]
+                            : null),
+                    child: Center(
+                      child: Text(widget.isFirstGroup ? 'Start' : 'Jump Here',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          )),
+                    )),
+                Transform.translate(
+                  offset: const Offset(0, -1),
+                  child: CustomPaint(
+                      size: const Size(20, 20),
+                      painter: DownwardTrianglePainter(
+                          mainColor: widget.startColor,
+                          borderColor: Colors.white,
+                          borderWidth: 1)),
+                )
+              ],
+            ),
+          ]),
         ),
       );
 
@@ -359,23 +417,43 @@ class SplashCirclePainter extends CustomPainter {
 
 class DownwardTrianglePainter extends CustomPainter {
   final Color mainColor;
+  final Color borderColor;
+  final double borderWidth;
 
-  DownwardTrianglePainter(this.mainColor);
+  DownwardTrianglePainter({
+    required this.mainColor,
+    required this.borderColor,
+    this.borderWidth = 2.0,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
+    // Paint object for the filled triangle
+    final fillPaint = Paint()
       ..color = mainColor
       ..style = PaintingStyle.fill;
 
+    // Path for the triangle
     final path = Path()
       ..moveTo(size.width / 2, size.height / 3) // Bottom center
       ..lineTo(0, 0) // Top left
       ..lineTo(size.width, 0) // Top right
       ..close();
 
-    // Draw the triangle
-    canvas.drawPath(path, paint);
+    // Draw the filled triangle
+    canvas.drawPath(path, fillPaint);
+
+    // Paint object for the border
+    final borderPaint = Paint()
+      ..color = borderColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = borderWidth;
+
+    // Draw the border lines manually, excluding the top edge
+    canvas.drawLine(Offset(size.width / 2, size.height / 3), Offset(0, 0),
+        borderPaint); // Left edge
+    canvas.drawLine(Offset(size.width / 2, size.height / 3),
+        Offset(size.width, 0), borderPaint); // Right edge
   }
 
   @override

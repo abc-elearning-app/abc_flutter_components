@@ -48,6 +48,8 @@ class PathLevel extends StatefulWidget {
 
   final bool isFirstGroup;
 
+  final bool isDarkMode;
+
   final void Function(String id) onClickLevel;
 
   const PathLevel({
@@ -68,6 +70,7 @@ class PathLevel extends StatefulWidget {
     required this.lineColor,
     required this.lineBackgroundColor,
     required this.onClickLevel,
+    required this.isDarkMode,
   });
 
   @override
@@ -143,6 +146,7 @@ class _PathLevelState extends State<PathLevel> {
                   : const SizedBox()),
 
       LevelGrid(
+          isDarkMode: widget.isDarkMode,
           drawType: widget.drawType,
           drawSpeed: widget.cycleSpeed,
           longRowCount: widget.upperRowCount,

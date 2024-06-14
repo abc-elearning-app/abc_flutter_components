@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/common/passing_probability_box.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/common/passing_probability_section.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/statistic_tab_widgets/overview_box.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/statistic_tab_widgets/subject_analysis_box.dart';
 
@@ -7,12 +7,16 @@ class NewStatisticTab extends StatelessWidget {
   final int dayStreak;
   final double passingProbability;
   final Color mainColor;
+  final Color darkModeMainColor;
+  final bool isDarkMode;
 
   const NewStatisticTab(
       {super.key,
       this.mainColor = const Color(0xFFE3A651),
+      this.darkModeMainColor = const Color(0xFFCFAF83),
       required this.dayStreak,
-      required this.passingProbability});
+      required this.passingProbability,
+      required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +26,12 @@ class NewStatisticTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            PassingProbabilityBox(
+            PassingProbabilitySection(
+              isDarkMode: isDarkMode,
               passingProbability: passingProbability,
               mainColor: mainColor,
               dayStreak: dayStreak,
+              darkModeMainColor: darkModeMainColor,
             ),
             const OverviewBox(
               answeredQuestions: 155,

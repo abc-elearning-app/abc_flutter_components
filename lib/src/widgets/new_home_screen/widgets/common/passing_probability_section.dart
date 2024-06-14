@@ -2,18 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/progress/custom_linear_progress.dart';
 import 'package:flutter_svg/svg.dart';
 
-class PassingProbabilityBox extends StatelessWidget {
+class PassingProbabilitySection extends StatelessWidget {
   final int dayStreak;
   final double passingProbability;
 
   final String streakIcon;
   final Color mainColor;
+  final Color darkModeMainColor;
 
-  const PassingProbabilityBox({
+  final bool isDarkMode;
+
+  const PassingProbabilitySection({
     super.key,
     required this.passingProbability,
     required this.mainColor,
+    required this.darkModeMainColor,
     required this.dayStreak,
+    required this.isDarkMode,
     this.streakIcon = 'assets/images/fire.svg',
   });
 
@@ -22,7 +27,7 @@ class PassingProbabilityBox extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildStreakCircle(),
+        _streakCircle(),
         Expanded(
           child: Container(
             margin: const EdgeInsets.only(left: 20),
@@ -30,7 +35,9 @@ class PassingProbabilityBox extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: mainColor.withOpacity(0.16),
+              color: isDarkMode
+                  ? darkModeMainColor.withOpacity(0.3)
+                  : mainColor.withOpacity(0.16),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -38,15 +45,19 @@ class PassingProbabilityBox extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Passing Probability',
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                          color: isDarkMode ? Colors.white : Colors.black),
                     ),
                     Text(
                       '${passingProbability.toInt()}%',
-                      style: const TextStyle(
-                          fontSize: 15, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                          color: isDarkMode ? Colors.white : Colors.black),
                     ),
                   ],
                 ),
@@ -55,7 +66,7 @@ class PassingProbabilityBox extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: CustomLinearProgress(
                     mainColor: mainColor,
-                    backgroundColor: Colors.white,
+                    backgroundColor: Colors.white.withOpacity(isDarkMode ? 0.3 : 1),
                     percent: passingProbability,
                     indicatorColor: Colors.white,
                   ),
@@ -68,14 +79,16 @@ class PassingProbabilityBox extends StatelessWidget {
     );
   }
 
-  Widget _buildStreakCircle() => Stack(
+  Widget _streakCircle() => Stack(
         alignment: Alignment.bottomCenter,
         children: [
           Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
-                  border: Border.all(width: 4, color: mainColor)),
+                  border: Border.all(
+                      width: 4,
+                      color: isDarkMode ? darkModeMainColor : mainColor)),
               child: SvgPicture.asset(streakIcon)),
           Transform.translate(
             offset: const Offset(0, 10),
@@ -83,7 +96,7 @@ class PassingProbabilityBox extends StatelessWidget {
               width: 45,
               padding: const EdgeInsets.symmetric(vertical: 1),
               decoration: BoxDecoration(
-                color: mainColor,
+                color: isDarkMode ? darkModeMainColor : mainColor,
                 borderRadius: BorderRadius.circular(5),
               ),
               child: Center(

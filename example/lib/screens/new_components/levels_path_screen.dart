@@ -1,3 +1,4 @@
+import 'package:example/constants/app_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
@@ -9,42 +10,21 @@ class TestLevelsPathScreen extends StatefulWidget {
 }
 
 class _TestLevelsPathScreenState extends State<TestLevelsPathScreen> {
-  // late ScrollController _scrollController;
-  // late ValueNotifier<double> _backgroundOffset;
-
-  @override
-  void initState() {
-    // _scrollController = ScrollController();
-    // _backgroundOffset = ValueNotifier<double>(0);
-
-    // _scrollController.addListener(
-    //     () => _backgroundOffset.value = _scrollController.offset / 15);
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    // _scrollController.dispose();
-    // _backgroundOffset.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final groupList = <LevelGroup>[
       LevelGroup(
-        'Life Science',
-        'assets/images/path_start.png',
-        const Color(0xFF3CC079),
-        DrawType.firstTimeOpen,
-        [
+        title: 'Life Science',
+        startImage: 'assets/images/path_start.png',
+        startColor: const Color(0xFF3CC079),
+        drawType: DrawType.firstTimeOpen,
+        levels: [
           LevelData(id: 'ABC', title: 'Anatomy 1', progress: 85, isLock: false),
           LevelData(id: 'ABC', title: 'Anatomy 3', progress: 0, isLock: false),
           LevelData(
             id: 'ABC',
             title: 'Botany 1',
-            progress: 10,
+            progress: 0,
             isLock: false,
             isCurrent: true,
           ),
@@ -54,11 +34,11 @@ class _TestLevelsPathScreenState extends State<TestLevelsPathScreen> {
         ],
       ),
       LevelGroup(
-        'Calculus',
-        'assets/images/path_start.png',
-        const Color(0xFFFF9669),
-        DrawType.firstTimeOpen,
-        [
+        title: 'Calculus',
+        startImage: 'assets/images/path_start.png',
+        startColor: const Color(0xFFFF9669),
+        drawType: DrawType.firstTimeOpen,
+        levels: [
           LevelData(
               id: 'ABC',
               title: 'Botany 1',
@@ -74,6 +54,7 @@ class _TestLevelsPathScreenState extends State<TestLevelsPathScreen> {
     ];
 
     return PathLevelScreen(
+      isDarkMode: AppTheme.isDarkMode,
       levelGroupList: groupList,
       title: 'General Science',
       onClickLevel: (id) => print(id),

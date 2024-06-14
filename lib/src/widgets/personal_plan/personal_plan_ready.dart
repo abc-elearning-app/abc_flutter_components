@@ -162,7 +162,9 @@ class PersonalPlanReadyScreen extends StatelessWidget {
               children: [
                 Text(
                   data.title,
-                  style: TextStyle(color: (isDarkMode ? Colors.white : Colors.black).withOpacity(0.5)),
+                  style: TextStyle(
+                      color: (isDarkMode ? Colors.white : Colors.black)
+                          .withOpacity(0.5)),
                 ),
                 Text(
                   data.content,

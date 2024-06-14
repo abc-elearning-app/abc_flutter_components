@@ -11,13 +11,13 @@ class LevelGroup {
   final List<LevelData> levels;
   final DrawType drawType;
 
-  LevelGroup(
-    this.title,
-    this.startImage,
-    this.startColor,
-    this.drawType,
-    this.levels,
-  );
+  LevelGroup({
+    required this.title,
+    required this.startImage,
+    required this.startColor,
+    required this.drawType,
+    required this.levels,
+  });
 }
 
 class PathLevelScreen extends StatefulWidget {
@@ -39,12 +39,15 @@ class PathLevelScreen extends StatefulWidget {
   final Color dividerColor;
 
   final Duration drawSpeed;
+  final bool isDarkMode;
 
   final void Function(String id) onClickLevel;
 
   const PathLevelScreen({
     super.key,
     required this.levelGroupList,
+    required this.title,
+    required this.onClickLevel,
     this.backgroundImage = 'assets/images/path_level_background.png',
     this.finalLevelImage = 'assets/images/final_cup.png',
     this.backgroundColor = const Color(0xFFF5F4EE),
@@ -57,8 +60,7 @@ class PathLevelScreen extends StatefulWidget {
     this.upperRowCount = 1,
     this.lowerRowCount = 2,
     this.drawSpeed = const Duration(milliseconds: 250),
-    required this.title,
-    required this.onClickLevel,
+    required this.isDarkMode,
   });
 
   @override
@@ -105,7 +107,8 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: widget.backgroundColor),
+      decoration: BoxDecoration(
+          color: widget.isDarkMode ? Colors.black : widget.backgroundColor),
       child: Stack(
         children: [
           ValueListenableBuilder(
@@ -113,7 +116,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
               builder: (_, value, __) => Transform.translate(
                   offset: Offset(0, -value),
                   child: Container(
-                      height: 400,
+                      height: 450,
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               image: AssetImage(widget.backgroundImage),
@@ -122,7 +125,10 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
               backgroundColor: Colors.transparent,
               appBar: AppBar(
                   title: Text(widget.title,
-                      style: const TextStyle(fontWeight: FontWeight.w500)),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: widget.isDarkMode ? Colors.white : Colors.black,
+                      )),
                   backgroundColor: Colors.transparent,
                   scrolledUnderElevation: 0),
               body: SafeArea(
@@ -153,7 +159,9 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                           mainColor: widget.mainColor,
                           percent: percent + 10,
                           indicatorPosition: -5,
-                          backgroundColor: widget.lineBackgroundColor,
+                          backgroundColor: widget.isDarkMode
+                              ? Colors.grey.shade900
+                              : widget.lineBackgroundColor,
                           indicatorColor: Colors.white)),
                   Expanded(
                     child: ListView.builder(
@@ -177,6 +185,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
       children: [
         _buildDivider(currentGroup.title, index == 0),
         PathLevel(
+            isDarkMode: widget.isDarkMode,
             finalLevelImage: widget.finalLevelImage,
             levelList: currentGroup.levels,
             drawType: currentGroup.drawType,
@@ -189,7 +198,9 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
             lockColor: widget.lockColor,
             passColor: widget.passColor,
             lineColor: widget.lineColor,
-            lineBackgroundColor: widget.lineBackgroundColor,
+            lineBackgroundColor: widget.isDarkMode
+                ? Colors.grey.shade900
+                : widget.lineBackgroundColor,
             upperRowCount: widget.upperRowCount,
             lowerRowCount: widget.lowerRowCount,
             onClickLevel: widget.onClickLevel),
@@ -213,7 +224,8 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
             Text(title,
                 style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    color: widget.dividerColor,
+                    color:
+                        widget.isDarkMode ? Colors.white : widget.dividerColor,
                     fontFamily: 'Poppins',
                     fontSize: 18)),
             Expanded(

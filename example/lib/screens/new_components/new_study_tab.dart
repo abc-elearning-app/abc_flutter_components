@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
+import '../../constants/app_themes.dart';
+
 class TestNewStudyTabScreen extends StatelessWidget {
   const TestNewStudyTabScreen({super.key});
 
@@ -8,47 +10,54 @@ class TestNewStudyTabScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final subjectDataList = <SubjectData>[
       SubjectData(
-        'assets/images/subject_icon.svg',
-        'Arithmetic Reasoning',
-        22,
+        id: '',
+        icon: 'assets/images/subject_icon.svg',
+        title: 'Arithmetic Reasoning',
+        progress: 18,
       ),
       SubjectData(
-        'assets/images/subject_icon.svg',
-        'Assembling Objects',
-        50,
+        id: '',
+        icon: 'assets/images/subject_icon.svg',
+        title: 'Assembling Objects',
+        progress: 19,
       ),
       SubjectData(
-        'assets/images/subject_icon.svg',
-        'Tư Tưởng Hồ Chí Minh',
-        100,
+        id: '',
+        icon: 'assets/images/subject_icon.svg',
+        title: 'Tư Tưởng Hồ Chí Minh',
+        progress: 40,
       ),
       SubjectData(
-        'assets/images/subject_icon.svg',
-        'Gangnam Style',
-        80,
+        id: '',
+        icon: 'assets/images/subject_icon.svg',
+        title: 'Gangnam Style',
+        progress: 80,
       ),
       SubjectData(
-        'assets/images/subject_icon.svg',
-        'Mathematics Knowledge',
-        30,
+        id: '',
+        icon: 'assets/images/subject_icon.svg',
+        title: 'Mathematics Knowledge',
+        progress: 30,
       ),
       SubjectData(
-        'assets/images/subject_icon.svg',
-        'Haz Mat',
-        70,
+        id: '',
+        icon: 'assets/images/subject_icon.svg',
+        title: 'Haz Mat',
+        progress: 70,
       ),
     ];
 
     return Scaffold(
-        backgroundColor: const Color(0xFFF5F4EE),
+        backgroundColor:
+            AppTheme.isDarkMode ? Colors.black : const Color(0xFFF5F4EE),
         body: SafeArea(
             child: NewStudyTab(
-          buttonText: '',
-          mainColor: const Color(0xFFE3A651),
+          isDarkMode: AppTheme.isDarkMode,
           subjectDataList: subjectDataList,
           dayStreak: 14,
           passingProbability: 30,
           onClickTodayQuestion: () {},
+          onSelectSubject: (id) => print(id),
         )));
   }
 }
