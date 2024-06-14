@@ -16,6 +16,7 @@ class FloatingTextData {
 class PersonalPlanAnalyzingScreen extends StatefulWidget {
   final Color backgroundColor;
   final Color mainColor;
+  final Color secondaryColor;
   final String? loadingImage;
   final String? finishImage;
   final int loadingTime;
@@ -28,10 +29,11 @@ class PersonalPlanAnalyzingScreen extends StatefulWidget {
     super.key,
     this.backgroundColor = const Color(0xFFF5F4EE),
     this.mainColor = const Color(0xFF7C6F5B),
+    this.secondaryColor = const Color(0xFFE5E2CB),
     this.loadingImage,
     this.finishImage,
     this.loadingTime = 2000,
-    this.floatingTextAnimationTime = 2000,
+    this.floatingTextAnimationTime = 1500,
     this.floatingTextStyle,
     required this.onFinish,
     required this.isDarkMode,
@@ -102,7 +104,7 @@ class _PersonalPlanAnalyzingScreenState
       Future.delayed(
           Duration(milliseconds: startTime), () => animController.forward());
 
-      startTime += 500;
+      startTime += 800;
     }
   }
 
@@ -112,6 +114,13 @@ class _PersonalPlanAnalyzingScreenState
     _timer.cancel();
 
     for (AnimationController animController in _animControllers) {
+      animController.removeStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          Future.delayed(const Duration(seconds: 1),
+              () => animController.forward(from: 0));
+        }
+      });
+
       animController.dispose();
     }
 
@@ -120,74 +129,67 @@ class _PersonalPlanAnalyzingScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Scaffold(
-        backgroundColor:
-            widget.isDarkMode ? Colors.black : widget.backgroundColor,
-        body: SafeArea(
-          child: SizedBox(
-            width: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Title
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    'Generating Your Personalized Study Plan...',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
-                  ),
+    return Scaffold(
+      backgroundColor:
+          widget.isDarkMode ? Colors.black : widget.backgroundColor,
+      body: SafeArea(
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Title
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'Generating Your Personalized Study Plan...',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 28,
+                      color: widget.isDarkMode ? Colors.white : Colors.black),
                 ),
+              ),
 
-                _buildCircularLoadingProgress(),
+              _buildCircularLoadingProgress(),
 
-                // Progress number
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: ValueListenableBuilder(
-                    valueListenable: _progressValue,
-                    builder: (_, value, __) => Text('$value%',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: widget.mainColor,
-                            fontSize: 40)),
-                  ),
+              // Progress number
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: ValueListenableBuilder(
+                  valueListenable: _progressValue,
+                  builder: (_, value, __) => Text('$value%',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: widget.isDarkMode
+                              ? Colors.white
+                              : widget.mainColor,
+                          fontSize: 40)),
                 ),
+              ),
 
-                const Text(
-                  'Analyzing Your Data ...',
-                  style: TextStyle(fontSize: 18),
-                )
-              ],
-            ),
+              const Text(
+                'Analyzing Your Data ...',
+                style: TextStyle(fontSize: 18),
+              )
+            ],
           ),
         ),
       ),
-
-      // Debug button
-      if (kDebugMode && Platform.isIOS)
-        SafeArea(
-            child: IconButton(
-                onPressed: () => Navigator.of(context).pop(context),
-                icon: const Icon(
-                  Icons.chevron_left,
-                  color: Colors.red,
-                )))
-    ]);
+    );
   }
 
   Widget _buildCircularLoadingProgress() {
-    const double outerRadius = 140;
-    const double lineWidth = 20;
+    const double outerRadius = 135;
+    const double lineWidth = 18;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 40),
       child: Stack(children: [
         const CircleAvatar(radius: outerRadius, backgroundColor: Colors.white),
         CircleAvatar(
-          backgroundColor: widget.mainColor.withOpacity(0.3),
+          backgroundColor: widget.secondaryColor,
           radius: outerRadius,
           child: CircularPercentIndicator(
               radius: outerRadius - lineWidth,
@@ -202,44 +204,52 @@ class _PersonalPlanAnalyzingScreenState
                   const Duration(milliseconds: 300), () => widget.onFinish()),
               center: CircleAvatar(
                   radius: outerRadius - 2 * lineWidth,
-                  backgroundColor: Colors.white.withOpacity(0.4),
+                  backgroundColor: Colors.white.withOpacity(0.5),
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
                       // Image icon
                       ValueListenableBuilder(
                           valueListenable: _progressValue,
-                          builder: (_, value, __) => Transform.scale(
-                              scale: 1.2,
-                              child: Image.asset(_getImagePath(value)))),
+                          builder: (_, value, __) =>
+                              Image.asset(_getImagePath(value))),
 
                       // Floating texts
-                      Stack(
-                          children: List.generate(
-                              3,
-                              (index) => AnimatedBuilder(
-                                  animation: _animControllers[index],
-                                  builder: (_, __) => Transform.translate(
-                                      offset: Offset(
-                                        _calculateOffsetX(index),
-                                        _calculateOffsetY(index),
-                                      ),
-                                      child: Opacity(
-                                        opacity: _calculateFadeOpacity(index),
-                                        child: Text(
-                                            floatingTextList[index].text,
-                                            style: widget.floatingTextStyle ??
-                                                const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 20
-                                                )),
-                                      )))))
+                      _floatingTexts(),
                     ],
                   ))),
         ),
       ]),
     );
   }
+
+  Widget _floatingTexts() => Stack(
+          children: List.generate(
+        3,
+        (index) => AnimatedBuilder(
+          animation: _animations[index],
+          builder: (_, __) => Transform.translate(
+            offset: Offset(
+              _calculateOffsetX(index),
+              _calculateOffsetY(index),
+            ),
+            child: Transform.scale(
+              scale: 1 - _animations[index].value,
+              child: Opacity(
+                opacity: _calculateFadeOpacity(index),
+                child: Text(floatingTextList[index].text,
+                    style: widget.floatingTextStyle ??
+                        TextStyle(
+                            color: widget.isDarkMode
+                                ? Color.lerp(Colors.white, Colors.black,
+                                    _animations[index].value)
+                                : Colors.black,
+                            fontSize: 20)),
+              ),
+            ),
+          ),
+        ),
+      ));
 
   String _getImagePath(int value) => value < 100
       ? widget.loadingImage ?? 'assets/images/analyzing.png'

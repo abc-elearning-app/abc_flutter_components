@@ -8,10 +8,9 @@ class TestAnalyzingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PersonalPlanAnalyzingScreen(
-      floatingTextStyle: TextStyle(color: Colors.white, fontSize: 20),
       isDarkMode: AppTheme.isDarkMode,
-      onFinish: () {}
-        // => Navigator.of(context).pop(),
+      onFinish: ()
+        => Navigator.of(context).pop(),
     );
   }
 }
