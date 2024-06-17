@@ -23,68 +23,36 @@ class _TestDiagnosticQuestionsPageState
   void initState() {
     _questions = ValueNotifier<List<QuestionData>>([
       QuestionData(
-          'Some city transit buses may have a brake-door interlock system, this system _____.',
-          <AnswerData>[
+          question:
+              'Some city transit buses may have a brake-door interlock system, this system _____.',
+          answers: <AnswerData>[
             AnswerData('An incorrect answer'),
             AnswerData('A correct answer', isCorrect: true),
             AnswerData('An incorrect answer'),
             AnswerData('An incorrect answer'),
           ],
-          "There are four pieces in the assembled puzzle, two of which are triangles and the other pieces are 2 rectangles with different length."),
+          explanation:
+              "There are four pieces in the assembled puzzle, two of which are triangles and the other pieces are 2 rectangles with different length."),
       QuestionData(
-          'Hắc Hường là gì?',
-          <AnswerData>[
+          question: 'Hắc Hường là gì?',
+          answers: <AnswerData>[
             AnswerData('Black Pink', isCorrect: true),
             AnswerData("2 Màu sắc"),
             AnswerData('ABC'),
             AnswerData('KS'),
           ],
-          "A South Korean girl group, formed by YG Entertainment, in August 2016"),
+          explanation:
+              "A South Korean girl group, formed by YG Entertainment, in August 2016"),
       QuestionData(
-          'Hắc Hường là gì?',
-          <AnswerData>[
+          question: 'Hắc Hường là gì?',
+          answers: <AnswerData>[
             AnswerData('Black Pink', isCorrect: true),
             AnswerData("2 Màu sắc"),
             AnswerData('ABC'),
             AnswerData('KS'),
           ],
-          "A South Korean girl group, formed by YG Entertainment, in August 2016"),
-      QuestionData(
-          'Hắc Hường là gì?',
-          <AnswerData>[
-            AnswerData('Black Pink', isCorrect: true),
-            AnswerData("2 Màu sắc"),
-            AnswerData('ABC'),
-            AnswerData('KS'),
-          ],
-          "A South Korean girl group, formed by YG Entertainment, in August 2016"),
-      QuestionData(
-          'Hắc Hường là gì?',
-          <AnswerData>[
-            AnswerData('Black Pink', isCorrect: true),
-            AnswerData("2 Màu sắc"),
-            AnswerData('ABC'),
-            AnswerData('KS'),
-          ],
-          "A South Korean girl group, formed by YG Entertainment, in August 2016"),
-      QuestionData(
-          'Hắc Hường là gì?',
-          <AnswerData>[
-            AnswerData('Black Pink', isCorrect: true),
-            AnswerData("2 Màu sắc"),
-            AnswerData('ABC'),
-            AnswerData('KS'),
-          ],
-          "A South Korean girl group, formed by YG Entertainment, in August 2016"),
-      QuestionData(
-          'Hắc Hường là gì?',
-          <AnswerData>[
-            AnswerData('Black Pink', isCorrect: true),
-            AnswerData("2 Màu sắc"),
-            AnswerData('ABC'),
-            AnswerData('KS'),
-          ],
-          "A South Korean girl group, formed by YG Entertainment, in August 2016"),
+          explanation:
+              "A South Korean girl group, formed by YG Entertainment, in August 2016"),
     ]);
     super.initState();
   }
@@ -132,9 +100,8 @@ class _TestDiagnosticQuestionsPageState
               Expanded(
                 child: DiagnosticQuestion(
                   isDarkMode: isDarkMode,
-                  prevQuestion: currentIndex == 0
-                      ? null
-                      : value[currentIndex - 1],
+                  prevQuestion:
+                      currentIndex == 0 ? null : value[currentIndex - 1],
                   isPro: true,
                   nextQuestion: value[currentIndex],
                   totalQuestions: value.length,
@@ -163,7 +130,10 @@ class _TestDiagnosticQuestionsPageState
 
     // Update the progress line
     _questions.value = tmpQuestionList
-        .map((e) => QuestionData(e.question, e.answers, e.explanation,
+        .map((e) => QuestionData(
+            question: e.question,
+            answers: e.answers,
+            explanation: e.explanation,
             bookmarked: e.bookmarked,
             liked: e.liked,
             disliked: e.disliked,

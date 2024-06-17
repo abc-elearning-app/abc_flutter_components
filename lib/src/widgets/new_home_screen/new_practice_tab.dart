@@ -2,48 +2,60 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class QuestionGroupData {
+  final String id;
   final String title;
   final String subtitle;
   final String icon;
   final Color iconBackgroundColor;
-  final Color backgroundColor;
-  final Color textColor;
-  final void Function() onClick;
 
-  QuestionGroupData(this.title, this.subtitle, this.icon, this.onClick,
-      {this.textColor = Colors.black,
-      this.iconBackgroundColor = Colors.grey,
-      this.backgroundColor = Colors.white});
+  QuestionGroupData(
+      {required this.title,
+      required this.subtitle,
+      required this.icon,
+      required this.id,
+      this.iconBackgroundColor = Colors.grey});
 }
 
 class NewPracticeTab extends StatelessWidget {
   final List<QuestionGroupData> groupList;
+  final bool isDarkMode;
+  final void Function(String id) onSelect;
 
-  const NewPracticeTab({super.key, required this.groupList});
+  const NewPracticeTab({
+    super.key,
+    required this.groupList,
+    required this.isDarkMode,
+    required this.onSelect,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         children: List.generate(
-            groupList.length, (index) => _buildQuestionGroup(groupList[index])),
+          groupList.length,
+          (index) => _questionGroup(groupList[index]),
+        ),
       ),
     );
   }
 
-  Widget _buildQuestionGroup(QuestionGroupData questionGroupData) =>
-      GestureDetector(
-        onTap: questionGroupData.onClick,
+  Widget _questionGroup(QuestionGroupData questionGroupData) => GestureDetector(
+        onTap: () => onSelect(questionGroupData.id),
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           padding: const EdgeInsets.all(15),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
-              color: questionGroupData.backgroundColor,
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.grey.shade300, spreadRadius: 1, blurRadius: 1)
-              ]),
+              borderRadius: BorderRadius.circular(16),
+              color: isDarkMode ? Colors.grey.shade800 : Colors.white,
+              boxShadow: !isDarkMode
+                  ? [
+                      BoxShadow(
+                          color: Colors.grey.shade300,
+                          spreadRadius: 1,
+                          blurRadius: 1)
+                    ]
+                  : null),
           child: Row(
             children: [
               Container(
@@ -52,9 +64,8 @@ class NewPracticeTab extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                       color: questionGroupData.iconBackgroundColor,
-                      borderRadius: BorderRadius.circular(15)),
-                  child: SvgPicture.asset(
-                      'assets/images/${questionGroupData.icon}.svg')),
+                      borderRadius: BorderRadius.circular(16)),
+                  child: SvgPicture.asset(questionGroupData.icon)),
               const SizedBox(width: 15),
               Expanded(
                 child: Column(
@@ -65,14 +76,11 @@ class NewPracticeTab extends StatelessWidget {
                       style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 18,
-                          color: questionGroupData.textColor),
+                          color: isDarkMode ? Colors.white : Colors.black),
                     ),
                     Text(
                       questionGroupData.subtitle,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: questionGroupData.textColor,
-                      ),
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ],
                 ),

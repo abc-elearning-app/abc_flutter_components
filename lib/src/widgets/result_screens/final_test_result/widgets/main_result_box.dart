@@ -8,7 +8,6 @@ class MainResultBox extends StatelessWidget {
   final bool isPro;
 
   final Color mainColor;
-  final Color boxColor;
   final Color correctColor;
   final Color incorrectColor;
 
@@ -26,8 +25,7 @@ class MainResultBox extends StatelessWidget {
       required this.averageProgress,
       required this.correctQuestions,
       required this.incorrectQuestions,
-      required this.mainColor,
-      required this.boxColor});
+      required this.mainColor});
 
   bool isShowingDetail = false;
 

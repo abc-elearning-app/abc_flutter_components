@@ -319,7 +319,7 @@ class _MainQuestionPageState extends State<MainQuestionPage> {
     }
   }
 
-  _answerTextColor(bool isDarkMode, int answerIndex, bool isCorrect) {
+  _answerTextColor(bool isDarkMode, int answerIndex, bool? isCorrect) {
     switch (_checkAnswer(answerIndex, isCorrect)) {
       case 0:
         return isDarkMode ? Colors.white : Colors.black;

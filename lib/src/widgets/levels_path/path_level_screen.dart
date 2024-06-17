@@ -31,7 +31,6 @@ class PathLevelScreen extends StatefulWidget {
   final String title;
 
   final Color backgroundColor;
-  final Color lineColor;
   final Color lineBackgroundColor;
   final Color passColor;
   final Color mainColor;
@@ -54,7 +53,6 @@ class PathLevelScreen extends StatefulWidget {
     this.passColor = const Color(0xFF15CB9F),
     this.mainColor = const Color(0xFFE3A651),
     this.lockColor = const Color(0xFFF3F2F2),
-    this.lineColor = const Color(0xFFE3A651),
     this.lineBackgroundColor = const Color(0xFFF3EADA),
     this.dividerColor = const Color(0xFF7C6F5B),
     this.upperRowCount = 1,
@@ -111,6 +109,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
           color: widget.isDarkMode ? Colors.black : widget.backgroundColor),
       child: Stack(
         children: [
+          // Background image
           ValueListenableBuilder(
               valueListenable: _backgroundOffset,
               builder: (_, value, __) => Transform.translate(
@@ -124,6 +123,10 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
           Scaffold(
               backgroundColor: Colors.transparent,
               appBar: AppBar(
+                  leading: IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
                   title: Text(widget.title,
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
@@ -165,6 +168,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                           indicatorColor: Colors.white)),
                   Expanded(
                     child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
                         controller: _scrollController,
                         shrinkWrap: true,
                         itemCount: widget.levelGroupList.length,
@@ -197,7 +201,6 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
             mainColor: widget.mainColor,
             lockColor: widget.lockColor,
             passColor: widget.passColor,
-            lineColor: widget.lineColor,
             lineBackgroundColor: widget.isDarkMode
                 ? Colors.grey.shade900
                 : widget.lineBackgroundColor,

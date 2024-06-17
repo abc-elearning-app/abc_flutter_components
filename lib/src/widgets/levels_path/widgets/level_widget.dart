@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -55,7 +56,7 @@ class _LevelWidgetState extends State<LevelWidget>
   late Animation<double> _tooltipAnimation;
   late Animation<double> _fadingInAnimation;
   late Animation<double> _landingAnimation;
-  late Animation<double> _bouncingAnimation;
+  late Animation<double> _scalingAnimation;
 
   @override
   void initState() {
@@ -68,13 +69,14 @@ class _LevelWidgetState extends State<LevelWidget>
     /// Animations when appear
     _appearanceController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 500),
     );
 
     if (widget.drawType == DrawType.nextLevel) {
       _appearanceController.addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          _appearanceController.reverse();
+          Future.delayed(const Duration(microseconds: 300),
+              () => _appearanceController.reverse());
         }
       });
     }
@@ -86,20 +88,23 @@ class _LevelWidgetState extends State<LevelWidget>
       ),
     );
 
-    _landingAnimation = Tween<double>(begin: -25, end: 0).animate(
+    _landingAnimation = Tween<double>(begin: 0, end: 25).animate(
       CurvedAnimation(
         parent: _appearanceController,
         curve: Curves.easeInOut,
       ),
     );
 
-    _bouncingAnimation = Tween<double>(
-      begin: 0,
-      end: -20,
-    ).animate(
+    _scalingAnimation = Tween<double>(
+            begin: 1,
+            end: widget.drawType == DrawType.nextLevel &&
+                    widget.levelData.isCurrent
+                ? 1.15
+                : 1)
+        .animate(
       CurvedAnimation(
         parent: _appearanceController,
-        curve: Curves.bounceIn,
+        curve: Curves.easeInOut,
       ),
     );
 
@@ -165,6 +170,9 @@ class _LevelWidgetState extends State<LevelWidget>
     }
   }
 
+  double outerRadius = 36;
+  double circleWidth = 5;
+
   @override
   void dispose() {
     _appearanceController.dispose();
@@ -193,31 +201,23 @@ class _LevelWidgetState extends State<LevelWidget>
                   child: Transform.translate(
                       offset: Offset(0, _getTranslateValue()),
                       child: Stack(alignment: Alignment.topCenter, children: [
-                        Transform.translate(
-                          offset: const Offset(0, 20),
-                          child: GestureDetector(
-                            onTap: () =>
-                                widget.onClickLevel(widget.levelData.id),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                // Regular level or final cup
-                                widget.isFinal
-                                    ? _finalLevel()
-                                    : widget.levelData.isLock
-                                        ? _lockLevel()
-                                        : _mainLevel(),
+                        GestureDetector(
+                          onTap: () => widget.onClickLevel(widget.levelData.id),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              // Regular level or final cup
+                              Transform.scale(
+                                  scale: _scalingAnimation.value,
+                                  child: _getLevelWidget()),
 
-                                // Title
-                                Text(
-                                  widget.levelData.title,
+                              // Title
+                              Text(widget.levelData.title,
                                   style: const TextStyle(
                                       color: Colors.grey,
                                       fontSize: 16,
-                                      fontWeight: FontWeight.w500),
-                                )
-                              ],
-                            ),
+                                      fontWeight: FontWeight.w500))
+                            ],
                           ),
                         ),
                       ])),
@@ -231,23 +231,35 @@ class _LevelWidgetState extends State<LevelWidget>
     );
   }
 
-  Widget _mainLevel() => Container(
-        decoration:
-            BoxDecoration(borderRadius: BorderRadius.circular(100), boxShadow: [
-          BoxShadow(color: Colors.grey.shade300, blurRadius: 1, spreadRadius: 1)
-        ]),
+  Widget _getLevelWidget() {
+    if (widget.isFinal) return _finalLevel();
+    if (widget.levelData.isLock) return _lockLevel();
+    return _defaultLevel();
+  }
+
+  Widget _defaultLevel() => Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100),
+            boxShadow: !widget.isDarkMode
+                ? [
+                    BoxShadow(
+                        color: Colors.grey.shade300,
+                        blurRadius: 1,
+                        spreadRadius: 1)
+                  ]
+                : null),
         child: CircleAvatar(
-          radius: 40,
+          radius: outerRadius,
           backgroundColor: Color.lerp(_getMainColor(), Colors.white, 0.4),
           child: CircleAvatar(
-            radius: 33,
+            radius: outerRadius - circleWidth,
             backgroundColor: Colors.white,
             child: CircleAvatar(
-              radius: 29,
+              radius: outerRadius - circleWidth - 4,
               backgroundColor: _getMainColor(),
               child: SvgPicture.asset(
                 widget.levelData.icon,
-                height: 35,
+                height: outerRadius,
                 colorFilter: ColorFilter.mode(
                   _getIconColor(),
                   BlendMode.srcIn,
@@ -271,14 +283,14 @@ class _LevelWidgetState extends State<LevelWidget>
                       spreadRadius: 1)
                 ]),
             child: CircleAvatar(
-              radius: 40,
+              radius: outerRadius,
               backgroundColor: Colors.white,
               child: CircleAvatar(
-                radius: 32,
-                backgroundColor: _getMainColor(),
+                radius: outerRadius - circleWidth - 2,
+                backgroundColor: Colors.grey.shade100,
                 child: SvgPicture.asset(
                   widget.levelData.icon,
-                  height: 40,
+                  height: outerRadius,
                   colorFilter: ColorFilter.mode(
                     _getIconColor(),
                     BlendMode.srcIn,
@@ -288,9 +300,10 @@ class _LevelWidgetState extends State<LevelWidget>
             ),
           ),
 
-          // Lock icon if locked
-          if (widget.levelData.isLock)
-            const Icon(Icons.lock, color: Colors.grey)
+          // Lock icon
+          Transform.translate(
+              offset: const Offset(3, -3),
+              child: const Icon(Icons.lock, color: Color(0xFFDADADA)))
         ],
       );
 
@@ -358,7 +371,7 @@ class _LevelWidgetState extends State<LevelWidget>
 
   _getTranslateValue() => widget.drawType == DrawType.firstTimeOpen
       ? _landingAnimation.value
-      : _bouncingAnimation.value;
+      : 25.0;
 
   _getMainColor() {
     if (widget.levelData.isLock) return widget.lockColor;

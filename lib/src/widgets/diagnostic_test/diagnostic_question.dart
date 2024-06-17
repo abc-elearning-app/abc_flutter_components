@@ -13,18 +13,22 @@ class QuestionData {
   bool liked;
   bool disliked;
 
-  QuestionData(this.question, this.answers, this.explanation,
-      {this.bookmarked = false,
-      this.liked = false,
-      this.disliked = false,
-      this.isCorrectlyChosen});
+  QuestionData({
+    required this.question,
+    required this.answers,
+    required this.explanation,
+    this.bookmarked = false,
+    this.liked = false,
+    this.disliked = false,
+    this.isCorrectlyChosen,
+  });
 }
 
 class AnswerData {
   final String content;
-  final bool isCorrect;
+  final bool? isCorrect;
 
-  AnswerData(this.content, {this.isCorrect = false});
+  AnswerData(this.content, {this.isCorrect});
 }
 
 enum ButtonStatus { disabled, correct, incorrect }

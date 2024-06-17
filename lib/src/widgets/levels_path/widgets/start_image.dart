@@ -53,9 +53,9 @@ class _PathStartImageState extends State<PathStartImage>
               animation: _animation,
               builder: (_, __) => Transform.translate(
                   offset: Offset(_animation.value, 0),
-                  child: Image.asset('assets/images/path_start.png')),
+                  child: Image.asset(widget.imagePath, width: 100)),
             )
-          : Image.asset('assets/images/path_start.png'),
+          : Image.asset(widget.imagePath, width: 100),
     );
   }
 }

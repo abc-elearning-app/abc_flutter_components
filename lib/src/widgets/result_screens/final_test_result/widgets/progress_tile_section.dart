@@ -18,7 +18,6 @@ class ProgressSection extends StatelessWidget {
   final Color intermediateColor;
   final Color advancedColor;
   final Color mainColor;
-  final Color boxColor;
 
   final void Function(int index) onImprove;
 
@@ -29,7 +28,6 @@ class ProgressSection extends StatelessWidget {
       required this.intermediateColor,
       required this.advancedColor,
       required this.mainColor,
-      required this.boxColor,
       required this.onImprove});
 
   @override
@@ -48,7 +46,7 @@ class ProgressSection extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: boxColor,
+          color: Colors.white,
           boxShadow: [
             BoxShadow(
                 color: Colors.grey.shade300,

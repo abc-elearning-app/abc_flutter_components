@@ -6,7 +6,8 @@ enum SliderType { question, duration, passingScore }
 
 class SliderTile extends StatelessWidget {
   final Color mainColor;
-  final Color backgroundColor;
+  final Color secondaryColor;
+  final bool isDarkMode;
 
   final int maxValue;
   final int minValue;
@@ -17,17 +18,18 @@ class SliderTile extends StatelessWidget {
       required this.maxValue,
       required this.minValue,
       required this.mainColor,
-      required this.backgroundColor,
-      required this.type});
+      required this.type,
+      required this.isDarkMode,
+      required this.secondaryColor});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
           border: Border.all(width: 1, color: mainColor),
-          color: backgroundColor,
+          color: Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
           borderRadius: BorderRadius.circular(20)),
       child: Center(
           child: Column(
@@ -40,10 +42,14 @@ class SliderTile extends StatelessWidget {
               activeTrackColor: mainColor,
               thumbColor: Colors.white,
               thumbShape: ThumbShape(
-                  thumbColor: backgroundColor,
+                  thumbColor: Colors.white,
+                  tooltipColor:
+                      isDarkMode ? const Color(0xFF858686) : secondaryColor,
                   maxValue: maxValue,
                   minValue: minValue),
-              inactiveTrackColor: Colors.grey.shade300,
+              inactiveTrackColor: isDarkMode
+                  ? Colors.white.withOpacity(0.12)
+                  : Colors.grey.shade300,
             ),
             child: Selector<CustomizeTestProvider, int>(
               selector: (_, provider) => _getSelector(provider, type),
@@ -67,11 +73,15 @@ class SliderTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('$minValue',
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w500, fontSize: 15)),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                        color: isDarkMode ? Colors.white : Colors.black)),
                 Text('$maxValue',
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w500, fontSize: 15)),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                        color: isDarkMode ? Colors.white : Colors.black)),
               ],
             ),
           )
@@ -101,6 +111,7 @@ class ThumbShape extends SliderComponentShape {
   final int maxValue;
   final int minValue;
   final Color thumbColor;
+  final Color tooltipColor;
 
   ThumbShape({
     this.thumbWidth = 36,
@@ -108,6 +119,7 @@ class ThumbShape extends SliderComponentShape {
     this.borderRadius = 8,
     this.triangleWidth = 15,
     this.yOffset = -30,
+    required this.tooltipColor,
     required this.thumbColor,
     required this.maxValue,
     required this.minValue,
@@ -149,7 +161,7 @@ class ThumbShape extends SliderComponentShape {
     context.canvas.drawCircle(center, radius, paint);
 
     // Draw rounded square box and triangle with blue color
-    paint.color = const Color(0xFF7C6F5B);
+    paint.color = tooltipColor;
     final RRect roundedRect = RRect.fromRectAndRadius(
       Rect.fromCenter(
         center: Offset(center.dx, center.dy + yOffset), // Adjusted y offset
@@ -173,7 +185,11 @@ class ThumbShape extends SliderComponentShape {
 
     // Display value on the square
     final TextSpan span = TextSpan(
-      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      style: const TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.w500,
+        fontSize: 14,
+      ),
       text: (minValue + (maxValue - minValue) * value).toInt().toString(),
     );
     final TextPainter tp = TextPainter(

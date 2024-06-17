@@ -1,3 +1,4 @@
+import 'package:example/constants/app_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
@@ -21,6 +22,7 @@ class TestFinalTestResult extends StatelessWidget {
           icon: 'subject_icon_0'),
     ];
     return FinalTestResult(
+      isDarkMode: AppTheme.isDarkMode,
       progressList: progressList,
       progress: 90,
       correctQuestions: 80,

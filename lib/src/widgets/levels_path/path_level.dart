@@ -39,7 +39,6 @@ class PathLevel extends StatefulWidget {
   final Color passColor;
   final Color lockColor;
   final Color startColor;
-  final Color lineColor;
   final Color lineBackgroundColor;
 
   // Images
@@ -67,7 +66,6 @@ class PathLevel extends StatefulWidget {
     required this.mainColor,
     required this.passColor,
     required this.lockColor,
-    required this.lineColor,
     required this.lineBackgroundColor,
     required this.onClickLevel,
     required this.isDarkMode,
@@ -77,11 +75,14 @@ class PathLevel extends StatefulWidget {
   State<PathLevel> createState() => _PathLevelState();
 }
 
-class _PathLevelState extends State<PathLevel> {
+class _PathLevelState extends State<PathLevel> with AutomaticKeepAliveClientMixin{
   late int totalCycleCount;
   late int currentCycleCount;
   late int lastCycleTotalCount;
   late int lastCycleCurrentCount;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -112,6 +113,8 @@ class _PathLevelState extends State<PathLevel> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Stack(children: [
       // Start image
       PathStartImage(drawType: widget.drawType, imagePath: widget.startImage),
@@ -142,7 +145,7 @@ class _PathLevelState extends State<PathLevel> {
                       lowerRoundCount: widget.lowerRowCount,
                       rounds: currentCycleCount,
                       lastCycleLevelCount: lastCycleCurrentCount,
-                      lineColor: widget.lineColor)
+                      lineColor: widget.mainColor)
                   : const SizedBox()),
 
       LevelGrid(

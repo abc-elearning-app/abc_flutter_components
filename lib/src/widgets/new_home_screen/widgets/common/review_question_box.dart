@@ -6,8 +6,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 class ReviewQuestionBox extends StatefulWidget {
   final int index;
   final QuestionData questionData;
+  final bool isPro;
+  final bool isDarkMode;
 
-  final Color textColor;
+  final Color mainColor;
+  final Color secondaryColor;
   final Color explanationColor;
   final String correctIcon;
   final String incorrectIcon;
@@ -27,11 +30,14 @@ class ReviewQuestionBox extends StatefulWidget {
     required this.onLikeClick,
     required this.onDislikeClick,
     required this.onProClick,
-    this.textColor = Colors.black,
+    required this.isPro,
+    required this.isDarkMode,
     this.explanationColor = const Color(0xFF5497FF),
-    this.correctIcon = 'correct',
-    this.incorrectIcon = 'incorrect',
-    this.unselectedIcon = 'unselected',
+    this.mainColor = const Color(0xFFE3A651),
+    this.secondaryColor = const Color(0xFF7C6F5B),
+    this.correctIcon = 'assets/images/correct.svg',
+    this.incorrectIcon = 'assets/images/incorrect.svg',
+    this.unselectedIcon = 'assets/images/unselected.svg',
   });
 
   @override
@@ -39,8 +45,6 @@ class ReviewQuestionBox extends StatefulWidget {
 }
 
 class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
-  final bool isPro = true;
-
   bool isShowExplanation = false;
 
   late bool isBookmarked;
@@ -62,15 +66,17 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
       duration: const Duration(milliseconds: 200),
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1),
           borderRadius: BorderRadius.circular(15),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.grey.shade300,
-                blurRadius: 3,
-                spreadRadius: 2,
-                offset: const Offset(0, 2))
-          ]),
+          boxShadow: !widget.isDarkMode
+              ? [
+                  BoxShadow(
+                      color: Colors.grey.shade300,
+                      blurRadius: 3,
+                      spreadRadius: 2,
+                      offset: const Offset(0, 2))
+                ]
+              : null),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -87,7 +93,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
-                      color: widget.textColor),
+                      color: widget.isDarkMode ? Colors.white : Colors.black),
                 ),
 
                 Column(
@@ -118,14 +124,18 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                                 style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    color: widget.textColor),
+                                    color: widget.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black),
                               ),
                               Text(
                                 widget.questionData.explanation,
                                 style: TextStyle(
                                     fontStyle: FontStyle.italic,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.grey.shade600),
+                                    color: widget.isDarkMode
+                                        ? Colors.white
+                                        : Colors.grey.shade600),
                               )
                             ],
                           ),
@@ -136,7 +146,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                             : CrossFadeState.showSecond,
                         duration: const Duration(milliseconds: 200),
                       ),
-                      _buildExplanation(setState)
+                      _explanationSection(setState)
                     ],
                   )),
 
@@ -152,19 +162,25 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             ToggleButton(
-                color: Colors.red,
+                color: widget.isDarkMode
+                    ? widget.mainColor
+                    : widget.secondaryColor,
                 unselectedIcon: 'bookmark',
                 selectedIcon: 'bookmarked',
                 isSelected: isBookmarked,
                 onToggle: (isSelected) => widget.onBookmarkClick(isSelected)),
             ToggleButton(
-                color: Colors.red,
+                color: widget.isDarkMode
+                    ? widget.mainColor
+                    : widget.secondaryColor,
                 unselectedIcon: 'like',
                 selectedIcon: 'liked',
                 isSelected: isLiked,
                 onToggle: (isSelected) => widget.onLikeClick(isSelected)),
             ToggleButton(
-                color: Colors.red,
+                color: widget.isDarkMode
+                    ? widget.mainColor
+                    : widget.secondaryColor,
                 unselectedIcon: 'dislike',
                 selectedIcon: 'disliked',
                 isSelected: isDisliked,
@@ -174,41 +190,54 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
       );
 
   Widget _buildAnswer(String content, {bool? isCorrect}) {
-    String icon = isCorrect == null
-        ? widget.unselectedIcon
-        : isCorrect == true
-            ? widget.correctIcon
-            : widget.incorrectIcon;
+    String icon = '';
+    switch (isCorrect) {
+      case null:
+        icon = widget.unselectedIcon;
+        break;
+      case true:
+        icon = widget.correctIcon;
+        break;
+      case false:
+        icon = widget.incorrectIcon;
+        break;
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
           SvgPicture.asset(
-            'assets/images/$icon.svg',
+            icon,
             width: 12,
+            colorFilter: isCorrect == null
+                ? ColorFilter.mode(
+                    widget.isDarkMode ? Colors.white : Colors.black,
+                    BlendMode.srcIn)
+                : null,
           ),
           const SizedBox(width: 15),
-          Text(content,
-              style: TextStyle(fontSize: 17, color: widget.textColor)),
+          Text(
+            content,
+            style: TextStyle(
+              fontSize: 16,
+              color: widget.isDarkMode ? Colors.white : Colors.black,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildExplanation(void Function(void Function() action) setState) =>
+  Widget _explanationSection(void Function(void Function() action) setState) =>
       GestureDetector(
-        onTap: () {
-          if (isPro) {
-            setState(() => isShowExplanation = !isShowExplanation);
-          } else {
-            widget.onProClick();
-          }
-        },
+        onTap: () => _handleToggleExplanation(setState),
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-              color: widget.explanationColor.withOpacity(0.2),
+              color: widget.isDarkMode
+                  ? Colors.white.withOpacity(0.08)
+                  : widget.explanationColor.withOpacity(0.2),
               borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(15),
                   bottomRight: Radius.circular(15))),
@@ -230,7 +259,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
               ),
 
               // Pro icon
-              if (!isPro)
+              if (!widget.isPro)
                 Expanded(
                     child: Align(
                   alignment: Alignment.centerRight,
@@ -241,4 +270,12 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
           ),
         ),
       );
+
+  _handleToggleExplanation(void Function(void Function() action) setState) {
+    if (widget.isPro) {
+      setState(() => isShowExplanation = !isShowExplanation);
+    } else {
+      widget.onProClick();
+    }
+  }
 }

@@ -22,9 +22,9 @@ class FinalTestResult extends StatelessWidget {
   final Color beginnerColor;
   final Color intermediateColor;
   final Color advancedColor;
-  final Color boxBackgroundColor;
 
   final bool isPro;
+  final bool isDarkMode;
 
   final void Function() onReviewAnswer;
   final void Function() onTryAgain;
@@ -46,11 +46,11 @@ class FinalTestResult extends StatelessWidget {
       this.beginnerColor = const Color(0xFFFC5656),
       this.intermediateColor = const Color(0xFFFF9669),
       this.advancedColor = const Color(0xFF2C9CB5),
-      this.boxBackgroundColor = Colors.white,
       required this.onReviewAnswer,
       required this.onTryAgain,
       required this.onContinue,
-      required this.onImproveSubject});
+      required this.onImproveSubject,
+      required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +80,6 @@ class FinalTestResult extends StatelessWidget {
                   correctQuestions: correctQuestions,
                   averageProgress: averageProgress,
                   mainColor: mainColor,
-                  boxColor: boxBackgroundColor,
                 ),
 
                 SizedBox(
@@ -104,7 +103,6 @@ class FinalTestResult extends StatelessWidget {
                 ProgressSection(
                   progressList: progressList,
                   mainColor: mainColor,
-                  boxColor: boxBackgroundColor,
                   beginnerColor: beginnerColor,
                   intermediateColor: intermediateColor,
                   advancedColor: advancedColor,
