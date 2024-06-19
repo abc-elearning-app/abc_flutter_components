@@ -22,6 +22,9 @@ class FinalTestResult extends StatelessWidget {
   final Color beginnerColor;
   final Color intermediateColor;
   final Color advancedColor;
+  final Color beginnerBackgroundColor;
+  final Color intermediateBackgroundColor;
+  final Color advancedBackgroundColor;
 
   final bool isPro;
   final bool isDarkMode;
@@ -31,33 +34,37 @@ class FinalTestResult extends StatelessWidget {
   final void Function() onContinue;
   final void Function(int index) onImproveSubject;
 
-  const FinalTestResult(
-      {super.key,
-      required this.progress,
-      required this.correctQuestions,
-      required this.incorrectQuestions,
-      required this.averageProgress,
-      required this.progressList,
-      this.isPro = false,
-      this.correctColor = const Color(0xFF28D799),
-      this.incorrectColor = const Color(0xFFF14A4A),
-      this.mainColor = const Color(0xFFE3A651),
-      this.backgroundColor = const Color(0xFFF5F4EE),
-      this.beginnerColor = const Color(0xFFFC5656),
-      this.intermediateColor = const Color(0xFFFF9669),
-      this.advancedColor = const Color(0xFF2C9CB5),
-      required this.onReviewAnswer,
-      required this.onTryAgain,
-      required this.onContinue,
-      required this.onImproveSubject,
-      required this.isDarkMode});
+  const FinalTestResult({
+    super.key,
+    required this.progress,
+    required this.correctQuestions,
+    required this.incorrectQuestions,
+    required this.averageProgress,
+    required this.progressList,
+    this.isPro = false,
+    this.correctColor = const Color(0xFF0BE5B1),
+    this.incorrectColor = const Color(0xFFF14A4A),
+    this.mainColor = const Color(0xFFE3A651),
+    this.backgroundColor = const Color(0xFFF5F4EE),
+    this.beginnerColor = const Color(0xFFFC5656),
+    this.intermediateColor = const Color(0xFFFF9669),
+    this.advancedColor = const Color(0xFF2C9CB5),
+    this.beginnerBackgroundColor = const Color(0xFFFDD7D7),
+    this.intermediateBackgroundColor = const Color(0xFFFFEEE7),
+    this.advancedBackgroundColor = const Color(0xFFD3F7FF),
+    required this.onReviewAnswer,
+    required this.onTryAgain,
+    required this.onContinue,
+    required this.onImproveSubject,
+    required this.isDarkMode,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      backgroundColor: backgroundColor,
+      backgroundColor: isDarkMode ? Colors.black : backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         scrolledUnderElevation: 0,
@@ -75,11 +82,14 @@ class FinalTestResult extends StatelessWidget {
                 // General result and progress box
                 MainResultBox(
                   isPro: isPro,
+                  isDarkMode: isDarkMode,
                   progress: progress,
                   incorrectQuestions: incorrectQuestions,
                   correctQuestions: correctQuestions,
                   averageProgress: averageProgress,
                   mainColor: mainColor,
+                  correctColor: correctColor,
+                  incorrectColor: incorrectColor,
                 ),
 
                 SizedBox(
@@ -91,22 +101,28 @@ class FinalTestResult extends StatelessWidget {
                       onReviewAnswer,
                     )),
 
-                const Align(
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
-                    padding: EdgeInsets.only(left: 20, top: 20),
+                    padding: const EdgeInsets.only(left: 20, bottom: 10),
                     child: Text('Test Subjects',
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500)),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            color: isDarkMode ? Colors.white : Colors.black)),
                   ),
                 ),
                 ProgressSection(
                   progressList: progressList,
                   mainColor: mainColor,
+                  isDarkMode: isDarkMode,
                   beginnerColor: beginnerColor,
                   intermediateColor: intermediateColor,
                   advancedColor: advancedColor,
                   onImprove: onImproveSubject,
+                  beginnerBackgroundColor: beginnerBackgroundColor,
+                  intermediateBackgroundColor: intermediateBackgroundColor,
+                  advancedBackgroundColor: advancedBackgroundColor,
                 ),
               ],
             ),
@@ -145,13 +161,19 @@ class FinalTestResult extends StatelessWidget {
         if (progress <= 10) const SadEffect(),
       ]);
 
-  Widget _buildButton(bool isSelected, String title, Color buttonMainColor,
-          void Function() action) =>
+  Widget _buildButton(
+    bool isSelected,
+    String title,
+    Color buttonMainColor,
+    void Function() action,
+  ) =>
       Container(
         margin: const EdgeInsets.only(left: 10, right: 10, bottom: 25, top: 10),
         child: MainButton(
           title: title,
-          backgroundColor: isSelected ? buttonMainColor : Colors.white,
+          backgroundColor: isSelected
+              ? buttonMainColor
+              : Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
           borderSize: BorderSide(width: 1, color: buttonMainColor),
           textColor: isSelected ? Colors.white : buttonMainColor,
           padding: const EdgeInsets.symmetric(vertical: 15),
@@ -173,6 +195,7 @@ class FinalTestResult extends StatelessWidget {
   }
 
   _getReviewButtonColor() {
+    if (isDarkMode) return mainColor;
     if (progress <= 10) return incorrectColor;
     if (progress >= 90) return Color.lerp(correctColor, Colors.black, 0.2)!;
     return mainColor;

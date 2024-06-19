@@ -96,6 +96,9 @@ class PracticeTestGrid extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 10),
                   child: RichText(
                     text: TextSpan(children: [
+                      const TextSpan(
+                        text: '• ',
+                      ),
                       TextSpan(
                           text: data.answeredQuestions.toString(),
                           style: const TextStyle(fontSize: 16)),
@@ -120,7 +123,6 @@ class PracticeTestGrid extends StatelessWidget {
                     child: RichText(
                       text: TextSpan(
                           style: const TextStyle(
-                            fontFamily: 'Poppins',
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),

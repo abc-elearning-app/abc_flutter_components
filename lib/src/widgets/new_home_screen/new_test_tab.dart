@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/test_tab_widgets/diagnostic_test_box.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/test_tab_widgets/final_test_box.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/test_tab_widgets/practice_test_list.dart';
 
 class NewTestTab extends StatelessWidget {
-  final List<PracticeTestBoxData> practiceTests;
+  final List<PracticeTestData> practiceTests;
   final double diagnosticProgress;
   final double finalTestProgress;
+  final bool isDarkMode;
 
   final Color mainColor;
   final Color secondaryColor;
-  final Color boxTextColor;
+
+  final List<Color> gradientColors;
 
   final String diagnosticTestIcon;
   final String finalTestIcon;
@@ -21,22 +23,30 @@ class NewTestTab extends StatelessWidget {
   final void Function() onSeeAllPracticeTests;
   final void Function(int index) onSelectPracticeTest;
   final void Function() onClickFinalTest;
+  final void Function() onSeeAll;
 
   const NewTestTab(
       {super.key,
       required this.practiceTests,
-      this.mainColor = const Color(0xFF7C6F5B),
-      this.secondaryColor = const Color(0xFFF6AF4D),
-      this.diagnosticTestIcon = 'assets/images/test_tab_icon.png',
-      this.finalTestIcon = 'assets/images/test_tab_icon.png',
-      this.diagnosticBoxBackground = 'assets/images/test_tab_background_1.png',
-      this.finalTestBackground = 'assets/images/test_tab_background_4.png',
-      this.boxTextColor = Colors.white,
+      required this.isDarkMode,
+      this.mainColor = const Color(0xFFF8BB67),
+      this.secondaryColor = const Color(0xFF7C6F5B),
+      this.gradientColors = const [
+        Color(0xFFC0A67C),
+        Color(0xFF958366),
+      ],
+      this.diagnosticTestIcon = 'assets/images/test_tab_diagnostic.png',
+      this.finalTestIcon = 'assets/images/test_tab_final.png',
+      this.diagnosticBoxBackground = 'assets/images/test_tab_diagnostic_bg.png',
+      this.finalTestBackground = 'assets/images/test_tab_final_bg.png',
       required this.onTryAgainDiagnosticTab,
       required this.onSeeAllPracticeTests,
       required this.onClickFinalTest,
       required this.diagnosticProgress,
-      required this.finalTestProgress, required this.onSelectPracticeTest});
+      required this.finalTestProgress,
+      required this.onSelectPracticeTest,
+      required this.onSeeAll,
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -45,58 +55,75 @@ class NewTestTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DiagnosticTestBox(
+            isDarkMode: isDarkMode,
             progress: diagnosticProgress,
             onClick: onTryAgainDiagnosticTab,
-            progressColor: boxTextColor,
             icon: diagnosticTestIcon,
             background: diagnosticBoxBackground,
-            textColor: boxTextColor,
+            color: secondaryColor,
+            gradientColors: gradientColors,
           ),
 
           // Title and See All button
           Padding(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Practice Tests',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                ),
                 Text(
-                  'See All',
+                  'Practice Tests',
                   style: TextStyle(
-                      color: mainColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: isDarkMode ? Colors.white : Colors.black),
+                ),
+                MainButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: onSeeAll,
+                  backgroundColor: Colors.transparent,
+                  borderRadius: 30,
+                  title: 'See All',
+                  textColor: isDarkMode ? mainColor : secondaryColor,
+                  textStyle: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
                 )
               ],
             ),
           ),
 
           PracticeTestList(
+            color: secondaryColor,
             practiceTests: practiceTests,
-            textColor: boxTextColor,
             onSelect: onSelectPracticeTest,
+            isDarkMode: isDarkMode,
           ),
 
-          const Padding(
-            padding: EdgeInsets.only(left: 15, top: 10),
+          Padding(
+            padding: const EdgeInsets.only(left: 15, top: 10),
             child: Text(
               'Exam Mode',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: isDarkMode ? Colors.white : Colors.black),
             ),
           ),
 
           FinalTestBox(
-              progress: finalTestProgress,
-              answeredQuestions: 18,
-              totalQuestions: 60,
-              correctPercent: 20,
-              progressColor: secondaryColor,
-              textColor: boxTextColor,
-              icon: finalTestIcon,
-              background: finalTestBackground)
+            isDarkMode: isDarkMode,
+            mainColor: mainColor,
+            gradientColors: gradientColors,
+            secondaryColor: secondaryColor,
+            progress: finalTestProgress,
+            answeredQuestions: 18,
+            totalQuestions: 60,
+            correctPercent: 20,
+            icon: finalTestIcon,
+            background: finalTestBackground,
+            onClickFinal: onClickFinalTest,
+          )
         ],
       ),
     );

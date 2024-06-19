@@ -92,7 +92,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
       totalLevels += group.levels.length;
     }
 
-    percent = passedLevels / totalLevels;
+    percent = passedLevels / totalLevels * 100;
   }
 
   @override

@@ -4,8 +4,9 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import 'half_circle_progress.dart';
 
-class MainResultBox extends StatelessWidget {
+class MainResultBox extends StatefulWidget {
   final bool isPro;
+  final bool isDarkMode;
 
   final Color mainColor;
   final Color correctColor;
@@ -16,17 +17,23 @@ class MainResultBox extends StatelessWidget {
   final int correctQuestions;
   final int incorrectQuestions;
 
-  MainResultBox(
+  const MainResultBox(
       {super.key,
       required this.isPro,
-      this.correctColor = const Color(0xFF28D799),
-      this.incorrectColor = const Color(0xFFF14A4A),
+      required this.isDarkMode,
+      required this.correctColor,
+      required this.incorrectColor,
       required this.progress,
       required this.averageProgress,
       required this.correctQuestions,
       required this.incorrectQuestions,
       required this.mainColor});
 
+  @override
+  State<MainResultBox> createState() => _MainResultBoxState();
+}
+
+class _MainResultBoxState extends State<MainResultBox> {
   bool isShowingDetail = false;
 
   @override
@@ -36,14 +43,14 @@ class MainResultBox extends StatelessWidget {
         margin: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1),
           borderRadius: BorderRadius.circular(30),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _buildDetailText(),
+            _buildMessage(),
 
             // Progress chart
             Stack(children: [
@@ -51,9 +58,9 @@ class MainResultBox extends StatelessWidget {
                 children: [
                   // Chart
                   HalfCircleProgressIndicator(
-                    correctColor: correctColor,
-                    incorrectColor: incorrectColor,
-                    progress: progress / 100,
+                    correctColor: widget.correctColor,
+                    incorrectColor: widget.incorrectColor,
+                    progress: widget.progress / 100,
                     lineWidth: 20,
                     radius: 125,
                     center: Container(
@@ -61,13 +68,13 @@ class MainResultBox extends StatelessWidget {
                       child: RichText(
                         text: TextSpan(
                             style: DefaultTextStyle.of(context).style.copyWith(
-                                color: progress < 0.8
-                                    ? incorrectColor
-                                    : correctColor,
+                                color: widget.progress < 0.8
+                                    ? widget.incorrectColor
+                                    : widget.correctColor,
                                 fontWeight: FontWeight.bold),
                             children: [
                               TextSpan(
-                                  text: '${progress.round()}',
+                                  text: '${widget.progress.round()}',
                                   style: const TextStyle(fontSize: 70)),
                               const TextSpan(
                                   text: '%', style: TextStyle(fontSize: 40))
@@ -96,19 +103,21 @@ class MainResultBox extends StatelessWidget {
     ]);
   }
 
-  Widget _buildDetailText() => progress >= 90 || progress <= 10
+  Widget _buildMessage() => widget.progress >= 90 || widget.progress <= 10
       ? Padding(
           padding: const EdgeInsets.symmetric(vertical: 30),
           child: Text(
-            progress >= 90
+            widget.progress >= 90
                 ? "Do not rest on your laurels, friend. Time to leaf through the rest of these tests and make them tremble with your intellect!"
                 : "That was a tough one, but every wrong answer is a stepping stone to the right one. Keep at it, and you'll be a knowledge ninja soon!",
             style: TextStyle(
                 fontWeight: FontWeight.w400,
                 color: Color.lerp(
-                    progress >= 90 ? correctColor : incorrectColor,
+                    widget.progress >= 90
+                        ? widget.correctColor
+                        : widget.incorrectColor,
                     Colors.black,
-                    0.2),
+                    widget.isDarkMode ? 0 : 0.2),
                 fontSize: 15),
             textAlign: TextAlign.center,
           ),
@@ -120,8 +129,10 @@ class MainResultBox extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _colorExplanation(correctColor, 'Correct', correctQuestions),
-            _colorExplanation(incorrectColor, 'Incorrect', incorrectQuestions),
+            _colorExplanation(
+                widget.correctColor, 'Correct', widget.correctQuestions),
+            _colorExplanation(
+                widget.incorrectColor, 'Incorrect', widget.incorrectQuestions),
           ],
         ),
       );
@@ -149,7 +160,9 @@ class MainResultBox extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Text(
                   '$questionNum ${'Questions'}',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: widget.isDarkMode ? Colors.white : Colors.black),
                 ),
               )
             ],
@@ -171,8 +184,8 @@ class MainResultBox extends StatelessWidget {
         // Main progress
         LinearPercentIndicator(
           backgroundColor: Colors.transparent,
-          percent: progress / 100,
-          progressColor: mainColor,
+          percent: widget.progress / 100,
+          progressColor: widget.mainColor,
           lineHeight: 12,
           animation: true,
           barRadius: const Radius.circular(8),
@@ -180,7 +193,9 @@ class MainResultBox extends StatelessWidget {
 
         // Average point
         Positioned(
-            left: MediaQuery.of(context).size.width * 0.008 * averageProgress,
+            left: MediaQuery.of(context).size.width *
+                0.008 *
+                widget.averageProgress,
             child: CircleAvatar(
               radius: 9,
               backgroundColor: Colors.grey.withOpacity(0.3),
@@ -191,7 +206,7 @@ class MainResultBox extends StatelessWidget {
             ))
       ]);
 
-  Widget _buildBanner() => progress >= 90 || progress <= 10
+  Widget _buildBanner() => widget.progress >= 90 || widget.progress <= 10
       ? Transform.translate(
           offset: const Offset(0, -25),
           child: Stack(alignment: Alignment.center, children: [
@@ -199,17 +214,21 @@ class MainResultBox extends StatelessWidget {
               'assets/images/banner_shape.svg',
               height: 50,
               colorFilter: ColorFilter.mode(
-                  progress >= 90
-                      ? correctColor
-                      : Color.lerp(incorrectColor, Colors.white, 0.8)!,
+                  widget.progress >= 90
+                      ? widget.correctColor
+                      : Color.lerp(widget.incorrectColor, Colors.white, 0.8)!,
                   BlendMode.srcIn),
             ),
             Text(
-              progress >= 90 ? 'Excellent Performance!' : 'Not Enough To Pass!',
+              widget.progress >= 90
+                  ? 'Excellent Performance!'
+                  : 'Not Enough To Pass!',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
-                color: progress >= 90 ? Colors.white : incorrectColor,
+                color: widget.progress >= 90
+                    ? Colors.white
+                    : widget.incorrectColor,
               ),
             ),
           ]),
@@ -223,19 +242,17 @@ class MainResultBox extends StatelessWidget {
               // Main title
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Text(
-                  'Community Score: ${averageProgress.toInt()}% ',
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.w500),
+                  'Community Score: ${widget.averageProgress.toInt()}% ',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: widget.isDarkMode ? Colors.white : Colors.black),
                 ),
                 const SizedBox(width: 10),
                 GestureDetector(
                   onTap: () =>
                       setState(() => isShowingDetail = !isShowingDetail),
-                  child: SvgPicture.asset(
-                    'assets/images/info_icon.svg',
-                    colorFilter: const ColorFilter.mode(
-                        Color(0xFF212121), BlendMode.srcIn),
-                  ),
+                  child: SvgPicture.asset('assets/images/info_icon.svg'),
                 )
               ]),
 
