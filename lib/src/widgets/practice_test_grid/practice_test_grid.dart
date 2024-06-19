@@ -19,11 +19,12 @@ class PracticeTestGridData {
 
 class PracticeTestGrid extends StatelessWidget {
   final List<PracticeTestGridData> practiceTests;
-  final Color mainColor;
-  final Color backgroundColor;
-  final Color textColor;
-
   final String title;
+  final bool isDarkMode;
+
+  final Color mainColor;
+  final Color secondaryColor;
+  final Color backgroundColor;
 
   final void Function(int index) onSelected;
 
@@ -31,19 +32,31 @@ class PracticeTestGrid extends StatelessWidget {
     super.key,
     required this.title,
     required this.practiceTests,
-    this.mainColor = const Color(0xFFF6AF4D),
+    this.mainColor = const Color(0xFFE3A651),
+    this.secondaryColor = const Color(0xFF7C6F5B),
     this.backgroundColor = const Color(0xFFF5F4EE),
-    this.textColor = Colors.white,
     required this.onSelected,
+    required this.isDarkMode,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: isDarkMode ? Colors.black : backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDarkMode ? Colors.white : Colors.black,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(title,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: isDarkMode ? Colors.white : Colors.black,
+            )),
       ),
       body: SafeArea(
         child: GridView.builder(
@@ -61,83 +74,97 @@ class PracticeTestGrid extends StatelessWidget {
   Widget _buildItem(PracticeTestGridData data, int index) => GestureDetector(
         onTap: () => onSelected(index),
         child: Container(
-          margin: const EdgeInsets.all(5),
-          padding: const EdgeInsets.all(15),
+          margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage(data.background),
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.grey.shade200,
-                  blurRadius: 1,
-                  spreadRadius: 1,
-                  offset: const Offset(0, 1))
-            ],
+            boxShadow: !isDarkMode
+                ? [
+                    BoxShadow(
+                        color: Colors.grey.shade200,
+                        blurRadius: 1,
+                        spreadRadius: 1,
+                        offset: const Offset(0, 1))
+                  ]
+                : null,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Title
-              Text(
-                data.title,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                  color: textColor,
-                ),
-              ),
-
-              // Questions
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: RichText(
-                    text: TextSpan(children: [
-                      const TextSpan(
-                        text: '• ',
-                      ),
-                      TextSpan(
-                          text: data.answeredQuestions.toString(),
-                          style: const TextStyle(fontSize: 16)),
-                      TextSpan(text: '/${data.totalQuestions} Answered')
-                    ]),
+          child: Stack(children: [
+            Positioned.fill(
+                child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: (isDarkMode ? const Color(0xFF292929) : secondaryColor)
+                      .withOpacity(0.92)),
+            )),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title
+                  Text(
+                    data.title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-              ),
 
-              // Progress
-              Stack(alignment: Alignment.centerRight, children: [
-                LinearPercentIndicator(
-                  barRadius: const Radius.circular(15),
-                  padding: EdgeInsets.zero,
-                  percent: data.progress / 100,
-                  progressColor: mainColor,
-                  lineHeight: 25,
-                  backgroundColor: Colors.white.withOpacity(0.5),
-                ),
-                Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: RichText(
-                      text: TextSpan(
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                  // Questions
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: RichText(
+                        text: TextSpan(children: [
+                          const TextSpan(
+                            text: '• ',
                           ),
-                          children: [
-                            TextSpan(text: data.progress.toInt().toString()),
-                            const TextSpan(
-                                text: '%',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                ))
-                          ]),
-                    ))
-              ])
-            ],
-          ),
+                          TextSpan(
+                              text: data.answeredQuestions.toString(),
+                              style: const TextStyle(fontSize: 16)),
+                          TextSpan(text: '/${data.totalQuestions} Answered')
+                        ]),
+                      ),
+                    ),
+                  ),
+
+                  // Progress
+                  Stack(alignment: Alignment.centerRight, children: [
+                    LinearPercentIndicator(
+                      barRadius: const Radius.circular(15),
+                      padding: EdgeInsets.zero,
+                      percent: data.progress / 100,
+                      progressColor: mainColor,
+                      lineHeight: 25,
+                      backgroundColor: Colors.white.withOpacity(0.5),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: RichText(
+                          text: TextSpan(
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                              children: [
+                                TextSpan(
+                                    text: data.progress.toInt().toString()),
+                                const TextSpan(
+                                    text: '%',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                    ))
+                              ]),
+                        ))
+                  ])
+                ],
+              ),
+            ),
+          ]),
         ),
       );
 }

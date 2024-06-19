@@ -9,7 +9,8 @@ class TestNewStatisticTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.transparent),
-      backgroundColor: const Color(0xFFF5F4EE),
+      backgroundColor:
+          AppTheme.isDarkMode ? Colors.black : const Color(0xFFF5F4EE),
       body: SafeArea(
           child: NewStatisticTab(
         isDarkMode: AppTheme.isDarkMode,
