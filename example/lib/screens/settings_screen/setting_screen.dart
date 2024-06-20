@@ -16,7 +16,7 @@ class _TestSettingScreenState extends State<TestSettingScreen> {
   @override
   Widget build(BuildContext context) {
     return SettingScreen(
-      isPro: true,
+      isPro: false,
       notificationOn: true,
       isDarkMode: AppTheme.isDarkMode,
       onToggleDarkMode: () => setState(() =>

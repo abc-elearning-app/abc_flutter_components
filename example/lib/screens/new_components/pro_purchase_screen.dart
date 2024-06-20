@@ -1,3 +1,4 @@
+import 'package:example/constants/app_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
@@ -21,6 +22,7 @@ class TestProPurchaseScreen extends StatelessWidget {
     ];
 
     return ProPurchaseScreen(
+      isDarkMode: AppTheme.isDarkMode,
       proOptions: proOptions,
       proName: 'ASVAB Pro',
       perks: perks,

@@ -20,6 +20,7 @@ class PersonalPlanChart extends StatefulWidget {
   final DateTime examDate;
 
   final Color mainColor;
+  final Color secondaryColor;
   final Color correctColor;
   final Color expectedColor;
 
@@ -48,32 +49,36 @@ class PersonalPlanChart extends StatefulWidget {
   final int displayColumns;
 
   final double duration;
+  final bool isDarkMode;
 
-  const PersonalPlanChart(
-      {super.key,
-      required this.startTime,
-      required this.examDate,
-      required this.valueList,
-      this.expectedBarValue = 50,
-      this.mainColor = const Color(0xFFE3A651),
-      this.correctColor = const Color(0xFF00CA9F),
-      this.expectedColor = const Color(0xFFF1D6A9),
-      this.minBarValue = 0,
-      this.maxBarValue = 50,
-      this.barValueInterval = 25,
-      this.lineSectionHeight = 150,
-      this.barSectionHeight = 150,
-      this.minLineValue = 0,
-      this.maxLineValue = 100,
-      this.lineValueInterval = 50,
-      this.lineWidth = 5,
-      this.lineMarkerSize = 10,
-      this.barRatio = 0.25,
-      this.leftYAxisTitle = 'Questions Today',
-      this.rightYAxisTitle = 'Passing Rate',
-      this.curveTension = 1,
-      this.displayColumns = 6,
-      this.duration = 800});
+  const PersonalPlanChart({
+    super.key,
+    required this.startTime,
+    required this.examDate,
+    required this.valueList,
+    this.expectedBarValue = 50,
+    this.mainColor = const Color(0xFFE3A651),
+    this.secondaryColor = const Color(0xFF7C6F5B),
+    this.correctColor = const Color(0xFF00CA9F),
+    this.expectedColor = const Color(0xFFF1D6A9),
+    this.minBarValue = 0,
+    this.maxBarValue = 50,
+    this.barValueInterval = 25,
+    this.lineSectionHeight = 150,
+    this.barSectionHeight = 150,
+    this.minLineValue = 0,
+    this.maxLineValue = 100,
+    this.lineValueInterval = 50,
+    this.lineWidth = 5,
+    this.lineMarkerSize = 10,
+    this.barRatio = 0.25,
+    this.leftYAxisTitle = 'Questions Today',
+    this.rightYAxisTitle = 'Passing Rate',
+    this.curveTension = 1,
+    this.displayColumns = 6,
+    this.duration = 800,
+    required this.isDarkMode,
+  });
 
   @override
   State<PersonalPlanChart> createState() => _PersonalPlanChartState();
@@ -114,17 +119,17 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
             children: [
               Text(
                 widget.leftYAxisTitle,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: widget.isDarkMode ? Colors.white : Colors.black),
               ),
               Text(
                 widget.rightYAxisTitle,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: widget.isDarkMode ? Colors.white : Colors.black),
               ),
             ],
           ),
@@ -140,8 +145,6 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
               axes: _buildPlaceHolderYAxis(),
               primaryXAxis: _buildCustomXAxis(ChartType.line),
               primaryYAxis: _buildCustomYAxis(ChartType.line),
-              // onZooming: (args) => _handleZooming(args, ChartType.line),
-              // zoomPanBehavior: _zoomPanBehavior,
               tooltipBehavior: _tooltip,
               series: [
                 // Expected line
@@ -168,9 +171,10 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
                     animationDuration: widget.duration,
                     splineType: SplineType.cardinal,
                     cardinalSplineTension: widget.curveTension,
-                    pointColorMapper: (_, index) => index >= currentDayGroupIndex
-                        ? widget.correctColor
-                        : widget.mainColor,
+                    pointColorMapper: (_, index) =>
+                        index >= currentDayGroupIndex
+                            ? widget.correctColor
+                            : widget.mainColor,
                     markerSettings: MarkerSettings(
                         isVisible: true,
                         shape: DataMarkerType.circle,
@@ -292,28 +296,28 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
   }
 
   /// Initial calculations
-
   _calculateAverageValues() {
     // Calculate days in a group
+    // Calculate days till exam date and divide with columns count
     final days = widget.examDate.difference(widget.startTime).inDays;
-    final groupDays = days ~/ widget.displayColumns;
+    final daysInGroup = days ~/ widget.displayColumns;
 
     // Index of current day from the start time
     currentDayIndex = DateTime.now().difference(widget.startTime).inDays;
 
     // Index of the group that current day belongs to
-    currentDayGroupIndex = currentDayIndex ~/ groupDays - 1;
-    if (currentDayIndex % groupDays != 0) currentDayGroupIndex++;
+    currentDayGroupIndex = currentDayIndex ~/ daysInGroup - 1;
+    if (currentDayIndex % daysInGroup != 0) currentDayGroupIndex++;
 
     // Calculate average values of each group except the current group
     int startGroupIndex = 0;
     for (int i = 0; i < currentDayGroupIndex; i++) {
       int sum = widget.valueList
-          .sublist(startGroupIndex, startGroupIndex + groupDays)
+          .sublist(startGroupIndex, startGroupIndex + daysInGroup)
           .reduce((a, b) => a + b);
-      averageValues.add(sum / groupDays);
+      averageValues.add(sum / daysInGroup);
 
-      startGroupIndex += groupDays;
+      startGroupIndex += daysInGroup;
     }
 
     // Calculate current day group's average

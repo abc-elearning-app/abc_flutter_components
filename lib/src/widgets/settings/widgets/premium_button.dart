@@ -15,7 +15,7 @@ class PremiumButton extends StatelessWidget {
   const PremiumButton({
     super.key,
     this.margin,
-    required this.gradientColors,
+    this.gradientColors = const [Color(0xFFFF9840), Color(0xFFFF544E)],
     required this.buttonHeight,
     required this.isDarkMode,
     required this.onClick,

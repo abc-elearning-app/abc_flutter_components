@@ -16,6 +16,29 @@ class TestNewStatisticTab extends StatelessWidget {
         isDarkMode: AppTheme.isDarkMode,
         dayStreak: 14,
         passingProbability: 31,
+        subjectList: [
+          SubjectAnalysisData(
+              title: 'Arithmetic Reasoning',
+              icon: 'assets/images/subject_icon.svg',
+              accuracyRate: 86,
+              correctQuestions: 86,
+              incorrectQuestions: 10,
+              unansweredQuestions: 4),
+          SubjectAnalysisData(
+              title: 'Auto and Shop Information',
+              icon: 'assets/images/subject_icon.svg',
+              accuracyRate: 86,
+              correctQuestions: 86,
+              incorrectQuestions: 10,
+              unansweredQuestions: 4),
+          SubjectAnalysisData(
+              title: 'Arithmetic Reasoning',
+              icon: 'assets/images/subject_icon.svg',
+              accuracyRate: 86,
+              correctQuestions: 86,
+              incorrectQuestions: 10,
+              unansweredQuestions: 4),
+        ],
       )),
     );
   }

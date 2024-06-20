@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/final_test_result/widgets/half_circle_progress.dart';
 
 class OverviewBox extends StatelessWidget {
@@ -32,28 +33,31 @@ class OverviewBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
-      width: double.infinity,
+      margin: const EdgeInsets.only(left: 5, right: 5, top: 25, bottom: 20),
       decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
           boxShadow: !isDarkMode
               ? [
                   BoxShadow(
-                    color: Colors.grey.shade300,
-                    spreadRadius: 3,
-                    blurRadius: 3,
-                  )
+                      color: Colors.grey.shade300,
+                      blurRadius: 2,
+                      spreadRadius: 2)
                 ]
-              : null,
-          borderRadius: BorderRadius.circular(20)),
+              : null),
       child: Column(
         children: [
           Container(
-            margin: const EdgeInsets.only(top: 20),
             padding: const EdgeInsets.only(top: 20),
             decoration: BoxDecoration(
                 color: Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
                 image: DecorationImage(
-                    image: AssetImage(background), fit: BoxFit.cover),
+                    image: AssetImage(background),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                        isDarkMode
+                            ? const Color(0xFF6C6C6C)
+                            : const Color(0xFFD4D6DC),
+                        BlendMode.srcIn)),
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16))),
@@ -76,10 +80,14 @@ class OverviewBox extends StatelessWidget {
                       children: [
                         Text(
                           '${accuracyRate.toInt()}%',
-                          style: const TextStyle(
-                              fontSize: 40, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              color: isDarkMode ? Colors.white : Colors.black),
                         ),
-                        const Text('Accuracy Rate'),
+                        Transform.translate(
+                            offset: const Offset(0, -5),
+                            child: const Text('Accuracy Rate')),
                       ],
                     ),
                   ),
@@ -88,7 +96,6 @@ class OverviewBox extends StatelessWidget {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 5),
             decoration: BoxDecoration(
                 color: isDarkMode
                     ? Colors.white.withOpacity(0.3)

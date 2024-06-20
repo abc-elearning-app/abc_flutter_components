@@ -95,8 +95,10 @@ class _SettingScreenState extends State<SettingScreen> {
         leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.of(context).pop()),
-        title: const Text('Settings',
-            style: TextStyle(fontWeight: FontWeight.w500)),
+        title: const Text(
+          'Settings',
+          style: TextStyle(fontWeight: FontWeight.w500),
+        ),
         actions: [
           Padding(
               padding: const EdgeInsets.only(right: 10),
@@ -112,7 +114,6 @@ class _SettingScreenState extends State<SettingScreen> {
                   isDarkMode: widget.isDarkMode,
                   margin: const EdgeInsets.only(left: 10, right: 10, top: 20),
                   onClick: () => widget.onClickPremium(),
-                  gradientColors: const [Color(0xFFFF9840), Color(0xFFFF544E)],
                   buttonHeight: _buttonHeight),
               _buildTitle('Settings Exam'),
               _buildTileGroup([
@@ -248,7 +249,7 @@ class _SettingScreenState extends State<SettingScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: widget.isDarkMode ? Colors.grey.shade800 : Colors.white),
+          color: Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1)),
       child: Column(children: tiles));
 
   Widget _buildDivider() => const Padding(

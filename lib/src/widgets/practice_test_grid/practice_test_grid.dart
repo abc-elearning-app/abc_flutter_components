@@ -95,9 +95,10 @@ class PracticeTestGrid extends StatelessWidget {
             Positioned.fill(
                 child: Container(
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: (isDarkMode ? const Color(0xFF292929) : secondaryColor)
-                      .withOpacity(0.92)),
+                borderRadius: BorderRadius.circular(16),
+                color: (isDarkMode ? const Color(0xFF292929) : secondaryColor)
+                    .withOpacity(0.92),
+              ),
             )),
             Padding(
               padding: const EdgeInsets.all(10),
@@ -121,8 +122,7 @@ class PracticeTestGrid extends StatelessWidget {
                       child: RichText(
                         text: TextSpan(children: [
                           const TextSpan(
-                            text: '• ',
-                          ),
+                              text: '• ', style: TextStyle(fontSize: 20)),
                           TextSpan(
                               text: data.answeredQuestions.toString(),
                               style: const TextStyle(fontSize: 16)),

@@ -66,15 +66,23 @@ class SettingTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (showPro)
-              SvgPicture.asset('assets/images/get_pro.svg', height: 30),
+              Container(
+                  padding: const EdgeInsets.all(5),
+                  margin: const EdgeInsets.only(right: 8),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: isDarkMode
+                          ? Colors.white.withOpacity(0.24)
+                          : Colors.black),
+                  child: Image.asset('assets/images/get_pro_text.png',
+                      height: 20)),
             const SizedBox(width: 10),
             StatefulBuilder(
               builder: (_, setState) => Switch(
-                activeColor: isDarkMode ? Colors.white : mainColor,
+                activeColor: mainColor,
                 inactiveTrackColor: Colors.black.withOpacity(0.08),
                 inactiveThumbColor: isDarkMode ? Colors.white : Colors.black,
-                activeTrackColor:
-                    isDarkMode ? Colors.grey.shade800 : activeTrackColor,
+                activeTrackColor: activeTrackColor,
                 thumbIcon: MaterialStateProperty.all(
                     const Icon(Icons.abc, color: Colors.transparent)),
                 trackOutlineColor: MaterialStateProperty.all(

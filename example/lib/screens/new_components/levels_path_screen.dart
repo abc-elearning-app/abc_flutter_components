@@ -73,6 +73,8 @@ class _TestLevelsPathScreenState extends State<TestLevelsPathScreen> {
 
     return PathLevelScreen(
       isDarkMode: AppTheme.isDarkMode,
+      upperRowCount: 2,
+      lowerRowCount: 3,
       levelGroupList: groupList,
       title: 'General Science',
       onClickLevel: (id) => debugPrint(id),

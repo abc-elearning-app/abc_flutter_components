@@ -15,6 +15,7 @@ class StreakScreen extends StatefulWidget {
   final DateTime? rangeStartDate;
   final DateTime? rangeEndDate;
 
+  final bool isDarkMode;
   final Color mainColor;
   final Color progressColor;
   final Color shieldColor;
@@ -34,6 +35,7 @@ class StreakScreen extends StatefulWidget {
     this.shieldColor = const Color(0xFF39ACF0),
     required this.onJoinChallenge,
     required this.onUseShield,
+    required this.isDarkMode,
   });
 
   @override
@@ -53,15 +55,12 @@ class _StreakScreenState extends State<StreakScreen>
   late DateTime kFirstDay;
   late DateTime kLastDay;
 
-  int dayStreak = 0;
-
-  late GifController _gifController;
-
   // Other data
+  int dayStreak = 0;
+  late GifController _gifController;
   late ValueNotifier<ChallengeBoxType> _challengeBoxType;
   late AnimationController _darkenController;
   late Animation<double> _darkenAnimation;
-
   late ValueNotifier<OpenType> _openType;
 
   @override
@@ -84,12 +83,16 @@ class _StreakScreenState extends State<StreakScreen>
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
-    _darkenAnimation =
-        Tween<double>(begin: 0, end: 0.5).animate(_darkenController);
+    _darkenAnimation = Tween<double>(
+      begin: 0,
+      end: 0.5,
+    ).animate(_darkenController);
     _darkenController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         Future.delayed(
-            const Duration(seconds: 2), () => _darkenController.reverse());
+          const Duration(seconds: 2),
+          () => _darkenController.reverse(),
+        );
       }
     });
 
@@ -115,6 +118,7 @@ class _StreakScreenState extends State<StreakScreen>
     _challengeBoxType.dispose();
     _darkenController.dispose();
     _openType.dispose();
+    _gifController.dispose();
     super.dispose();
   }
 
@@ -123,7 +127,7 @@ class _StreakScreenState extends State<StreakScreen>
     return Stack(children: [
       Scaffold(
         appBar: _buildAppBar(),
-        backgroundColor: Colors.white,
+        backgroundColor: widget.isDarkMode ? Colors.black : Colors.white,
         extendBodyBehindAppBar: true,
         extendBody: true,
         body: SingleChildScrollView(
