@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/animations/sad_effect.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/final_test_result/widgets/progress_tile_section.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../animations/sprinkle_effect.dart';
 import 'widgets/main_result_box.dart';
@@ -156,7 +158,14 @@ class FinalTestResult extends StatelessWidget {
         // Add sprinkle effect when pass >= 90%
         if (progress >= 90) const SprinkleEffect(additionalOffsetY: -100),
 
-        Image.asset(_getImagePath()),
+        Image.asset(
+          'assets/images/final_test_anim_bg${isDarkMode ? '_dark' : ''}.png',
+          height: 150,
+        ),
+
+        Transform.translate(
+            offset: const Offset(10, 20),
+            child: Lottie.asset(_getImagePath(), height: 250)),
 
         if (progress <= 10) const SadEffect(),
       ]);
@@ -184,6 +193,7 @@ class FinalTestResult extends StatelessWidget {
       );
 
   _getImagePath() {
+    return 'assets/images/final_test_anim.json';
     const baseUrl = 'assets/images/final_test_';
     if (progress <= 10) {
       return '${baseUrl}fail.png';

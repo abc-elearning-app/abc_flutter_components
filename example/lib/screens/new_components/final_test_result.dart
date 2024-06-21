@@ -11,20 +11,20 @@ class TestFinalTestResult extends StatelessWidget {
       ProgressTileData(
           title: 'Engineering Comprehension',
           progress: 9,
-          icon: 'subject_icon_0'),
+          icon: 'assets/images/subject_icon_0.svg'),
       ProgressTileData(
           title: 'Arithmetic Comprehension',
           progress: 60,
-          icon: 'subject_icon_0'),
+          icon: 'assets/images/subject_icon_0.svg'),
       ProgressTileData(
           title: 'Mechanical Comprehension',
           progress: 95,
-          icon: 'subject_icon_0'),
+          icon: 'assets/images/subject_icon_0.svg'),
     ];
     return FinalTestResult(
       isDarkMode: AppTheme.isDarkMode,
       progressList: progressList,
-      progress: 90,
+      progress: 10,
       correctQuestions: 80,
       incorrectQuestions: 10,
       averageProgress: 65,

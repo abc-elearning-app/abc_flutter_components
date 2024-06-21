@@ -137,7 +137,7 @@ class _MainResultBoxState extends State<MainResultBox> {
         ),
       );
 
-  _colorExplanation(Color color, String title, int questionNum) => Row(
+  Widget _colorExplanation(Color color, String title, int questionNum) => Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Color line

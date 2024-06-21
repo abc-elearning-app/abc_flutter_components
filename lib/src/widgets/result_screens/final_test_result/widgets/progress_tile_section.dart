@@ -81,7 +81,7 @@ class ProgressSection extends StatelessWidget {
                     IconBox(
                         iconColor: _getColor(data.progress),
                         backgroundColor: _getBackgroundColor(data.progress),
-                        icon: 'assets/images/${data.icon}.svg',
+                        icon: data.icon,
                         size: 35),
 
                     // Title
