@@ -56,8 +56,8 @@ class TestNewStudyTabScreen extends StatelessWidget {
           subjectDataList: subjectDataList,
           dayStreak: 14,
           passingProbability: 30,
-          onClickTodayQuestion: () {},
-          onSelectSubject: (id) => print(id),
+          onClickDailyChallenge: () => debugPrint("Daily challenge"),
+          onSelectSubject: (id) => debugPrint(id),
         )));
   }
 }

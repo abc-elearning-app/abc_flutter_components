@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 
 class TodayQuestionButton extends StatelessWidget {
   final String buttonBackground;
+  final void Function() onClickDailyChallenge;
 
-  const TodayQuestionButton({super.key, required this.buttonBackground});
+  const TodayQuestionButton({
+    super.key,
+    required this.buttonBackground,
+    required this.onClickDailyChallenge,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +26,7 @@ class TodayQuestionButton extends StatelessWidget {
               shadowColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16))),
-          onPressed: () {},
+          onPressed: onClickDailyChallenge,
           child: const Padding(
             padding: EdgeInsets.symmetric(vertical: 15),
             child: Text(

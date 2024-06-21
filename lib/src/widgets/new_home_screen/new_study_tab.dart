@@ -35,7 +35,7 @@ class NewStudyTab extends StatelessWidget {
   final double passingProbability;
   final bool isDarkMode;
 
-  final void Function() onClickTodayQuestion;
+  final void Function() onClickDailyChallenge;
   final void Function(String id) onSelectSubject;
 
   const NewStudyTab({
@@ -54,7 +54,7 @@ class NewStudyTab extends StatelessWidget {
     required this.passingProbability,
     required this.subjectDataList,
     required this.isDarkMode,
-    required this.onClickTodayQuestion,
+    required this.onClickDailyChallenge,
     required this.onSelectSubject,
   });
 
@@ -78,7 +78,10 @@ class NewStudyTab extends StatelessWidget {
               streakIcon: streakIcon),
 
           // Button
-          TodayQuestionButton(buttonBackground: buttonBackground),
+          TodayQuestionButton(
+            buttonBackground: buttonBackground,
+            onClickDailyChallenge: onClickDailyChallenge,
+          ),
 
           // Subject list
           Expanded(
