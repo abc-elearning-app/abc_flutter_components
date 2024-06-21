@@ -202,7 +202,9 @@ class _LevelWidgetState extends State<LevelWidget>
                       offset: Offset(0, _getTranslateValue()),
                       child: Stack(alignment: Alignment.topCenter, children: [
                         GestureDetector(
-                          onTap: () => widget.onClickLevel(widget.levelData.id),
+                          onTap: () => !widget.levelData.isLock
+                              ? widget.onClickLevel(widget.levelData.id)
+                              : null,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [

@@ -3,7 +3,6 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class CustomLinearProgress extends StatelessWidget {
   final double percent;
-  final double indicatorPosition;
 
   final Color mainColor;
   final Color backgroundColor;
@@ -14,8 +13,7 @@ class CustomLinearProgress extends StatelessWidget {
       required this.mainColor,
       required this.percent,
       required this.backgroundColor,
-      required this.indicatorColor,
-      this.indicatorPosition = -15});
+      required this.indicatorColor});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +26,7 @@ class CustomLinearProgress extends StatelessWidget {
       progressColor: mainColor,
       percent: percent / 100,
       widgetIndicator: Transform.translate(
-          offset: Offset(indicatorPosition, 1),
+          offset: Offset(_getIndicatorDisposition(), 1),
           child: Transform.scale(
               scale: 0.6,
               child: CircleAvatar(
@@ -40,5 +38,11 @@ class CustomLinearProgress extends StatelessWidget {
                 ),
               ))),
     );
+  }
+
+  double _getIndicatorDisposition() {
+    if (percent == 0) return 0;
+    if (percent < 5) return -5;
+    return -9;
   }
 }

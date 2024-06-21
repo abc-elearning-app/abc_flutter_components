@@ -10,9 +10,14 @@ enum TabType { email, code }
 
 class LoginDataItem {
   final String image;
+  final String imageDark;
   final String detail;
 
-  LoginDataItem({required this.image, required this.detail});
+  LoginDataItem({
+    required this.image,
+    required this.imageDark,
+    required this.detail,
+  });
 }
 
 class LoginPages extends StatefulWidget {
@@ -62,6 +67,7 @@ class _LoginPagesState extends State<LoginPages> {
         isDarkMode: widget.isDarkMode,
         emailController: emailController,
         image: widget.tabDataList[0].image,
+        imageDark: widget.tabDataList[0].imageDark,
         secondaryColor: widget.secondaryColor,
         detail: widget.tabDataList[0].detail,
         mainColor: widget.mainColor,
@@ -72,6 +78,7 @@ class _LoginPagesState extends State<LoginPages> {
         isDarkMode: widget.isDarkMode,
         otpController: otpController,
         image: widget.tabDataList[1].image,
+        imageDark: widget.tabDataList[1].imageDark,
         detail: widget.tabDataList[1].detail,
         mainColor: widget.mainColor,
         secondaryColor: widget.secondaryColor,

@@ -1,19 +1,19 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 class IntroPersonalPlanData {
   final int index;
   final String image;
+  final String imageDark;
   final String title;
   final String subtitle;
 
   IntroPersonalPlanData({
     required this.index,
     required this.image,
+    required this.imageDark,
     required this.title,
     required this.subtitle,
   });
@@ -96,9 +96,10 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
           Expanded(
             flex: 3,
             child: Stack(alignment: Alignment.center, children: [
+              if (widget.isDarkMode) Container(color: Colors.black),
               Container(
                   color: widget.isDarkMode
-                      ? Colors.grey.shade800
+                      ? Colors.white.withOpacity(0.16)
                       : widget.lowerBackgroundColor),
               Container(
                 decoration: BoxDecoration(
@@ -122,7 +123,7 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
               Container(
                 decoration: BoxDecoration(
                     color: widget.isDarkMode
-                        ? Colors.grey.shade800
+                        ? Colors.white.withOpacity(0.16)
                         : widget.lowerBackgroundColor,
                     borderRadius:
                         const BorderRadius.only(topLeft: Radius.circular(50))),
@@ -137,7 +138,14 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
           // Upper part
           Expanded(
             flex: 9,
-            child: Image.asset(widget.tabList[index].image),
+            child: SizedBox(
+              width: 300,
+              child: Image.asset(
+                widget.isDarkMode
+                    ? widget.tabList[index].imageDark
+                    : widget.tabList[index].image,
+              ),
+            ),
           ),
 
           // Page indicator and button

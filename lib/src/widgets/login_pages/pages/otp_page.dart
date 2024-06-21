@@ -3,6 +3,7 @@ import 'package:pinput/pinput.dart';
 
 class OtpPage extends StatelessWidget {
   final String image;
+  final String imageDark;
   final String detail;
   final Color mainColor;
   final Color secondaryColor;
@@ -14,6 +15,7 @@ class OtpPage extends StatelessWidget {
   const OtpPage(
       {super.key,
       required this.image,
+      required this.imageDark,
       required this.detail,
       required this.otpController,
       required this.onReenterEmail,
@@ -37,7 +39,7 @@ class OtpPage extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 30),
-        Expanded(flex: 2, child: Image.asset(image)),
+        Expanded(flex: 2, child: Image.asset(isDarkMode ? imageDark : image)),
         Expanded(
           flex: 1,
           child: Padding(

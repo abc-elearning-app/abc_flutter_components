@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 import '../../../icons/icon_box.dart';
 
 class PracticeTestData {
-  final int index;
+  final int id;
   final String title;
   final String background;
   final String icon;
 
-  PracticeTestData(this.index, this.title, this.icon, this.background);
+  PracticeTestData(
+      {required this.id,
+      required this.title,
+      required this.icon,
+      required this.background});
 }
 
 class PracticeTestList extends StatelessWidget {
@@ -58,13 +62,13 @@ class PracticeTestList extends StatelessWidget {
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
-                      height: 60,
+                      height: 0,
                       decoration: BoxDecoration(
                           color: isDarkMode ? Colors.grey.shade900 : color,
                           boxShadow: [
                             BoxShadow(
                               color: isDarkMode ? Colors.grey.shade900 : color,
-                              blurRadius: 100,
+                              blurRadius: 150,
                               spreadRadius: 100,
                             )
                           ],

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/progress/custom_linear_progress.dart';
 
 import '../../../flutter_abc_jsc_components.dart';
@@ -81,12 +82,12 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
     _scrollController.addListener(
         () => _backgroundOffset.value = _scrollController.offset / 15);
 
-    _initCalculate();
+    _initialCalculate();
 
     super.initState();
   }
 
-  _initCalculate() {
+  _initialCalculate() {
     for (var group in widget.levelGroupList) {
       passedLevels += group.levels.indexWhere((level) => level.isCurrent);
       totalLevels += group.levels.length;
@@ -110,28 +111,25 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
       child: Stack(
         children: [
           // Background image
-          ValueListenableBuilder(
-              valueListenable: _backgroundOffset,
-              builder: (_, value, __) => Transform.translate(
-                  offset: Offset(0, -value),
-                  child: Container(
-                      height: 450,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage(widget.backgroundImage),
-                              fit: BoxFit.fitWidth))))),
+          _backgroundImage(),
+
           Scaffold(
               backgroundColor: Colors.transparent,
               appBar: AppBar(
                   leading: IconButton(
-                    icon: const Icon(Icons.arrow_back),
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: widget.isDarkMode ? Colors.white : Colors.black,
+                    ),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
-                  title: Text(widget.title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: widget.isDarkMode ? Colors.white : Colors.black,
-                      )),
+                  title: Text(
+                    widget.title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: widget.isDarkMode ? Colors.white : Colors.black,
+                    ),
+                  ),
                   backgroundColor: Colors.transparent,
                   scrolledUnderElevation: 0),
               body: SafeArea(
@@ -161,7 +159,6 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                       child: CustomLinearProgress(
                           mainColor: widget.mainColor,
                           percent: percent + 10,
-                          indicatorPosition: -5,
                           backgroundColor: widget.isDarkMode
                               ? Colors.grey.shade900
                               : widget.lineBackgroundColor,
@@ -180,6 +177,17 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
       ),
     );
   }
+
+  Widget _backgroundImage() => ValueListenableBuilder(
+      valueListenable: _backgroundOffset,
+      builder: (_, value, __) => Transform.translate(
+          offset: Offset(0, -value),
+          child: Container(
+              height: 450,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(widget.backgroundImage),
+                      fit: BoxFit.fitWidth)))));
 
   Widget _buildGroup(int index) {
     final currentGroup = widget.levelGroupList[index];

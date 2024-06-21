@@ -9,28 +9,28 @@ class TestNewTestTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final practiceTest = [
       PracticeTestData(
-        0,
-        'Arithmetic Reasoning',
-        'assets/images/subject_icon.svg',
-        'assets/images/test_tab_practice_1.png',
+        id: 0,
+        title: 'Arithmetic Reasoning',
+        icon: 'assets/images/subject_icon.svg',
+        background: 'assets/images/test_tab_practice_1.png',
       ),
       PracticeTestData(
-        0,
-        'Assembling Objects',
-        'assets/images/subject_icon.svg',
-        'assets/images/test_tab_practice_2.png',
+        id: 0,
+        title: 'Assembling Objects',
+        icon: 'assets/images/subject_icon.svg',
+        background: 'assets/images/test_tab_practice_2.png',
       ),
       PracticeTestData(
-        0,
-        'Haz Mat',
-        'assets/images/subject_icon.svg',
-        'assets/images/test_tab_practice_1.png',
+        id: 0,
+        title: 'Haz Mat',
+        icon: 'assets/images/subject_icon.svg',
+        background: 'assets/images/test_tab_practice_1.png',
       ),
       PracticeTestData(
-        0,
-        'Chemistry',
-        'assets/images/subject_icon.svg',
-        'assets/images/test_tab_practice_2.png',
+        id: 0,
+        title: 'Chemistry',
+        icon: 'assets/images/subject_icon.svg',
+        background: 'assets/images/test_tab_practice_2.png',
       ),
     ];
     return Scaffold(
