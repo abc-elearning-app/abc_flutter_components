@@ -85,11 +85,9 @@ class SettingTile extends StatelessWidget {
                 inactiveTrackColor: Colors.black.withOpacity(0.08),
                 inactiveThumbColor: isDarkMode ? Colors.white : Colors.black,
                 activeTrackColor: activeTrackColor,
-                thumbIcon: WidgetStateProperty.all(
-                    const Icon(Icons.abc, color: Colors.transparent)),
-                trackOutlineColor: WidgetStateProperty.all(
-                    isDarkMode ? Colors.white : mainColor),
-                trackOutlineWidth: WidgetStateProperty.all(1),
+                thumbIcon: const MaterialStatePropertyAll(Icon(Icons.abc, color: Colors.transparent)),
+                trackOutlineColor: MaterialStatePropertyAll(isDarkMode ? Colors.white : mainColor),
+                trackOutlineWidth: const MaterialStatePropertyAll(1),
                 value: value!,
                 onChanged: (_) => showPro ? null : onClick(),
               ),
