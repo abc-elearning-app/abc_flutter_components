@@ -1,7 +1,6 @@
 import 'package:example/constants/app_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 class TestStreakScreen extends StatefulWidget {
   const TestStreakScreen({super.key});
