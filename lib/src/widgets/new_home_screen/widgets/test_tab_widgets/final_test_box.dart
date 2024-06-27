@@ -5,107 +5,144 @@ class FinalTestBox extends StatelessWidget {
   final String icon;
   final String background;
 
-  final Color textColor;
-  final Color progressColor;
+  final Color mainColor;
+  final Color secondaryColor;
 
   final double progress;
   final int answeredQuestions;
   final int totalQuestions;
   final double correctPercent;
+  final bool isDarkMode;
+  final List<Color> gradientColors;
+
+  final void Function() onClickFinal;
 
   const FinalTestBox(
       {super.key,
       required this.icon,
       required this.background,
-      required this.textColor,
-      required this.progressColor,
+      required this.mainColor,
       required this.answeredQuestions,
       required this.totalQuestions,
       required this.correctPercent,
-      required this.progress});
+      required this.progress,
+      required this.isDarkMode,
+      required this.secondaryColor,
+      required this.onClickFinal,
+      required this.gradientColors});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(15),
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-          image:
-              DecorationImage(image: AssetImage(background), fit: BoxFit.cover),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.grey.shade300,
-                blurRadius: 2,
-                spreadRadius: 2,
-                offset: const Offset(0, 1))
-          ],
-          borderRadius: BorderRadius.circular(15)),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Image.asset(icon),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return GestureDetector(
+      onTap: onClickFinal,
+      child: Container(
+        margin: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(background),
+              fit: BoxFit.cover,
+            ),
+            boxShadow: !isDarkMode
+                ? [
+                    BoxShadow(
+                        color: Colors.grey.shade300,
+                        blurRadius: 2,
+                        spreadRadius: 2,
+                        offset: const Offset(0, 1))
+                  ]
+                : null,
+            borderRadius: BorderRadius.circular(15)),
+        child: Stack(children: [
+          Positioned.fill(
+              child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                gradient: _gradientColors()),
+          )),
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              children: [
+                Row(
                   children: [
-                    Text('Final Test',
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: textColor)),
-                    Text(
-                        'Our final test is the ultimate gauge that assesses your readiness for the actual exam.',
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: textColor)),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5, right: 20),
+                      child: Image.asset(icon, height: 80),
+                    ),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Final Test',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white)),
+                          Text(
+                              'Our final test is the ultimate gauge that assesses your readiness for the actual exam.',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white)),
+                        ],
+                      ),
+                    )
                   ],
                 ),
-              )
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: LinearPercentIndicator(
-              percent: progress / 100,
-              animation: true,
-              barRadius: const Radius.circular(20),
-              lineHeight: 10,
-              progressColor: progressColor,
-              backgroundColor: Colors.grey.shade200.withOpacity(0.3),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  child: LinearPercentIndicator(
+                    padding: EdgeInsets.zero,
+                    percent: progress / 100,
+                    animation: true,
+                    barRadius: const Radius.circular(20),
+                    lineHeight: 10,
+                    progressColor: mainColor,
+                    backgroundColor: Colors.grey.shade200.withOpacity(0.3),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    RichText(
+                        text: TextSpan(
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w400),
+                            children: [
+                          TextSpan(text: answeredQuestions.toString()),
+                          TextSpan(
+                              text: '/$totalQuestions Answered',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white.withOpacity(0.7)))
+                        ])),
+                    Text(
+                      '${correctPercent.toInt()}% Correct',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16,
+                          color: Colors.white),
+                    )
+                  ],
+                )
+              ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              RichText(
-                  text: TextSpan(
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: textColor),
-                      children: [
-                    TextSpan(text: answeredQuestions.toString()),
-                    TextSpan(
-                        text: '/$totalQuestions Answered',
-                        style: TextStyle(
-                            fontSize: 14, color: textColor.withOpacity(0.5)))
-                  ])),
-              Text(
-                '${correctPercent.toInt()}% Correct',
-                style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16,
-                    color: textColor),
-              )
-            ],
-          )
-        ],
+        ]),
       ),
     );
   }
+
+  _gradientColors() => LinearGradient(
+      colors: isDarkMode
+          ? [
+              const Color(0xFF292929).withOpacity(0.8),
+              const Color(0xFF292929),
+            ]
+          : [
+              gradientColors[0].withOpacity(0.8),
+              gradientColors[1],
+            ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter);
 }

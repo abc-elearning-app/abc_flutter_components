@@ -13,13 +13,13 @@ class ModeData {
 class ModeOptions extends StatelessWidget {
   final List<ModeData> modes;
   final Color mainColor;
-  final Color defaultColor;
+  final bool isDarkMode;
 
   const ModeOptions({
     super.key,
     required this.modes,
     required this.mainColor,
-    required this.defaultColor,
+    required this.isDarkMode,
   });
 
   @override
@@ -51,7 +51,9 @@ class ModeOptions extends StatelessWidget {
               margin: const EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(
                   border: Border.all(width: 1, color: mainColor),
-                  color: selectedIndex == modeValue ? mainColor : defaultColor,
+                  color: selectedIndex == modeValue
+                      ? mainColor
+                      : Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
                   borderRadius: BorderRadius.circular(20)),
               child: ListTile(
                 // Info icon
@@ -67,19 +69,24 @@ class ModeOptions extends StatelessWidget {
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 18,
-                        color: selectedIndex == modeValue
+                        color: selectedIndex == modeValue || isDarkMode
                             ? Colors.white
                             : Colors.black)),
 
                 trailing: CircleAvatar(
                   radius: 12,
                   backgroundColor: selectedIndex == modeValue
-                      ? defaultColor
-                      : Colors.grey.shade300,
+                      ? Colors.white
+                      : isDarkMode
+                          ? Colors.grey.shade700
+                          : Colors.grey.shade300,
                   child: CircleAvatar(
                     radius: selectedIndex == modeValue ? 5 : 10,
-                    backgroundColor:
-                        selectedIndex == modeValue ? mainColor : defaultColor,
+                    backgroundColor: selectedIndex == modeValue
+                        ? mainColor
+                        : isDarkMode
+                            ? Colors.grey.shade800
+                            : Colors.white,
                   ),
                 ),
               )),

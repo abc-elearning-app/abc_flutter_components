@@ -4,11 +4,12 @@ import '../../custom_datetime_picker/custom_date_picker.dart';
 
 class SelectExamDatePage extends StatefulWidget {
   final String title;
-  final Widget image;
-  final Color appBarColor;
+  final String image;
+  final String imageDark;
   final Color mainColor;
+  final Color secondaryColor;
   final Color optionBoxFillColor;
-  final bool showBackButton;
+  final bool isDarkMode;
   final Map<String, dynamic> selectedTime;
 
   final PageController pageController;
@@ -18,13 +19,14 @@ class SelectExamDatePage extends StatefulWidget {
     super.key,
     required this.title,
     required this.image,
+    required this.imageDark,
     required this.pageController,
-    required this.appBarColor,
     required this.mainColor,
     required this.optionBoxFillColor,
     required this.selectedTime,
     required this.pageIndex,
-    required this.showBackButton,
+    required this.isDarkMode,
+    required this.secondaryColor,
   });
 
   @override
@@ -48,47 +50,40 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
         child: Column(
           children: [
             // Title
-            Stack(alignment: Alignment.center, children: [
-              if (widget.showBackButton)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      icon: const Icon(
-                        Icons.chevron_left,
-                        size: 30,
-                      )),
-                ),
-              Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Text(widget.title,
-                      style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: widget.appBarColor))),
-            ]),
+            Padding(
+                padding: const EdgeInsets.all(20),
+                child: Text(widget.title,
+                    style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color:
+                            widget.isDarkMode ? Colors.white : Colors.black))),
 
             // Image
             Padding(
-                padding: const EdgeInsets.symmetric(vertical: 40),
-                child: widget.image),
+                padding: const EdgeInsets.only(bottom: 40),
+                child: Image.asset(
+                    widget.isDarkMode ? widget.imageDark : widget.image,
+                    height: 300)),
 
             // Option tile & Exam time picker
-            ValueListenableBuilder(
-              valueListenable: _selectedIndex,
-              builder: (_, selectedIndex, __) => AnimatedCrossFade(
-                  crossFadeState: selectedIndex != 0
-                      ? CrossFadeState.showFirst
-                      : CrossFadeState.showSecond,
-                  duration: const Duration(milliseconds: 200),
-                  firstChild: _buildOptions(selectedIndex),
-                  secondChild: Container(
-                    constraints: const BoxConstraints(maxHeight: 200),
-                    child: CustomDatePicker(
-                        onSelectDate: (selectedDate) =>
-                            widget.selectedTime['exam_date'] =
-                                selectedDate.toIso8601String()),
-                  )),
+            Expanded(
+              child: ValueListenableBuilder(
+                valueListenable: _selectedIndex,
+                builder: (_, selectedIndex, __) => AnimatedCrossFade(
+                    crossFadeState: selectedIndex != 0
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
+                    duration: const Duration(milliseconds: 200),
+                    firstChild: _buildOptions(selectedIndex),
+                    secondChild: Container(
+                      constraints: const BoxConstraints(maxHeight: 200),
+                      child: CustomDatePicker(
+                          onSelectDate: (selectedDate) =>
+                              widget.selectedTime['exam_date'] =
+                                  selectedDate.toIso8601String()),
+                    )),
+              ),
             ),
           ],
         ),
@@ -101,7 +96,7 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
           // Select exam date option
           _selectedOptionFrame(
               index: 0,
-              isSelected: selectedIndex == 0,
+              selectedIndex: selectedIndex,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -113,7 +108,7 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
                                 : widget.optionBoxFillColor)
                             ? Colors.black
                             : Colors.white,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                         fontSize: 16),
                   ),
                   Text('Pick A Date From Calendar',
@@ -131,7 +126,7 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
           // Skip select date option
           _selectedOptionFrame(
               index: 1,
-              isSelected: selectedIndex == 1,
+              selectedIndex: selectedIndex,
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(
@@ -142,7 +137,7 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
                               : widget.optionBoxFillColor)
                           ? Colors.black
                           : Colors.white,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                       fontSize: 16),
                 ),
               )),
@@ -151,36 +146,34 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
 
   // Outer frame of the options
   Widget _selectedOptionFrame(
-          {required int index,
-          required bool isSelected,
-          required Widget child}) =>
-      GestureDetector(
-        onTap: () => _handleSelectOption(index),
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 8),
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            border: isSelected
-                ? null
-                : Border.all(width: 1, color: widget.mainColor),
-            color: isSelected ? widget.mainColor : widget.optionBoxFillColor,
-          ),
-          child: Row(
-            children: [
-              Expanded(child: child),
-              CircleAvatar(
-                radius: 12,
-                backgroundColor: isSelected ? Colors.white : Colors.grey,
-                child: CircleAvatar(
-                  radius: isSelected ? 5 : 11,
-                  backgroundColor: isSelected ? widget.mainColor : Colors.white,
-                ),
-              )
-            ],
-          ),
+      {required int index, required int selectedIndex, required Widget child}) {
+    bool isSelected = selectedIndex == index;
+    return GestureDetector(
+      onTap: () => _handleSelectOption(index),
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          border: isSelected ? null : Border.all(color: widget.secondaryColor),
+          color: isSelected ? widget.secondaryColor : widget.optionBoxFillColor,
         ),
-      );
+        child: Row(
+          children: [
+            Expanded(child: child),
+            CircleAvatar(
+              radius: 12,
+              backgroundColor: isSelected ? Colors.white : Colors.grey,
+              child: CircleAvatar(
+                radius: isSelected ? 5 : 11,
+                backgroundColor: isSelected ? widget.mainColor : Colors.white,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 
   _handleSelectOption(int index) {
     _selectedIndex.value = index;

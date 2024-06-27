@@ -2,12 +2,6 @@ import 'package:flutter/material.dart';
 
 enum ProOptionTime { week, month, year }
 
-extension StringExtension on String {
-  String capitalize() {
-    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
-  }
-}
-
 class ProOptionData {
   final String title;
   final double price;
@@ -28,26 +22,46 @@ class ProOptionData {
 
 class ProOptions extends StatefulWidget {
   final List<ProOptionData> proOptions;
-  final Color optionBackgroundColor;
   final Color mainColor;
   final Color secondaryColor;
+  final bool isDarkMode;
 
   final void Function(int index) onSelect;
 
   const ProOptions(
       {super.key,
       required this.proOptions,
-      required this.optionBackgroundColor,
       required this.mainColor,
       required this.secondaryColor,
-      required this.onSelect});
+      required this.onSelect,
+      required this.isDarkMode});
 
   @override
   State<ProOptions> createState() => _ProOptionsState();
 }
 
-class _ProOptionsState extends State<ProOptions> {
+class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
+  late List<AnimationController> _animationControllers;
+  final List<Animation<double>> _animations = [];
   int selectedOption = 1;
+
+  @override
+  void initState() {
+    _animationControllers = List.generate(
+        3,
+        (_) => AnimationController(
+              vsync: this,
+              duration: const Duration(milliseconds: 200),
+            ));
+    for (AnimationController animationController in _animationControllers) {
+      _animations
+          .add(Tween<double>(begin: 1, end: 1.05).animate(animationController));
+    }
+
+    Future.delayed(const Duration(milliseconds: 200),
+        () => _animationControllers[1].forward());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,64 +71,70 @@ class _ProOptionsState extends State<ProOptions> {
         children: List.generate(
             widget.proOptions.length,
             (index) => Expanded(
-                  child: Transform.scale(
-                    scale: selectedOption == index ? 1.05 : 1,
-                    child: GestureDetector(
-                        onTap: () {
-                          setState(() => selectedOption = index);
-                          widget.onSelect(index);
-                        },
-                        child: _buildOption(widget.proOptions[index], index)),
-                  ),
+                  child: _buildOption(widget.proOptions[index], index),
                 )),
       ),
     );
   }
 
-  Widget _buildOption(ProOptionData data, int index) => Container(
-        height: 180,
-        margin: const EdgeInsets.symmetric(horizontal: 5),
-        padding: const EdgeInsets.all(3),
-        decoration: BoxDecoration(
-            color: widget.optionBackgroundColor,
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(
-                width: selectedOption == index ? 2 : 1,
-                color: selectedOption == index
-                    ? widget.mainColor
-                    : widget.secondaryColor)),
-        child: Stack(children: [
-          // Main content
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildPrice(data.price, data.originalPrice),
+  Widget _buildOption(ProOptionData data, int index) => ScaleTransition(
+        scale: _animations[index],
+        child: GestureDetector(
+          onTap: () {
+            setState(() => selectedOption = index);
+            widget.onSelect(index);
+            for (int i = 0; i < 3; i++) {
+              if (i != index) {
+                _animationControllers[i].reverse();
+              }
+            }
+            _animationControllers[index].forward();
+          },
+          child: Container(
+            height: 180,
+            margin: const EdgeInsets.symmetric(horizontal: 5),
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+                color: Colors.white.withOpacity(widget.isDarkMode ? 0.24 : 1),
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(
+                    width: selectedOption == index ? 2 : 1,
+                    color: _borderColor(index))),
+            child: Stack(children: [
+              // Main content
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildPrice(data.price, data.originalPrice),
 
-              // Option's time
-              Text(
-                '1 ${data.optionTime.name.capitalize()}',
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12,
-                ),
+                  // Option's time
+                  Text(
+                    '1 ${_capitalize(data.optionTime.name)}',
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12,
+                    ),
+                  ),
+
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: Divider(),
+                  ),
+
+                  // Price per day
+                  _buildPricePerDay(data.price, data.optionTime),
+                ],
               ),
 
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Divider(),
-              ),
+              if (data.title.isNotEmpty) _buildTitleBox(data.title, index),
 
-              // Price per day
-              _buildPricePerDay(data.price, data.optionTime),
-            ],
+              if (data.freeTrialDays > 0)
+                _buildFreeDayTrials(data.freeTrialDays),
+
+              _buildSavedPercentBox(data.percentSaved, index)
+            ]),
           ),
-
-          if (data.title.isNotEmpty) _buildTitleBox(data.title, index),
-
-          if (data.freeTrialDays > 0) _buildFreeDayTrials(data.freeTrialDays),
-
-          _buildSavedPercentBox(data.percentSaved, index)
-        ]),
+        ),
       );
 
   Widget _buildPrice(double price, double originalPrice) => Row(
@@ -122,10 +142,10 @@ class _ProOptionsState extends State<ProOptions> {
         children: [
           // Price
           Text('\$$price',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              )),
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: widget.isDarkMode ? Colors.white : Colors.black)),
 
           // Original price
           if (originalPrice > 0)
@@ -146,9 +166,8 @@ class _ProOptionsState extends State<ProOptions> {
         children: [
           RichText(
               text: TextSpan(
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'Poppins',
+                  style: TextStyle(
+                    color: widget.isDarkMode ? Colors.white : Colors.black,
                   ),
                   children: [
                 const TextSpan(text: 'Just '),
@@ -197,10 +216,7 @@ class _ProOptionsState extends State<ProOptions> {
           offset: const Offset(0, -15),
           child: RichText(
               text: TextSpan(
-                  style: TextStyle(
-                      color: widget.mainColor,
-                      fontSize: 12,
-                      fontFamily: 'Poppins'),
+                  style: TextStyle(color: widget.mainColor, fontSize: 12),
                   children: [
                 TextSpan(text: '$freeTrialDays-Day '),
                 const TextSpan(
@@ -247,4 +263,21 @@ class _ProOptionsState extends State<ProOptions> {
         return price / 365;
     }
   }
+
+  Color _borderColor(int index) {
+    return selectedOption == index
+        ? widget.mainColor
+        : widget.isDarkMode
+            ? Colors.white
+            : widget.secondaryColor;
+  }
+
+  String _capitalize(String text) {
+    if (text.isEmpty) {
+      return text;
+    }
+    return text[0].toUpperCase() + text.substring(1);
+  }
+
+  _handleSelectOption() {}
 }

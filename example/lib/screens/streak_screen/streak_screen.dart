@@ -1,3 +1,4 @@
+import 'package:example/constants/app_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
@@ -9,15 +10,16 @@ class TestStreakScreen extends StatefulWidget {
 }
 
 class _TestStreakScreenState extends State<TestStreakScreen> {
-  bool isStarted = false;
+  bool isStarted = true;
   bool refillShield = false;
 
   @override
   Widget build(BuildContext context) {
     return StreakScreen(
+        isDarkMode: AppTheme.isDarkMode,
         isStarted: isStarted,
         refillShield: refillShield,
-        rangeStartDate: DateTime.now(),
+        rangeStartDate: DateTime(2024, 6, 1),
         rangeEndDate: DateTime.now(),
         shieldedDays: [
           // DateTime.now(),

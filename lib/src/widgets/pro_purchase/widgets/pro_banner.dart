@@ -62,7 +62,6 @@ class _ProBannerState extends State<ProBanner> {
               child: RichText(
             text: TextSpan(
                 style: TextStyle(
-                    fontFamily: 'Poppins',
                     fontSize: 14,
                     color: widget.textColor,
                     fontWeight: FontWeight.w500),
@@ -89,17 +88,20 @@ class _ProBannerState extends State<ProBanner> {
             decoration: const BoxDecoration(
                 image: DecorationImage(
                     image:
-                        AssetImage('assets/images/limited_offer_frame.png'))),
+                        AssetImage('assets/images/limited_offer.png'))),
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: ValueListenableBuilder(
               valueListenable: _time,
               builder: (_, value, __) => Center(
-                child: Text(
-                  _getDisplayTime(value),
-                  style: TextStyle(
-                    color: widget.textColor,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+                child: Transform.translate(
+                  offset: const Offset(0, 3),
+                  child: Text(
+                    _getDisplayTime(value),
+                    style: TextStyle(
+                      color: widget.textColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),

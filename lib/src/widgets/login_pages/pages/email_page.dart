@@ -1,29 +1,31 @@
 import 'package:flutter/material.dart';
 
 class EmailPage extends StatelessWidget {
-  final Widget image;
+  final String image;
+  final String imageDark;
   final String detail;
-  final Color textColor;
   final Color mainColor;
-  final String fontFamily;
+  final Color secondaryColor;
+  final bool isDarkMode;
   final TextEditingController emailController;
   final void Function() onEnterEmail;
 
   const EmailPage(
       {super.key,
       required this.image,
+      required this.imageDark,
       required this.detail,
       required this.emailController,
       required this.onEnterEmail,
-      required this.textColor,
       required this.mainColor,
-      required this.fontFamily});
+      required this.secondaryColor,
+      required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(flex: 2, child: image),
+        Expanded(flex: 2, child: Image.asset(isDarkMode ? imageDark : image)),
 
         // Detail text
         Expanded(
@@ -34,7 +36,11 @@ class EmailPage extends StatelessWidget {
             child: SingleChildScrollView(
               child: Text(
                 detail,
-                style: TextStyle(fontSize: 18, color: textColor),
+                style: TextStyle(
+                    fontSize: 18,
+                    color: isDarkMode
+                        ? Colors.white.withOpacity(0.6)
+                        : Colors.black),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -62,7 +68,7 @@ class EmailPage extends StatelessWidget {
   Widget _buildEmailTextField() {
     final border = OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: BorderSide(color: mainColor));
+        borderSide: BorderSide(color: isDarkMode ? mainColor : secondaryColor));
 
     // Add padding when keyboard appear
     return Padding(
@@ -75,10 +81,11 @@ class EmailPage extends StatelessWidget {
           filled: true,
           hintText: 'Please type your email address!',
           hintStyle: TextStyle(
-              fontFamily: fontFamily,
-              color: Colors.grey.shade300,
+              color: isDarkMode
+                  ? Colors.white.withOpacity(0.24)
+                  : Colors.grey.shade300,
               fontSize: 18),
-          fillColor: Colors.white,
+          fillColor: isDarkMode ? Colors.grey.shade900 : Colors.white,
           focusedBorder: border,
           enabledBorder: border,
         ),

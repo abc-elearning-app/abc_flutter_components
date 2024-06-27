@@ -13,11 +13,15 @@ class QuestionData {
   bool liked;
   bool disliked;
 
-  QuestionData(this.question, this.answers, this.explanation,
-      {this.bookmarked = false,
-      this.liked = false,
-      this.disliked = false,
-      this.isCorrectlyChosen});
+  QuestionData({
+    required this.question,
+    required this.answers,
+    required this.explanation,
+    this.bookmarked = false,
+    this.liked = false,
+    this.disliked = false,
+    this.isCorrectlyChosen,
+  });
 }
 
 class AnswerData {
@@ -36,6 +40,7 @@ class DiagnosticQuestion extends StatefulWidget {
   final int currentQuestionIndex;
   final int totalQuestions;
   final bool isPro;
+  final bool isDarkMode;
 
   // Callbacks
   final void Function() onClickExplanation;
@@ -47,6 +52,8 @@ class DiagnosticQuestion extends StatefulWidget {
   final void Function(bool isSelected) onToggleDislike;
 
   // Custom color
+  final Color mainColor;
+  final Color secondaryColor;
   final Color correctColor;
   final Color incorrectColor;
   final Color progressBackgroundColor;
@@ -58,6 +65,8 @@ class DiagnosticQuestion extends StatefulWidget {
     required this.prevQuestion,
     required this.nextQuestion,
     required this.isPro,
+    this.mainColor = const Color(0xFFE3A651),
+    this.secondaryColor = const Color(0xFF7C6F5B),
     this.correctColor = const Color(0xFF07C58C),
     this.incorrectColor = const Color(0xFFFF746D),
     this.progressBackgroundColor = Colors.white,
@@ -70,8 +79,9 @@ class DiagnosticQuestion extends StatefulWidget {
     required this.onToggleBookmark,
     required this.onToggleLike,
     required this.onToggleDislike,
+    required this.isDarkMode,
     this.correctIcon,
-    this.incorrectIcon
+    this.incorrectIcon,
   });
 
   @override
@@ -79,7 +89,13 @@ class DiagnosticQuestion extends StatefulWidget {
 }
 
 class _DiagnosticQuestionState extends State<DiagnosticQuestion> {
-  final _buttonStatus = ValueNotifier<ButtonStatus>(ButtonStatus.disabled);
+  late ValueNotifier _buttonStatus;
+
+  @override
+  void initState() {
+    _buttonStatus = ValueNotifier<ButtonStatus>(ButtonStatus.disabled);
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -99,47 +115,49 @@ class _DiagnosticQuestionState extends State<DiagnosticQuestion> {
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Text(
             'Question ${widget.currentQuestionIndex + 1}/${widget.totalQuestions}',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: widget.isDarkMode ? Colors.white : Colors.black,
+            ),
           ),
         ),
 
         // Question pages
-        Expanded(child: _buildQuestion()),
+        Expanded(child: _mainQuestion()),
 
         // Buttons
-        _buildContinueButton()
+        _continueButton()
       ],
     );
   }
 
-  Widget _buildQuestion() => PageAnimation(
+  Widget _mainQuestion() => PageAnimation(
         key: animationKey,
-
-        // prevChild only for animation
         prevChild: widget.currentQuestionIndex == 0
             ? null
             : MainQuestionPage(
+                isDarkMode: widget.isDarkMode,
                 questionIndex: widget.currentQuestionIndex - 1,
-                questionData: widget.prevQuestion!,
-              ),
-
+                questionData: widget.prevQuestion!),
         nextChild: MainQuestionPage(
+          isDarkMode: widget.isDarkMode,
           isPro: widget.isPro,
           questionIndex: widget.currentQuestionIndex,
           questionData: widget.nextQuestion,
           correctColor: widget.correctColor,
           incorrectColor: widget.incorrectColor,
+          correctIcon: widget.correctIcon,
+          incorrectIcon: widget.incorrectIcon,
           onSelectAnswer: (isCorrect) => _handleOnSelectAnswer(isCorrect),
           onClickExplanation: widget.onClickExplanation,
           onToggleBookmark: widget.onToggleBookmark,
           onToggleLike: widget.onToggleLike,
           onToggleDislike: widget.onToggleDislike,
-          correctIcon: widget.correctIcon,
-          incorrectIcon: widget.incorrectIcon,
         ),
       );
 
-  Widget _buildContinueButton() => ValueListenableBuilder(
+  Widget _continueButton() => ValueListenableBuilder(
         valueListenable: _buttonStatus,
         builder: (_, value, __) => Container(
             width: double.infinity,

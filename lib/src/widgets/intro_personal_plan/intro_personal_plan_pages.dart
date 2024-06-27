@@ -1,19 +1,19 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import '../page_indicator/page_indicator.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 class IntroPersonalPlanData {
   final int index;
-  final Widget image;
+  final String image;
+  final String imageDark;
   final String title;
   final String subtitle;
 
   IntroPersonalPlanData({
     required this.index,
     required this.image,
+    required this.imageDark,
     required this.title,
     required this.subtitle,
   });
@@ -24,39 +24,40 @@ class IntroPersonalPlanPages extends StatefulWidget {
   final Color lowerBackgroundColor;
   final Color mainColor;
   final Color buttonTextColor;
-  final Color titleColor;
-  final Color subTitleColor;
   final double buttonTextFontSize;
+  final bool isDarkMode;
+
   final List<IntroPersonalPlanData> tabList;
-  final String fontFamily;
   final void Function() onFinish;
 
   const IntroPersonalPlanPages(
       {super.key,
-      this.upperBackgroundColor = const Color(0xFFEEFFFA),
+      this.upperBackgroundColor = const Color(0xFFF5F4EE),
       this.lowerBackgroundColor = Colors.white,
-      this.mainColor = const Color(0xFF579E89),
+      this.mainColor = const Color(0xFFE3A651),
       this.buttonTextColor = Colors.white,
       this.buttonTextFontSize = 20,
-      this.titleColor = Colors.black,
-      this.subTitleColor = Colors.grey,
-      this.fontFamily = 'Poppins',
       required this.tabList,
-      required this.onFinish});
+      required this.onFinish,
+      required this.isDarkMode});
 
   @override
   State<IntroPersonalPlanPages> createState() => _IntroPersonalPlanPagesState();
 }
 
 class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
-  final _pageController = PageController(initialPage: 0, keepPage: true);
-  final _pageIndex = ValueNotifier<double>(0);
+  late PageController _pageController;
+  late ValueNotifier _pageIndex;
 
   @override
   void initState() {
+    _pageController = PageController(initialPage: 0);
+    _pageIndex = ValueNotifier<double>(0);
+
     _pageController.addListener(() {
       _pageIndex.value = _pageController.page!;
     });
+
     super.initState();
   }
 
@@ -69,45 +70,24 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Scaffold(
-        body: Theme(
-          data: ThemeData(fontFamily: widget.fontFamily),
-          child: Stack(children: [
-            _buildBackground(),
-            Column(
-              children: [
-                // Images and Texts
-                Expanded(
+    return Scaffold(
+      body: Stack(children: [
+        _buildBackground(),
+        SafeArea(
+          child: Column(
+            children: [
+              Expanded(
                   child: PageView.builder(
                       controller: _pageController,
                       itemCount: widget.tabList.length,
                       itemBuilder: (_, index) =>
-                          _buildStudyPlanTab(context, index)),
-                ),
-
-                // Page indicator and button
-                _buildNavigateSection()
-              ],
-            ),
-          ]),
+                          _buildStudyPlanTab(context, index))),
+              _buildNavigateSection()
+            ],
+          ),
         ),
-      ),
-
-      // Debug back button
-      if (kDebugMode && Platform.isIOS)
-        Column(
-          children: [
-            const SizedBox(height: 100),
-            IconButton(
-                onPressed: () => Navigator.of(context).pop(context),
-                icon: const Icon(
-                  Icons.chevron_left,
-                  color: Colors.red,
-                )),
-          ],
-        )
-    ]);
+      ]),
+    );
   }
 
   Widget _buildBackground() => Column(
@@ -116,10 +96,16 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
           Expanded(
             flex: 3,
             child: Stack(alignment: Alignment.center, children: [
-              Container(color: widget.lowerBackgroundColor),
+              if (widget.isDarkMode) Container(color: Colors.black),
+              Container(
+                  color: widget.isDarkMode
+                      ? Colors.white.withOpacity(0.16)
+                      : widget.lowerBackgroundColor),
               Container(
                 decoration: BoxDecoration(
-                    color: widget.upperBackgroundColor,
+                    color: widget.isDarkMode
+                        ? Colors.black
+                        : widget.upperBackgroundColor,
                     borderRadius: const BorderRadius.only(
                         bottomRight: Radius.circular(50))),
               ),
@@ -130,10 +116,15 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
           Expanded(
             flex: 2,
             child: Stack(children: [
-              Container(color: widget.upperBackgroundColor),
+              Container(
+                  color: widget.isDarkMode
+                      ? Colors.black
+                      : widget.upperBackgroundColor),
               Container(
                 decoration: BoxDecoration(
-                    color: widget.lowerBackgroundColor,
+                    color: widget.isDarkMode
+                        ? Colors.white.withOpacity(0.16)
+                        : widget.lowerBackgroundColor,
                     borderRadius:
                         const BorderRadius.only(topLeft: Radius.circular(50))),
               ),
@@ -147,7 +138,14 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
           // Upper part
           Expanded(
             flex: 9,
-            child: widget.tabList[index].image,
+            child: SizedBox(
+              width: 300,
+              child: Image.asset(
+                widget.isDarkMode
+                    ? widget.tabList[index].imageDark
+                    : widget.tabList[index].image,
+              ),
+            ),
           ),
 
           // Page indicator and button
@@ -161,7 +159,7 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
                   child: Text(
                     widget.tabList[index].title,
                     style: TextStyle(
-                        color: widget.titleColor,
+                        color: widget.isDarkMode ? Colors.white : Colors.black,
                         fontSize: 25,
                         fontWeight: FontWeight.bold),
                   ),
@@ -176,7 +174,9 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
-                          color: widget.subTitleColor,
+                          color: widget.isDarkMode
+                              ? Colors.white.withOpacity(0.6)
+                              : const Color(0xFF3C3C3C).withOpacity(0.52),
                         ),
                       ),
                     ),
@@ -188,44 +188,29 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
         ],
       );
 
-  Widget _buildNavigateSection() => Container(
-        padding: const EdgeInsets.all(30),
-        color: widget.lowerBackgroundColor,
-        child: Row(
-          children: [
-            // Page indicator
-            Expanded(
-              child: ValueListenableBuilder(
-                  valueListenable: _pageIndex,
-                  builder: (_, value, __) => PageIndicator(
-                      pageCount: widget.tabList.length,
-                      currentPage: value.toInt(),
-                      color: widget.mainColor)),
-            ),
-
-            ElevatedButton(
-              onPressed: () => _handleButtonClick(),
-              style: ElevatedButton.styleFrom(
-                  textStyle: TextStyle(
-                      fontFamily: widget.fontFamily,
-                      fontWeight: FontWeight.bold),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 60, vertical: 15),
+  Widget _buildNavigateSection() => ValueListenableBuilder(
+        valueListenable: _pageIndex,
+        builder: (_, value, __) => Container(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              PageIndicator(
+                  pageCount: widget.tabList.length,
+                  currentPage: value.toInt(),
+                  color: widget.mainColor),
+              SizedBox(
+                height: 55,
+                width: 160,
+                child: MainButton(
+                  title: value != widget.tabList.length - 1 ? 'Next' : 'Start',
                   backgroundColor: widget.mainColor,
-                  foregroundColor: widget.buttonTextColor),
-              child: ValueListenableBuilder(
-                valueListenable: _pageIndex,
-                builder: (_, value, __) => Text(
-                  _pageIndex.value != widget.tabList.length - 1
-                      ? 'Next'
-                      : 'Start',
-                  style: TextStyle(fontSize: widget.buttonTextFontSize),
+                  onPressed: _handleButtonClick,
+                  textStyle: TextStyle(fontSize: widget.buttonTextFontSize),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       );
 

@@ -8,24 +8,26 @@ import 'pages/otp_page.dart';
 
 enum TabType { email, code }
 
-class LoginDataItem {
-  final Widget image;
+class LoginItem {
+  final String image;
+  final String imageDark;
   final String detail;
 
-  LoginDataItem({required this.image, required this.detail});
+  LoginItem({
+    required this.image,
+    required this.imageDark,
+    required this.detail,
+  });
 }
 
 class LoginPages extends StatefulWidget {
-  final Color appBarTextColor;
-  final Color textColor;
   final Color upperBackgroundColor;
   final Color lowerBackgroundColor;
   final Color mainColor;
+  final Color secondaryColor;
   final Color buttonTextColor;
-
-  final String fontFamily;
-
-  final List<LoginDataItem> tabDataList;
+  final bool isDarkMode;
+  final List<LoginItem> tabDataList;
 
   final void Function(String email) onRequestCodeClick;
   final void Function() onSkip;
@@ -33,13 +35,12 @@ class LoginPages extends StatefulWidget {
 
   const LoginPages(
       {super.key,
-      this.appBarTextColor = Colors.black,
-      this.mainColor = const Color(0xFF579E89),
-      this.upperBackgroundColor = const Color(0xFFEEFFFA),
+      this.mainColor = const Color(0xFFE3A651),
+      this.secondaryColor = const Color(0xFF7C6F5B),
+      this.upperBackgroundColor = const Color(0xFFF5F4EE),
       this.lowerBackgroundColor = Colors.white,
       this.buttonTextColor = Colors.white,
-      this.textColor = Colors.black54,
-      this.fontFamily = 'Poppins',
+      required this.isDarkMode,
       required this.onRequestCodeClick,
       required this.onSkip,
       required this.onSubmit,
@@ -57,31 +58,34 @@ class _LoginPagesState extends State<LoginPages> {
   final emailController = TextEditingController();
   final otpController = TextEditingController();
 
-  final tabs = <Widget>[];
+  late List<Widget> tabs;
 
   @override
   void initState() {
-    tabs.addAll([
+    tabs = [
       EmailPage(
-        fontFamily: widget.fontFamily,
+        isDarkMode: widget.isDarkMode,
         emailController: emailController,
         image: widget.tabDataList[0].image,
-        textColor: widget.textColor,
+        imageDark: widget.tabDataList[0].imageDark,
+        secondaryColor: widget.secondaryColor,
         detail: widget.tabDataList[0].detail,
         mainColor: widget.mainColor,
         onEnterEmail: () =>
             _buttonEnable.value = _isValidEmail(emailController.text),
       ),
       OtpPage(
+        isDarkMode: widget.isDarkMode,
         otpController: otpController,
         image: widget.tabDataList[1].image,
-        textColor: widget.textColor,
+        imageDark: widget.tabDataList[1].imageDark,
         detail: widget.tabDataList[1].detail,
         mainColor: widget.mainColor,
+        secondaryColor: widget.secondaryColor,
         onReenterEmail: () => _handleReenterEmail(),
         onEnterOtp: () => _buttonEnable.value = otpController.text.length == 4,
       )
-    ]);
+    ];
 
     _pageController.addListener(() {
       _pageIndex.value = _pageController.page!.toInt();
@@ -103,71 +107,67 @@ class _LoginPagesState extends State<LoginPages> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Scaffold(
-        resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: widget.upperBackgroundColor,
-          leading: _buildLeadingButton(),
-          title: _buildPageTitle(),
-          actions: [_buildSkipButton()],
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              flex: 5,
-              child: Stack(alignment: Alignment.center, children: [
-                // Upper background
-                Container(color: widget.lowerBackgroundColor),
-                Container(
-                  decoration: BoxDecoration(
-                      color: widget.upperBackgroundColor,
-                      borderRadius: const BorderRadius.only(
-                          bottomRight: Radius.circular(50))),
-                ),
-
-                // Main page content
-                PageView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: _pageController,
-                    itemCount: tabs.length,
-                    itemBuilder: (_, index) => tabs[index]),
-              ]),
-            ),
-            Expanded(
-              flex: 1,
-              child: Stack(children: [
-                // Lower background
-                Container(color: widget.upperBackgroundColor),
-                Container(
-                  decoration: BoxDecoration(
-                      color: widget.lowerBackgroundColor,
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(50))),
-                ),
-
-                _buildButton()
-              ]),
-            )
-          ],
-        ),
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      backgroundColor:
+          widget.isDarkMode ? Colors.black : widget.upperBackgroundColor,
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        leading: _buildLeadingButton(),
+        title: _buildPageTitle(),
+        actions: [_buildSkipButton()],
       ),
+      body: Column(
+        children: [
+          Expanded(
+            flex: 5,
+            child: Stack(alignment: Alignment.center, children: [
+              // Upper background
+              Container(
+                  color: widget.isDarkMode
+                      ? Colors.grey.shade800
+                      : widget.lowerBackgroundColor),
+              Container(
+                decoration: BoxDecoration(
+                    color: widget.isDarkMode
+                        ? Colors.black
+                        : widget.upperBackgroundColor,
+                    borderRadius: const BorderRadius.only(
+                        bottomRight: Radius.circular(50))),
+              ),
 
-      // Debug back button
-      if (kDebugMode && Platform.isIOS)
-        Column(
-          children: [
-            const SizedBox(height: 100),
-            IconButton(
-                onPressed: () => Navigator.of(context).pop(context),
-                icon: const Icon(
-                  Icons.chevron_left,
-                  color: Colors.red,
-                )),
-          ],
-        )
-    ]);
+              // Main page content
+              PageView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  controller: _pageController,
+                  itemCount: tabs.length,
+                  itemBuilder: (_, index) => tabs[index]),
+            ]),
+          ),
+          Expanded(
+            flex: 1,
+            child: Stack(children: [
+              // Lower background
+              Container(
+                  color: widget.isDarkMode
+                      ? Colors.black
+                      : widget.upperBackgroundColor),
+              Container(
+                decoration: BoxDecoration(
+                    color: widget.isDarkMode
+                        ? Colors.grey.shade800
+                        : widget.lowerBackgroundColor,
+                    borderRadius:
+                        const BorderRadius.only(topLeft: Radius.circular(50))),
+              ),
+
+              _buildButton()
+            ]),
+          )
+        ],
+      ),
+    );
   }
 
   Widget _buildLeadingButton() => ValueListenableBuilder(
@@ -175,11 +175,9 @@ class _LoginPagesState extends State<LoginPages> {
       builder: (_, value, __) => Visibility(
             visible: value != 0,
             child: IconButton(
-              icon: Icon(
-                Icons.chevron_left,
-                size: 40,
-                color: widget.appBarTextColor,
-              ),
+              icon: Icon(Icons.chevron_left,
+                  size: 40,
+                  color: widget.isDarkMode ? Colors.white : Colors.black),
               onPressed: () {
                 // Check button enable when go back to email page
                 _buttonEnable.value = _isValidEmail(emailController.text);
@@ -197,10 +195,9 @@ class _LoginPagesState extends State<LoginPages> {
       builder: (_, value, __) => Text(
             value == 0 ? 'Log in' : 'Check your email',
             style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 25,
-              color: widget.appBarTextColor,
-            ),
+                fontWeight: FontWeight.w600,
+                fontSize: 26,
+                color: widget.isDarkMode ? Colors.white : Colors.black),
           ));
 
   Widget _buildSkipButton() => ValueListenableBuilder(
@@ -214,9 +211,9 @@ class _LoginPagesState extends State<LoginPages> {
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Text('Skip',
                     style: TextStyle(
-                      fontSize: 18,
-                      color: widget.appBarTextColor,
-                    )),
+                        fontSize: 18,
+                        color:
+                            widget.isDarkMode ? Colors.white : Colors.black)),
               ),
             ),
           ));
@@ -229,12 +226,15 @@ class _LoginPagesState extends State<LoginPages> {
             builder: (_, value, __) => ElevatedButton(
               onPressed: value ? _handleButtonClick : null,
               style: ElevatedButton.styleFrom(
+                  disabledBackgroundColor: Colors.grey,
                   backgroundColor: widget.mainColor,
                   foregroundColor: widget.buttonTextColor,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15)),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 50,
+                    vertical: 15,
+                  )),
               child: ValueListenableBuilder(
                 valueListenable: _pageIndex,
                 builder: (_, value, __) => Text(

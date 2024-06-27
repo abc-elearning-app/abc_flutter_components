@@ -20,17 +20,15 @@ class CustomizeSubjectData {
 class SubjectsBox extends StatelessWidget {
   final List<CustomizeSubjectData> subjects;
   final Color mainColor;
-  final Color backgroundColor;
-  final Color subjectIconColor;
-  final Color subjectIconBackgroundColor;
+  final Color secondaryColor;
+  final bool isDarkMode;
 
   const SubjectsBox({
     super.key,
     required this.subjects,
     required this.mainColor,
-    required this.backgroundColor,
-    required this.subjectIconColor,
-    required this.subjectIconBackgroundColor,
+    required this.secondaryColor,
+    required this.isDarkMode,
   });
 
   @override
@@ -39,7 +37,7 @@ class SubjectsBox extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(width: 1, color: mainColor),
           borderRadius: BorderRadius.circular(20),
-          color: backgroundColor,
+          color: Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
         ),
         child: ListView.builder(
             padding: const EdgeInsets.symmetric(vertical: 5),
@@ -63,18 +61,20 @@ class SubjectsBox extends StatelessWidget {
           children: [
             // Icon
             IconBox(
-                iconColor: subjectIconColor,
-                backgroundColor: subjectIconBackgroundColor,
-                icon: 'assets/images/subject_icon_$index.svg'),
+              iconColor: Colors.white,
+              backgroundColor: secondaryColor,
+              icon: subjectData.icon,
+            ),
             const SizedBox(width: 15),
 
             // Title
             Expanded(
               child: Text(subjectData.title,
                   textAlign: TextAlign.left,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 18,
+                      color: isDarkMode ? Colors.white : Colors.black,
                       overflow: TextOverflow.ellipsis)),
             ),
 
@@ -83,7 +83,10 @@ class SubjectsBox extends StatelessWidget {
                 selector: (_, provider) => provider.subjectSelection[index],
                 builder: (_, value, __) => MyCheckBox(
                     activeColor: mainColor,
-                    checkColor: mainColor,
+                    fillColor: Colors.white.withOpacity(0.08),
+                    borderColor:
+                        isDarkMode ? Colors.white.withOpacity(0.16) : mainColor,
+                    iconColor: Colors.white,
                     value: value,
                     onChanged: (_) => _toggle(context, index)))
           ],

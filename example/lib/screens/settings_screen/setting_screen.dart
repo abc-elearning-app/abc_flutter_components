@@ -16,7 +16,7 @@ class _TestSettingScreenState extends State<TestSettingScreen> {
   @override
   Widget build(BuildContext context) {
     return SettingScreen(
-      isPro: true,
+      isPro: false,
       notificationOn: true,
       isDarkMode: AppTheme.isDarkMode,
       onToggleDarkMode: () => setState(() =>
@@ -37,6 +37,7 @@ class _TestSettingScreenState extends State<TestSettingScreen> {
       appVersion: '1.6.9',
       examDate: DateTime.now(),
       remindTime: TimeOfDay.now(),
+      onAvatarClick: () {},
     );
   }
 }

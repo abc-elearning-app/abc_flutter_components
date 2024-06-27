@@ -1,3 +1,4 @@
+import 'package:example/constants/app_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
@@ -6,16 +7,43 @@ class TestCustomizeTest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tmpList = <CustomizeSubjectData>[
-      CustomizeSubjectData(icon: 'wrench', title: 'Arithmetic Reasoning'),
-      CustomizeSubjectData(icon: 'wrench', title: 'Assembling Objects'),
-      CustomizeSubjectData(icon: 'wrench', title: 'Auto and Shop Information'),
-      CustomizeSubjectData(icon: 'wrench', title: 'Electronics Information'),
-      CustomizeSubjectData(icon: 'wrench', title: 'General Science'),
-      CustomizeSubjectData(icon: 'wrench', title: 'Mathematics Knowledge'),
-      CustomizeSubjectData(icon: 'wrench', title: 'Mechanical Comprehension'),
-      CustomizeSubjectData(icon: 'wrench', title: 'Paragraph Comprehension'),
-      CustomizeSubjectData(icon: 'wrench', title: 'Word Knowledge'),
+    final subjectList = <CustomizeSubjectData>[
+      CustomizeSubjectData(
+        icon: 'assets/images/subject_icon_0.svg',
+        title: 'Arithmetic Reasoning',
+      ),
+      CustomizeSubjectData(
+        icon: 'assets/images/subject_icon_0.svg',
+        title: 'Assembling Objects',
+      ),
+      CustomizeSubjectData(
+        icon: 'assets/images/subject_icon_0.svg',
+        title: 'Auto and Shop Information',
+      ),
+      CustomizeSubjectData(
+        icon: 'assets/images/subject_icon_0.svg',
+        title: 'Electronics Information',
+      ),
+      CustomizeSubjectData(
+        icon: 'assets/images/subject_icon_0.svg',
+        title: 'General Science',
+      ),
+      CustomizeSubjectData(
+        icon: 'assets/images/subject_icon_0.svg',
+        title: 'Mathematics Knowledge',
+      ),
+      CustomizeSubjectData(
+        icon: 'assets/images/subject_icon_0.svg',
+        title: 'Mechanical Comprehension',
+      ),
+      CustomizeSubjectData(
+        icon: 'assets/images/subject_icon_0.svg',
+        title: 'Paragraph Comprehension',
+      ),
+      CustomizeSubjectData(
+        icon: 'assets/images/subject_icon_0.svg',
+        title: 'Word Knowledge',
+      ),
     ];
 
     final modes = <ModeData>[
@@ -34,13 +62,10 @@ class TestCustomizeTest extends StatelessWidget {
     ];
 
     return CustomizeTestWrapper(
-      mainColor: const Color(0xFFE3A651),
-      backgroundColor: const Color(0xFFF5F4EE),
-      subjectIconColor: Colors.white,
-      subjectIconBackgroundColor: const Color(0xFF7C6F5B),
+      isDarkMode: AppTheme.isDarkMode,
       isPro: false,
       modes: modes,
-      subjects: tmpList,
+      subjects: subjectList,
       onStart: (
         modeIndex,
         questionCount,

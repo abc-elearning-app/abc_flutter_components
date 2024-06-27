@@ -48,7 +48,7 @@ class CustomCircularProgressIndicator extends StatelessWidget {
             Text(
               '$correctQuestions/$totalQuestions',
               style: TextStyle(
-                  color: textColor, fontSize: 16, fontWeight: FontWeight.w600),
+                  color: textColor, fontSize: 20, fontWeight: FontWeight.w600),
             ),
             Text(
               'questions',

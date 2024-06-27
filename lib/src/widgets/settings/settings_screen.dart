@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/constants/app_svg_icons.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/premium_button.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/tile.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -16,6 +15,8 @@ class SettingScreen extends StatefulWidget {
   final Color mainColor;
   final Color backgroundColor;
   final Color switchActiveTrackColor;
+
+  final void Function() onAvatarClick;
 
   // Callbacks
   final void Function() onToggleNotification;
@@ -56,6 +57,7 @@ class SettingScreen extends StatefulWidget {
     required this.onShare,
     required this.appVersion,
     required this.notificationOn,
+    required this.onAvatarClick,
   });
 
   @override
@@ -89,33 +91,20 @@ class _SettingScreenState extends State<SettingScreen> {
     return Scaffold(
       backgroundColor:
           widget.isDarkMode ? Colors.black : widget.backgroundColor,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => Navigator.of(context).pop()),
-        title: const Text('Settings',
-            style: TextStyle(fontWeight: FontWeight.w500)),
-        actions: [
-          Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: SvgPicture.asset('assets/images/avatar.svg'))
-        ],
-      ),
+      appBar: _customAppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              PremiumButton(
-                  isDarkMode: widget.isDarkMode,
-                  margin: const EdgeInsets.only(left: 10, right: 10, top: 20),
-                  onClick: () => widget.onClickPremium(),
-                  gradientColors: const [Color(0xFFFF9840), Color(0xFFFF544E)],
-                  buttonHeight: _buttonHeight),
-              _buildTitle('Settings Exam'),
-              _buildTileGroup([
+              if (!widget.isPro)
+                PremiumButton(
+                    isDarkMode: widget.isDarkMode,
+                    margin: const EdgeInsets.only(left: 10, right: 10, top: 20),
+                    onClick: () => widget.onClickPremium(),
+                    buttonHeight: _buttonHeight),
+              _title('Settings Exam'),
+              _tileGroup([
                 ValueListenableBuilder(
                   valueListenable: _examDate,
                   builder: (_, value, __) => SettingTile(
@@ -129,8 +118,8 @@ class _SettingScreenState extends State<SettingScreen> {
                       activeTrackColor: widget.switchActiveTrackColor),
                 )
               ]),
-              _buildTitle('General Settings'),
-              _buildTileGroup([
+              _title('General Settings'),
+              _tileGroup([
                 ValueListenableBuilder(
                   valueListenable: _notificationOn,
                   builder: (_, value, __) => SettingTile(
@@ -143,7 +132,6 @@ class _SettingScreenState extends State<SettingScreen> {
                       mainColor: widget.mainColor,
                       activeTrackColor: widget.switchActiveTrackColor),
                 ),
-                _buildDivider(),
                 ValueListenableBuilder(
                   valueListenable: _remindTime,
                   builder: (_, value, __) => SettingTile(
@@ -154,7 +142,6 @@ class _SettingScreenState extends State<SettingScreen> {
                       isDarkMode: widget.isDarkMode,
                       onClick: () => _changeTime(context)),
                 ),
-                _buildDivider(),
                 SettingTile(
                     type: SettingTileType.chevronTile,
                     title: 'Disable Calendar Reminder',
@@ -163,7 +150,6 @@ class _SettingScreenState extends State<SettingScreen> {
                     onClick: widget.onDisableReminder,
                     mainColor: widget.mainColor,
                     activeTrackColor: widget.switchActiveTrackColor),
-                _buildDivider(),
                 SettingTile(
                     type: SettingTileType.chevronTile,
                     title: 'Reset Progress',
@@ -172,7 +158,6 @@ class _SettingScreenState extends State<SettingScreen> {
                     onClick: widget.onClickReset,
                     mainColor: widget.mainColor,
                     activeTrackColor: widget.switchActiveTrackColor),
-                _buildDivider(),
                 SettingTile(
                   type: SettingTileType.switchTile,
                   value: widget.isDarkMode,
@@ -186,8 +171,8 @@ class _SettingScreenState extends State<SettingScreen> {
                   onProPurchase: widget.onProPurchase,
                 ),
               ]),
-              _buildTitle('App Information'),
-              _buildTileGroup([
+              _title('App Information'),
+              _tileGroup([
                 SettingTile(
                     type: SettingTileType.chevronTile,
                     title: 'Privacy Policy',
@@ -196,7 +181,6 @@ class _SettingScreenState extends State<SettingScreen> {
                     onClick: widget.onClickPolicy,
                     mainColor: widget.mainColor,
                     activeTrackColor: widget.switchActiveTrackColor),
-                _buildDivider(),
                 SettingTile(
                     type: SettingTileType.informationTile,
                     title: 'App Version',
@@ -207,8 +191,8 @@ class _SettingScreenState extends State<SettingScreen> {
                     mainColor: widget.mainColor,
                     activeTrackColor: widget.switchActiveTrackColor),
               ]),
-              _buildTitle('Feedback And Sharing'),
-              _buildTileGroup([
+              _title('Feedback And Sharing'),
+              _tileGroup([
                 SettingTile(
                     type: SettingTileType.chevronTile,
                     title: 'Contact Us',
@@ -216,14 +200,12 @@ class _SettingScreenState extends State<SettingScreen> {
                     isDarkMode: widget.isDarkMode,
                     onClick: widget.onClickContact,
                     mainColor: widget.mainColor),
-                _buildDivider(),
                 SettingTile(
                     isDarkMode: widget.isDarkMode,
                     iconString: AppSvgIcons.settingIcons.rate,
                     title: 'Rate Our App',
                     onClick: widget.onClickRate,
                     type: SettingTileType.chevronTile),
-                _buildDivider(),
                 SettingTile(
                     isDarkMode: widget.isDarkMode,
                     iconString: AppSvgIcons.settingIcons.share,
@@ -238,22 +220,57 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
-  Widget _buildTitle(String title) => Padding(
+  PreferredSizeWidget _customAppBar() => AppBar(
+        backgroundColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: widget.isDarkMode ? Colors.white : Colors.black,
+            ),
+            onPressed: () => Navigator.of(context).pop()),
+        title: Text(
+          'Settings',
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: widget.isDarkMode ? Colors.white : Colors.black),
+        ),
+        actions: [
+          Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: IconButton(
+                icon: Image.asset(
+                  'assets/images/avt${widget.isDarkMode ? '_dark' : ''}.png',
+                  height: 40,
+                ),
+                onPressed: widget.onAvatarClick,
+              ))
+        ],
+      );
+
+  Widget _title(String title) => Padding(
       padding: const EdgeInsets.only(left: 15, top: 20, bottom: 10),
       child: Text(title,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500)));
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
+          )));
 
-  Widget _buildTileGroup(List<Widget> tiles) => Container(
+  Widget _tileGroup(List<Widget> tiles) => Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       margin: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: widget.isDarkMode ? Colors.grey.shade800 : Colors.white),
-      child: Column(children: tiles));
-
-  Widget _buildDivider() => const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      child: Divider(color: Colors.grey));
+          color: Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1)),
+      child: ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: tiles.length,
+        itemBuilder: (_, index) => tiles[index],
+        separatorBuilder: (BuildContext context, int index) => const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Divider(color: Colors.grey)),
+      ));
 
   _formatDate(DateTime date) => DateFormat('MMM dd yyyy').format(date);
 
@@ -272,6 +289,13 @@ class _SettingScreenState extends State<SettingScreen> {
   _changeDate(BuildContext context) async {
     final date = await showDatePicker(
         context: context,
+        builder: (_, child) => Theme(
+            data: ThemeData(
+              colorScheme: widget.isDarkMode
+                  ? const ColorScheme.dark()
+                  : const ColorScheme.light(),
+            ),
+            child: child!),
         firstDate: DateTime(DateTime.now().year, 1, 1),
         lastDate: DateTime(DateTime.now().year, 12, 31));
 

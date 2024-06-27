@@ -3,22 +3,21 @@ import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/pro_purchase/widgets/pro_banner.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/pro_purchase/widgets/top_banner.dart';
 
-class ProPurchaseScreen extends StatefulWidget {
+class ProPurchase extends StatefulWidget {
   final List<ProOptionData> proOptions;
   final List<String> perks;
   final String proName;
+  final bool isDarkMode;
 
   final Color mainColor;
   final Color secondaryColor;
-  final Color textColor;
   final Color backgroundColor;
-  final Color optionBackgroundColor;
   final String backgroundImage;
   final String proBannerBackground;
 
   final void Function() onRestore;
 
-  const ProPurchaseScreen(
+  const ProPurchase(
       {super.key,
       required this.proOptions,
       required this.perks,
@@ -26,17 +25,16 @@ class ProPurchaseScreen extends StatefulWidget {
       required this.proName,
       this.mainColor = const Color(0xFFEEAF56),
       this.secondaryColor = const Color(0xFF9D8A6B),
-      this.textColor = Colors.black,
       this.backgroundColor = const Color(0xFFF5F4EE),
-      this.optionBackgroundColor = Colors.white,
-      this.backgroundImage = 'assets/images/pro_background_1.png',
-      this.proBannerBackground = 'assets/images/pro_banner_background.png'});
+      this.backgroundImage = 'assets/images/pro_background.png',
+      this.proBannerBackground = 'assets/images/pro_banner_background.png',
+      required this.isDarkMode});
 
   @override
-  State<ProPurchaseScreen> createState() => _ProPurchaseScreenState();
+  State<ProPurchase> createState() => _ProPurchaseState();
 }
 
-class _ProPurchaseScreenState extends State<ProPurchaseScreen> {
+class _ProPurchaseState extends State<ProPurchase> {
   late ValueNotifier<ProBannerData> _proBannerData;
 
   @override
@@ -58,27 +56,37 @@ class _ProPurchaseScreenState extends State<ProPurchaseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: widget.backgroundColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: Stack(children: [
+                Positioned.fill(
+                    child: Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: widget.isDarkMode
+                              ? [Colors.black, Colors.grey.shade900]
+                              : [widget.backgroundColor, Colors.white],
+                          stops: const [0.1, 0.9])),
+                )),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TopBanner(
                       background: widget.backgroundImage,
                       onRestore: widget.onRestore,
-                      textColor: widget.textColor,
                     ),
                     _buildTitle(),
                     _buildPerks(),
                     ProOptions(
+                      isDarkMode: widget.isDarkMode,
                       mainColor: widget.mainColor,
                       secondaryColor: widget.secondaryColor,
                       proOptions: widget.proOptions,
-                      optionBackgroundColor: widget.optionBackgroundColor,
                       onSelect: (index) {
                         final selectedOption = widget.proOptions[index];
                         _proBannerData.value = ProBannerData(
@@ -90,21 +98,21 @@ class _ProPurchaseScreenState extends State<ProPurchaseScreen> {
                     _buildDetailText()
                   ],
                 ),
-              ),
+              ]),
             ),
-            ValueListenableBuilder(
-              valueListenable: _proBannerData,
-              builder: (_, value, __) => value.percentSaved != 0
-                  ? ProBanner(
-                      background: widget.proBannerBackground,
-                      textColor: Colors.white,
-                      data: value,
-                    )
-                  : const SizedBox.shrink(),
-            ),
-            _buildButton(),
-          ],
-        ),
+          ),
+          ValueListenableBuilder(
+            valueListenable: _proBannerData,
+            builder: (_, value, __) => value.percentSaved != 0
+                ? ProBanner(
+                    background: widget.proBannerBackground,
+                    textColor: Colors.white,
+                    data: value,
+                  )
+                : const SizedBox.shrink(),
+          ),
+          _buildButton(),
+        ],
       ),
     );
   }
@@ -117,29 +125,32 @@ class _ProPurchaseScreenState extends State<ProPurchaseScreen> {
             Text(
               'Pass For The First Time With',
               style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 25,
+                  color: widget.isDarkMode ? Colors.white : Colors.black,
                   fontWeight: FontWeight.w600,
-                  color: widget.textColor,
-                  shadows: [
-                    Shadow(
-                        color: Colors.grey.shade400,
-                        blurRadius: 3,
-                        offset: const Offset(1, 3))
-                  ]),
+                  shadows: !widget.isDarkMode
+                      ? [
+                          Shadow(
+                              color: Colors.grey.shade400,
+                              blurRadius: 3,
+                              offset: const Offset(1, 3))
+                        ]
+                      : null),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
               child: RichText(
                 text: TextSpan(
                     style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: widget.textColor,
-                        shadows: [
-                          Shadow(
-                              color: Colors.grey.shade300,
-                              blurRadius: 3,
-                              offset: const Offset(1, 3))
-                        ]),
+                        color: widget.isDarkMode ? Colors.white : Colors.black,
+                        shadows: !widget.isDarkMode
+                            ? [
+                                Shadow(
+                                    color: Colors.grey.shade300,
+                                    blurRadius: 3,
+                                    offset: const Offset(1, 3))
+                              ]
+                            : null),
                     children: [
                       TextSpan(
                           text: widget.proName,
@@ -172,16 +183,17 @@ class _ProPurchaseScreenState extends State<ProPurchaseScreen> {
                   child: Icon(Icons.check, size: 20)),
               Text(
                 widget.perks[index],
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontStyle: FontStyle.italic,
+                  color: widget.isDarkMode ? Colors.white : Colors.black,
                 ),
               )
             ],
           ));
 
   Widget _buildDetailText() => const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        padding: EdgeInsets.all(20),
         child: Text(
           'Subscriptions auto-renew at the cost of the chosen package, unless cancelled 24-hours in advance prior to the end of the current period. The subscription fee is charged to your iTunes account at confirmation of purchase. You may manage your subscription and turn off auto-renewal by going to your Account Settings after purchase. Per Apple policy, no cancellation of the current subscription is allowed during the active subscription period. Once purchased, refunds will not be provided for any unused portion of the term.',
           style: TextStyle(fontSize: 12, color: Colors.grey),
@@ -190,7 +202,7 @@ class _ProPurchaseScreenState extends State<ProPurchaseScreen> {
       );
 
   Widget _buildButton() => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 30),
       width: double.infinity,
       child: MainButton(
         title: 'Upgrade Now',

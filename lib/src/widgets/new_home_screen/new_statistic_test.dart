@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/common/passing_probability_box.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/common/passing_probability_section.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/statistic_tab_widgets/overview_box.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/statistic_tab_widgets/subject_analysis_box.dart';
 
@@ -7,58 +7,58 @@ class NewStatisticTab extends StatelessWidget {
   final int dayStreak;
   final double passingProbability;
   final Color mainColor;
+  final Color darkModeMainColor;
+  final bool isDarkMode;
+  final List<SubjectAnalysisData> subjectList;
 
   const NewStatisticTab(
       {super.key,
       this.mainColor = const Color(0xFFE3A651),
+      this.darkModeMainColor = const Color(0xFFCFAF83),
       required this.dayStreak,
-      required this.passingProbability});
+      required this.passingProbability,
+      required this.isDarkMode,
+      required this.subjectList});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15),
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            PassingProbabilityBox(
+            PassingProbabilitySection(
+              isDarkMode: isDarkMode,
               passingProbability: passingProbability,
               mainColor: mainColor,
               dayStreak: dayStreak,
+              darkModeMainColor: darkModeMainColor,
             ),
-            const OverviewBox(
+            OverviewBox(
               answeredQuestions: 155,
               totalQuestions: 1426,
               correctAnswers: 148,
               accuracyRate: 21,
+              isDarkMode: isDarkMode,
             ),
-            const Text(
-              'Subject Analysis',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                'Subject Analysis',
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: isDarkMode ? Colors.white : Colors.black),
+              ),
             ),
-            const SubjectAnalysisBox(
-              title: 'Arithmetic Reasoning',
-              icon: 'assets/images/subject_icon.svg',
-              iconColor: Colors.white,
-              progressColor: Colors.red,
-              iconBackgroundColor: Color(0xFF7C6F5B),
-              accuracyRate: 86,
-              correctQuestions: 86,
-              incorrectQuestions: 10,
-              unansweredQuestions: 4,
-            ),
-            const SubjectAnalysisBox(
-              title: 'Object Assembling',
-              icon: 'assets/images/subject_icon.svg',
-              iconColor: Colors.white,
-              progressColor: Colors.green,
-              iconBackgroundColor: Colors.red,
-              accuracyRate: 90,
-              correctQuestions: 90,
-              incorrectQuestions: 5,
-              unansweredQuestions: 5,
-            )
+            ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: subjectList.length,
+                itemBuilder: (_, index) => SubjectAnalysisBox(
+                    subjectAnalysisData: subjectList[index],
+                    isDarkMode: isDarkMode))
           ],
         ),
       ),

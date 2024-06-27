@@ -13,24 +13,30 @@ class ProgressTileData {
 
 class ProgressSection extends StatelessWidget {
   final List<ProgressTileData> progressList;
+  final bool isDarkMode;
 
+  final Color mainColor;
   final Color beginnerColor;
   final Color intermediateColor;
   final Color advancedColor;
-  final Color mainColor;
-  final Color boxColor;
+  final Color beginnerBackgroundColor;
+  final Color intermediateBackgroundColor;
+  final Color advancedBackgroundColor;
 
   final void Function(int index) onImprove;
 
   const ProgressSection(
       {super.key,
+      required this.isDarkMode,
       required this.progressList,
       required this.beginnerColor,
       required this.intermediateColor,
       required this.advancedColor,
       required this.mainColor,
-      required this.boxColor,
-      required this.onImprove});
+      required this.onImprove,
+      required this.beginnerBackgroundColor,
+      required this.intermediateBackgroundColor,
+      required this.advancedBackgroundColor});
 
   @override
   Widget build(BuildContext context) {
@@ -47,15 +53,17 @@ class ProgressSection extends StatelessWidget {
   Widget _buildTile(BuildContext context, ProgressTileData data, int index) {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: boxColor,
-          boxShadow: [
-            BoxShadow(
-                color: Colors.grey.shade300,
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: const Offset(0, 1))
-          ]),
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
+          boxShadow: !isDarkMode
+              ? [
+                  BoxShadow(
+                      color: Colors.grey.shade300,
+                      spreadRadius: 1,
+                      blurRadius: 1,
+                      offset: const Offset(0, 1))
+                ]
+              : null),
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
       padding: const EdgeInsets.all(15),
       width: double.infinity,
@@ -72,9 +80,9 @@ class ProgressSection extends StatelessWidget {
                   children: [
                     IconBox(
                         iconColor: _getColor(data.progress),
-                        backgroundColor:
-                            _getColor(data.progress).withOpacity(0.2),
-                        icon: 'assets/images/${data.icon}.svg'),
+                        backgroundColor: _getBackgroundColor(data.progress),
+                        icon: data.icon,
+                        size: 35),
 
                     // Title
                     Expanded(
@@ -82,9 +90,10 @@ class ProgressSection extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
                           data.title,
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
+                              color: isDarkMode ? Colors.white : Colors.black,
                               overflow: TextOverflow.ellipsis),
                         ),
                       ),
@@ -92,9 +101,10 @@ class ProgressSection extends StatelessWidget {
 
                     // Progress
                     Text('${data.progress.toInt()}%',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
+                          color: isDarkMode ? Colors.white : Colors.black,
                         ))
                   ],
                 ),
@@ -104,7 +114,9 @@ class ProgressSection extends StatelessWidget {
                   minHeight: 8,
                   borderRadius: BorderRadius.circular(10),
                   color: _getColor(data.progress),
-                  backgroundColor: Colors.grey.shade200,
+                  backgroundColor: isDarkMode
+                      ? Colors.white.withOpacity(0.12)
+                      : Colors.grey.shade200,
                 )
               ],
             ),
@@ -134,5 +146,11 @@ class ProgressSection extends StatelessWidget {
     if (progress < 10) return beginnerColor;
     if (progress >= 90) return advancedColor;
     return intermediateColor;
+  }
+
+  Color _getBackgroundColor(double progress) {
+    if (progress < 10) return beginnerBackgroundColor;
+    if (progress >= 90) return advancedBackgroundColor;
+    return intermediateBackgroundColor;
   }
 }

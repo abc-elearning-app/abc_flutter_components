@@ -32,6 +32,9 @@ class MyApp extends StatelessWidget {
             navigatorKey: _navigationService.navigationKey,
             debugShowCheckedModeBanner: false,
             theme: AppTheme.currentTheme,
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+            ),
             title: "Flutter ABC-JSC Components",
             initialRoute: AppRoute.home,
             onGenerateRoute: generateRoute,

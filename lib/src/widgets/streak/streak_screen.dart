@@ -5,7 +5,7 @@ import 'package:flutter_abc_jsc_components/src/widgets/streak/widgets/challenge_
 import 'package:flutter_abc_jsc_components/src/widgets/streak/widgets/general_section.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/streak/widgets/popup.dart';
 import 'package:gif/gif.dart';
-// import 'package:table_calendar/table_calendar.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class StreakScreen extends StatefulWidget {
   final bool isStarted;
@@ -15,6 +15,7 @@ class StreakScreen extends StatefulWidget {
   final DateTime? rangeStartDate;
   final DateTime? rangeEndDate;
 
+  final bool isDarkMode;
   final Color mainColor;
   final Color progressColor;
   final Color shieldColor;
@@ -34,6 +35,7 @@ class StreakScreen extends StatefulWidget {
     this.shieldColor = const Color(0xFF39ACF0),
     required this.onJoinChallenge,
     required this.onUseShield,
+    required this.isDarkMode,
   });
 
   @override
@@ -43,8 +45,8 @@ class StreakScreen extends StatefulWidget {
 class _StreakScreenState extends State<StreakScreen>
     with TickerProviderStateMixin {
   // Table calendar data
-  // CalendarFormat _calendarFormat = CalendarFormat.month;
-  // final RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOn;
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  final RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOn;
 
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -53,16 +55,13 @@ class _StreakScreenState extends State<StreakScreen>
   late DateTime kFirstDay;
   late DateTime kLastDay;
 
-  int dayStreak = 0;
-
-  late GifController _gifController;
-
   // Other data
+  int dayStreak = 0;
+  late GifController _gifController;
   late ValueNotifier<ChallengeBoxType> _challengeBoxType;
   late AnimationController _darkenController;
   late Animation<double> _darkenAnimation;
-
-  // late ValueNotifier<OpenType> _openType;
+  late ValueNotifier<OpenType> _openType;
 
   @override
   void initState() {
@@ -84,17 +83,21 @@ class _StreakScreenState extends State<StreakScreen>
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
-    _darkenAnimation =
-        Tween<double>(begin: 0, end: 0.5).animate(_darkenController);
+    _darkenAnimation = Tween<double>(
+      begin: 0,
+      end: 0.5,
+    ).animate(_darkenController);
     _darkenController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         Future.delayed(
-            const Duration(seconds: 2), () => _darkenController.reverse());
+          const Duration(seconds: 2),
+          () => _darkenController.reverse(),
+        );
       }
     });
 
-    // _openType =
-    //     ValueNotifier(widget.isStarted ? OpenType.normal : OpenType.notStarted);
+    _openType =
+        ValueNotifier(widget.isStarted ? OpenType.normal : OpenType.notStarted);
 
     // Display popup
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -114,7 +117,8 @@ class _StreakScreenState extends State<StreakScreen>
   void dispose() {
     _challengeBoxType.dispose();
     _darkenController.dispose();
-    // _openType.dispose();
+    _openType.dispose();
+    _gifController.dispose();
     super.dispose();
   }
 
@@ -123,7 +127,7 @@ class _StreakScreenState extends State<StreakScreen>
     return Stack(children: [
       Scaffold(
         appBar: _buildAppBar(),
-        backgroundColor: Colors.white,
+        backgroundColor: widget.isDarkMode ? Colors.black : Colors.white,
         extendBodyBehindAppBar: true,
         extendBody: true,
         body: SingleChildScrollView(
@@ -163,59 +167,59 @@ class _StreakScreenState extends State<StreakScreen>
               ),
 
               // Main table calendar
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 15),
-              //   child: ValueListenableBuilder(
-              //     valueListenable: _openType,
-              //     builder: (_, value, __) => TableCalendar(
-              //       key: GlobalKey(),
-              //       shieldAnimationDelay: 150,
-              //       openType: value,
-              //       shieldedDays: widget.shieldedDays,
-              //       headerStyle: const HeaderStyle(
-              //         formatButtonVisible: false,
-              //         titleCentered: true,
-              //       ),
-              //       calendarStyle: CalendarStyle(
-              //         withinRangeTextStyle:
-              //             TextStyle(fontSize: 16, color: widget.progressColor),
-              //         rangeStartTextStyle:
-              //             TextStyle(fontSize: 16, color: widget.progressColor),
-              //         rangeHighlightColor:
-              //             widget.progressColor.withOpacity(0.2),
-              //         rangeStartDecoration: BoxDecoration(
-              //           color: widget.progressColor.withOpacity(0.2),
-              //           borderRadius: const BorderRadius.horizontal(
-              //             left: Radius.circular(60),
-              //             right: Radius.zero,
-              //           ),
-              //         ),
-              //         rangeEndDecoration: BoxDecoration(
-              //           color: widget.progressColor,
-              //           borderRadius: BorderRadius.circular(60),
-              //         ),
-              //       ),
-              //       firstDay: kFirstDay,
-              //       lastDay: kLastDay,
-              //       focusedDay: _focusedDay,
-              //       selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-              //       rangeStartDay: widget.rangeStartDate,
-              //       rangeEndDay: widget.rangeEndDate,
-              //       calendarFormat: _calendarFormat,
-              //       rangeSelectionMode: _rangeSelectionMode,
-              //       onDaySelected: (selectedDay, focusedDay) {},
-              //       onRangeSelected: (start, end, focusedDay) {},
-              //       onPageChanged: (focusedDay) => _focusedDay = focusedDay,
-              //       onFormatChanged: (format) {
-              //         if (_calendarFormat != format) {
-              //           setState(() {
-              //             _calendarFormat = format;
-              //           });
-              //         }
-              //       },
-              //     ),
-              //   ),
-              // ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: ValueListenableBuilder(
+                  valueListenable: _openType,
+                  builder: (_, value, __) => TableCalendar(
+                    key: GlobalKey(),
+                    shieldAnimationDelay: 150,
+                    openType: value,
+                    shieldedDays: widget.shieldedDays,
+                    headerStyle: const HeaderStyle(
+                      formatButtonVisible: false,
+                      titleCentered: true,
+                    ),
+                    calendarStyle: CalendarStyle(
+                      withinRangeTextStyle:
+                          TextStyle(fontSize: 16, color: widget.progressColor),
+                      rangeStartTextStyle:
+                          TextStyle(fontSize: 16, color: widget.progressColor),
+                      rangeHighlightColor:
+                          widget.progressColor.withOpacity(0.2),
+                      rangeStartDecoration: BoxDecoration(
+                        color: widget.progressColor.withOpacity(0.2),
+                        borderRadius: const BorderRadius.horizontal(
+                          left: Radius.circular(60),
+                          right: Radius.zero,
+                        ),
+                      ),
+                      rangeEndDecoration: BoxDecoration(
+                        color: widget.progressColor,
+                        borderRadius: BorderRadius.circular(60),
+                      ),
+                    ),
+                    firstDay: kFirstDay,
+                    lastDay: kLastDay,
+                    focusedDay: _focusedDay,
+                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                    rangeStartDay: widget.rangeStartDate,
+                    rangeEndDay: widget.rangeEndDate,
+                    calendarFormat: _calendarFormat,
+                    rangeSelectionMode: _rangeSelectionMode,
+                    onDaySelected: (selectedDay, focusedDay) {},
+                    onRangeSelected: (start, end, focusedDay) {},
+                    onPageChanged: (focusedDay) => _focusedDay = focusedDay,
+                    onFormatChanged: (format) {
+                      if (_calendarFormat != format) {
+                        setState(() {
+                          _calendarFormat = format;
+                        });
+                      }
+                    },
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -269,11 +273,11 @@ class _StreakScreenState extends State<StreakScreen>
               Future.delayed(
                   const Duration(milliseconds: 300), () => _handleUseShield());
             } else {
-              // Future.delayed(const Duration(milliseconds: 300), () {
-              //   _challengeBoxType.value = ChallengeBoxType.justStart;
-              //   _openType.value = OpenType.joinChallenge;
-              // });
-              // widget.onJoinChallenge();
+              Future.delayed(const Duration(milliseconds: 300), () {
+                _challengeBoxType.value = ChallengeBoxType.justStart;
+                _openType.value = OpenType.joinChallenge;
+              });
+              widget.onJoinChallenge();
             }
             Navigator.of(context).pop();
           },
@@ -292,9 +296,9 @@ class _StreakScreenState extends State<StreakScreen>
         () => _gifController.forward().then((_) {
               _gifController.reset();
             }));
-    // Future.delayed(const Duration(milliseconds: 2000), () {
-    //   _openType.value = OpenType.useShield;
-    // });
+    Future.delayed(const Duration(milliseconds: 2000), () {
+      _openType.value = OpenType.useShield;
+    });
   }
 
   _checkIsShieldUsed() {

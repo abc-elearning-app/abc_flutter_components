@@ -1,28 +1,31 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/animations/sprinkle_effect.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/part_test_result/widgets/circular_progress_box.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/part_test_result/widgets/linear_progress_box.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../../flutter_abc_jsc_components.dart';
 
-class PartResultScreen extends StatelessWidget {
+class PartResultScreen extends StatefulWidget {
   final int partIndex;
   final int correctQuestions;
   final int totalQuestions;
   final double passingProbability;
   final double improvedPercent;
 
-  final Color backgroundColor;
-  final Color boxBackgroundColor;
-  final Color buttonBackgroundColor;
   final Color correctColor;
   final Color incorrectColor;
   final Color mainColor;
   final Color secondaryColor;
+  final Color backgroundColor;
+  final Color boxBackgroundColor;
 
-  final String passIcon;
-  final String defaultIcon;
-  final String failIcon;
+  final String passImage;
+  final String passImageDark;
+
+  final bool isDarkMode;
 
   final void Function() onTryAgain;
   final void Function() onContinue;
@@ -35,27 +38,42 @@ class PartResultScreen extends StatelessWidget {
     required this.passingProbability,
     required this.improvedPercent,
     this.backgroundColor = const Color(0xFFF5F4EE),
-    this.boxBackgroundColor = const Color(0xFFF3F1E5),
-    this.buttonBackgroundColor = Colors.white,
     this.correctColor = const Color(0xFF38EFAE),
     this.incorrectColor = const Color(0xFFF14A4A),
     this.mainColor = const Color(0xFFE3A651),
     this.secondaryColor = const Color(0xFF7C6F5B),
+    this.boxBackgroundColor = const Color(0xFFF3F1E5),
+    this.passImage = 'assets/images/part_done.json',
+    this.passImageDark = 'assets/images/part_done_dark.json',
     required this.onTryAgain,
     required this.onContinue,
-    this.passIcon = 'assets/images/final_test_pass.png',
-    this.defaultIcon = 'assets/images/final_test_default.png',
-    this.failIcon = 'assets/images/final_test_fail.png',
+    required this.isDarkMode,
   });
 
   @override
+  State<PartResultScreen> createState() => _PartResultScreenState();
+}
+
+class _PartResultScreenState extends State<PartResultScreen>
+    with SingleTickerProviderStateMixin {
+  final congratulationTexts = <String>[
+    "Now go forth and conquer your to-do list! Remember, procrastination is the enemy of progress.",
+    "You've earned yourself a... virtual pat on the back! (Please note: Virtual pats may not be redeemable for actual pizza.)",
+    "Time for a dance break! (Disclaimer: App is not responsible for any injuries sustained during spontaneous dance celebrations.)"
+  ];
+
+  @override
   Widget build(BuildContext context) {
+    int textIndex = Random().nextInt(2);
+
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor:
+          widget.isDarkMode ? Colors.black : widget.backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back,
+              color: widget.isDarkMode ? Colors.white : Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -70,42 +88,56 @@ class PartResultScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Title
-                      Text('Part ${partIndex + 1} Completed!',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.w600)),
-                  
-                      // Detail
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                        child: Text(
-                          'Time for a dance break! (Disclaimer: App is not responsible for any injuries sustained during spontaneous dance celebrations.)',
+                      Text('Part ${widget.partIndex} Completed!',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w400),
+                              fontSize: 26,
+                              fontWeight: FontWeight.w600,
+                              color: widget.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black)),
+
+                      // Detail
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 5,
+                          right: 5,
+                          top: 15,
+                        ),
+                        child: Text(
+                          congratulationTexts[textIndex],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: widget.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black),
                         ),
                       ),
-                  
+
                       // Image
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: Image.asset(_getImagePath()),
-                      ),
-                  
+                      Lottie.asset(
+                          widget.isDarkMode
+                              ? widget.passImageDark
+                              : widget.passImage,
+                          height: 300),
+
                       CircularProgressBox(
-                          backgroundColor: boxBackgroundColor,
-                          correctQuestions: correctQuestions,
-                          totalQuestions: totalQuestions,
-                          correctColor: correctColor,
-                          incorrectColor: incorrectColor,
-                          progressTextColor: secondaryColor),
-                  
+                          isDarkMode: widget.isDarkMode,
+                          backgroundColor: widget.boxBackgroundColor,
+                          correctQuestions: widget.correctQuestions,
+                          totalQuestions: widget.totalQuestions,
+                          correctColor: widget.correctColor,
+                          incorrectColor: widget.incorrectColor,
+                          progressTextColor: widget.secondaryColor),
+
                       LinearProgressBox(
-                        passingProbability: passingProbability,
-                        improvedPercent: improvedPercent,
-                        backgroundColor: secondaryColor,
-                        progressColor: mainColor,
-                        improveColor: correctColor,
+                        passingProbability: widget.passingProbability,
+                        improvedPercent: widget.improvedPercent,
+                        backgroundColor: widget.secondaryColor,
+                        progressColor: widget.mainColor,
+                        improveColor: widget.correctColor,
                       ),
                     ],
                   ),
@@ -117,50 +149,50 @@ class PartResultScreen extends StatelessWidget {
             ],
           ),
         ),
-        
+
         // Pass effect
-        if (correctQuestions / totalQuestions >= 0.8)
-          IgnorePointer(
-              child: SprinkleEffect(
-            height: MediaQuery.of(context).size.height / 2,
-            additionalOffsetY: -150,
-            speed: 5,
-            rows: 5,
-          ))
+        IgnorePointer(
+            child: SprinkleEffect(
+          height: MediaQuery.of(context).size.height / 2,
+          additionalOffsetY: -150,
+          speed: 5,
+          rows: 5,
+        ))
       ]),
     );
   }
 
   Widget _buildButtonRow() => Row(
         children: [
-          Expanded(child: _button(false, 'Try Again', mainColor, onTryAgain)),
-          Expanded(child: _button(true, 'Continue', mainColor, onContinue)),
+          Expanded(
+              child: _button(
+            false,
+            'Try Again',
+            widget.onTryAgain,
+          )),
+          Expanded(
+              child: _button(
+            true,
+            'Continue',
+            widget.onContinue,
+          )),
         ],
       );
 
-  Widget _button(bool isSelected, String title, Color buttonMainColor,
-          void Function() action) =>
+  Widget _button(bool isSelected, String title, void Function() action) =>
       Container(
         margin: const EdgeInsets.only(left: 10, right: 10, bottom: 25, top: 10),
         child: MainButton(
           title: title,
-          backgroundColor: isSelected ? buttonMainColor : buttonBackgroundColor,
-          borderSize: BorderSide(width: 1, color: buttonMainColor),
-          textColor: isSelected ? buttonBackgroundColor : buttonMainColor,
+          backgroundColor: isSelected
+              ? widget.mainColor
+              : Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1),
+          borderSize: BorderSide(width: 1, color: widget.mainColor),
+          textColor: isSelected ? Colors.white : widget.mainColor,
           padding: const EdgeInsets.symmetric(vertical: 15),
           textStyle: const TextStyle(fontSize: 18),
-          borderRadius: 18,
+          borderRadius: 14,
           onPressed: action,
         ),
       );
-
-  _getImagePath() {
-    if (correctQuestions / totalQuestions <= 0.1) {
-      return failIcon;
-    } else if (correctQuestions / totalQuestions >= 0.8) {
-      return passIcon;
-    } else {
-      return defaultIcon;
-    }
-  }
 }

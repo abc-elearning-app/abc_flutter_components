@@ -234,7 +234,6 @@ class SpiderChartPainter extends CustomPainter {
       color: Colors.black,
       fontSize: 12,
       fontWeight: FontWeight.w500,
-      fontFamily: 'Poppins',
     );
 
     textPainter.text = TextSpan(text: labels[0], style: textStyle);

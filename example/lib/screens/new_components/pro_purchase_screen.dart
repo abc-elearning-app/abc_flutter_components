@@ -1,3 +1,4 @@
+import 'package:example/constants/app_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
@@ -20,7 +21,8 @@ class TestProPurchaseScreen extends StatelessWidget {
       'Sync Across Devices'
     ];
 
-    return ProPurchaseScreen(
+    return ProPurchase(
+      isDarkMode: AppTheme.isDarkMode,
       proOptions: proOptions,
       proName: 'ASVAB Pro',
       perks: perks,

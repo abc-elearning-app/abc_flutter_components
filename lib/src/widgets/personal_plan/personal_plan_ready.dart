@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -11,144 +8,156 @@ class InformationData {
   final String title;
   final String content;
 
-  InformationData(this.icon, this.title, this.content);
+  InformationData({
+    required this.icon,
+    required this.title,
+    required this.content,
+  });
 }
 
 class PersonalPlanReadyScreen extends StatelessWidget {
   final Color backgroundColor;
   final Color mainColor;
-  final String? image;
 
   // Image
-  final String? chartImage;
-  final String? reminderImage;
-  final String? examDateImage;
-  final String? questionsImage;
-  final String? passingScoreImage;
+  final String sideImage;
+  final String sideImageDark;
+  final String reminderIcon;
+  final String examDateIcon;
+  final String questionsIcon;
+  final String passingScoreIcon;
 
   // Data
   final TimeOfDay? reminderTime;
   final DateTime? examDate;
   final int questions;
   final double passingScore;
+  final bool isDarkMode;
 
   final void Function() onStartLearning;
 
   const PersonalPlanReadyScreen({
     super.key,
-    this.backgroundColor = const Color(0xFFEEFFFA),
-    this.mainColor = const Color(0xFF579E89),
-    this.image,
-    this.chartImage,
-    this.reminderImage,
-    this.examDateImage,
-    this.questionsImage,
-    this.passingScoreImage,
+    this.backgroundColor = const Color(0xFFF5F4EE),
+    this.mainColor = const Color(0xFFE3A651),
+    this.sideImage = 'assets/images/ready_soldier.png',
+    this.sideImageDark = 'assets/images/ready_soldier_dark.png',
+    this.reminderIcon = 'assets/images/ready_reminder.svg',
+    this.examDateIcon = 'assets/images/ready_calendar.svg',
+    this.questionsIcon = 'assets/images/ready_questions.svg',
+    this.passingScoreIcon = 'assets/images/ready_passing_score.svg',
     this.reminderTime,
     this.examDate,
     required this.questions,
     required this.passingScore,
     required this.onStartLearning,
+    required this.isDarkMode,
   });
 
   @override
   Widget build(BuildContext context) {
     final informationDataList = <InformationData>[
-      InformationData(reminderImage ?? 'assets/images/ready_reminder.svg',
-          'Reminder', _getDisplayReminderTime(reminderTime ?? TimeOfDay.now())),
       InformationData(
-          examDateImage ?? 'assets/images/ready_calendar.svg',
-          'Exam date',
-          _getDisplayDate(
+          icon: reminderIcon,
+          title: 'Reminder',
+          content: _getDisplayReminderTime(reminderTime ?? TimeOfDay.now())),
+      InformationData(
+          icon: examDateIcon,
+          title: 'Exam date',
+          content: _getDisplayDate(
               time: examDate ?? DateTime.now(), isFullDisplay: true)),
-      InformationData(questionsImage ?? 'assets/images/ready_questions.svg',
-          'Questions', '$questions/day'),
       InformationData(
-          passingScoreImage ?? 'assets/images/ready_passing_score.svg',
-          'Passing Score',
-          '${passingScore.toInt()}%')
+          icon: questionsIcon, title: 'Questions', content: '$questions/day'),
+      InformationData(
+          icon: passingScoreIcon,
+          title: 'Passing Score',
+          content: '${passingScore.toInt()}%')
     ];
 
-    return Stack(children: [
-      Scaffold(
-        backgroundColor: backgroundColor,
-        body: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Title
-                      const Text(
+    return Scaffold(
+      backgroundColor: isDarkMode ? Colors.black : backgroundColor,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Title
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Text(
                         'Your Personal Plan Is Ready!',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 30),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 26,
+                            color: isDarkMode ? Colors.white : Colors.black),
                         textAlign: TextAlign.center,
                       ),
+                    ),
 
-                      // Chart image
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: Image.asset(chartImage ??
-                            'assets/images/personal_plan_chart.png'),
+                    // Chart
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 10, right: 10, top: 20),
+                      child: PersonalPlanChart(
+                        isDarkMode: isDarkMode,
+                        lineSectionHeight: 120,
+                        barSectionHeight: 150,
+                        startTime: DateTime(2024, 6, 20),
+                        examDate: examDate ?? DateTime(2024, 6, 30),
+                        valueList: [30, 40, 30, 35, 35, 45, 40],
                       ),
+                    ),
 
-                      // Current date
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Text(
-                          'Today - ${_getDisplayDate(time: DateTime.now())}',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 18),
-                        ),
+                    // Current date
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Text(
+                        'Today - ${_getDisplayDate(time: DateTime.now())}',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            color: isDarkMode ? Colors.white : Colors.black),
                       ),
+                    ),
 
-                      // Detail information
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          children: [
-                            // Information
-                            Expanded(
-                                child: ListView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: informationDataList.length,
-                                    itemBuilder: (_, index) =>
-                                        _buildInformationTile(
-                                            informationDataList[index]))),
+                    // Detail information
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          // Information
+                          Expanded(
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: informationDataList.length,
+                                  itemBuilder: (_, index) =>
+                                      _buildInformationTile(
+                                          informationDataList[index]))),
 
-                            // Image
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15),
+                          // Image
+                          Transform.translate(
+                              offset: const Offset(0, 50),
                               child: Image.asset(
-                                  image ?? 'assets/images/ready_plan.png',
-                                  height: 250),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
+                                  isDarkMode ? sideImageDark : sideImage,
+                                  height: 200))
+                        ],
+                      ),
+                    )
+                  ],
                 ),
               ),
-              _buildButton()
-            ],
-          ),
+            ),
+            _buildButton()
+          ],
         ),
       ),
-
-      // Debug button
-      if (kDebugMode && Platform.isIOS)
-        SafeArea(
-            child: IconButton(
-                onPressed: () => Navigator.of(context).pop(context),
-                icon: const Icon(Icons.chevron_left, color: Colors.red)))
-    ]);
+    );
   }
 
   Widget _buildInformationTile(InformationData data) => Padding(
@@ -163,12 +172,16 @@ class PersonalPlanReadyScreen extends StatelessWidget {
               children: [
                 Text(
                   data.title,
-                  style: TextStyle(color: Colors.grey.shade600),
+                  style: TextStyle(
+                      color: (isDarkMode ? Colors.white : Colors.black)
+                          .withOpacity(0.5)),
                 ),
                 Text(
                   data.content,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w500, fontSize: 16),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      color: isDarkMode ? Colors.white : Colors.black),
                 )
               ],
             )
@@ -177,7 +190,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
       );
 
   Widget _buildButton() => Container(
-        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         width: double.infinity,
         child: MainButton(
           title: 'Start Learning',
@@ -229,10 +242,6 @@ class PersonalPlanReadyScreen extends StatelessWidget {
       'November',
       'December',
     ];
-    // Ensure the month value is between 1 and 12
-    if (time.month < 1 || time.month > 12) {
-      throw ArgumentError('Month must be between 1 and 12');
-    }
 
     return '${isFullDisplay ? fullMonthNames[time.month] : abrMonthNames[time.month]} ${time.day}, ${time.year}';
   }
