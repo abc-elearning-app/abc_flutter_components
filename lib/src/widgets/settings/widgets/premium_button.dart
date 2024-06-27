@@ -75,7 +75,7 @@ class PremiumButton extends StatelessWidget {
                     child: RichText(
                       textAlign: TextAlign.center,
                       text: const TextSpan(
-                          style: TextStyle(fontFamily: 'Poppins', fontSize: 20),
+                          style: TextStyle(fontSize: 20),
                           children: [
                             TextSpan(
                                 text: 'Upgrade',

@@ -5,6 +5,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'half_circle_progress.dart';
 
 class MainResultBox extends StatefulWidget {
+  final bool isFirstTime;
   final bool isPro;
   final bool isDarkMode;
 
@@ -12,6 +13,7 @@ class MainResultBox extends StatefulWidget {
   final Color correctColor;
   final Color incorrectColor;
 
+  final double passPercent;
   final double progress;
   final double averageProgress;
   final int correctQuestions;
@@ -27,7 +29,9 @@ class MainResultBox extends StatefulWidget {
       required this.averageProgress,
       required this.correctQuestions,
       required this.incorrectQuestions,
-      required this.mainColor});
+      required this.mainColor,
+      required this.isFirstTime,
+      required this.passPercent});
 
   @override
   State<MainResultBox> createState() => _MainResultBoxState();
@@ -50,79 +54,77 @@ class _MainResultBoxState extends State<MainResultBox> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _buildMessage(),
+            if (widget.isFirstTime) _buildMessage(),
+
+            if (!widget.isFirstTime) const SizedBox(height: 10),
 
             // Progress chart
-            Stack(children: [
-              Column(
-                children: [
-                  // Chart
-                  HalfCircleProgressIndicator(
-                    correctColor: widget.correctColor,
-                    incorrectColor: widget.incorrectColor,
-                    progress: widget.progress / 100,
-                    lineWidth: 20,
-                    radius: 125,
-                    center: Container(
-                      margin: const EdgeInsets.only(bottom: 30),
-                      child: RichText(
-                        text: TextSpan(
-                            style: DefaultTextStyle.of(context).style.copyWith(
-                                color: widget.progress < 0.8
-                                    ? widget.incorrectColor
-                                    : widget.correctColor,
-                                fontWeight: FontWeight.bold),
-                            children: [
-                              TextSpan(
-                                  text: '${widget.progress.round()}',
-                                  style: const TextStyle(fontSize: 70)),
-                              const TextSpan(
-                                  text: '%', style: TextStyle(fontSize: 40))
-                            ]),
-                      ),
+            Column(
+              children: [
+                // Chart
+                HalfCircleProgressIndicator(
+                  correctColor: widget.correctColor,
+                  incorrectColor: widget.incorrectColor,
+                  progress: widget.progress / 100,
+                  lineWidth: 20,
+                  radius: 125,
+                  center: Container(
+                    margin: const EdgeInsets.only(bottom: 30),
+                    child: RichText(
+                      text: TextSpan(
+                          style: DefaultTextStyle.of(context).style.copyWith(
+                              color: widget.progress < 0.8
+                                  ? widget.incorrectColor
+                                  : widget.correctColor,
+                              fontWeight: FontWeight.bold),
+                          children: [
+                            TextSpan(
+                                text: '${widget.progress.round()}',
+                                style: const TextStyle(fontSize: 70)),
+                            const TextSpan(
+                                text: '%', style: TextStyle(fontSize: 40))
+                          ]),
                     ),
                   ),
+                ),
 
-                  // Chart explanation
-                  _buildExplanation(),
+                // Chart explanation
+                _buildExplanation(),
 
-                  // Linear progress
-                  _buildLinearProgress(context),
+                // Linear progress
+                if (widget.isFirstTime) _buildLinearProgress(context),
 
-                  // Average community score
-                  _buildCommunityScore()
-                ],
-              ),
-            ])
+                // Average community score
+                if (widget.isFirstTime) _buildCommunityScore()
+              ],
+            )
           ],
         ),
       ),
 
       // Top banner
-      _buildBanner(),
+      if (widget.isFirstTime) _buildBanner(),
     ]);
   }
 
-  Widget _buildMessage() => widget.progress >= 90 || widget.progress <= 10
-      ? Padding(
-          padding: const EdgeInsets.symmetric(vertical: 30),
-          child: Text(
-            widget.progress >= 90
-                ? "Do not rest on your laurels, friend. Time to leaf through the rest of these tests and make them tremble with your intellect!"
-                : "That was a tough one, but every wrong answer is a stepping stone to the right one. Keep at it, and you'll be a knowledge ninja soon!",
-            style: TextStyle(
-                fontWeight: FontWeight.w400,
-                color: Color.lerp(
-                    widget.progress >= 90
-                        ? widget.correctColor
-                        : widget.incorrectColor,
-                    Colors.black,
-                    widget.isDarkMode ? 0 : 0.2),
-                fontSize: 15),
-            textAlign: TextAlign.center,
-          ),
-        )
-      : const SizedBox();
+  Widget _buildMessage() => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 30),
+        child: Text(
+          widget.progress >= widget.passPercent
+              ? "Do not rest on your laurels, friend. Time to leaf through the rest of these tests and make them tremble with your intellect!"
+              : "That was a tough one, but every wrong answer is a stepping stone to the right one. Keep at it, and you'll be a knowledge ninja soon!",
+          style: TextStyle(
+              fontWeight: FontWeight.w400,
+              color: Color.lerp(
+                  widget.progress >= widget.passPercent
+                      ? widget.correctColor
+                      : widget.incorrectColor,
+                  Colors.black,
+                  widget.isDarkMode ? 0 : 0.2),
+              fontSize: 15),
+          textAlign: TextAlign.center,
+        ),
+      );
 
   Widget _buildExplanation() => Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
@@ -176,7 +178,8 @@ class _MainResultBoxState extends State<MainResultBox> {
 
         // Background
         LinearPercentIndicator(
-          backgroundColor: Colors.grey.shade200,
+          backgroundColor:
+              widget.isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200,
           lineHeight: 9,
           barRadius: const Radius.circular(8),
         ),
@@ -206,34 +209,32 @@ class _MainResultBoxState extends State<MainResultBox> {
             ))
       ]);
 
-  Widget _buildBanner() => widget.progress >= 90 || widget.progress <= 10
-      ? Transform.translate(
-          offset: const Offset(0, -25),
-          child: Stack(alignment: Alignment.center, children: [
-            SvgPicture.asset(
-              'assets/images/banner_shape.svg',
-              height: 50,
-              colorFilter: ColorFilter.mode(
-                  widget.progress >= 90
-                      ? widget.correctColor
-                      : Color.lerp(widget.incorrectColor, Colors.white, 0.8)!,
-                  BlendMode.srcIn),
+  Widget _buildBanner() => Transform.translate(
+        offset: const Offset(0, -25),
+        child: Stack(alignment: Alignment.center, children: [
+          SvgPicture.asset(
+            'assets/images/banner_shape.svg',
+            height: 50,
+            colorFilter: ColorFilter.mode(
+                widget.progress >= widget.passPercent
+                    ? widget.correctColor
+                    : Color.lerp(widget.incorrectColor, Colors.white, 0.8)!,
+                BlendMode.srcIn),
+          ),
+          Text(
+            widget.progress >= widget.passPercent
+                ? 'Excellent Performance!'
+                : 'Not Enough To Pass!',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: widget.progress >= widget.passPercent
+                  ? Colors.white
+                  : widget.incorrectColor,
             ),
-            Text(
-              widget.progress >= 90
-                  ? 'Excellent Performance!'
-                  : 'Not Enough To Pass!',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                color: widget.progress >= 90
-                    ? Colors.white
-                    : widget.incorrectColor,
-              ),
-            ),
-          ]),
-        )
-      : const SizedBox();
+          ),
+        ]),
+      );
 
   Widget _buildCommunityScore() => StatefulBuilder(
         builder: (_, setState) {

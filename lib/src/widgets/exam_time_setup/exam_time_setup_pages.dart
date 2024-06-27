@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 class ExamTimeSetupPages extends StatefulWidget {
   final List<String> pageImages;
+  final List<String> pageImagesDark;
   final bool isDarkMode;
   final Color upperBackgroundColor;
   final Color lowerBackgroundColor;
@@ -22,6 +23,7 @@ class ExamTimeSetupPages extends StatefulWidget {
   const ExamTimeSetupPages({
     super.key,
     required this.pageImages,
+    required this.pageImagesDark,
     this.upperBackgroundColor = const Color(0xFFF5F4EE),
     this.lowerBackgroundColor = Colors.white,
     this.mainColor = const Color(0xFFE3A651),
@@ -57,6 +59,7 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
         title: 'When Is Your Exam ?',
         isDarkMode: widget.isDarkMode,
         image: widget.pageImages[0],
+        imageDark: widget.pageImagesDark[0],
         mainColor: widget.mainColor,
         secondaryColor: widget.secondaryColor,
         optionBoxFillColor: widget.optionBoxFillColor,
@@ -68,16 +71,18 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
         title: 'Would You Like To Set Study Reminders?',
         isDarkMode: widget.isDarkMode,
         image: widget.pageImages[1],
+        imageDark: widget.pageImagesDark[1],
         selectedTime: selectedTime,
         pageController: pageController,
       ),
       StartDiagnosticPage(
         pageController: pageController,
         isDarkMode: widget.isDarkMode,
+        image: widget.pageImages[2],
+        imageDark: widget.pageImagesDark[2],
         title: 'Diagnostic Test',
         subTitle:
             'Take our diagnostic test to assess your current level and get a personalized study plan.',
-        image: widget.pageImages[1],
       )
     ];
 

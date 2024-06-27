@@ -2,22 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class PracticeTestGridData {
+  final int id;
   final String title;
   final int answeredQuestions;
   final int totalQuestions;
   final double progress;
   final String background;
 
-  PracticeTestGridData(
-    this.title,
-    this.answeredQuestions,
-    this.totalQuestions,
-    this.progress,
-    this.background,
-  );
+  PracticeTestGridData({
+    required this.id,
+    required this.title,
+    required this.answeredQuestions,
+    required this.totalQuestions,
+    required this.progress,
+    required this.background,
+  });
 }
 
-class PracticeTestGrid extends StatelessWidget {
+class TestGrid extends StatelessWidget {
   final List<PracticeTestGridData> practiceTests;
   final String title;
   final bool isDarkMode;
@@ -28,7 +30,7 @@ class PracticeTestGrid extends StatelessWidget {
 
   final void Function(int index) onSelected;
 
-  const PracticeTestGrid({
+  const TestGrid({
     super.key,
     required this.title,
     required this.practiceTests,
@@ -66,13 +68,13 @@ class PracticeTestGrid extends StatelessWidget {
               childAspectRatio: 1.3,
             ),
             itemCount: practiceTests.length,
-            itemBuilder: (_, index) => _buildItem(practiceTests[index], index)),
+            itemBuilder: (_, index) => _buildItem(practiceTests[index])),
       ),
     );
   }
 
-  Widget _buildItem(PracticeTestGridData data, int index) => GestureDetector(
-        onTap: () => onSelected(index),
+  Widget _buildItem(PracticeTestGridData data) => GestureDetector(
+        onTap: () => onSelected(data.id),
         child: Container(
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(

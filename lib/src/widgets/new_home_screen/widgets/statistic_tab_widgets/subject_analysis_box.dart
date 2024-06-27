@@ -190,12 +190,18 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
                       ),
                     ),
                     const Divider(),
-                    _buildQuestionInfo(QuestionType.correct,
-                        widget.subjectAnalysisData.correctQuestions),
-                    _buildQuestionInfo(QuestionType.incorrect,
-                        widget.subjectAnalysisData.incorrectQuestions),
-                    _buildQuestionInfo(QuestionType.unanswered,
-                        widget.subjectAnalysisData.unansweredQuestions),
+                    _buildQuestionInfo(
+                      QuestionType.correct,
+                      widget.subjectAnalysisData.correctQuestions,
+                    ),
+                    _buildQuestionInfo(
+                      QuestionType.incorrect,
+                      widget.subjectAnalysisData.incorrectQuestions,
+                    ),
+                    _buildQuestionInfo(
+                      QuestionType.unanswered,
+                      widget.subjectAnalysisData.unansweredQuestions,
+                    ),
                   ],
                 ),
               ),
@@ -211,7 +217,11 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
       child: Row(
         children: [
-          Text('●', style: TextStyle(color: _getColor(type))),
+          Image.asset(
+            'assets/images/dot.png',
+            color: _getColor(type),
+            height: 8,
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),

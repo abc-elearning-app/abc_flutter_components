@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/animations/sad_effect.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/result_screens/final_test_result/widgets/progress_tile_section.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../animations/sprinkle_effect.dart';
@@ -11,11 +9,19 @@ import 'widgets/main_result_box.dart';
 enum ResultType { fail, normal, pass }
 
 class FinalTestResult extends StatelessWidget {
+  final bool isFirstTime;
   final double progress;
   final int correctQuestions;
   final int incorrectQuestions;
   final double averageProgress;
   final List<ProgressTileData> progressList;
+
+  final String doneImage;
+  final String doneImageDark;
+  final String failImage;
+  final String failImageDark;
+  final String reviseImage;
+  final String reviseImageDark;
 
   final Color correctColor;
   final Color incorrectColor;
@@ -30,6 +36,7 @@ class FinalTestResult extends StatelessWidget {
 
   final bool isPro;
   final bool isDarkMode;
+  final double passPercent;
 
   final void Function() onReviewAnswer;
   final void Function() onTryAgain;
@@ -38,6 +45,7 @@ class FinalTestResult extends StatelessWidget {
 
   const FinalTestResult({
     super.key,
+    required this.isFirstTime,
     required this.progress,
     required this.correctQuestions,
     required this.incorrectQuestions,
@@ -59,115 +67,129 @@ class FinalTestResult extends StatelessWidget {
     required this.onContinue,
     required this.onImproveSubject,
     required this.isDarkMode,
+    this.doneImage = 'assets/images/final_test_done.json',
+    this.doneImageDark = 'assets/images/final_test_done_dark.json',
+    this.failImage = 'assets/images/final_test_dail.json',
+    this.failImageDark = 'assets/images/final_test_fail_dark.json',
+    this.reviseImage = 'assets/images/final_test_revise.json',
+    this.reviseImageDark = 'assets/images/final_test_revise_dark.json',
+    this.passPercent = 80,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
-      extendBodyBehindAppBar: true,
       backgroundColor: isDarkMode ? Colors.black : backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         scrolledUnderElevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDarkMode ? Colors.white : Colors.black,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-              child: SingleChildScrollView(
-            padding:
-                EdgeInsets.only(top: progress <= 10 || progress >= 90 ? 0 : 80),
-            child: Column(
-              children: [
-                _buildImage(),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+                child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildImage(),
 
-                // General result and progress box
-                MainResultBox(
-                  isPro: isPro,
-                  isDarkMode: isDarkMode,
-                  progress: progress,
-                  incorrectQuestions: incorrectQuestions,
-                  correctQuestions: correctQuestions,
-                  averageProgress: averageProgress,
-                  mainColor: mainColor,
-                  correctColor: correctColor,
-                  incorrectColor: incorrectColor,
-                ),
-
-                SizedBox(
-                    width: double.infinity,
-                    child: _buildButton(
-                      false,
-                      'Review My Answers',
-                      _getReviewButtonColor(),
-                      onReviewAnswer,
-                    )),
-
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20, bottom: 10),
-                    child: Text('Test Subjects',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            color: isDarkMode ? Colors.white : Colors.black)),
+                  // General result and progress box
+                  MainResultBox(
+                    passPercent: passPercent,
+                    isFirstTime: isFirstTime,
+                    isPro: isPro,
+                    isDarkMode: isDarkMode,
+                    progress: progress,
+                    incorrectQuestions: incorrectQuestions,
+                    correctQuestions: correctQuestions,
+                    averageProgress: averageProgress,
+                    mainColor: mainColor,
+                    correctColor: correctColor,
+                    incorrectColor: incorrectColor,
                   ),
-                ),
-                ProgressSection(
-                  progressList: progressList,
-                  mainColor: mainColor,
-                  isDarkMode: isDarkMode,
-                  beginnerColor: beginnerColor,
-                  intermediateColor: intermediateColor,
-                  advancedColor: advancedColor,
-                  onImprove: onImproveSubject,
-                  beginnerBackgroundColor: beginnerBackgroundColor,
-                  intermediateBackgroundColor: intermediateBackgroundColor,
-                  advancedBackgroundColor: advancedBackgroundColor,
-                ),
-              ],
-            ),
-          )),
 
-          // Buttons
-          Row(
-            children: [
-              Expanded(
-                  child: _buildButton(
-                false,
-                'Try Again',
-                mainColor,
-                onTryAgain,
-              )),
-              Expanded(
-                  child: _buildButton(
-                true,
-                'Continue',
-                mainColor,
-                onContinue,
-              )),
-            ],
-          )
-        ],
+                  Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      width: double.infinity,
+                      child: _buildButton(
+                        false,
+                        'Review My Answers',
+                        mainColor,
+                        onReviewAnswer,
+                      )),
+
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20, top: 10),
+                      child: Text('Test Subjects',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                              color: isDarkMode ? Colors.white : Colors.black)),
+                    ),
+                  ),
+                  ProgressSection(
+                    progressList: progressList,
+                    mainColor: mainColor,
+                    isDarkMode: isDarkMode,
+                    beginnerColor: beginnerColor,
+                    intermediateColor: intermediateColor,
+                    advancedColor: advancedColor,
+                    onImprove: onImproveSubject,
+                    beginnerBackgroundColor: beginnerBackgroundColor,
+                    intermediateBackgroundColor: intermediateBackgroundColor,
+                    advancedBackgroundColor: advancedBackgroundColor,
+                  ),
+                ],
+              ),
+            )),
+
+            // Buttons
+            Row(
+              children: [
+                Expanded(
+                    child: _buildButton(
+                  false,
+                  'Try Again',
+                  mainColor,
+                  onTryAgain,
+                )),
+                Expanded(
+                    child: _buildButton(
+                  true,
+                  'Continue',
+                  mainColor,
+                  onContinue,
+                )),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildImage() => Stack(alignment: Alignment.bottomCenter, children: [
-        // Add sprinkle effect when pass >= 90%
-        if (progress >= 90) const SprinkleEffect(additionalOffsetY: -100),
-
-        Image.asset(
-          'assets/images/final_test_anim_bg${isDarkMode ? '_dark' : ''}.png',
-          height: 150,
-        ),
-
+        if (isFirstTime && progress >= passPercent)
+          const SprinkleEffect(additionalOffsetY: -100),
         Transform.translate(
-            offset: const Offset(10, 20),
-            child: Lottie.asset(_getImagePath(), height: 250)),
-
-        if (progress <= 10) const SadEffect(),
+            offset: Offset(0, isFirstTime ? 20 : 0),
+            child: Transform.scale(
+              scale: isFirstTime ? 1.2 : 1,
+              child: Lottie.asset(
+                _getImagePath(),
+                height: isFirstTime ? 250 : 180,
+              ),
+            )),
+        if (isFirstTime && progress < passPercent) const SadEffect(),
       ]);
 
   Widget _buildButton(
@@ -177,7 +199,7 @@ class FinalTestResult extends StatelessWidget {
     void Function() action,
   ) =>
       Container(
-        margin: const EdgeInsets.only(left: 10, right: 10, bottom: 25, top: 10),
+        margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
         child: MainButton(
           title: title,
           backgroundColor: isSelected
@@ -193,21 +215,23 @@ class FinalTestResult extends StatelessWidget {
       );
 
   _getImagePath() {
-    return 'assets/images/final_test_anim.json';
-    const baseUrl = 'assets/images/final_test_';
-    if (progress <= 10) {
-      return '${baseUrl}fail.png';
-    } else if (progress >= 90) {
-      return '${baseUrl}pass.png';
+    String path = 'assets/images/';
+    if (isFirstTime) {
+      if (progress >= 80) {
+        path += 'final_test_done';
+      } else {
+        path += 'final_test_fail';
+      }
     } else {
-      return '${baseUrl}default.png';
+      path += 'final_test_revise';
     }
-  }
 
-  _getReviewButtonColor() {
-    if (isDarkMode) return mainColor;
-    if (progress <= 10) return incorrectColor;
-    if (progress >= 90) return Color.lerp(correctColor, Colors.black, 0.2)!;
-    return mainColor;
+    if (isDarkMode) {
+      path += '_dark.json';
+    } else {
+      path += '.json';
+    }
+
+    return path;
   }
 }

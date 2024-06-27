@@ -42,7 +42,6 @@ class CircularProgressBox extends StatelessWidget {
                   style: TextStyle(
                       color: isDarkMode ? Colors.white : Colors.black,
                       fontSize: 16,
-                      fontFamily: 'Poppins',
                       fontWeight: FontWeight.w400),
                   children: [
                     const TextSpan(text: 'You correctly answered '),

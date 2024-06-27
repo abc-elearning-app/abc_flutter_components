@@ -237,7 +237,6 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                     fontWeight: FontWeight.w500,
                     color:
                         widget.isDarkMode ? Colors.white : widget.dividerColor,
-                    fontFamily: 'Poppins',
                     fontSize: 18)),
             Expanded(
                 child: Container(

@@ -20,37 +20,36 @@ class NewTestTab extends StatelessWidget {
   final String finalTestBackground;
 
   final void Function() onTryAgainDiagnosticTab;
-  final void Function() onSeeAllPracticeTests;
-  final void Function(int index) onSelectPracticeTest;
+  final void Function(int id) onSelectPracticeTest;
   final void Function() onClickFinalTest;
   final void Function() onSeeAll;
 
-  const NewTestTab(
-      {super.key,
-      required this.practiceTests,
-      required this.isDarkMode,
-      this.mainColor = const Color(0xFFF8BB67),
-      this.secondaryColor = const Color(0xFF7C6F5B),
-      this.gradientColors = const [
-        Color(0xFFC0A67C),
-        Color(0xFF958366),
-      ],
-      this.diagnosticTestIcon = 'assets/images/test_tab_diagnostic.png',
-      this.finalTestIcon = 'assets/images/test_tab_final.png',
-      this.diagnosticBoxBackground = 'assets/images/test_tab_diagnostic_bg.png',
-      this.finalTestBackground = 'assets/images/test_tab_final_bg.png',
-      required this.onTryAgainDiagnosticTab,
-      required this.onSeeAllPracticeTests,
-      required this.onClickFinalTest,
-      required this.diagnosticProgress,
-      required this.finalTestProgress,
-      required this.onSelectPracticeTest,
-      required this.onSeeAll,
-      });
+  const NewTestTab({
+    super.key,
+    required this.practiceTests,
+    required this.isDarkMode,
+    this.mainColor = const Color(0xFFF8BB67),
+    this.secondaryColor = const Color(0xFF7C6F5B),
+    this.gradientColors = const [
+      Color(0xFFC0A67C),
+      Color(0xFF958366),
+    ],
+    this.diagnosticTestIcon = 'assets/images/test_tab_diagnostic.png',
+    this.finalTestIcon = 'assets/images/test_tab_final.png',
+    this.diagnosticBoxBackground = 'assets/images/test_tab_diagnostic_bg.png',
+    this.finalTestBackground = 'assets/images/test_tab_final_bg.png',
+    required this.onTryAgainDiagnosticTab,
+    required this.onClickFinalTest,
+    required this.diagnosticProgress,
+    required this.finalTestProgress,
+    required this.onSelectPracticeTest,
+    required this.onSeeAll,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

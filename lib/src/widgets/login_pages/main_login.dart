@@ -8,12 +8,12 @@ import 'pages/otp_page.dart';
 
 enum TabType { email, code }
 
-class LoginDataItem {
+class LoginItem {
   final String image;
   final String imageDark;
   final String detail;
 
-  LoginDataItem({
+  LoginItem({
     required this.image,
     required this.imageDark,
     required this.detail,
@@ -27,7 +27,7 @@ class LoginPages extends StatefulWidget {
   final Color secondaryColor;
   final Color buttonTextColor;
   final bool isDarkMode;
-  final List<LoginDataItem> tabDataList;
+  final List<LoginItem> tabDataList;
 
   final void Function(String email) onRequestCodeClick;
   final void Function() onSkip;
@@ -195,7 +195,7 @@ class _LoginPagesState extends State<LoginPages> {
       builder: (_, value, __) => Text(
             value == 0 ? 'Log in' : 'Check your email',
             style: TextStyle(
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
                 fontSize: 26,
                 color: widget.isDarkMode ? Colors.white : Colors.black),
           ));
@@ -226,12 +226,15 @@ class _LoginPagesState extends State<LoginPages> {
             builder: (_, value, __) => ElevatedButton(
               onPressed: value ? _handleButtonClick : null,
               style: ElevatedButton.styleFrom(
+                  disabledBackgroundColor: Colors.grey,
                   backgroundColor: widget.mainColor,
                   foregroundColor: widget.buttonTextColor,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15)),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 50,
+                    vertical: 15,
+                  )),
               child: ValueListenableBuilder(
                 valueListenable: _pageIndex,
                 builder: (_, value, __) => Text(

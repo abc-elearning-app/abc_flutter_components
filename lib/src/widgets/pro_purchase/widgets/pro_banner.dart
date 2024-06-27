@@ -62,7 +62,6 @@ class _ProBannerState extends State<ProBanner> {
               child: RichText(
             text: TextSpan(
                 style: TextStyle(
-                    fontFamily: 'Poppins',
                     fontSize: 14,
                     color: widget.textColor,
                     fontWeight: FontWeight.w500),

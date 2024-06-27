@@ -3,7 +3,7 @@ import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/pro_purchase/widgets/pro_banner.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/pro_purchase/widgets/top_banner.dart';
 
-class ProPurchaseScreen extends StatefulWidget {
+class ProPurchase extends StatefulWidget {
   final List<ProOptionData> proOptions;
   final List<String> perks;
   final String proName;
@@ -17,7 +17,7 @@ class ProPurchaseScreen extends StatefulWidget {
 
   final void Function() onRestore;
 
-  const ProPurchaseScreen(
+  const ProPurchase(
       {super.key,
       required this.proOptions,
       required this.perks,
@@ -31,10 +31,10 @@ class ProPurchaseScreen extends StatefulWidget {
       required this.isDarkMode});
 
   @override
-  State<ProPurchaseScreen> createState() => _ProPurchaseScreenState();
+  State<ProPurchase> createState() => _ProPurchaseState();
 }
 
-class _ProPurchaseScreenState extends State<ProPurchaseScreen> {
+class _ProPurchaseState extends State<ProPurchase> {
   late ValueNotifier<ProBannerData> _proBannerData;
 
   @override
@@ -60,6 +60,7 @@ class _ProPurchaseScreenState extends State<ProPurchaseScreen> {
         children: [
           Expanded(
             child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
               child: Stack(children: [
                 Positioned.fill(
                     child: Container(
@@ -141,7 +142,6 @@ class _ProPurchaseScreenState extends State<ProPurchaseScreen> {
               child: RichText(
                 text: TextSpan(
                     style: TextStyle(
-                        fontFamily: 'Poppins',
                         color: widget.isDarkMode ? Colors.white : Colors.black,
                         shadows: !widget.isDarkMode
                             ? [

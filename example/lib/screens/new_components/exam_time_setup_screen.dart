@@ -19,7 +19,7 @@ class TestExamSetupTime extends StatelessWidget {
       onSkipDiagnostic: () => print('onStartDiagnostic'),
       onSelectExamDate: (date) => print(date),
       onSelectReminderTime: (time) => print(time),
-      isDarkMode: AppTheme.isDarkMode,
+      isDarkMode: AppTheme.isDarkMode, pageImagesDark: [],
     );
   }
 }

@@ -168,7 +168,6 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
               text: TextSpan(
                   style: TextStyle(
                     color: widget.isDarkMode ? Colors.white : Colors.black,
-                    fontFamily: 'Poppins',
                   ),
                   children: [
                 const TextSpan(text: 'Just '),
@@ -217,10 +216,7 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
           offset: const Offset(0, -15),
           child: RichText(
               text: TextSpan(
-                  style: TextStyle(
-                      color: widget.mainColor,
-                      fontSize: 12,
-                      fontFamily: 'Poppins'),
+                  style: TextStyle(color: widget.mainColor, fontSize: 12),
                   children: [
                 TextSpan(text: '$freeTrialDays-Day '),
                 const TextSpan(

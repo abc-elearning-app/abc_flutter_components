@@ -39,7 +39,10 @@ class OtpPage extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 30),
-        Expanded(flex: 2, child: Image.asset(isDarkMode ? imageDark : image)),
+        Expanded(flex: 2, child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Image.asset(isDarkMode ? imageDark : image),
+        )),
         Expanded(
           flex: 1,
           child: Padding(

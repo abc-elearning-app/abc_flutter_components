@@ -21,7 +21,7 @@ class TestProPurchaseScreen extends StatelessWidget {
       'Sync Across Devices'
     ];
 
-    return ProPurchaseScreen(
+    return ProPurchase(
       isDarkMode: AppTheme.isDarkMode,
       proOptions: proOptions,
       proName: 'ASVAB Pro',

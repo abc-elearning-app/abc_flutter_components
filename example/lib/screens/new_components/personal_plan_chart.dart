@@ -8,9 +8,10 @@ class TestPersonalPlanChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Dummy data
-    final startDate = DateTime(2024, 6, 15);
-    final examDate = DateTime(2024, 6, 25);
-    final valueList = [30, 40, 30, 35, 35, 45, 20, 30];
+    final startDate = DateTime(2024, 6, 20);
+    final examDate = DateTime(2024, 6, 30);
+    final valueList = [30, 40, 30, 35, 35, 45, 40];
+    // final valueList = <int>[];
 
     return Container(
       decoration: BoxDecoration(

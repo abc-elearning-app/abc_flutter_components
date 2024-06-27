@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../utils/image_utils.dart';
 
-enum SettingTileType { chevronTile, switchTile, timeTile, informationTile }
+enum SettingTileType { chevronTile, switchTile, informationTile }
 
 class SettingTile extends StatelessWidget {
   final SettingTileType type;
@@ -45,9 +44,10 @@ class SettingTile extends StatelessWidget {
       leading: ResponsiveIcon(
           content: iconString, color: isDarkMode ? 'white' : ' black'),
       title: Text(title,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w400,
             fontSize: 18,
+            color: isDarkMode ? Colors.white : Colors.black
           )),
       trailing: _buildTrailing(),
     );
@@ -74,8 +74,10 @@ class SettingTile extends StatelessWidget {
                       color: isDarkMode
                           ? Colors.white.withOpacity(0.24)
                           : Colors.black),
-                  child: Image.asset('assets/images/get_pro_text.png',
-                      height: 20)),
+                  child: Image.asset(
+                    'assets/images/get_pro_text.png',
+                    height: 20,
+                  )),
             const SizedBox(width: 10),
             StatefulBuilder(
               builder: (_, setState) => Switch(
@@ -83,26 +85,25 @@ class SettingTile extends StatelessWidget {
                 inactiveTrackColor: Colors.black.withOpacity(0.08),
                 inactiveThumbColor: isDarkMode ? Colors.white : Colors.black,
                 activeTrackColor: activeTrackColor,
-                thumbIcon: MaterialStateProperty.all(
+                thumbIcon: WidgetStateProperty.all(
                     const Icon(Icons.abc, color: Colors.transparent)),
-                trackOutlineColor: MaterialStateProperty.all(
+                trackOutlineColor: WidgetStateProperty.all(
                     isDarkMode ? Colors.white : mainColor),
-                trackOutlineWidth: MaterialStateProperty.all(1),
+                trackOutlineWidth: WidgetStateProperty.all(1),
                 value: value!,
                 onChanged: (_) => showPro ? null : onClick(),
               ),
             ),
           ],
         );
-      case SettingTileType.timeTile:
-        return const Placeholder();
       case SettingTileType.informationTile:
         return Padding(
           padding: const EdgeInsets.only(right: 10),
           child: Text(information!,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w400,
+                  color: isDarkMode ? Colors.white : Colors.black,
                   decoration: TextDecoration.underline)),
         );
     }

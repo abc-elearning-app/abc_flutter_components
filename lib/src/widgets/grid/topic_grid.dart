@@ -1,75 +1,94 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
-import '../../../icons/icon_box.dart';
+import '../icons/icon_box.dart';
 
-class PracticeTestData {
-  final int id;
-  final String title;
-  final String background;
-  final String icon;
-
-  PracticeTestData(
-      {required this.id,
-      required this.title,
-      required this.icon,
-      required this.background});
-}
-
-class PracticeTestList extends StatelessWidget {
-  final List<PracticeTestData> practiceTests;
-  final void Function(int index) onSelect;
+class TopicGrid extends StatelessWidget {
   final bool isDarkMode;
-  final Color color;
 
-  const PracticeTestList({
+  final Color mainColor;
+  final Color secondaryColor;
+  final Color backgroundColor;
+
+  final List<PracticeTestData> topicList;
+
+  final void Function(int id) onSelect;
+
+  const TopicGrid({
     super.key,
-    required this.practiceTests,
-    required this.onSelect,
+    this.mainColor = const Color(0xFFE3A651),
+    this.secondaryColor = const Color(0xFF7C6F5B),
+    this.backgroundColor = const Color(0xFFF5F4EE),
     required this.isDarkMode,
-    required this.color,
+    required this.onSelect,
+    required this.topicList,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 220,
-      width: double.infinity,
-      child: ListView.builder(
-          padding: const EdgeInsets.only(left: 10, bottom: 10),
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          itemCount: practiceTests.length,
-          itemBuilder: (_, index) => _practiceTestBox(practiceTests[index])),
+    return Scaffold(
+      backgroundColor: isDarkMode ? Colors.black : backgroundColor,
+      appBar: AppBar(
+        backgroundColor: backgroundColor,
+        scrolledUnderElevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDarkMode ? Colors.white : Colors.black,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text('Practice Tests',
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: isDarkMode ? Colors.white : Colors.black,
+            )),
+      ),
+      body: SafeArea(
+        child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.9,
+            ),
+            padding: const EdgeInsets.all(10),
+            itemCount: topicList.length,
+            itemBuilder: (_, index) => _topicBox(topicList[index])),
+      ),
     );
   }
 
-  Widget _practiceTestBox(PracticeTestData data) => GestureDetector(
+  Widget _topicBox(PracticeTestData data) => GestureDetector(
         onTap: () => onSelect(data.id),
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 6),
-          width: 180,
+          margin: const EdgeInsets.all(5),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               image: DecorationImage(
-                  image: AssetImage(data.background), fit: BoxFit.cover)),
+                image: AssetImage(data.background),
+                fit: BoxFit.cover,
+              )),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Stack(
               children: [
                 // Blur background
                 Container(
-                  color: (isDarkMode ? Colors.black : color).withOpacity(0.3),
+                  color: (isDarkMode ? Colors.black : secondaryColor)
+                      .withOpacity(0.3),
                 ),
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
                       height: 0,
                       decoration: BoxDecoration(
-                          color: isDarkMode ? Colors.grey.shade900 : color,
+                          color: isDarkMode
+                              ? Colors.grey.shade900
+                              : secondaryColor,
                           boxShadow: [
                             BoxShadow(
-                              color: isDarkMode ? Colors.grey.shade900 : color,
+                              color: isDarkMode
+                                  ? Colors.grey.shade900
+                                  : secondaryColor,
                               blurRadius: 300,
                               spreadRadius: 120,
                             )

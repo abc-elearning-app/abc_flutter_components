@@ -22,6 +22,7 @@ class TestFinalTestResult extends StatelessWidget {
           icon: 'assets/images/subject_icon_0.svg'),
     ];
     return FinalTestResult(
+      isFirstTime: false,
       isDarkMode: AppTheme.isDarkMode,
       progressList: progressList,
       progress: 10,

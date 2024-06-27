@@ -21,7 +21,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
 
   // Image
   final String sideImage;
-  final String chartImage;
+  final String sideImageDark;
   final String reminderIcon;
   final String examDateIcon;
   final String questionsIcon;
@@ -41,7 +41,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
     this.backgroundColor = const Color(0xFFF5F4EE),
     this.mainColor = const Color(0xFFE3A651),
     this.sideImage = 'assets/images/ready_soldier.png',
-    this.chartImage = 'assets/images/personal_plan_chart.png',
+    this.sideImageDark = 'assets/images/ready_soldier_dark.png',
     this.reminderIcon = 'assets/images/ready_reminder.svg',
     this.examDateIcon = 'assets/images/ready_calendar.svg',
     this.questionsIcon = 'assets/images/ready_questions.svg',
@@ -87,7 +87,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                     // Title
                     const SizedBox(height: 10),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Text(
                         'Your Personal Plan Is Ready!',
                         style: TextStyle(
@@ -98,10 +98,18 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                       ),
                     ),
 
-                    // Chart image
+                    // Chart
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: Image.asset(chartImage),
+                      padding:
+                          const EdgeInsets.only(left: 10, right: 10, top: 20),
+                      child: PersonalPlanChart(
+                        isDarkMode: isDarkMode,
+                        lineSectionHeight: 120,
+                        barSectionHeight: 150,
+                        startTime: DateTime(2024, 6, 20),
+                        examDate: examDate ?? DateTime(2024, 6, 30),
+                        valueList: [30, 40, 30, 35, 35, 45, 40],
+                      ),
                     ),
 
                     // Current date
@@ -135,7 +143,9 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                           // Image
                           Transform.translate(
                               offset: const Offset(0, 50),
-                              child: Image.asset(sideImage, height: 250))
+                              child: Image.asset(
+                                  isDarkMode ? sideImageDark : sideImage,
+                                  height: 200))
                         ],
                       ),
                     )
@@ -232,10 +242,6 @@ class PersonalPlanReadyScreen extends StatelessWidget {
       'November',
       'December',
     ];
-    // Ensure the month value is between 1 and 12
-    if (time.month < 1 || time.month > 12) {
-      throw ArgumentError('Month must be between 1 and 12');
-    }
 
     return '${isFullDisplay ? fullMonthNames[time.month] : abrMonthNames[time.month]} ${time.day}, ${time.year}';
   }

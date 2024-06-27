@@ -7,7 +7,7 @@ class TestCustomizeTest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tmpList = <CustomizeSubjectData>[
+    final subjectList = <CustomizeSubjectData>[
       CustomizeSubjectData(
         icon: 'assets/images/subject_icon_0.svg',
         title: 'Arithmetic Reasoning',
@@ -65,7 +65,7 @@ class TestCustomizeTest extends StatelessWidget {
       isDarkMode: AppTheme.isDarkMode,
       isPro: false,
       modes: modes,
-      subjects: tmpList,
+      subjects: subjectList,
       onStart: (
         modeIndex,
         questionCount,

@@ -138,7 +138,7 @@ class GeneralResultBox extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset(circleProgressImage),
+                  Image.asset(circleProgressImage, height: 80),
                   Text(
                     'Your result is',
                     style: TextStyle(color: _getLevelColor(levelType)),
@@ -181,23 +181,28 @@ class GeneralResultBox extends StatelessWidget {
   Widget _buildLevel(LevelType type, String image, bool isUnlocked) => Stack(
         alignment: Alignment.center,
         children: [
+          // Background to avoid see through
           CircleAvatar(
-              radius: 35,
-              backgroundColor: Color.lerp(_getLevelBackgroundColor(type),
-                  Colors.white, isUnlocked ? 0 : 0.5),
-              child: Opacity(
-                  opacity: isUnlocked ? 1 : 0.5, child: Image.asset(image))),
-          Transform.translate(
-              offset: const Offset(0, 50),
-              child: Text(_getLevelTitle(type),
-                  style: TextStyle(
-                      color: Color.lerp(
-                        _getLevelColor(type),
-                        Colors.white,
-                        isUnlocked ? 0 : 0.5,
-                      ),
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500)))
+            radius: 35,
+            backgroundColor: isDarkMode ? Colors.grey.shade800 : Colors.white,
+          ),
+          Opacity(
+            opacity: isUnlocked ? 1 : 0.5,
+            child: CircleAvatar(
+                radius: 35,
+                backgroundColor: _getLevelBackgroundColor(type),
+                child: Image.asset(image, height: 50)),
+          ),
+          Opacity(
+            opacity: isUnlocked ? 1 : 0.8,
+            child: Transform.translate(
+                offset: const Offset(0, 50),
+                child: Text(_getLevelTitle(type),
+                    style: TextStyle(
+                        color: _getLevelColor(type),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500))),
+          )
         ],
       );
 
@@ -251,7 +256,11 @@ class GeneralResultBox extends StatelessWidget {
       case LevelType.intermediate:
         return intermediateBackgroundColor;
       case LevelType.advanced:
-        return advancedBackgroundColor;
+        return Color.lerp(
+          advancedBackgroundColor,
+          Colors.black,
+          isDarkMode ? 0.3 : 0,
+        )!;
     }
   }
 

@@ -42,11 +42,11 @@ class _ToggleButtonState extends State<ToggleButton> {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: isSelected
               ? SvgPicture.asset(
-                  'assets/images/${widget.selectedIcon}.svg',
+                  widget.selectedIcon,
                   height: widget.iconSize,
                 )
               : SvgPicture.asset(
-                  'assets/images/${widget.unselectedIcon}.svg',
+                  widget.unselectedIcon,
                   height: widget.iconSize,
                   colorFilter: ColorFilter.mode(widget.color, BlendMode.srcIn),
                 ),

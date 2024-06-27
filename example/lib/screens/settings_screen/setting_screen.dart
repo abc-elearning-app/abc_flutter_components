@@ -37,6 +37,7 @@ class _TestSettingScreenState extends State<TestSettingScreen> {
       appVersion: '1.6.9',
       examDate: DateTime.now(),
       remindTime: TimeOfDay.now(),
+      onAvatarClick: () {},
     );
   }
 }

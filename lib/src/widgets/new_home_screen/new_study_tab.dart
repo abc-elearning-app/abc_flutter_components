@@ -65,7 +65,7 @@ class NewStudyTab extends StatelessWidget {
         (subject1, subject2) => subject1.progress < subject2.progress ? 0 : 1);
 
     return Padding(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
         children: [
           // Day streak and passing probability
@@ -86,7 +86,7 @@ class NewStudyTab extends StatelessWidget {
           // Subject list
           Expanded(
               child: ListView.builder(
-                  padding: EdgeInsets.zero,
+                  padding: const EdgeInsets.only(bottom: 20),
                   itemCount: subjectDataList.length,
                   itemBuilder: (_, index) => StudyTabSubjectTile(
                       isDarkMode: isDarkMode,

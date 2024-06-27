@@ -97,7 +97,6 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
                             : _getDisplayTime(index + 1))
                         .toString(),
                     style: const TextStyle(
-                      fontFamily: 'Poppins',
                       fontWeight: FontWeight.w500,
                       fontSize: 20,
                     ),

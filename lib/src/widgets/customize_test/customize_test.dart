@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/customize_test/provider/customize_test_provider.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/customize_test/widgets/slider_tile.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../flutter_abc_jsc_components.dart';
 

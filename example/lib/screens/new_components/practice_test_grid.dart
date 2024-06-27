@@ -28,7 +28,7 @@ class TestPracticeTestGrid extends StatelessWidget {
           'assets/images/practice_grid_bg.png'),
     ];
 
-    return PracticeTestGrid(
+    return TestGrid(
       title: 'Arithmetic Reasoning',
       practiceTests: practiceTests,
       isDarkMode: AppTheme.isDarkMode,

@@ -5,6 +5,7 @@ import '../../custom_datetime_picker/custom_date_picker.dart';
 class SelectExamDatePage extends StatefulWidget {
   final String title;
   final String image;
+  final String imageDark;
   final Color mainColor;
   final Color secondaryColor;
   final Color optionBoxFillColor;
@@ -18,6 +19,7 @@ class SelectExamDatePage extends StatefulWidget {
     super.key,
     required this.title,
     required this.image,
+    required this.imageDark,
     required this.pageController,
     required this.mainColor,
     required this.optionBoxFillColor,
@@ -59,25 +61,29 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
 
             // Image
             Padding(
-                padding: const EdgeInsets.symmetric(vertical: 40),
-                child: Image.asset(widget.image)),
+                padding: const EdgeInsets.only(bottom: 40),
+                child: Image.asset(
+                    widget.isDarkMode ? widget.imageDark : widget.image,
+                    height: 300)),
 
             // Option tile & Exam time picker
-            ValueListenableBuilder(
-              valueListenable: _selectedIndex,
-              builder: (_, selectedIndex, __) => AnimatedCrossFade(
-                  crossFadeState: selectedIndex != 0
-                      ? CrossFadeState.showFirst
-                      : CrossFadeState.showSecond,
-                  duration: const Duration(milliseconds: 200),
-                  firstChild: _buildOptions(selectedIndex),
-                  secondChild: Container(
-                    constraints: const BoxConstraints(maxHeight: 200),
-                    child: CustomDatePicker(
-                        onSelectDate: (selectedDate) =>
-                            widget.selectedTime['exam_date'] =
-                                selectedDate.toIso8601String()),
-                  )),
+            Expanded(
+              child: ValueListenableBuilder(
+                valueListenable: _selectedIndex,
+                builder: (_, selectedIndex, __) => AnimatedCrossFade(
+                    crossFadeState: selectedIndex != 0
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
+                    duration: const Duration(milliseconds: 200),
+                    firstChild: _buildOptions(selectedIndex),
+                    secondChild: Container(
+                      constraints: const BoxConstraints(maxHeight: 200),
+                      child: CustomDatePicker(
+                          onSelectDate: (selectedDate) =>
+                              widget.selectedTime['exam_date'] =
+                                  selectedDate.toIso8601String()),
+                    )),
+              ),
             ),
           ],
         ),

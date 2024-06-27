@@ -62,8 +62,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
+    return Container(
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
           color: Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1),
@@ -165,24 +164,24 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                 color: widget.isDarkMode
                     ? widget.mainColor
                     : widget.secondaryColor,
-                unselectedIcon: 'bookmark',
-                selectedIcon: 'bookmarked',
+                unselectedIcon: 'assets/images/bookmark.svg',
+                selectedIcon: 'assets/images/bookmarked.svg',
                 isSelected: isBookmarked,
                 onToggle: (isSelected) => widget.onBookmarkClick(isSelected)),
             ToggleButton(
                 color: widget.isDarkMode
                     ? widget.mainColor
                     : widget.secondaryColor,
-                unselectedIcon: 'like',
-                selectedIcon: 'liked',
+                unselectedIcon: 'assets/images/like.svg',
+                selectedIcon: 'assets/images/liked.svg',
                 isSelected: isLiked,
                 onToggle: (isSelected) => widget.onLikeClick(isSelected)),
             ToggleButton(
                 color: widget.isDarkMode
                     ? widget.mainColor
                     : widget.secondaryColor,
-                unselectedIcon: 'dislike',
-                selectedIcon: 'disliked',
+                unselectedIcon: 'assets/images/dislike.svg',
+                selectedIcon: 'assets/images/disliked.svg',
                 isSelected: isDisliked,
                 onToggle: (isSelected) => widget.onDislikeClick(isSelected)),
           ],

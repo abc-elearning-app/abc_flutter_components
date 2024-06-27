@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/animations/sprinkle_effect.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/part_test_result/widgets/circular_progress_box.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/part_test_result/widgets/linear_progress_box.dart';
-import 'package:gif/gif.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../../flutter_abc_jsc_components.dart';
 
@@ -43,8 +43,8 @@ class PartResultScreen extends StatefulWidget {
     this.mainColor = const Color(0xFFE3A651),
     this.secondaryColor = const Color(0xFF7C6F5B),
     this.boxBackgroundColor = const Color(0xFFF3F1E5),
-    this.passImage = 'assets/images/part_done.gif',
-    this.passImageDark = 'assets/images/part_done_dark.gif',
+    this.passImage = 'assets/images/part_done.json',
+    this.passImageDark = 'assets/images/part_done_dark.json',
     required this.onTryAgain,
     required this.onContinue,
     required this.isDarkMode,
@@ -56,31 +56,11 @@ class PartResultScreen extends StatefulWidget {
 
 class _PartResultScreenState extends State<PartResultScreen>
     with SingleTickerProviderStateMixin {
-  final congratulationText = <String>[
+  final congratulationTexts = <String>[
     "Now go forth and conquer your to-do list! Remember, procrastination is the enemy of progress.",
     "You've earned yourself a... virtual pat on the back! (Please note: Virtual pats may not be redeemable for actual pizza.)",
     "Time for a dance break! (Disclaimer: App is not responsible for any injuries sustained during spontaneous dance celebrations.)"
   ];
-
-  late GifController _gifController;
-
-  @override
-  void initState() {
-    _gifController = GifController(vsync: this);
-    _gifController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        Future.delayed(
-            const Duration(seconds: 1), () => _gifController.forward(from: 0));
-      }
-    });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _gifController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +72,8 @@ class _PartResultScreenState extends State<PartResultScreen>
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back,
+              color: widget.isDarkMode ? Colors.white : Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -124,7 +105,7 @@ class _PartResultScreenState extends State<PartResultScreen>
                           top: 15,
                         ),
                         child: Text(
-                          congratulationText[textIndex],
+                          congratulationTexts[textIndex],
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 16,
@@ -136,17 +117,11 @@ class _PartResultScreenState extends State<PartResultScreen>
                       ),
 
                       // Image
-                      Gif(
-                        image: AssetImage(widget.isDarkMode
-                            ? widget.passImageDark
-                            : widget.passImage),
-                        controller: _gifController,
-                        height: 300,
-                        onFetchCompleted: () {
-                          _gifController.reset();
-                          _gifController.forward();
-                        },
-                      ),
+                      Lottie.asset(
+                          widget.isDarkMode
+                              ? widget.passImageDark
+                              : widget.passImage,
+                          height: 300),
 
                       CircularProgressBox(
                           isDarkMode: widget.isDarkMode,

@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -17,8 +15,8 @@ class PersonalPlanAnalyzingScreen extends StatefulWidget {
   final Color backgroundColor;
   final Color mainColor;
   final Color secondaryColor;
-  final String? loadingImage;
-  final String? finishImage;
+  final String loadingImage;
+  final String finishImage;
   final int loadingTime;
   final int floatingTextAnimationTime;
   final TextStyle? floatingTextStyle;
@@ -30,8 +28,8 @@ class PersonalPlanAnalyzingScreen extends StatefulWidget {
     this.backgroundColor = const Color(0xFFF5F4EE),
     this.mainColor = const Color(0xFF7C6F5B),
     this.secondaryColor = const Color(0xFFE5E2CB),
-    this.loadingImage,
-    this.finishImage,
+    this.loadingImage = 'assets/images/analyzing.png',
+    this.finishImage = 'assets/images/analyzing_done.png',
     this.loadingTime = 2000,
     this.floatingTextAnimationTime = 1500,
     this.floatingTextStyle,
@@ -211,8 +209,10 @@ class _PersonalPlanAnalyzingScreenState
                       // Image icon
                       ValueListenableBuilder(
                           valueListenable: _progressValue,
-                          builder: (_, value, __) =>
-                              Image.asset(_getImagePath(value))),
+                          builder: (_, value, __) => Image.asset(
+                                _getImagePath(value),
+                                height: 150,
+                              )),
 
                       // Floating texts
                       _floatingTexts(),
@@ -251,9 +251,8 @@ class _PersonalPlanAnalyzingScreenState
         ),
       ));
 
-  String _getImagePath(int value) => value < 100
-      ? widget.loadingImage ?? 'assets/images/analyzing.png'
-      : widget.finishImage ?? 'assets/images/analyzing_done.png';
+  String _getImagePath(int value) =>
+      value < 100 ? widget.loadingImage : widget.finishImage;
 
   double _calculateOffsetX(int index) =>
       floatingTextList[index].initX * (1 - _animations[index].value);

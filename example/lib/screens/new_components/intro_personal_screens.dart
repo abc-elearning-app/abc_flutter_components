@@ -13,19 +13,22 @@ class TestIntroPersonalPlanScreen extends StatelessWidget {
           title: 'Exam-Like Questions',
           subtitle:
               'We offer a wide range of questions compiled by experts that closely resemble the real exam.',
-          image: 'assets/images/personal_plan_1.png'),
+          image: 'assets/images/personal_plan_1.png',
+          imageDark: ''),
       IntroPersonalPlanData(
           index: 1,
           title: 'Powerful Learning Method',
           subtitle:
               'We use a combination of active recall, spaced repetition, and interleaving to strengthen memory retention.',
-          image: 'assets/images/personal_plan_2.png'),
+          image: 'assets/images/personal_plan_2.png',
+          imageDark: ''),
       IntroPersonalPlanData(
           index: 2,
           title: 'Personalized Study Plan',
           subtitle:
               'Based on your exam date and Diagnostic Test, we build a personalized study plan for you, maximizing your chances of exam success.',
-          image: 'assets/images/personal_plan_3.png')
+          image: 'assets/images/personal_plan_3.png',
+          imageDark: '')
     ];
 
     return IntroPersonalPlanPages(
