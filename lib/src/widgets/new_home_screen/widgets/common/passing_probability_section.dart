@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/progress/custom_linear_progress.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -19,7 +20,7 @@ class PassingProbabilitySection extends StatelessWidget {
     required this.darkModeMainColor,
     required this.dayStreak,
     required this.isDarkMode,
-    this.streakIcon = 'assets/images/fire.svg',
+    required this.streakIcon,
   });
 
   @override
@@ -41,9 +42,10 @@ class PassingProbabilitySection extends StatelessWidget {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
                   border: Border.all(
-                      width: 4,
-                      color: isDarkMode ? darkModeMainColor : mainColor)),
-              child: SvgPicture.asset(streakIcon)),
+                    width: 4,
+                    color: isDarkMode ? darkModeMainColor : mainColor,
+                  )),
+              child: ImageWidget(icon: streakIcon)),
           Transform.translate(
             offset: const Offset(0, 10),
             child: Container(

@@ -1,19 +1,15 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 class IntroPersonalPlanData {
   final int index;
   final String image;
-  final String imageDark;
   final String title;
   final String subtitle;
 
   IntroPersonalPlanData({
     required this.index,
     required this.image,
-    required this.imageDark,
     required this.title,
     required this.subtitle,
   });
@@ -23,9 +19,6 @@ class IntroPersonalPlanPages extends StatefulWidget {
   final Color upperBackgroundColor;
   final Color lowerBackgroundColor;
   final Color mainColor;
-  final Color buttonTextColor;
-  final double buttonTextFontSize;
-  final bool isDarkMode;
 
   final List<IntroPersonalPlanData> tabList;
   final void Function() onFinish;
@@ -35,11 +28,8 @@ class IntroPersonalPlanPages extends StatefulWidget {
       this.upperBackgroundColor = const Color(0xFFF5F4EE),
       this.lowerBackgroundColor = Colors.white,
       this.mainColor = const Color(0xFFE3A651),
-      this.buttonTextColor = Colors.white,
-      this.buttonTextFontSize = 20,
       required this.tabList,
-      required this.onFinish,
-      required this.isDarkMode});
+      required this.onFinish});
 
   @override
   State<IntroPersonalPlanPages> createState() => _IntroPersonalPlanPagesState();
@@ -72,7 +62,7 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(children: [
-        _buildBackground(),
+        _background(),
         SafeArea(
           child: Column(
             children: [
@@ -90,22 +80,16 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
     );
   }
 
-  Widget _buildBackground() => Column(
+  Widget _background() => Column(
         children: [
           // Upper background
           Expanded(
             flex: 3,
             child: Stack(alignment: Alignment.center, children: [
-              if (widget.isDarkMode) Container(color: Colors.black),
-              Container(
-                  color: widget.isDarkMode
-                      ? Colors.white.withOpacity(0.16)
-                      : widget.lowerBackgroundColor),
+              Container(color: widget.lowerBackgroundColor),
               Container(
                 decoration: BoxDecoration(
-                    color: widget.isDarkMode
-                        ? Colors.black
-                        : widget.upperBackgroundColor,
+                    color: widget.upperBackgroundColor,
                     borderRadius: const BorderRadius.only(
                         bottomRight: Radius.circular(50))),
               ),
@@ -116,15 +100,10 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
           Expanded(
             flex: 2,
             child: Stack(children: [
-              Container(
-                  color: widget.isDarkMode
-                      ? Colors.black
-                      : widget.upperBackgroundColor),
+              Container(color: widget.upperBackgroundColor),
               Container(
                 decoration: BoxDecoration(
-                    color: widget.isDarkMode
-                        ? Colors.white.withOpacity(0.16)
-                        : widget.lowerBackgroundColor,
+                    color: widget.lowerBackgroundColor,
                     borderRadius:
                         const BorderRadius.only(topLeft: Radius.circular(50))),
               ),
@@ -138,13 +117,9 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
           // Upper part
           Expanded(
             flex: 9,
-            child: SizedBox(
+            child: ImageWidget(
+              icon: widget.tabList[index].image,
               width: 300,
-              child: Image.asset(
-                widget.isDarkMode
-                    ? widget.tabList[index].imageDark
-                    : widget.tabList[index].image,
-              ),
             ),
           ),
 
@@ -158,10 +133,8 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
                   padding: const EdgeInsets.only(top: 30, bottom: 20),
                   child: Text(
                     widget.tabList[index].title,
-                    style: TextStyle(
-                        color: widget.isDarkMode ? Colors.white : Colors.black,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 25, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Expanded(
@@ -174,9 +147,7 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
-                          color: widget.isDarkMode
-                              ? Colors.white.withOpacity(0.6)
-                              : const Color(0xFF3C3C3C).withOpacity(0.52),
+                          color: const Color(0xFF3C3C3C).withOpacity(0.52),
                         ),
                       ),
                     ),
@@ -206,7 +177,7 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
                   title: value != widget.tabList.length - 1 ? 'Next' : 'Start',
                   backgroundColor: widget.mainColor,
                   onPressed: _handleButtonClick,
-                  textStyle: TextStyle(fontSize: widget.buttonTextFontSize),
+                  textStyle: const TextStyle(fontSize: 20),
                 ),
               )
             ],

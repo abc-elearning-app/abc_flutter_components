@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class FloatingTextData {
@@ -28,11 +29,11 @@ class PersonalPlanAnalyzingScreen extends StatefulWidget {
     this.backgroundColor = const Color(0xFFF5F4EE),
     this.mainColor = const Color(0xFF7C6F5B),
     this.secondaryColor = const Color(0xFFE5E2CB),
-    this.loadingImage = 'assets/images/analyzing.png',
-    this.finishImage = 'assets/images/analyzing_done.png',
     this.loadingTime = 2000,
     this.floatingTextAnimationTime = 1500,
     this.floatingTextStyle,
+    required this.loadingImage,
+    required this.finishImage,
     required this.onFinish,
     required this.isDarkMode,
   });
@@ -209,8 +210,8 @@ class _PersonalPlanAnalyzingScreenState
                       // Image icon
                       ValueListenableBuilder(
                           valueListenable: _progressValue,
-                          builder: (_, value, __) => Image.asset(
-                                _getImagePath(value),
+                          builder: (_, value, __) => ImageWidget(
+                                icon: _getImagePath(value),
                                 height: 150,
                               )),
 

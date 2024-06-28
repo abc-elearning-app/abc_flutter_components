@@ -20,7 +20,7 @@ class TestLoginScreen extends StatelessWidget {
           imageDark: '')
     ];
 
-    return LoginPages(
+    return MainLoginPage(
       tabDataList: tabDataList,
       onRequestCodeClick: (email) => print(email),
       onSkip: () => print('onSkip'),

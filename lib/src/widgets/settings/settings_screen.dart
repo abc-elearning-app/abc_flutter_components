@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/constants/app_svg_icons.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/premium_button.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/tile.dart';
@@ -15,6 +16,8 @@ class SettingScreen extends StatefulWidget {
   final Color mainColor;
   final Color backgroundColor;
   final Color switchActiveTrackColor;
+
+  final String avatar;
 
   final void Function() onAvatarClick;
 
@@ -58,6 +61,7 @@ class SettingScreen extends StatefulWidget {
     required this.appVersion,
     required this.notificationOn,
     required this.onAvatarClick,
+    required this.avatar,
   });
 
   @override
@@ -221,7 +225,7 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   PreferredSizeWidget _customAppBar() => AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: widget.isDarkMode ? Colors.black : widget.backgroundColor,
         scrolledUnderElevation: 0,
         leading: IconButton(
             icon: Icon(
@@ -239,8 +243,8 @@ class _SettingScreenState extends State<SettingScreen> {
           Padding(
               padding: const EdgeInsets.only(right: 10),
               child: IconButton(
-                icon: Image.asset(
-                  'assets/images/avt${widget.isDarkMode ? '_dark' : ''}.png',
+                icon: ImageWidget(
+                  icon: widget.avatar,
                   height: 40,
                 ),
                 onPressed: widget.onAvatarClick,

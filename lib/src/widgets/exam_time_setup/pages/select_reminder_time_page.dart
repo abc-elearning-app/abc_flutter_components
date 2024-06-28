@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 import '../../custom_datetime_picker/custom_time_picker.dart';
 
 class SelectReminderTimePage extends StatelessWidget {
   final String title;
   final String image;
-  final String imageDark;
   final bool isDarkMode;
   final Map<String, dynamic> selectedTime;
   final PageController pageController;
@@ -15,7 +15,6 @@ class SelectReminderTimePage extends StatelessWidget {
       {super.key,
       required this.title,
       required this.image,
-      required this.imageDark,
       required this.pageController,
       required this.selectedTime,
       required this.isDarkMode});
@@ -43,7 +42,7 @@ class SelectReminderTimePage extends StatelessWidget {
           // Image
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 30),
-            child: Image.asset(isDarkMode ? imageDark : image, height: 300),
+            child: ImageWidget(icon: image, height: 300),
           ),
           Expanded(
               child: Transform.scale(

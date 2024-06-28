@@ -24,10 +24,10 @@ class OverviewBox extends StatelessWidget {
     required this.correctAnswers,
     required this.accuracyRate,
     required this.isDarkMode,
+    required this.background,
     this.correctColor = const Color(0xFF15CB9F),
     this.incorrectColor = const Color(0xFFFC5656),
     this.backgroundColor = const Color(0xFFFFFDF1),
-    this.background = 'assets/images/overview_box_background.png',
   });
 
   @override
@@ -49,15 +49,11 @@ class OverviewBox extends StatelessWidget {
           Container(
             padding: const EdgeInsets.only(top: 20),
             decoration: BoxDecoration(
-                color: Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
+                color: isDarkMode ? Colors.grey.shade900 : Colors.white,
                 image: DecorationImage(
-                    image: AssetImage(background),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                        isDarkMode
-                            ? const Color(0xFF6C6C6C)
-                            : const Color(0xFFD4D6DC),
-                        BlendMode.srcIn)),
+                  image: AssetImage(background),
+                  fit: BoxFit.cover,
+                ),
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16))),
@@ -65,9 +61,10 @@ class OverviewBox extends StatelessWidget {
               children: [
                 Text('Overview',
                     style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w600,
-                        color: isDarkMode ? Colors.white : Colors.black)),
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      color: isDarkMode ? Colors.white : Colors.black,
+                    )),
                 const SizedBox(height: 15),
                 HalfCircleProgressIndicator(
                   progress: accuracyRate / 100,

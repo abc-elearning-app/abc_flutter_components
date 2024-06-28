@@ -71,14 +71,15 @@ class NewStudyTab extends StatelessWidget {
           // Day streak and passing probability
           PassingProbabilitySection(
               isDarkMode: isDarkMode,
+              dayStreak: dayStreak,
               passingProbability: passingProbability,
               mainColor: mainColor,
               darkModeMainColor: darkModeMainColor,
-              dayStreak: dayStreak,
               streakIcon: streakIcon),
 
           // Button
           TodayQuestionButton(
+            mainColor: mainColor,
             buttonBackground: buttonBackground,
             onClickDailyChallenge: onClickDailyChallenge,
           ),

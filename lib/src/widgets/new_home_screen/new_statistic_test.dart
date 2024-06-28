@@ -11,6 +11,9 @@ class NewStatisticTab extends StatelessWidget {
   final bool isDarkMode;
   final List<SubjectAnalysisData> subjectList;
 
+  final String streakIcon;
+  final String overviewBackground;
+
   const NewStatisticTab(
       {super.key,
       this.mainColor = const Color(0xFFE3A651),
@@ -18,7 +21,9 @@ class NewStatisticTab extends StatelessWidget {
       required this.dayStreak,
       required this.passingProbability,
       required this.isDarkMode,
-      required this.subjectList});
+      required this.subjectList,
+      required this.streakIcon,
+      required this.overviewBackground});
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +34,11 @@ class NewStatisticTab extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PassingProbabilitySection(
-              isDarkMode: isDarkMode,
-              passingProbability: passingProbability,
-              mainColor: mainColor,
               dayStreak: dayStreak,
+              passingProbability: passingProbability,
+              streakIcon: streakIcon,
+              isDarkMode: isDarkMode,
+              mainColor: mainColor,
               darkModeMainColor: darkModeMainColor,
             ),
             OverviewBox(
@@ -40,6 +46,7 @@ class NewStatisticTab extends StatelessWidget {
               totalQuestions: 1426,
               correctAnswers: 148,
               accuracyRate: 21,
+              background: overviewBackground,
               isDarkMode: isDarkMode,
             ),
             Padding(

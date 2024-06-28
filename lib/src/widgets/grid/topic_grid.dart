@@ -29,7 +29,7 @@ class TopicGrid extends StatelessWidget {
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : backgroundColor,
       appBar: AppBar(
-        backgroundColor: backgroundColor,
+        backgroundColor: isDarkMode ? Colors.black : backgroundColor,
         scrolledUnderElevation: 0,
         leading: IconButton(
           icon: Icon(

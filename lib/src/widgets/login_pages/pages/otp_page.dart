@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:pinput/pinput.dart';
 
 class OtpPage extends StatelessWidget {
   final String image;
-  final String imageDark;
   final String detail;
   final Color mainColor;
   final Color secondaryColor;
@@ -15,7 +15,6 @@ class OtpPage extends StatelessWidget {
   const OtpPage(
       {super.key,
       required this.image,
-      required this.imageDark,
       required this.detail,
       required this.otpController,
       required this.onReenterEmail,
@@ -41,7 +40,7 @@ class OtpPage extends StatelessWidget {
         const SizedBox(height: 30),
         Expanded(flex: 2, child: Padding(
           padding: const EdgeInsets.all(20),
-          child: Image.asset(isDarkMode ? imageDark : image),
+          child: ImageWidget(icon: image),
         )),
         Expanded(
           flex: 1,

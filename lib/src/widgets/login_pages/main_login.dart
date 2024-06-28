@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'pages/email_page.dart';
@@ -10,17 +7,15 @@ enum TabType { email, code }
 
 class LoginItem {
   final String image;
-  final String imageDark;
   final String detail;
 
   LoginItem({
     required this.image,
-    required this.imageDark,
     required this.detail,
   });
 }
 
-class LoginPages extends StatefulWidget {
+class MainLoginPage extends StatefulWidget {
   final Color upperBackgroundColor;
   final Color lowerBackgroundColor;
   final Color mainColor;
@@ -33,7 +28,7 @@ class LoginPages extends StatefulWidget {
   final void Function() onSkip;
   final void Function(String otp) onSubmit;
 
-  const LoginPages(
+  const MainLoginPage(
       {super.key,
       this.mainColor = const Color(0xFFE3A651),
       this.secondaryColor = const Color(0xFF7C6F5B),
@@ -47,10 +42,10 @@ class LoginPages extends StatefulWidget {
       required this.tabDataList});
 
   @override
-  State<LoginPages> createState() => _LoginPagesState();
+  State<MainLoginPage> createState() => _MainLoginPageState();
 }
 
-class _LoginPagesState extends State<LoginPages> {
+class _MainLoginPageState extends State<MainLoginPage> {
   final _pageController = PageController();
   final _pageIndex = ValueNotifier<int>(0);
   final _buttonEnable = ValueNotifier<bool>(false);
@@ -67,7 +62,6 @@ class _LoginPagesState extends State<LoginPages> {
         isDarkMode: widget.isDarkMode,
         emailController: emailController,
         image: widget.tabDataList[0].image,
-        imageDark: widget.tabDataList[0].imageDark,
         secondaryColor: widget.secondaryColor,
         detail: widget.tabDataList[0].detail,
         mainColor: widget.mainColor,
@@ -78,7 +72,6 @@ class _LoginPagesState extends State<LoginPages> {
         isDarkMode: widget.isDarkMode,
         otpController: otpController,
         image: widget.tabDataList[1].image,
-        imageDark: widget.tabDataList[1].imageDark,
         detail: widget.tabDataList[1].detail,
         mainColor: widget.mainColor,
         secondaryColor: widget.secondaryColor,
@@ -113,7 +106,8 @@ class _LoginPagesState extends State<LoginPages> {
           widget.isDarkMode ? Colors.black : widget.upperBackgroundColor,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.transparent,
+        backgroundColor:
+            widget.isDarkMode ? Colors.black : widget.upperBackgroundColor,
         leading: _buildLeadingButton(),
         title: _buildPageTitle(),
         actions: [_buildSkipButton()],
@@ -175,9 +169,10 @@ class _LoginPagesState extends State<LoginPages> {
       builder: (_, value, __) => Visibility(
             visible: value != 0,
             child: IconButton(
-              icon: Icon(Icons.chevron_left,
-                  size: 40,
-                  color: widget.isDarkMode ? Colors.white : Colors.black),
+              icon: Icon(
+                Icons.arrow_back,
+                color: widget.isDarkMode ? Colors.white : Colors.black,
+              ),
               onPressed: () {
                 // Check button enable when go back to email page
                 _buttonEnable.value = _isValidEmail(emailController.text);

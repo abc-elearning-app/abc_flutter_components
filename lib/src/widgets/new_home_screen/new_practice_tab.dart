@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class QuestionGroupData {
@@ -65,7 +66,7 @@ class NewPracticeTab extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: questionGroupData.iconBackgroundColor,
                       borderRadius: BorderRadius.circular(16)),
-                  child: SvgPicture.asset(questionGroupData.icon)),
+                  child: ImageWidget(icon: questionGroupData.icon)),
               const SizedBox(width: 15),
               Expanded(
                 child: Column(

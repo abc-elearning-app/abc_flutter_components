@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 class EmailPage extends StatelessWidget {
   final String image;
-  final String imageDark;
   final String detail;
   final Color mainColor;
   final Color secondaryColor;
@@ -13,7 +13,6 @@ class EmailPage extends StatelessWidget {
   const EmailPage(
       {super.key,
       required this.image,
-      required this.imageDark,
       required this.detail,
       required this.emailController,
       required this.onEnterEmail,
@@ -25,7 +24,8 @@ class EmailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(flex: 2, child: Image.asset(isDarkMode ? imageDark : image)),
+        Expanded(
+            flex: 2, child: ImageWidget(icon: image)),
 
         // Detail text
         Expanded(

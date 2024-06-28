@@ -23,7 +23,6 @@ class PartResultScreen extends StatefulWidget {
   final Color boxBackgroundColor;
 
   final String passImage;
-  final String passImageDark;
 
   final bool isDarkMode;
 
@@ -43,8 +42,7 @@ class PartResultScreen extends StatefulWidget {
     this.mainColor = const Color(0xFFE3A651),
     this.secondaryColor = const Color(0xFF7C6F5B),
     this.boxBackgroundColor = const Color(0xFFF3F1E5),
-    this.passImage = 'assets/images/part_done.json',
-    this.passImageDark = 'assets/images/part_done_dark.json',
+    required this.passImage,
     required this.onTryAgain,
     required this.onContinue,
     required this.isDarkMode,
@@ -70,7 +68,8 @@ class _PartResultScreenState extends State<PartResultScreen>
       backgroundColor:
           widget.isDarkMode ? Colors.black : widget.backgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor:
+            widget.isDarkMode ? Colors.black : widget.backgroundColor,
         leading: IconButton(
           icon: Icon(Icons.arrow_back,
               color: widget.isDarkMode ? Colors.white : Colors.black),
@@ -117,11 +116,7 @@ class _PartResultScreenState extends State<PartResultScreen>
                       ),
 
                       // Image
-                      Lottie.asset(
-                          widget.isDarkMode
-                              ? widget.passImageDark
-                              : widget.passImage,
-                          height: 300),
+                      ImageWidget(icon: widget.passImage, height: 300),
 
                       CircularProgressBox(
                           isDarkMode: widget.isDarkMode,
