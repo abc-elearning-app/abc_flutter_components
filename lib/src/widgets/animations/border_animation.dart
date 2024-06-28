@@ -1,4 +1,3 @@
-import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 
 import '../index.dart';
@@ -66,10 +65,7 @@ class BorderAnimationState extends State<BorderAnimation>
             padding: const EdgeInsets.all(12),
             decoration: ShapeDecoration(
                 color: Theme.of(context).colorScheme.surface,
-                shape: SmoothRectangleBorder(
-                  borderRadius:
-                      SmoothBorderRadius(cornerRadius: 16, cornerSmoothing: 1),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 shadows: [
                   BoxShadow(
                     blurRadius: 20,

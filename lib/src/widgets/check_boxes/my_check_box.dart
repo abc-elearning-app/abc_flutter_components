@@ -5,7 +5,9 @@ class MyCheckBox extends StatelessWidget {
   final bool unCheckIcon;
   final void Function(bool value)? onChanged;
   final Color? activeColor;
-  final Color? checkColor;
+  final Color? borderColor;
+  final Color? iconColor;
+  final Color? fillColor;
 
   const MyCheckBox(
       {super.key,
@@ -13,7 +15,9 @@ class MyCheckBox extends StatelessWidget {
       this.value = false,
       this.onChanged,
       this.activeColor,
-      this.checkColor});
+      this.borderColor,
+      this.iconColor,
+      this.fillColor});
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +42,15 @@ class MyCheckBox extends StatelessWidget {
                   color: activeColor ?? Theme.of(context).colorScheme.secondary,
                   width: 2))
           : BoxDecoration(
+              color: fillColor,
               borderRadius: BorderRadius.circular(6),
               border: Border.all(
-                  color: checkColor ?? Theme.of(context).colorScheme.secondary,
+                  color: borderColor ?? Theme.of(context).colorScheme.secondary,
                   width: 2)),
       child: active
           ? Icon(Icons.done,
-              color: Theme.of(context).colorScheme.surface, size: 16)
+              color: iconColor ?? Theme.of(context).colorScheme.surface,
+              size: 16)
           : const SizedBox(width: 16, height: 16),
     );
   }

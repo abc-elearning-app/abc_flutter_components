@@ -8,6 +8,7 @@ class AppTheme {
       isDarkMode ? _appDarkTheme : _appLightTheme;
 
   static final ThemeData _appLightTheme = ThemeData(
+    fontFamily: 'Poppins',
     colorScheme: _lightColorScheme,
     appBarTheme: const AppBarTheme(
       color: Colors.white,
@@ -16,6 +17,7 @@ class AppTheme {
   );
 
   static final ThemeData _appDarkTheme = ThemeData(
+    fontFamily: 'Poppins',
     colorScheme: _darkColorScheme,
     appBarTheme: const AppBarTheme(
       color: Colors.white,

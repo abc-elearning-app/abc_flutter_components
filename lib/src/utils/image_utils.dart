@@ -1,32 +1,29 @@
-import 'package:flutter_abc_jsc_components/models/enums.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
-String getLocalImageUrl(
-  String image, {
-  String? imageFolder,
-  String? currentApp,
-  required SelectDataType dataType,
-}) {
-  // print("getLocalImageUrl imageFolder $imageFolder");
-  if ((imageFolder == null || imageFolder.isEmpty) &&
-      currentApp == 'motorcycle') {
-    if (currentApp == 'motorcycle') {
-      imageFolder = "images-motorcycle";
-    }
-    if (currentApp == 'dmv') {
-      imageFolder = "images-dmv";
-    }
-  }
-  if (dataType == SelectDataType.NEW_DATA) {
-    return "assets/images_new/$image";
-  }
-  if (imageFolder != null && imageFolder.isNotEmpty) {
-    return "assets/$imageFolder/$image";
-  }
-  return currentApp != null && currentApp.isNotEmpty
-      ? "assets/images-$currentApp/$image"
-      : "assets/images/$image";
-}
+class ResponsiveIcon extends StatelessWidget {
+  final String content;
+  final String color;
+  final double width;
+  final double height;
 
-String getNetworkImageUrl(String image, {required String bucket}) {
-  return "https://storage.googleapis.com/micro-enigma-235001.appspot.com/$bucket/images/$image";
+  const ResponsiveIcon(
+      {super.key,
+      required this.content,
+      this.color = 'black',
+      this.height = 25,
+      this.width = 25});
+
+  getIconContent(String color) => content
+      .toString()
+      .replaceAll('stroke="white"', 'stroke="$color"')
+      .replaceAll('fill="white"', 'fill="$color"');
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        height: height,
+        width: width,
+        child: SvgPicture.string(getIconContent(color)));
+  }
 }

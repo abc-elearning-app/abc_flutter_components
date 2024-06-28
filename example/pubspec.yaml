@@ -33,6 +33,7 @@ dependencies:
 
   flutter_abc_jsc_components:
     path: ../
+  intl: ^0.19.0
 
   provider: any
   url_launcher: any
@@ -62,11 +63,39 @@ flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
+  generate: true
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/
+    - assets/images/
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+          weight: 700
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-SemiBoldItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/Poppins-Light.ttf
+          weight: 200
+        - asset: assets/fonts/Poppins-LightItalic.ttf
+          weight: 200
+          style: italic
+        - asset: assets/fonts/Poppins-Italic.ttf
+          style: italic
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 400
+        - asset: assets/fonts/Poppins-MediumItalic.ttf
+          weight: 400
+          style: italic
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

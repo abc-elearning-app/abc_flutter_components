@@ -26,31 +26,51 @@ class AppRoute {
   static const String toasters = '/toasters';
   static const String others = '/others';
 
+  static const String newLogin = '/new_login';
+  static const String introPersonalPlan = '/intro_personal_plan';
+  static const String diagnosticResult = '/diagnostic_result';
+  static const String personalPlanAnalyzing = '/personal_plan_analyzing';
+  static const String personalPlanReady = '/personal_plan_ready';
+  static const String examTimeSetup = '/exam_time_setup';
+  static const String newStudyTab = '/new_study_tab';
+  static const String newPracticeTab = '/new_practice_tab';
+  static const String newTestTab = '/new_test_tab';
+  static const String newStatisticTab = '/new_statistic_tab';
+  static const String levelsPath = '/level_path';
+  static const String diagnosticQuestion = '/diagnostic_question';
+  static const String groupQuestionList = '/group_question_list';
+  static const String customizeTest = '/customize_test';
+  static const String finalTestResult = '/final_test_result';
+  static const String partTestResult = '/part_test_result';
+  static const String practiceTestGrid = '/practice_test_grid';
+  static const String proPurchaseScreen = '/pro_purchase';
+  static const String personalPlanChart = '/personal_plan_chart';
+  static const String settingsScreen = '/settings_screen';
+  static const String streakScreen = '/streak_screen';
+
   static List<String> getAppRoute() {
     return [
-      AppRoute.animations,
-      AppRoute.appBars,
-      AppRoute.bottomNavBars,
-      AppRoute.bottomSheets,
-      AppRoute.buttons,
-      AppRoute.cardItems,
-      AppRoute.checkBoxes,
-      AppRoute.dialogs,
-      AppRoute.emails,
-      AppRoute.games,
-      AppRoute.icons,
-      AppRoute.loadings,
-      AppRoute.logins,
-      AppRoute.menus,
-      AppRoute.progressItems,
-      AppRoute.ratings,
-      AppRoute.reviews,
-      AppRoute.sliders,
-      AppRoute.switches,
-      AppRoute.tabViews,
-      AppRoute.texts,
-      AppRoute.toasters,
-      AppRoute.others,
+      AppRoute.streakScreen,
+      AppRoute.personalPlanChart,
+      AppRoute.newLogin,
+      AppRoute.introPersonalPlan,
+      AppRoute.diagnosticResult,
+      AppRoute.personalPlanAnalyzing,
+      AppRoute.personalPlanReady,
+      AppRoute.examTimeSetup,
+      AppRoute.levelsPath,
+      AppRoute.diagnosticQuestion,
+      AppRoute.groupQuestionList,
+      AppRoute.customizeTest,
+      AppRoute.finalTestResult,
+      AppRoute.partTestResult,
+      AppRoute.newStudyTab,
+      AppRoute.newPracticeTab,
+      AppRoute.newTestTab,
+      AppRoute.newStatisticTab,
+      AppRoute.practiceTestGrid,
+      AppRoute.proPurchaseScreen,
+      AppRoute.settingsScreen,
     ];
   }
 }

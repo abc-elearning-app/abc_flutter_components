@@ -1,26 +1,36 @@
 import 'package:example/screens/animations_screen/animations_screen.dart';
-import 'package:example/screens/app_bars_screen/app_bars_screen.dart';
 import 'package:example/screens/bottom_nav_bars_screen/bottom_nav_bars_screen.dart';
-import 'package:example/screens/card_items_screen/card_items_screen.dart';
 import 'package:example/screens/check_boxes_screen/check_boxes_screen.dart';
-import 'package:example/screens/dialogs_screen/dialogs_screen.dart';
 import 'package:example/screens/emails_screen/emails_screen.dart';
-import 'package:example/screens/games_screen/games_screen.dart';
 import 'package:example/screens/loadings_screen/loadings_screen.dart';
 import 'package:example/screens/logins_screen/logins_screen.dart';
-import 'package:example/screens/menus_screen/menus_screen.dart';
-import 'package:example/screens/others_screen/others_screen.dart';
-import 'package:example/screens/progress_items_screen/progress_items_screen.dart';
-import 'package:example/screens/ratings_screen/ratings_screen.dart';
-import 'package:example/screens/reviews_screen/reviews_screen.dart';
+import 'package:example/screens/new_components/customize_test.dart';
+import 'package:example/screens/new_components/diagnostic_questions.dart';
+import 'package:example/screens/new_components/diagnostic_result_screen.dart';
+import 'package:example/screens/new_components/exam_time_setup_screen.dart';
+import 'package:example/screens/new_components/final_test_result.dart';
+import 'package:example/screens/new_components/group_questions_list_page.dart';
+import 'package:example/screens/new_components/intro_personal_screens.dart';
+import 'package:example/screens/new_components/levels_path_screen.dart';
+import 'package:example/screens/new_components/login_screen.dart';
+import 'package:example/screens/new_components/new_practice_tab.dart';
+import 'package:example/screens/new_components/new_statistic_tab.dart';
+import 'package:example/screens/new_components/new_study_tab.dart';
+import 'package:example/screens/new_components/new_test_tab.dart';
+import 'package:example/screens/new_components/part_test_result.dart';
+import 'package:example/screens/new_components/personal_plan_analyzing.dart';
+import 'package:example/screens/new_components/personal_plan_chart.dart';
+import 'package:example/screens/new_components/personal_plan_ready.dart';
+import 'package:example/screens/new_components/practice_test_grid.dart';
+import 'package:example/screens/new_components/pro_purchase_screen.dart';
+import 'package:example/screens/settings_screen/setting_screen.dart';
 import 'package:example/screens/sliders_screen/sliders_screen.dart';
-import 'package:example/screens/switches_screen/switches_screen.dart';
+import 'package:example/screens/streak_screen/streak_screen.dart';
 import 'package:example/screens/tab_views_screen/tab_views_screen.dart';
 import 'package:example/screens/texts_screen/texts_screen.dart';
-import 'package:example/screens/toasters_screen/toasters_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
-import '../screens/bottom_sheets_screen/bottom_sheets_screen.dart';
 import '../screens/buttons_screen/buttons_screen.dart';
 import '../screens/home_screen/home_screen.dart';
 import 'index.dart';
@@ -49,40 +59,15 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: routeName,
         viewToShow: const BottomNavBarsScreen(),
       );
-    case AppRoute.bottomSheets:
-      return _getPageRoute(
-        routeName: routeName,
-        viewToShow: const BottomSheetsScreen(),
-      );
-    case AppRoute.appBars:
-      return _getPageRoute(
-        routeName: routeName,
-        viewToShow: const AppBarsScreen(),
-      );
-    case AppRoute.cardItems:
-      return _getPageRoute(
-        routeName: routeName,
-        viewToShow: const CardItemsScreen(),
-      );
     case AppRoute.checkBoxes:
       return _getPageRoute(
         routeName: routeName,
         viewToShow: const CheckBoxesScreen(),
       );
-    case AppRoute.dialogs:
-      return _getPageRoute(
-        routeName: routeName,
-        viewToShow: const DialogsScreen(),
-      );
     case AppRoute.emails:
       return _getPageRoute(
         routeName: routeName,
         viewToShow: const EmailsScreen(),
-      );
-    case AppRoute.games:
-      return _getPageRoute(
-        routeName: routeName,
-        viewToShow: const GamesScreen(),
       );
     case AppRoute.loadings:
       return _getPageRoute(
@@ -94,35 +79,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: routeName,
         viewToShow: const LoginsScreen(),
       );
-    case AppRoute.menus:
-      return _getPageRoute(
-        routeName: routeName,
-        viewToShow: const MenusScreen(),
-      );
-    case AppRoute.progressItems:
-      return _getPageRoute(
-        routeName: routeName,
-        viewToShow: const ProgressItemsScreen(),
-      );
-    case AppRoute.ratings:
-      return _getPageRoute(
-        routeName: routeName,
-        viewToShow: const RatingScreen(),
-      );
-    case AppRoute.reviews:
-      return _getPageRoute(
-        routeName: routeName,
-        viewToShow: const ReviewsScreen(),
-      );
     case AppRoute.sliders:
       return _getPageRoute(
         routeName: routeName,
         viewToShow: const SlidersScreen(),
-      );
-    case AppRoute.switches:
-      return _getPageRoute(
-        routeName: routeName,
-        viewToShow: const SwitchesScreen(),
       );
     case AppRoute.tabViews:
       return _getPageRoute(
@@ -134,16 +94,105 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         routeName: routeName,
         viewToShow: const TextsScreen(),
       );
-    case AppRoute.toasters:
+
+    // New components
+    case AppRoute.newLogin:
       return _getPageRoute(
         routeName: routeName,
-        viewToShow: const ToastersScreen(),
+        viewToShow: const TestLoginScreen(),
       );
-    case AppRoute.others:
+
+    case AppRoute.introPersonalPlan:
       return _getPageRoute(
         routeName: routeName,
-        viewToShow: const OthersScreen(),
+        viewToShow: const TestIntroPersonalPlanScreen(),
       );
+
+    case AppRoute.diagnosticResult:
+      return _getPageRoute(
+        routeName: routeName,
+        viewToShow: const TestDiagnosticScreen(),
+      );
+
+    case AppRoute.personalPlanAnalyzing:
+      return _getPageRoute(
+        routeName: routeName,
+        viewToShow: const TestAnalyzingScreen(),
+      );
+
+    case AppRoute.personalPlanReady:
+      return _getPageRoute(
+        routeName: routeName,
+        viewToShow: const TestPersonalPlanReadyScreen(),
+      );
+
+    case AppRoute.examTimeSetup:
+      return _getPageRoute(
+        routeName: routeName,
+        viewToShow: const TestExamSetupTime(),
+      );
+    case AppRoute.newStudyTab:
+      return _getPageRoute(
+        routeName: routeName,
+        viewToShow: const TestNewStudyTabScreen(),
+      );
+    case AppRoute.levelsPath:
+      return _getPageRoute(
+        routeName: routeName,
+        viewToShow: const TestLevelsPathScreen(),
+      );
+    case AppRoute.diagnosticQuestion:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestDiagnosticQuestionsPage());
+    case AppRoute.newPracticeTab:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestNewPracticeTab());
+    case AppRoute.groupQuestionList:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestGroupQuestionList());
+    case AppRoute.customizeTest:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestCustomizeTest());
+    case AppRoute.finalTestResult:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestFinalTestResult());
+    case AppRoute.partTestResult:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestPartTestResult());
+    case AppRoute.newTestTab:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestNewTestTab());
+    case AppRoute.practiceTestGrid:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestPracticeTestGrid());
+    case AppRoute.proPurchaseScreen:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestProPurchaseScreen());
+    case AppRoute.newStatisticTab:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestNewStatisticTab());
+    case AppRoute.personalPlanChart:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestPersonalPlanChart());
+    case AppRoute.settingsScreen:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestSettingScreen());
+    case AppRoute.streakScreen:
+      return _getPageRoute(
+          routeName: routeName,
+          viewToShow: const TestStreakScreen());
     default:
       return MaterialPageRoute(
         builder: (_) => Scaffold(

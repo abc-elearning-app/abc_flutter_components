@@ -1,3 +1,3 @@
 [submodule "lib/models"]
 	path = lib/models
-	url = https://github.com/abc-elearning-app/models.git
+	url = git@github.com:abc-elearning-app/models.git

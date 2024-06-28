@@ -63,6 +63,19 @@ class _RatingStrings {
 
   final yes = "Yes";
   final notReally = "Not Really";
+
+  // Report categories
+  final reportCategoryError = 'An error occurred';
+  final reportCategoryProcessingError = 'An error occurred while processing your request';
+  final reportCategoryObstacle = 'What obstacle hinder you from using this app ?';
+  final reportCategoryRepetitive = 'Repetitive questions';
+  final reportCategoryNotTrack = 'The app does not track my answers';
+  final reportCategoryOther = 'Other';
+
+  final feedback = 'Feedback';
+  final enterFeedback = 'Enter a feedback';
+  final selectAtLeast1 = 'Please select at least 1 category';
+  final feedbackSent = 'Your feedback has been sent';
 }
 
 class _ReportMistakeStrings {
