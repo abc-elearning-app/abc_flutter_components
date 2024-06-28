@@ -9,7 +9,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_svg: ^1.1.6
   fluttertoast: ^8.2.2
   percent_indicator: ^4.2.3
   cupertino_icons: ^1.0.5
@@ -21,6 +20,7 @@ dependencies:
   carousel_slider: ^4.2.1
   lottie: ^3.1.2
   cached_network_image: ^3.3.1
+  flutter_svg: ^2.0.10+1
   simple_gesture_detector: ^0.2.0
 
 dev_dependencies:
