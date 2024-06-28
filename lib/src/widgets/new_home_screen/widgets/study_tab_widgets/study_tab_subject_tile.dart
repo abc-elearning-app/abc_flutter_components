@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/study_tab_widgets/home_icon.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class StudyTabSubjectTile extends StatelessWidget {
@@ -47,11 +47,7 @@ class StudyTabSubjectTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 color: tileSecondaryColor,
               ),
-              child: SvgPicture.asset(
-                subjectData.icon,
-                width: 40,
-                colorFilter: ColorFilter.mode(tileColor, BlendMode.srcIn),
-              ),
+              child: HomeIcon(icon: subjectData.icon, tileColor: tileColor)
             ),
             Expanded(
               child: Padding(

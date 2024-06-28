@@ -44,7 +44,7 @@ class TestNewTestTab extends StatelessWidget {
         onTryAgainDiagnosticTab: () => print('try again'),
         onSeeAll: () => print('see all'),
         onClickFinalTest: () => print('final test'),
-        onSeeAllPracticeTests: () => print('see all practice test'),
+        // onSeeAllPracticeTests: () => print('see all practice test'),
         onSelectPracticeTest: (index) => print('Practice test $index'),
       ),
     );
