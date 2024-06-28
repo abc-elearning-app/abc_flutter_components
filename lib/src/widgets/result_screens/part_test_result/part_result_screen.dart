@@ -116,7 +116,7 @@ class _PartResultScreenState extends State<PartResultScreen>
                       ),
 
                       // Image
-                      ImageWidget(icon: widget.passImage, height: 300),
+                      IconWidget(icon: widget.passImage, height: 300),
 
                       CircularProgressBox(
                           isDarkMode: widget.isDarkMode,

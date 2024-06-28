@@ -66,7 +66,7 @@ class NewPracticeTab extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: questionGroupData.iconBackgroundColor,
                       borderRadius: BorderRadius.circular(16)),
-                  child: ImageWidget(icon: questionGroupData.icon)),
+                  child: IconWidget(icon: questionGroupData.icon)),
               const SizedBox(width: 15),
               Expanded(
                 child: Column(

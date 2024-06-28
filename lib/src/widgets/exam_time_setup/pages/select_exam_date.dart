@@ -61,7 +61,7 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
             // Image
             Padding(
                 padding: const EdgeInsets.only(bottom: 40),
-                child: ImageWidget(
+                child: IconWidget(
                     icon: widget.image,
                     height: 300)),
 

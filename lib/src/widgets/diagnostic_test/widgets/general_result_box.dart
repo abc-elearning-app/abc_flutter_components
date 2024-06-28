@@ -139,7 +139,7 @@ class GeneralResultBox extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ImageWidget(icon: circleProgressImage, height: 80),
+                  IconWidget(icon: circleProgressImage, height: 80),
                   Text(
                     'Your result is',
                     style: TextStyle(color: _getLevelColor(levelType)),
@@ -192,7 +192,7 @@ class GeneralResultBox extends StatelessWidget {
             child: CircleAvatar(
                 radius: 35,
                 backgroundColor: _getLevelBackgroundColor(type),
-                child: ImageWidget(icon: image, height: 50)),
+                child: IconWidget(icon: image, height: 50)),
           ),
           Opacity(
             opacity: isUnlocked ? 1 : 0.8,

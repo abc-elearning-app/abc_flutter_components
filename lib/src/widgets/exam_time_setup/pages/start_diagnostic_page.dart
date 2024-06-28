@@ -36,7 +36,7 @@ class StartDiagnosticPage extends StatelessWidget {
         // Image
         Padding(
             padding: const EdgeInsets.symmetric(vertical: 40),
-            child: ImageWidget(icon: image, height: 300)),
+            child: IconWidget(icon: image, height: 300)),
 
         // Subtitle
         Expanded(

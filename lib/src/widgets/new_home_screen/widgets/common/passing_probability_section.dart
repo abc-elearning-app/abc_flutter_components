@@ -45,7 +45,7 @@ class PassingProbabilitySection extends StatelessWidget {
                     width: 4,
                     color: isDarkMode ? darkModeMainColor : mainColor,
                   )),
-              child: ImageWidget(icon: streakIcon)),
+              child: IconWidget(icon: streakIcon)),
           Transform.translate(
             offset: const Offset(0, 10),
             child: Container(

@@ -243,7 +243,7 @@ class _SettingScreenState extends State<SettingScreen> {
           Padding(
               padding: const EdgeInsets.only(right: 10),
               child: IconButton(
-                icon: ImageWidget(
+                icon: IconWidget(
                   icon: widget.avatar,
                   height: 40,
                 ),

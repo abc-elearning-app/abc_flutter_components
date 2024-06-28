@@ -178,7 +178,7 @@ class FinalTestResult extends StatelessWidget {
             offset: Offset(0, isFirstTime ? 20 : 0),
             child: Transform.scale(
               scale: isFirstTime ? 1.2 : 1,
-              child: ImageWidget(
+              child: IconWidget(
                 icon: _getImagePath(),
                 height: isFirstTime ? 250 : 180,
               ),

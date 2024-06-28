@@ -63,7 +63,7 @@ class DiagnosticTestBox extends StatelessWidget {
                   children: [
                     Padding(
                         padding: const EdgeInsets.only(left: 5, right: 20),
-                        child: ImageWidget(icon: icon, height: 70)),
+                        child: IconWidget(icon: icon, height: 70)),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

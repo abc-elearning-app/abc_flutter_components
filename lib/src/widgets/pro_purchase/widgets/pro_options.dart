@@ -200,7 +200,7 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
           )),
         ),
         selectedOption == index
-            ? ImageWidget(icon: widget.proOptionIcon, height: 25)
+            ? IconWidget(icon: widget.proOptionIcon, height: 25)
             : const SizedBox.shrink()
       ]);
 

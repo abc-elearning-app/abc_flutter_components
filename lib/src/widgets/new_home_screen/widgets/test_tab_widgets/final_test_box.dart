@@ -68,7 +68,7 @@ class FinalTestBox extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 5, right: 20),
-                      child: ImageWidget(icon: icon, height: 80),
+                      child: IconWidget(icon: icon, height: 80),
                     ),
                     const Expanded(
                       child: Column(
