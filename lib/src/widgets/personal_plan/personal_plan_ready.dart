@@ -141,7 +141,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                           // Image
                           Transform.translate(
                               offset: const Offset(0, 50),
-                              child: ImageWidget(icon: sideImage, height: 200))
+                              child: IconWidget(icon: sideImage, height: 200))
                         ],
                       ),
                     )

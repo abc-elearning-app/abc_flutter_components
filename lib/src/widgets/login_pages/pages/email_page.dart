@@ -25,7 +25,7 @@ class EmailPage extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-            flex: 2, child: ImageWidget(icon: image)),
+            flex: 2, child: IconWidget(icon: image)),
 
         // Detail text
         Expanded(

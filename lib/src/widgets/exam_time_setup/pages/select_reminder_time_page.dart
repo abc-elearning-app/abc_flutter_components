@@ -42,7 +42,7 @@ class SelectReminderTimePage extends StatelessWidget {
           // Image
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 30),
-            child: ImageWidget(icon: image, height: 300),
+            child: IconWidget(icon: image, height: 300),
           ),
           Expanded(
               child: Transform.scale(

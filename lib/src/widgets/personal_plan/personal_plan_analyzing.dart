@@ -210,7 +210,7 @@ class _PersonalPlanAnalyzingScreenState
                       // Image icon
                       ValueListenableBuilder(
                           valueListenable: _progressValue,
-                          builder: (_, value, __) => ImageWidget(
+                          builder: (_, value, __) => IconWidget(
                                 icon: _getImagePath(value),
                                 height: 150,
                               )),

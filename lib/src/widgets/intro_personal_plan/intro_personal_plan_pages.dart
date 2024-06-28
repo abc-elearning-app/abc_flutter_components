@@ -117,7 +117,7 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
           // Upper part
           Expanded(
             flex: 9,
-            child: ImageWidget(
+            child: IconWidget(
               icon: widget.tabList[index].image,
               width: 300,
             ),

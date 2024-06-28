@@ -40,7 +40,7 @@ class OtpPage extends StatelessWidget {
         const SizedBox(height: 30),
         Expanded(flex: 2, child: Padding(
           padding: const EdgeInsets.all(20),
-          child: ImageWidget(icon: image),
+          child: IconWidget(icon: image),
         )),
         Expanded(
           flex: 1,

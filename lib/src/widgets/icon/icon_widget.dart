@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 
-class ImageWidget extends StatelessWidget {
+class IconWidget extends StatelessWidget {
   final String icon;
   final double? height;
   final double? width;
   final Color? color;
 
-  const ImageWidget({
+  const IconWidget({
     super.key,
     required this.icon,
     this.height,
@@ -19,7 +19,7 @@ class ImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (icon.endsWith('png')) {
+    if (icon.endsWith('png') || icon.endsWith('jpg') || icon.endsWith('jpeg')) {
       return Image.asset(icon, width: width, height: height, color: color);
     } else if (icon.endsWith('svg')) {
       return SvgPicture.asset(icon, width: width, height: height, color: color);
