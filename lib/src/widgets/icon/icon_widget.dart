@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -21,19 +22,28 @@ class IconWidget extends StatelessWidget {
       return Image.asset(icon, width: width, height: height, color: color);
     } else if (icon.endsWith('svg')) {
       return SvgPicture.asset(icon,
-          width: width,
-          height: height,
-          colorFilter:
-              color != null ? ColorFilter.mode(color!, BlendMode.srcIn) : null);
-    } else if (icon.contains('http')) {
-      return Image.network(icon, width: width, height: height, color: color);
-    } else {
-      return Image.asset(
-        'assets/images/bookmarked.svg',
         width: width,
         height: height,
-        color: color,
+        color: color!
       );
+    } else if (icon.startsWith('http')) {
+      return CachedNetworkImage(
+        imageUrl: icon, 
+        width: width, 
+        height: height, 
+        color: color,
+        errorWidget: (context, url, error) => _makeIconDefault(),
+      );
+    } else {
+      return _makeIconDefault();
     }
+  }
+
+  Widget _makeIconDefault() {
+    return Icon(
+      Icons.folder,
+      size: width,
+      color: color,
+    );
   }
 }
