@@ -1,8 +1,4 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -262,10 +258,7 @@ class _LevelWidgetState extends State<LevelWidget>
               child: SvgPicture.asset(
                 widget.levelData.icon,
                 height: outerRadius,
-                colorFilter: ColorFilter.mode(
-                  _getIconColor(),
-                  BlendMode.srcIn,
-                ),
+                color: _getIconColor(),
               ),
             ),
           ),
@@ -293,10 +286,7 @@ class _LevelWidgetState extends State<LevelWidget>
                 child: SvgPicture.asset(
                   widget.levelData.icon,
                   height: outerRadius,
-                  colorFilter: ColorFilter.mode(
-                    _getIconColor(),
-                    BlendMode.srcIn,
-                  ),
+                  color: _getIconColor(),
                 ),
               ),
             ),

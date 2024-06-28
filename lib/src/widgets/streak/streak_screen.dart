@@ -5,7 +5,6 @@ import 'package:flutter_abc_jsc_components/src/widgets/streak/widgets/challenge_
 import 'package:flutter_abc_jsc_components/src/widgets/streak/widgets/general_section.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/streak/widgets/popup.dart';
 import 'package:gif/gif.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 class StreakScreen extends StatefulWidget {
   final bool isStarted;

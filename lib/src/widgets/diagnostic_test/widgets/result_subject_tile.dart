@@ -56,7 +56,8 @@ class ResultSubjectTile extends StatelessWidget {
                 ),
                 child: SvgPicture.asset(
                   icon,
-                  colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                  color: color,
+                  colorBlendMode: BlendMode.srcIn,
                 ),
               ),
 
@@ -105,7 +106,7 @@ class ResultSubjectTile extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 _getLevelIcon(),
-                colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                color: color,
                 width: 20,
                 height: 20,
               ),

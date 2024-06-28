@@ -9,7 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_svg: ^2.0.7
+  flutter_svg: ^1.1.6
   fluttertoast: ^8.2.2
   percent_indicator: ^4.2.3
   cupertino_icons: ^1.0.5
@@ -18,11 +18,6 @@ dependencies:
   syncfusion_flutter_charts: ^25.2.4
   gif: ^2.3.0
   stroke_text: ^0.0.3
-
-  table_calendar:
-    git:
-      url: https://github.com/tienanh306201z/table_calendar.git
-      ref: new_version
   carousel_slider: ^4.2.1
   lottie: ^3.1.2
 
