@@ -80,3 +80,4 @@ export 'settings/settings_screen.dart';
 export 'streak/streak_screen.dart';
 export 'popup/report_mistake_popup.dart';
 export 'new_home_screen/widgets/statistic_tab_widgets/subject_analysis_box.dart';
+export 'icon/icon_widget.dart';
