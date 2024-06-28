@@ -212,7 +212,7 @@ class CustomizeTest extends StatelessWidget {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) => AppBar(
         centerTitle: true,
-        backgroundColor: Colors.transparent,
+        backgroundColor: isDarkMode ? Colors.black : backgroundColor,
         scrolledUnderElevation: 0,
         leading: IconButton(
           icon: Icon(

@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 class StartDiagnosticPage extends StatelessWidget {
   final String title;
   final String subTitle;
   final String image;
-  final String imageDark;
   final bool isDarkMode;
   final PageController pageController;
 
@@ -14,7 +14,6 @@ class StartDiagnosticPage extends StatelessWidget {
       {super.key,
       required this.title,
       required this.image,
-      required this.imageDark,
       required this.subTitle,
       required this.pageController,
       required this.isDarkMode});
@@ -37,7 +36,7 @@ class StartDiagnosticPage extends StatelessWidget {
         // Image
         Padding(
             padding: const EdgeInsets.symmetric(vertical: 40),
-            child: Image.asset(isDarkMode ? imageDark : image, height: 300)),
+            child: ImageWidget(icon: image, height: 300)),
 
         // Subtitle
         Expanded(

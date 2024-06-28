@@ -21,7 +21,6 @@ class PersonalPlanReadyScreen extends StatelessWidget {
 
   // Image
   final String sideImage;
-  final String sideImageDark;
   final String reminderIcon;
   final String examDateIcon;
   final String questionsIcon;
@@ -40,14 +39,13 @@ class PersonalPlanReadyScreen extends StatelessWidget {
     super.key,
     this.backgroundColor = const Color(0xFFF5F4EE),
     this.mainColor = const Color(0xFFE3A651),
-    this.sideImage = 'assets/images/ready_soldier.png',
-    this.sideImageDark = 'assets/images/ready_soldier_dark.png',
     this.reminderIcon = 'assets/images/ready_reminder.svg',
     this.examDateIcon = 'assets/images/ready_calendar.svg',
     this.questionsIcon = 'assets/images/ready_questions.svg',
     this.passingScoreIcon = 'assets/images/ready_passing_score.svg',
     this.reminderTime,
     this.examDate,
+    required this.sideImage,
     required this.questions,
     required this.passingScore,
     required this.onStartLearning,
@@ -143,9 +141,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                           // Image
                           Transform.translate(
                               offset: const Offset(0, 50),
-                              child: Image.asset(
-                                  isDarkMode ? sideImageDark : sideImage,
-                                  height: 200))
+                              child: ImageWidget(icon: sideImage, height: 200))
                         ],
                       ),
                     )

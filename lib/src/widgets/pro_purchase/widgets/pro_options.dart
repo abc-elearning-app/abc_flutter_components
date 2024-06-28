@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 enum ProOptionTime { week, month, year }
 
@@ -25,6 +26,7 @@ class ProOptions extends StatefulWidget {
   final Color mainColor;
   final Color secondaryColor;
   final bool isDarkMode;
+  final String proOptionIcon;
 
   final void Function(int index) onSelect;
 
@@ -34,7 +36,8 @@ class ProOptions extends StatefulWidget {
       required this.mainColor,
       required this.secondaryColor,
       required this.onSelect,
-      required this.isDarkMode});
+      required this.isDarkMode,
+      required this.proOptionIcon});
 
   @override
   State<ProOptions> createState() => _ProOptionsState();
@@ -80,16 +83,7 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
   Widget _buildOption(ProOptionData data, int index) => ScaleTransition(
         scale: _animations[index],
         child: GestureDetector(
-          onTap: () {
-            setState(() => selectedOption = index);
-            widget.onSelect(index);
-            for (int i = 0; i < 3; i++) {
-              if (i != index) {
-                _animationControllers[i].reverse();
-              }
-            }
-            _animationControllers[index].forward();
-          },
+          onTap: () => _handleSelectOption(index),
           child: Container(
             height: 180,
             margin: const EdgeInsets.symmetric(horizontal: 5),
@@ -206,7 +200,7 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
           )),
         ),
         selectedOption == index
-            ? Image.asset('assets/images/select_pro_option.png')
+            ? ImageWidget(icon: widget.proOptionIcon, height: 25)
             : const SizedBox.shrink()
       ]);
 
@@ -279,5 +273,14 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
     return text[0].toUpperCase() + text.substring(1);
   }
 
-  _handleSelectOption() {}
+  _handleSelectOption(int index) {
+    setState(() => selectedOption = index);
+    widget.onSelect(index);
+    for (int i = 0; i < 3; i++) {
+      if (i != index) {
+        _animationControllers[i].reverse();
+      }
+    }
+    _animationControllers[index].forward();
+  }
 }

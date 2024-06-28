@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class FinalTestBox extends StatelessWidget {
@@ -67,7 +68,7 @@ class FinalTestBox extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 5, right: 20),
-                      child: Image.asset(icon, height: 80),
+                      child: ImageWidget(icon: icon, height: 80),
                     ),
                     const Expanded(
                       child: Column(

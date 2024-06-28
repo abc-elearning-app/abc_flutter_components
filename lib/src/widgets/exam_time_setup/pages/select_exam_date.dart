@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 import '../../custom_datetime_picker/custom_date_picker.dart';
 
 class SelectExamDatePage extends StatefulWidget {
   final String title;
   final String image;
-  final String imageDark;
   final Color mainColor;
   final Color secondaryColor;
   final Color optionBoxFillColor;
@@ -19,7 +19,6 @@ class SelectExamDatePage extends StatefulWidget {
     super.key,
     required this.title,
     required this.image,
-    required this.imageDark,
     required this.pageController,
     required this.mainColor,
     required this.optionBoxFillColor,
@@ -62,8 +61,8 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
             // Image
             Padding(
                 padding: const EdgeInsets.only(bottom: 40),
-                child: Image.asset(
-                    widget.isDarkMode ? widget.imageDark : widget.image,
+                child: ImageWidget(
+                    icon: widget.image,
                     height: 300)),
 
             // Option tile & Exam time picker

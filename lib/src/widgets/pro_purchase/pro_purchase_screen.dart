@@ -12,8 +12,10 @@ class ProPurchase extends StatefulWidget {
   final Color mainColor;
   final Color secondaryColor;
   final Color backgroundColor;
-  final String backgroundImage;
+  final String mainImage;
   final String proBannerBackground;
+  final String proOptionIcon;
+  final String limitedOfferFrame;
 
   final void Function() onRestore;
 
@@ -26,9 +28,11 @@ class ProPurchase extends StatefulWidget {
       this.mainColor = const Color(0xFFEEAF56),
       this.secondaryColor = const Color(0xFF9D8A6B),
       this.backgroundColor = const Color(0xFFF5F4EE),
-      this.backgroundImage = 'assets/images/pro_background.png',
-      this.proBannerBackground = 'assets/images/pro_banner_background.png',
-      required this.isDarkMode});
+      required this.mainImage,
+      required this.proBannerBackground,
+      required this.isDarkMode,
+      required this.proOptionIcon,
+      required this.limitedOfferFrame});
 
   @override
   State<ProPurchase> createState() => _ProPurchaseState();
@@ -77,7 +81,8 @@ class _ProPurchaseState extends State<ProPurchase> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TopBanner(
-                      background: widget.backgroundImage,
+                      isDarkMode: widget.isDarkMode,
+                      background: widget.mainImage,
                       onRestore: widget.onRestore,
                     ),
                     _buildTitle(),
@@ -87,6 +92,7 @@ class _ProPurchaseState extends State<ProPurchase> {
                       mainColor: widget.mainColor,
                       secondaryColor: widget.secondaryColor,
                       proOptions: widget.proOptions,
+                      proOptionIcon: widget.proOptionIcon,
                       onSelect: (index) {
                         final selectedOption = widget.proOptions[index];
                         _proBannerData.value = ProBannerData(
@@ -106,6 +112,7 @@ class _ProPurchaseState extends State<ProPurchase> {
             builder: (_, value, __) => value.percentSaved != 0
                 ? ProBanner(
                     background: widget.proBannerBackground,
+                    limitedOfferFrame: widget.limitedOfferFrame,
                     textColor: Colors.white,
                     data: value,
                   )

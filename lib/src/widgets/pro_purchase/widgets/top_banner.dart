@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 class TopBanner extends StatelessWidget {
   final String background;
   final void Function() onRestore;
+  final bool isDarkMode;
 
   const TopBanner({
     super.key,
     required this.background,
     required this.onRestore,
+    required this.isDarkMode,
   });
 
   @override
@@ -21,23 +23,26 @@ class TopBanner extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 15),
           decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(background),
-                fit: BoxFit.fill,
-              )),
+            image: AssetImage(background),
+            fit: BoxFit.fill,
+          )),
           child: Align(
             alignment: Alignment.topCenter,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                    icon: const Icon(Icons.close),
+                    icon: Icon(
+                      Icons.close,
+                      color: isDarkMode ? Colors.white : Colors.black,
+                    ),
                     onPressed: () => Navigator.of(context).pop()),
                 TextButton(
                     onPressed: onRestore,
-                    child: const Text('Restore',
+                    child: Text('Restore',
                         style: TextStyle(
                           fontSize: 18,
-                          color: Colors.black,
+                          color: isDarkMode ? Colors.white : Colors.black,
                         )))
               ],
             ),

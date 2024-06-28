@@ -20,12 +20,14 @@ class ProBanner extends StatefulWidget {
   final String background;
   final Color textColor;
   final ProBannerData data;
+  final String limitedOfferFrame;
 
   const ProBanner(
       {super.key,
       required this.background,
       required this.textColor,
-      required this.data});
+      required this.data,
+      required this.limitedOfferFrame});
 
   @override
   State<ProBanner> createState() => _ProBannerState();
@@ -85,10 +87,9 @@ class _ProBannerState extends State<ProBanner> {
           // Limited offer
           Container(
             width: 100,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
                 image: DecorationImage(
-                    image:
-                        AssetImage('assets/images/limited_offer.png'))),
+                    image: AssetImage(widget.limitedOfferFrame))),
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: ValueListenableBuilder(
               valueListenable: _time,

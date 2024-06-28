@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CurvedNavigationBar extends StatefulWidget {
-  final List<String> icons;
-  final List<String> selectedIcons;
+  final List<Widget> icons;
+  final List<Widget> selectedIcons;
   final List<String> titles;
   final int index;
   final Color color;
@@ -27,7 +27,8 @@ class CurvedNavigationBar extends StatefulWidget {
     this.buttonBackgroundColor,
     this.animationCurve = Curves.linear,
     this.animationDuration = const Duration(milliseconds: 600),
-    this.height = 75.0, required this.isDarkMode,
+    this.height = 75.0,
+    required this.isDarkMode,
   })  : assert(icons.isNotEmpty),
         assert(0 <= index && index < icons.length),
         assert(0 <= height && height <= 75.0);
@@ -42,7 +43,7 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
   int _endingIndex = 0;
   late double _pos;
   double _buttonHide = 0;
-  late String _icon;
+  late Widget _icon;
   late AnimationController _animationController;
   late int _length;
   int _currentPageIndex = 0;
@@ -91,15 +92,12 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
             color: widget.isDarkMode ? Colors.black : Colors.white,
             blurRadius: 10,
-            spreadRadius: 20
-          )
-        ]
-      ),
+            spreadRadius: 20)
+      ]),
       height: widget.height + 48,
       child: Stack(
         fit: StackFit.expand,
@@ -135,10 +133,7 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
                                 spreadRadius: 1,
                                 blurRadius: 20)
                           ]),
-                      child: SvgPicture.asset(
-                        _icon,
-                        height: 30,
-                      )),
+                      child: _icon),
                 ),
               ),
             ),
@@ -170,11 +165,7 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
                     position: _pos,
                     length: _length,
                     index: widget.icons.indexOf(item),
-                    child: Center(
-                        child: SvgPicture.asset(
-                      item,
-                      height: 30,
-                    )),
+                    child: Center(child: item),
                   );
                 }).toList())),
           ),

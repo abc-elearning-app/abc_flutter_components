@@ -17,11 +17,8 @@ class FinalTestResult extends StatelessWidget {
   final List<ProgressTileData> progressList;
 
   final String doneImage;
-  final String doneImageDark;
   final String failImage;
-  final String failImageDark;
   final String reviseImage;
-  final String reviseImageDark;
 
   final Color correctColor;
   final Color incorrectColor;
@@ -67,12 +64,9 @@ class FinalTestResult extends StatelessWidget {
     required this.onContinue,
     required this.onImproveSubject,
     required this.isDarkMode,
-    this.doneImage = 'assets/images/final_test_done.json',
-    this.doneImageDark = 'assets/images/final_test_done_dark.json',
-    this.failImage = 'assets/images/final_test_dail.json',
-    this.failImageDark = 'assets/images/final_test_fail_dark.json',
-    this.reviseImage = 'assets/images/final_test_revise.json',
-    this.reviseImageDark = 'assets/images/final_test_revise_dark.json',
+    required this.doneImage,
+    required this.failImage,
+    required this.reviseImage,
     this.passPercent = 80,
   });
 
@@ -81,7 +75,7 @@ class FinalTestResult extends StatelessWidget {
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : backgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: isDarkMode ? Colors.black : backgroundColor,
         scrolledUnderElevation: 0,
         leading: IconButton(
           icon: Icon(
@@ -184,8 +178,8 @@ class FinalTestResult extends StatelessWidget {
             offset: Offset(0, isFirstTime ? 20 : 0),
             child: Transform.scale(
               scale: isFirstTime ? 1.2 : 1,
-              child: Lottie.asset(
-                _getImagePath(),
+              child: ImageWidget(
+                icon: _getImagePath(),
                 height: isFirstTime ? 250 : 180,
               ),
             )),
@@ -215,23 +209,14 @@ class FinalTestResult extends StatelessWidget {
       );
 
   _getImagePath() {
-    String path = 'assets/images/';
     if (isFirstTime) {
       if (progress >= 80) {
-        path += 'final_test_done';
+        return doneImage;
       } else {
-        path += 'final_test_fail';
+        return failImage;
       }
     } else {
-      path += 'final_test_revise';
+      return reviseImage;
     }
-
-    if (isDarkMode) {
-      path += '_dark.json';
-    } else {
-      path += '.json';
-    }
-
-    return path;
   }
 }

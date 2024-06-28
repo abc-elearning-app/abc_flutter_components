@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 
 class TodayQuestionButton extends StatelessWidget {
   final String buttonBackground;
+  final Color mainColor;
   final void Function() onClickDailyChallenge;
 
   const TodayQuestionButton({
     super.key,
     required this.buttonBackground,
     required this.onClickDailyChallenge,
+    required this.mainColor,
   });
 
   @override
@@ -15,6 +17,7 @@ class TodayQuestionButton extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(top: 30, bottom: 20),
       decoration: BoxDecoration(
+          color: mainColor,
           borderRadius: BorderRadius.circular(16),
           image: DecorationImage(
               image: AssetImage(buttonBackground), fit: BoxFit.cover)),
