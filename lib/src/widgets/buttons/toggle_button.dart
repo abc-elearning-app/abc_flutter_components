@@ -48,7 +48,7 @@ class _ToggleButtonState extends State<ToggleButton> {
               : SvgPicture.asset(
                   widget.unselectedIcon,
                   height: widget.iconSize,
-                  color: widget.color,
+                  colorFilter: ColorFilter.mode(widget.color, BlendMode.srcIn),
                 ),
         ));
   }

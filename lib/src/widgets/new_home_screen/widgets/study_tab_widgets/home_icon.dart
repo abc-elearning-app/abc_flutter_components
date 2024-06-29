@@ -12,7 +12,7 @@ class HomeIcon extends StatelessWidget {
       return SvgPicture.asset(
         icon,
         width: 40,
-        color: tileColor,
+        colorFilter: ColorFilter.mode(tileColor, BlendMode.srcIn),
       );
     }
     return Image.asset(

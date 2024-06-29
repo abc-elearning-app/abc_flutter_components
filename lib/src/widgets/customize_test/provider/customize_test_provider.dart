@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/customize_test/widgets/slider_tile.dart';
 
 class CustomizeTestProvider extends ChangeNotifier {
-  int selectedModeIndex = 0;
+  int selectedModeValue = 0;
   int selectedQuestions = 20;
   int selectedDuration = 20;
   int selectedPassingScore = 80;
@@ -10,13 +11,14 @@ class CustomizeTestProvider extends ChangeNotifier {
 
   bool allSubjectSelected = false;
 
-  void init(int subjectLength) {
+  void init(int subjectLength, List<ModeData> modes) {
     // Initialize a boolean list for selecting subjects
     subjectSelection.addAll(List.generate(subjectLength, (_) => false));
+    selectedModeValue = modes.first.id;
   }
 
   void selectMode(int index) {
-    selectedModeIndex = index;
+    selectedModeValue = index;
     notifyListeners();
   }
 

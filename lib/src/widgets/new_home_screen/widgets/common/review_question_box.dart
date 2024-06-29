@@ -209,7 +209,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
           SvgPicture.asset(
             icon,
             width: 12,
-            color: isCorrect == null ? widget.isDarkMode ? Colors.white : Colors.black : null,
+            colorFilter: isCorrect == null ? ColorFilter.mode(widget.isDarkMode ? Colors.white : Colors.black, BlendMode.srcIn) : null
           ),
           const SizedBox(width: 15),
           Text(

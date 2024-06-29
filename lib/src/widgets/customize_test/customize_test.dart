@@ -84,7 +84,7 @@ class CustomizeTest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<CustomizeTestProvider>().init(subjects.length);
+    context.read<CustomizeTestProvider>().init(subjects.length, modes);
     return Scaffold(
       appBar: _buildAppBar(context),
       backgroundColor: isDarkMode ? Colors.black : backgroundColor,
@@ -286,7 +286,7 @@ class CustomizeTest extends StatelessWidget {
         title: 'Start',
         backgroundColor: const Color(0xFFE3A651),
         onPressed: () => onStart(
-          provider.selectedModeIndex,
+          provider.selectedModeValue,
           provider.selectedQuestions,
           provider.selectedDuration,
           provider.selectedPassingScore,

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/customize_test/provider/customize_test_provider.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/icons/icon_box.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class CustomizeSubjectData {
@@ -60,13 +58,17 @@ class SubjectsBox extends StatelessWidget {
         child: Row(
           children: [
             // Icon
-            IconBox(
-              iconColor: Colors.white,
-              backgroundColor: secondaryColor,
-              icon: subjectData.icon,
+            Container(
+              width: 30,
+              height: 30,
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                  color: secondaryColor,
+                  borderRadius: BorderRadius.circular(8)
+                ),
+              child: IconWidget(icon: subjectData.icon, color: Colors.white, width: 24),
             ),
             const SizedBox(width: 15),
-
             // Title
             Expanded(
               child: Text(subjectData.title,
