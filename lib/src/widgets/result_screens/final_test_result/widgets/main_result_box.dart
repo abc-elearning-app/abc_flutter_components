@@ -215,9 +215,9 @@ class _MainResultBoxState extends State<MainResultBox> {
           SvgPicture.asset(
             'assets/images/banner_shape.svg',
             height: 50,
-            color: widget.progress >= widget.passPercent
+            colorFilter: ColorFilter.mode(widget.progress >= widget.passPercent
               ? widget.correctColor
-              : Color.lerp(widget.incorrectColor, Colors.white, 0.8)!,
+              : Color.lerp(widget.incorrectColor, Colors.white, 0.8)!, BlendMode.srcIn),
           ),
           Text(
             widget.progress >= widget.passPercent

@@ -4,10 +4,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class ModeData {
+  final int id;
   final String title;
   final String detail;
 
-  ModeData(this.title, this.detail);
+  ModeData(this.id, this.title, this.detail);
 }
 
 class ModeOptions extends StatelessWidget {
@@ -25,13 +26,13 @@ class ModeOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<CustomizeTestProvider, int>(
-      selector: (_, provider) => provider.selectedModeIndex,
+      selector: (_, provider) => provider.selectedModeValue,
       builder: (_, selectedModeIndex, __) => ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: modes.length,
           itemBuilder: (_, index) =>
-              _radioTile(context, modes[index], index, selectedModeIndex)),
+              _radioTile(context, modes[index], modes[index].id, selectedModeIndex)),
     );
   }
 
@@ -59,11 +60,9 @@ class ModeOptions extends StatelessWidget {
                 // Info icon
                 leading: SvgPicture.asset('assets/images/info.svg',
                     height: 20,
-                    color: selectedIndex == modeValue ? Colors.white : Colors.grey,
-                    colorBlendMode: BlendMode.srcIn,
-                    // colorFilter: ColorFilter.mode(
-                    //     selectedIndex == modeValue ? Colors.white : Colors.grey,
-                    //     BlendMode.srcIn)
+                    colorFilter: ColorFilter.mode(
+                        selectedIndex == modeValue ? Colors.white : Colors.grey,
+                        BlendMode.srcIn)
                 ),
                 title: Text(modeData.title,
                     style: TextStyle(
