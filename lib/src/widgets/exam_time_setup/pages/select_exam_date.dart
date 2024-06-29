@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/custom_datetime_picker/custom_unrestrict_date_picker.dart';
 
 import '../../custom_datetime_picker/custom_date_picker.dart';
 
@@ -61,8 +61,8 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
             // Image
             Padding(
                 padding: const EdgeInsets.only(bottom: 40),
-                child: IconWidget(
-                    icon: widget.image,
+                child: Image.asset(
+                    widget.image,
                     height: 300)),
 
             // Option tile & Exam time picker
@@ -77,7 +77,7 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
                     firstChild: _buildOptions(selectedIndex),
                     secondChild: Container(
                       constraints: const BoxConstraints(maxHeight: 200),
-                      child: CustomDatePicker(
+                      child: CustomUnrestrictedDatePicker(
                           onSelectDate: (selectedDate) =>
                               widget.selectedTime['exam_date'] =
                                   selectedDate.toIso8601String()),

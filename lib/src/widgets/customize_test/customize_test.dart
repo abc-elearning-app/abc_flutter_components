@@ -53,7 +53,7 @@ class CustomizeTestWrapper extends StatelessWidget {
   }
 }
 
-class CustomizeTest extends StatelessWidget {
+class CustomizeTest extends StatefulWidget {
   final Color mainColor;
   final Color secondaryColor;
   final Color backgroundColor;
@@ -83,11 +83,26 @@ class CustomizeTest extends StatelessWidget {
       required this.onStart});
 
   @override
+  State<CustomizeTest> createState() => _CustomizeTestState();
+}
+
+class _CustomizeTestState extends State<CustomizeTest> {
+  @override
+  void initState() {
+    if (mounted) {
+      context
+          .read<CustomizeTestProvider>()
+          .init(widget.subjects.length, widget.modes);
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    context.read<CustomizeTestProvider>().init(subjects.length, modes);
     return Scaffold(
       appBar: _buildAppBar(context),
-      backgroundColor: isDarkMode ? Colors.black : backgroundColor,
+      backgroundColor:
+          widget.isDarkMode ? Colors.black : widget.backgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -106,13 +121,15 @@ class CustomizeTest extends StatelessWidget {
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 20,
-                              color: isDarkMode ? Colors.white : Colors.black,
+                              color: widget.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black,
                             )),
                       ),
                       ModeOptions(
-                        modes: modes,
-                        mainColor: mainColor,
-                        isDarkMode: isDarkMode,
+                        modes: widget.modes,
+                        mainColor: widget.mainColor,
+                        isDarkMode: widget.isDarkMode,
                       ),
 
                       // Select amount of questions
@@ -122,14 +139,16 @@ class CustomizeTest extends StatelessWidget {
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 20,
-                              color: isDarkMode ? Colors.white : Colors.black,
+                              color: widget.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black,
                             )),
                       ),
                       SliderTile(
                           type: SliderType.question,
-                          mainColor: mainColor,
-                          secondaryColor: secondaryColor,
-                          isDarkMode: isDarkMode,
+                          mainColor: widget.mainColor,
+                          secondaryColor: widget.secondaryColor,
+                          isDarkMode: widget.isDarkMode,
                           minValue: 10,
                           maxValue: 50),
 
@@ -140,14 +159,16 @@ class CustomizeTest extends StatelessWidget {
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 20,
-                              color: isDarkMode ? Colors.white : Colors.black,
+                              color: widget.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black,
                             )),
                       ),
                       SliderTile(
                           type: SliderType.duration,
-                          mainColor: mainColor,
-                          secondaryColor: secondaryColor,
-                          isDarkMode: isDarkMode,
+                          mainColor: widget.mainColor,
+                          secondaryColor: widget.secondaryColor,
+                          isDarkMode: widget.isDarkMode,
                           minValue: 10,
                           maxValue: 100),
 
@@ -162,8 +183,9 @@ class CustomizeTest extends StatelessWidget {
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 20,
-                                  color:
-                                      isDarkMode ? Colors.white : Colors.black,
+                                  color: widget.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
                                 )),
 
                             _buildSelectAllButton(context)
@@ -171,10 +193,10 @@ class CustomizeTest extends StatelessWidget {
                         ),
                       ),
                       SubjectsBox(
-                        subjects: subjects,
-                        mainColor: mainColor,
-                        secondaryColor: secondaryColor,
-                        isDarkMode: isDarkMode,
+                        subjects: widget.subjects,
+                        mainColor: widget.mainColor,
+                        secondaryColor: widget.secondaryColor,
+                        isDarkMode: widget.isDarkMode,
                       ),
 
                       // Select amount of mistakes
@@ -188,14 +210,15 @@ class CustomizeTest extends StatelessWidget {
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 20,
-                                color:
-                                    isDarkMode ? Colors.white : Colors.black)),
+                                color: widget.isDarkMode
+                                    ? Colors.white
+                                    : Colors.black)),
                       ),
                       SliderTile(
                           type: SliderType.passingScore,
-                          mainColor: mainColor,
-                          secondaryColor: secondaryColor,
-                          isDarkMode: isDarkMode,
+                          mainColor: widget.mainColor,
+                          secondaryColor: widget.secondaryColor,
+                          isDarkMode: widget.isDarkMode,
                           minValue: 10,
                           maxValue: 100),
                     ],
@@ -212,20 +235,21 @@ class CustomizeTest extends StatelessWidget {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) => AppBar(
         centerTitle: true,
-        backgroundColor: isDarkMode ? Colors.black : backgroundColor,
+        backgroundColor:
+            widget.isDarkMode ? Colors.black : widget.backgroundColor,
         scrolledUnderElevation: 0,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
-            color: isDarkMode ? Colors.white : Colors.black,
+            color: widget.isDarkMode ? Colors.white : Colors.black,
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: isPro
+        title: widget.isPro
             ? Text('Customize Test',
                 style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    color: isDarkMode ? Colors.white : Colors.black))
+                    color: widget.isDarkMode ? Colors.white : Colors.black))
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -233,14 +257,15 @@ class CustomizeTest extends StatelessWidget {
                       style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 20,
-                          color: isDarkMode ? Colors.white : Colors.black)),
+                          color:
+                              widget.isDarkMode ? Colors.white : Colors.black)),
                   const SizedBox(width: 10),
                   Container(
                     width: 90,
                     height: 30,
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                        color: isDarkMode
+                        color: widget.isDarkMode
                             ? Colors.white.withOpacity(0.24)
                             : Colors.black,
                         borderRadius: BorderRadius.circular(16)),
@@ -256,7 +281,7 @@ class CustomizeTest extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 18,
-                color: isDarkMode ? Colors.white : Colors.black,
+                color: widget.isDarkMode ? Colors.white : Colors.black,
               )),
           const SizedBox(width: 10),
           Selector<CustomizeTestProvider, bool>(
@@ -264,8 +289,8 @@ class CustomizeTest extends StatelessWidget {
             builder: (_, value, __) => Padding(
               padding: const EdgeInsets.only(right: 3),
               child: MyCheckBox(
-                activeColor: mainColor,
-                borderColor: mainColor,
+                activeColor: widget.mainColor,
+                borderColor: widget.mainColor,
                 value: value,
                 onChanged: (value) => context
                     .read<CustomizeTestProvider>()
@@ -285,7 +310,7 @@ class CustomizeTest extends StatelessWidget {
         textStyle: const TextStyle(fontSize: 18),
         title: 'Start',
         backgroundColor: const Color(0xFFE3A651),
-        onPressed: () => onStart(
+        onPressed: () => widget.onStart(
           provider.selectedModeValue,
           provider.selectedQuestions,
           provider.selectedDuration,

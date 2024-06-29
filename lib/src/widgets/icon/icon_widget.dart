@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lottie/lottie.dart';
 
 class IconWidget extends StatelessWidget {
   final String icon;
@@ -23,8 +22,6 @@ class IconWidget extends StatelessWidget {
       return Image.asset(icon, width: width, height: height, color: color);
     } else if (icon.endsWith('svg')) {
       return SvgPicture.asset(icon, width: width, height: height, colorFilter: color == null ? null : ColorFilter.mode(color!, BlendMode.srcIn),);
-    } else if (icon.endsWith('json')) {
-      return Lottie.asset(icon, width: width, height: height);
     } else if (icon.startsWith('http')) {
       return CachedNetworkImage(
         imageUrl: icon,

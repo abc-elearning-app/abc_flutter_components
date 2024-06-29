@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 import '../../custom_datetime_picker/custom_time_picker.dart';
 
@@ -42,7 +40,7 @@ class SelectReminderTimePage extends StatelessWidget {
           // Image
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 30),
-            child: IconWidget(icon: image, height: 300),
+            child: Image.asset(image, height: 300),
           ),
           Expanded(
               child: Transform.scale(

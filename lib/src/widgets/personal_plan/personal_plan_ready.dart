@@ -104,8 +104,8 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                         isDarkMode: isDarkMode,
                         lineSectionHeight: 120,
                         barSectionHeight: 150,
-                        startTime: DateTime(2024, 6, 20),
-                        examDate: examDate ?? DateTime(2024, 6, 30),
+                        startTime: DateTime(2024, 6, 25),
+                        examDate: examDate ?? DateTime(2024, 7, 6),
                         valueList: [30, 40, 30, 35, 35, 45, 40],
                       ),
                     ),
@@ -141,7 +141,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                           // Image
                           Transform.translate(
                               offset: const Offset(0, 50),
-                              child: IconWidget(icon: sideImage, height: 200))
+                              child: Image.asset(sideImage, height: 200))
                         ],
                       ),
                     )

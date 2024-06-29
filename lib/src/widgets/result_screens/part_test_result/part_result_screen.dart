@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/animations/sprinkle_effect.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/part_test_result/widgets/circular_progress_box.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/part_test_result/widgets/linear_progress_box.dart';
@@ -68,6 +70,7 @@ class _PartResultScreenState extends State<PartResultScreen>
       backgroundColor:
           widget.isDarkMode ? Colors.black : widget.backgroundColor,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         backgroundColor:
             widget.isDarkMode ? Colors.black : widget.backgroundColor,
         leading: IconButton(
@@ -116,7 +119,7 @@ class _PartResultScreenState extends State<PartResultScreen>
                       ),
 
                       // Image
-                      IconWidget(icon: widget.passImage, height: 300),
+                      Lottie.asset(widget.passImage, height: 300),
 
                       CircularProgressBox(
                           isDarkMode: widget.isDarkMode,
@@ -147,12 +150,10 @@ class _PartResultScreenState extends State<PartResultScreen>
 
         // Pass effect
         IgnorePointer(
-            child: SprinkleEffect(
-          height: MediaQuery.of(context).size.height / 2,
-          additionalOffsetY: -150,
-          speed: 5,
-          rows: 5,
-        ))
+            child: Transform.translate(
+          offset: const Offset(0, -50),
+          child: const ConfettiEffect(),
+        )),
       ]),
     );
   }
