@@ -61,7 +61,7 @@ export 'levels_path/path_level_screen.dart';
 export 'diagnostic_test/diagnostic_question.dart';
 export 'diagnostic_test/widgets/progress_line.dart';
 export 'new_home_screen/new_practice_tab.dart';
-export 'new_home_screen/widgets/common/review_question_box.dart';
+export 'question/review_question_box.dart';
 export 'new_home_screen/new_test_tab.dart';
 export 'new_home_screen/widgets/test_tab_widgets/practice_test_list.dart';
 export 'customize_test/customize_test.dart';

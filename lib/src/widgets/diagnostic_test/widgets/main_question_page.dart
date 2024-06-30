@@ -1,12 +1,9 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/animations/blur_effect.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/buttons/toggle_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../flutter_abc_jsc_components.dart';
+import '../../animations/blur_effect.dart';
+import '../../question/action_icon.dart';
 
 enum ButtonType { bookmark, like, dislike }
 
@@ -271,39 +268,33 @@ class _MainQuestionPageState extends State<MainQuestionPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ToggleButton(
-                iconSize: 30,
-                color: widget.isDarkMode
-                    ? widget.mainColor
-                    : widget.secondaryColor,
-                unselectedIcon: 'bookmark',
-                selectedIcon: 'bookmarked',
-                isSelected: widget.questionData.bookmarked,
-                onToggle: (isSelected) => widget.onToggleBookmark != null
-                    ? widget.onToggleBookmark!(isSelected)
-                    : null),
-            ToggleButton(
-                iconSize: 30,
-                color: widget.isDarkMode
-                    ? widget.mainColor
-                    : widget.secondaryColor,
-                unselectedIcon: 'like',
-                selectedIcon: 'liked',
-                isSelected: widget.questionData.liked,
-                onToggle: (isSelected) => widget.onToggleLike != null
-                    ? widget.onToggleLike!(isSelected)
-                    : null),
-            ToggleButton(
-                iconSize: 30,
-                color: widget.isDarkMode
-                    ? widget.mainColor
-                    : widget.secondaryColor,
-                unselectedIcon: 'dislike',
-                selectedIcon: 'disliked',
-                isSelected: widget.questionData.disliked,
-                onToggle: (isSelected) => widget.onToggleDislike != null
-                    ? widget.onToggleDislike!(isSelected)
-                    : null),
+            ActionIcon(
+              actionType: ActionType.bookmark,
+              unselectedColor: 'brown',
+              selectedColor: 'orange',
+              isSelected: widget.questionData.bookmarked,
+              onToggle: (isSelected) => widget.onToggleBookmark != null
+                  ? widget.onToggleBookmark!(isSelected)
+                  : null,
+            ),
+            ActionIcon(
+              actionType: ActionType.like,
+              unselectedColor: 'brown',
+              selectedColor: 'orange',
+              isSelected: widget.questionData.liked,
+              onToggle: (isSelected) => widget.onToggleLike != null
+                  ? widget.onToggleLike!(isSelected)
+                  : null,
+            ),
+            ActionIcon(
+              actionType: ActionType.dislike,
+              unselectedColor: 'brown',
+              selectedColor: 'orange',
+              isSelected: widget.questionData.disliked,
+              onToggle: (isSelected) => widget.onToggleDislike != null
+                  ? widget.onToggleDislike!(isSelected)
+                  : null,
+            ),
           ],
         ),
       );
