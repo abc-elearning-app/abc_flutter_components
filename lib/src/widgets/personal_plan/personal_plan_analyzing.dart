@@ -94,8 +94,11 @@ class _PersonalPlanAnalyzingScreenState
       // Repeat when finish
       animController.addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          Future.delayed(const Duration(seconds: 1),
-              () => animController.forward(from: 0));
+          Future.delayed(const Duration(seconds: 1), () {
+            if(mounted) {
+              animController.forward(from: 0);
+            }
+          });
         }
       });
 

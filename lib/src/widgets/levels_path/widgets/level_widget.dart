@@ -69,12 +69,7 @@ class _LevelWidgetState extends State<LevelWidget>
     );
 
     if (widget.drawType == DrawType.nextLevel) {
-      _appearanceController.addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          Future.delayed(const Duration(microseconds: 300),
-              () => _appearanceController.reverse());
-        }
-      });
+      _appearanceController.addStatusListener(reverseListener);
     }
 
     _fadingInAnimation = Tween<double>(begin: 0, end: 1).animate(
@@ -110,11 +105,7 @@ class _LevelWidgetState extends State<LevelWidget>
       duration: const Duration(seconds: 2),
     );
 
-    _splashController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _splashController.forward(from: 0);
-      }
-    });
+    _splashController.addStatusListener(forwardSplashListener);
 
     _tooltipController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
@@ -122,13 +113,28 @@ class _LevelWidgetState extends State<LevelWidget>
     _tooltipAnimation =
         Tween<double>(begin: -30, end: -20).animate(_tooltipController);
 
-    _tooltipController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _tooltipController.reverse();
-      } else if (status == AnimationStatus.dismissed) {
-        _tooltipController.forward();
-      }
-    });
+    _tooltipController.addStatusListener(tooltipListener);
+  }
+
+  void tooltipListener(status) {
+    if (status == AnimationStatus.completed) {
+      _tooltipController.reverse();
+    } else if (status == AnimationStatus.dismissed) {
+      _tooltipController.forward();
+    }
+  }
+
+  void forwardSplashListener(status) {
+    if (status == AnimationStatus.completed) {
+      _splashController.forward(from: 0);
+    }
+  }
+
+  void reverseListener(status) {
+    if (status == AnimationStatus.completed) {
+      Future.delayed(const Duration(microseconds: 300),
+          () => _appearanceController.reverse());
+    }
   }
 
   _startAnimation() {
@@ -136,14 +142,19 @@ class _LevelWidgetState extends State<LevelWidget>
     final delayTime = widget.index * widget.drawSpeed.inMilliseconds;
     switch (widget.drawType) {
       case DrawType.firstTimeOpen:
-        Future.delayed(Duration(milliseconds: delayTime),
-            () => _appearanceController.forward());
+        Future.delayed(Duration(milliseconds: delayTime), () {
+          if(mounted) {
+            _appearanceController.forward();
+          }
+        });
         break;
       case DrawType.nextLevel:
         if (widget.levelData.isCurrent) {
-          Future.delayed(
-              Duration(milliseconds: widget.drawSpeed.inMilliseconds + 900),
-              () => _appearanceController.forward());
+          Future.delayed(Duration(milliseconds: widget.drawSpeed.inMilliseconds + 900), () {
+            if(mounted) {
+              _appearanceController.forward();
+            }
+          });
         }
         break;
       case DrawType.noAnimation:
@@ -152,12 +163,11 @@ class _LevelWidgetState extends State<LevelWidget>
 
     /// Start current level animation
     if (widget.levelData.isCurrent) {
-      Future.delayed(
-          Duration(
-              milliseconds: widget.drawType != DrawType.noAnimation
-                  ? delayTime + 1000
-                  : 0),
-          () => _splashController.forward());
+      Future.delayed(Duration(milliseconds: widget.drawType != DrawType.noAnimation ? delayTime + 1000 : 0), () {
+        if(mounted) {
+          _splashController.forward();
+        }
+      });
     }
 
     // Start tooltip animation
@@ -171,8 +181,11 @@ class _LevelWidgetState extends State<LevelWidget>
 
   @override
   void dispose() {
+    _appearanceController.removeStatusListener(reverseListener);
     _appearanceController.dispose();
+    _splashController.removeStatusListener(forwardSplashListener);
     _splashController.dispose();
+    _tooltipController.removeStatusListener(tooltipListener);
     _tooltipController.dispose();
     super.dispose();
   }

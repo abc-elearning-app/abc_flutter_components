@@ -60,10 +60,6 @@ class NewStudyTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Sort the received list
-    subjectDataList.sort(
-        (subject1, subject2) => subject1.progress < subject2.progress ? 0 : 1);
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
