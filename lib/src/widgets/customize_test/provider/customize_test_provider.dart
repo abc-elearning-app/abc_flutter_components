@@ -9,11 +9,11 @@ class CustomizeTestProvider extends ChangeNotifier {
   int selectedPassingScore = 80;
   List<bool> subjectSelection = [];
 
-  bool allSubjectSelected = false;
+  bool allSubjectSelected = true;
 
   void init(int subjectLength, List<ModeData> modes) {
     // Initialize a boolean list for selecting subjects
-    subjectSelection.addAll(List.generate(subjectLength, (_) => false));
+    subjectSelection.addAll(List.generate(subjectLength, (_) => true));
     selectedModeValue = modes.first.id;
   }
 
