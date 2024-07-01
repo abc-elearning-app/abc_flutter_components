@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../flutter_abc_jsc_components.dart';
 import '../../animations/blur_effect.dart';
-import '../../question/action_icon.dart';
+import '../../questions/action_icon.dart';
 
 enum ButtonType { bookmark, like, dislike }
 

@@ -46,7 +46,8 @@ class TestGrid extends StatelessWidget {
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : backgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: isDarkMode ? Colors.black : backgroundColor,
+        scrolledUnderElevation: 0,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -68,12 +69,12 @@ class TestGrid extends StatelessWidget {
               childAspectRatio: 1.3,
             ),
             itemCount: practiceTests.length,
-            itemBuilder: (_, index) => _buildItem(practiceTests[index])),
+            itemBuilder: (_, index) => _testBox(practiceTests[index])),
       ),
     );
   }
 
-  Widget _buildItem(PracticeTestGridData data) => GestureDetector(
+  Widget _testBox(PracticeTestGridData data) => GestureDetector(
         onTap: () => onSelected(data.id),
         child: Container(
           margin: const EdgeInsets.all(8),
