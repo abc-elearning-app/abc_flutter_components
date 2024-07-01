@@ -45,7 +45,7 @@ class NewStudyTab extends StatelessWidget {
     this.mainColor = const Color(0xFFE3A651),
     this.darkModeMainColor = const Color(0xFFCFAF83),
     this.beginnerColor = const Color(0xFFFC5656),
-    this.intermediateColor = const Color(0xFFFFB443),
+    this.intermediateColor = const Color(0xFFFF9669),
     this.advancedColor = const Color(0xFF2C9CB5),
     this.beginnerBackgroundColor = const Color(0xFFFFDEDE),
     this.intermediateBackgroundColor = const Color(0xFFFFE8DE),
@@ -60,10 +60,6 @@ class NewStudyTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Sort the received list
-    subjectDataList.sort(
-        (subject1, subject2) => subject1.progress < subject2.progress ? 0 : 1);
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(

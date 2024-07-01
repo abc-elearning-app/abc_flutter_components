@@ -155,21 +155,21 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            ActionIcon(
+            ActionButton(
               actionType: ActionType.bookmark,
               unselectedColor: 'brown',
               selectedColor: 'orange',
               isSelected: isBookmarked,
               onToggle: (isSelected) => widget.onBookmarkClick(isSelected),
             ),
-            ActionIcon(
+            ActionButton(
               actionType: ActionType.like,
               unselectedColor: 'brown',
               selectedColor: 'blue',
               isSelected: isLiked,
               onToggle: (isSelected) => widget.onLikeClick(isSelected),
             ),
-            ActionIcon(
+            ActionButton(
               actionType: ActionType.dislike,
               unselectedColor: 'brown',
               selectedColor: 'red',

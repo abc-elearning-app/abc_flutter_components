@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/progress/custom_linear_progress.dart';
 
 import '../../../flutter_abc_jsc_components.dart';
@@ -48,7 +46,7 @@ class PathLevelScreen extends StatefulWidget {
     required this.levelGroupList,
     required this.title,
     required this.onClickLevel,
-    this.backgroundImage = 'assets/images/path_level_background.png',
+    required this.backgroundImage,
     this.finalLevelImage = 'assets/images/final_cup.png',
     this.backgroundColor = const Color(0xFFF5F4EE),
     this.passColor = const Color(0xFF15CB9F),
@@ -130,7 +128,8 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                       color: widget.isDarkMode ? Colors.white : Colors.black,
                     ),
                   ),
-                  backgroundColor: Colors.transparent,
+                  backgroundColor:
+                      widget.isDarkMode ? Colors.black : widget.backgroundColor,
                   scrolledUnderElevation: 0),
               body: SafeArea(
                   child: Column(
@@ -158,7 +157,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                       ),
                       child: CustomLinearProgress(
                           mainColor: widget.mainColor,
-                          percent: percent + 10,
+                          percent: percent < 0 ? 0 : percent,
                           backgroundColor: widget.isDarkMode
                               ? Colors.grey.shade900
                               : widget.lineBackgroundColor,
@@ -192,10 +191,11 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
   Widget _buildGroup(int index) {
     final currentGroup = widget.levelGroupList[index];
     final lastCycleDrawSpeed = Duration(
-        milliseconds: (widget.drawSpeed.inMilliseconds - 100).clamp(100, 1000));
+        milliseconds: (widget.drawSpeed.inMilliseconds - 50).clamp(100, 1000));
     return Column(
       children: [
-        _buildDivider(currentGroup.title, index == 0),
+        // _buildDivider(currentGroup.title, index == 0),
+        const SizedBox(height: 80),
         PathLevel(
             isDarkMode: widget.isDarkMode,
             finalLevelImage: widget.finalLevelImage,

@@ -3,14 +3,79 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 enum ActionType { bookmark, like, dislike }
 
-class ActionIcon extends StatefulWidget {
+class ActionButtons extends StatelessWidget {
+  final bool bookmarked;
+  final bool liked;
+  final bool disliked;
+
+  final String unselectedColor;
+  final String selectedBookmarkColor;
+  final String selectedLikeColor;
+  final String selectedDislikeColor;
+
+  final EdgeInsetsGeometry? margin;
+  final EdgeInsetsGeometry? padding;
+
+  final void Function(bool isSelected) onBookmark;
+  final void Function(bool isSelected) onLike;
+  final void Function(bool isSelected) onDislike;
+
+  const ActionButtons({
+    super.key,
+    required this.bookmarked,
+    required this.liked,
+    required this.disliked,
+    required this.unselectedColor,
+    required this.selectedBookmarkColor,
+    required this.selectedLikeColor,
+    required this.selectedDislikeColor,
+    required this.onBookmark,
+    required this.onLike,
+    required this.onDislike,
+    this.margin,
+    this.padding,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: margin,
+      padding: padding,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ActionButton(
+              unselectedColor: unselectedColor,
+              selectedColor: selectedBookmarkColor,
+              isSelected: bookmarked,
+              onToggle: onBookmark,
+              actionType: ActionType.bookmark),
+          ActionButton(
+              unselectedColor: unselectedColor,
+              selectedColor: selectedBookmarkColor,
+              isSelected: liked,
+              onToggle: onLike,
+              actionType: ActionType.like),
+          ActionButton(
+              unselectedColor: unselectedColor,
+              selectedColor: selectedBookmarkColor,
+              isSelected: disliked,
+              onToggle: onDislike,
+              actionType: ActionType.dislike),
+        ],
+      ),
+    );
+  }
+}
+
+class ActionButton extends StatefulWidget {
   final ActionType actionType;
   final String unselectedColor;
   final String selectedColor;
   final bool isSelected;
   final void Function(bool isSelected) onToggle;
 
-  const ActionIcon({
+  const ActionButton({
     super.key,
     required this.unselectedColor,
     required this.selectedColor,
@@ -20,10 +85,10 @@ class ActionIcon extends StatefulWidget {
   });
 
   @override
-  State<ActionIcon> createState() => _ActionIconState();
+  State<ActionButton> createState() => _ActionButtonState();
 }
 
-class _ActionIconState extends State<ActionIcon> {
+class _ActionButtonState extends State<ActionButton> {
   bool isSelected = false;
 
   @override

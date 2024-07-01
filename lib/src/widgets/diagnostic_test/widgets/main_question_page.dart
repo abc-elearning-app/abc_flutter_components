@@ -268,7 +268,7 @@ class _MainQuestionPageState extends State<MainQuestionPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ActionIcon(
+            ActionButton(
               actionType: ActionType.bookmark,
               unselectedColor: 'brown',
               selectedColor: 'orange',
@@ -277,7 +277,7 @@ class _MainQuestionPageState extends State<MainQuestionPage> {
                   ? widget.onToggleBookmark!(isSelected)
                   : null,
             ),
-            ActionIcon(
+            ActionButton(
               actionType: ActionType.like,
               unselectedColor: 'brown',
               selectedColor: 'orange',
@@ -286,7 +286,7 @@ class _MainQuestionPageState extends State<MainQuestionPage> {
                   ? widget.onToggleLike!(isSelected)
                   : null,
             ),
-            ActionIcon(
+            ActionButton(
               actionType: ActionType.dislike,
               unselectedColor: 'brown',
               selectedColor: 'orange',
