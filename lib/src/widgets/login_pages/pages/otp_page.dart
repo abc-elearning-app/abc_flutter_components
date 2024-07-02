@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:pinput/pinput.dart';
 
 class OtpPage extends StatelessWidget {
@@ -40,7 +39,7 @@ class OtpPage extends StatelessWidget {
         const SizedBox(height: 30),
         Expanded(flex: 2, child: Padding(
           padding: const EdgeInsets.all(20),
-          child: IconWidget(icon: image),
+          child: Image.asset(image),
         )),
         Expanded(
           flex: 1,

@@ -4,10 +4,12 @@ import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/t
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/test_tab_widgets/final_test_box.dart';
 
 class NewTestTab extends StatelessWidget {
-  final List<PracticeTestData> practiceTests;
+  final List<TopicData> topics;
+  final List<TestData> tests;
   final double diagnosticProgress;
   final double finalTestProgress;
   final bool isDarkMode;
+  final bool displayTests;
 
   final Color mainColor;
   final Color secondaryColor;
@@ -20,13 +22,14 @@ class NewTestTab extends StatelessWidget {
   final String finalTestBackground;
 
   final void Function() onTryAgainDiagnosticTab;
-  final void Function(int id) onSelectPracticeTest;
+  final void Function(int id) onSelectItem;
   final void Function() onClickFinalTest;
   final void Function() onSeeAll;
 
   const NewTestTab({
     super.key,
-    required this.practiceTests,
+    this.topics = const [],
+    this.tests = const [],
     required this.isDarkMode,
     this.mainColor = const Color(0xFFF8BB67),
     this.secondaryColor = const Color(0xFF7C6F5B),
@@ -42,8 +45,9 @@ class NewTestTab extends StatelessWidget {
     required this.onClickFinalTest,
     required this.diagnosticProgress,
     required this.finalTestProgress,
-    required this.onSelectPracticeTest,
+    required this.onSelectItem,
     required this.onSeeAll,
+    required this.displayTests,
   });
 
   @override
@@ -92,12 +96,18 @@ class NewTestTab extends StatelessWidget {
             ),
           ),
 
-          PracticeTestList(
-            color: secondaryColor,
-            practiceTests: practiceTests,
-            onSelect: onSelectPracticeTest,
-            isDarkMode: isDarkMode,
-          ),
+          displayTests
+              ? TestList(
+                  practiceTests: tests,
+                  onSelect: onSelectItem,
+                  isDarkMode: isDarkMode,
+                  mainColor: mainColor,
+                  secondaryColor: secondaryColor)
+              : TopicList(
+                  topics: topics,
+                  onSelect: onSelectItem,
+                  isDarkMode: isDarkMode,
+                  color: secondaryColor),
 
           Padding(
             padding: const EdgeInsets.only(left: 15, top: 10),

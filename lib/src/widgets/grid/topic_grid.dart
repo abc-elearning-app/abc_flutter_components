@@ -10,7 +10,7 @@ class TopicGrid extends StatelessWidget {
   final Color secondaryColor;
   final Color backgroundColor;
 
-  final List<PracticeTestData> topicList;
+  final List<TopicData> topicList;
 
   final void Function(int id) onSelect;
 
@@ -57,7 +57,7 @@ class TopicGrid extends StatelessWidget {
     );
   }
 
-  Widget _topicBox(PracticeTestData data) => GestureDetector(
+  Widget _topicBox(TopicData data) => GestureDetector(
         onTap: () => onSelect(data.id),
         child: Container(
           margin: const EdgeInsets.all(5),

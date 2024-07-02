@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/buttons/toggle_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ReviewQuestionBox extends StatefulWidget {
@@ -12,9 +11,6 @@ class ReviewQuestionBox extends StatefulWidget {
   final Color mainColor;
   final Color secondaryColor;
   final Color explanationColor;
-  final String correctIcon;
-  final String incorrectIcon;
-  final String unselectedIcon;
 
   // Callbacks
   final void Function(bool isSelected) onBookmarkClick;
@@ -35,9 +31,6 @@ class ReviewQuestionBox extends StatefulWidget {
     this.explanationColor = const Color(0xFF5497FF),
     this.mainColor = const Color(0xFFE3A651),
     this.secondaryColor = const Color(0xFF7C6F5B),
-    this.correctIcon = 'assets/images/correct.svg',
-    this.incorrectIcon = 'assets/images/incorrect.svg',
-    this.unselectedIcon = 'assets/images/unselected.svg',
   });
 
   @override
@@ -156,61 +149,53 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
   }
 
   Widget _buildButtons() => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            ToggleButton(
-                color: widget.isDarkMode
-                    ? widget.mainColor
-                    : widget.secondaryColor,
-                unselectedIcon: 'assets/images/bookmark.svg',
-                selectedIcon: 'assets/images/bookmarked.svg',
-                isSelected: isBookmarked,
-                onToggle: (isSelected) => widget.onBookmarkClick(isSelected)),
-            ToggleButton(
-                color: widget.isDarkMode
-                    ? widget.mainColor
-                    : widget.secondaryColor,
-                unselectedIcon: 'assets/images/like.svg',
-                selectedIcon: 'assets/images/liked.svg',
-                isSelected: isLiked,
-                onToggle: (isSelected) => widget.onLikeClick(isSelected)),
-            ToggleButton(
-                color: widget.isDarkMode
-                    ? widget.mainColor
-                    : widget.secondaryColor,
-                unselectedIcon: 'assets/images/dislike.svg',
-                selectedIcon: 'assets/images/disliked.svg',
-                isSelected: isDisliked,
-                onToggle: (isSelected) => widget.onDislikeClick(isSelected)),
-          ],
-        ),
-      );
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          ActionButtons(
+              bookmarked: true,
+              liked: false,
+              disliked: false,
+              color: 'orange',
+              onBookmark: (isSelected) {},
+              onLike: (isSelected) {},
+              onDislike: (isSelected) {}),
+        ],
+      ));
 
   Widget _buildAnswer(String content, {bool? isCorrect}) {
-    String icon = '';
+    IconData icon = Icons.check;
     switch (isCorrect) {
       case null:
-        icon = widget.unselectedIcon;
+        icon = Icons.horizontal_rule_rounded;
         break;
       case true:
-        icon = widget.correctIcon;
+        icon = Icons.check;
         break;
       case false:
-        icon = widget.incorrectIcon;
+        icon = Icons.close;
         break;
+    }
+
+    Color? iconColor;
+    if (isCorrect == true) {
+      iconColor = Colors.green;
+    } else if (isCorrect == false) {
+      iconColor = Colors.red;
     }
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          SvgPicture.asset(
-            icon,
-            width: 12,
-            colorFilter: isCorrect == null ? ColorFilter.mode(widget.isDarkMode ? Colors.white : Colors.black, BlendMode.srcIn) : null
-          ),
+          SizedBox(
+              width: 20,
+              child: Icon(
+                icon,
+                color: iconColor,
+                size: isCorrect != null ? 20 : 15,
+              )),
           const SizedBox(width: 15),
           Text(
             content,

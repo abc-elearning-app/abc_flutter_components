@@ -28,12 +28,9 @@ class IconBox extends StatelessWidget {
         decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: BorderRadius.circular(borderRadius)),
-        child: SvgPicture.asset(icon,
-            colorFilter: ColorFilter.mode(
-              iconColor,
-              BlendMode.srcIn,
-            )
-          )
-        );
+        child: SvgPicture.asset(
+          icon,
+          color: iconColor,
+        ));
   }
 }

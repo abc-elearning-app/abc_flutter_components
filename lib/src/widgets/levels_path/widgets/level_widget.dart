@@ -271,7 +271,7 @@ class _LevelWidgetState extends State<LevelWidget>
               child: SvgPicture.asset(
                 widget.levelData.icon,
                 height: outerRadius,
-                colorFilter: ColorFilter.mode(_getIconColor(), BlendMode.srcIn)
+                color: _getIconColor(),
               ),
             ),
           ),
@@ -299,7 +299,7 @@ class _LevelWidgetState extends State<LevelWidget>
                 child: SvgPicture.asset(
                   widget.levelData.icon,
                   height: outerRadius,
-                  colorFilter: ColorFilter.mode(_getIconColor(), BlendMode.srcIn)
+                  color: _getIconColor(),
                 ),
               ),
             ),

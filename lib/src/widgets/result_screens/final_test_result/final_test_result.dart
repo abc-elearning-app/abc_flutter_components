@@ -173,13 +173,13 @@ class FinalTestResult extends StatelessWidget {
 
   Widget _buildImage() => Stack(alignment: Alignment.bottomCenter, children: [
         if (isFirstTime && progress >= passPercent)
-          const SprinkleEffect(additionalOffsetY: -100),
+          const Positioned(top: 0, child: ConfettiEffect()),
         Transform.translate(
             offset: Offset(0, isFirstTime ? 20 : 0),
             child: Transform.scale(
               scale: isFirstTime ? 1.2 : 1,
-              child: IconWidget(
-                icon: _getImagePath(),
+              child: Lottie.asset(
+                _getImagePath(),
                 height: isFirstTime ? 250 : 180,
               ),
             )),
