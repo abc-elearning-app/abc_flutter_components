@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ResultSubjectTile extends StatelessWidget {
@@ -13,17 +14,18 @@ class ResultSubjectTile extends StatelessWidget {
   final String intermediateIcon;
   final String advancedIcon;
 
-  const ResultSubjectTile(
-      {super.key,
-      required this.title,
-      required this.icon,
-      required this.progress,
-      required this.color,
-      required this.beginnerIcon,
-      required this.intermediateIcon,
-      required this.advancedIcon,
-      required this.isDarkMode,
-      required this.iconBackgroundColor});
+  const ResultSubjectTile({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.progress,
+    required this.color,
+    required this.beginnerIcon,
+    required this.intermediateIcon,
+    required this.advancedIcon,
+    required this.isDarkMode,
+    required this.iconBackgroundColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -79,20 +81,21 @@ class ResultSubjectTile extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Row(
               children: List.generate(
-                  10,
-                  (index) => Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 2),
-                          height: 10,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: index < progress / 10
-                                  ? color
-                                  : isDarkMode
-                                      ? Colors.white.withOpacity(0.12)
-                                      : Colors.black.withOpacity(0.08)),
-                        ),
-                      )),
+                10,
+                (index) => Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 2),
+                    height: 10,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: index < progress / 10
+                            ? color
+                            : isDarkMode
+                                ? Colors.white.withOpacity(0.12)
+                                : Colors.black.withOpacity(0.08)),
+                  ),
+                ),
+              ),
             ),
           ),
 
@@ -100,8 +103,8 @@ class ResultSubjectTile extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SvgPicture.asset(
-                _getLevelIcon(),
+              IconWidget(
+                icon: _getLevelIcon(),
                 color: color,
                 width: 20,
                 height: 20,

@@ -53,9 +53,13 @@ class PersonalPlanChart extends StatefulWidget {
 
   const PersonalPlanChart({
     super.key,
+
+    /// Important: length of valueList must equal
+    /// the difference (in days) between startDate and currentDate
+    /// Eg: startDate is 20/5, today is 25/5 -> valueList length should be 5
+    required this.valueList,
     required this.startTime,
     required this.examDate,
-    required this.valueList,
     this.expectedBarValue = 50,
     this.mainColor = const Color(0xFFE3A651),
     this.secondaryColor = const Color(0xFF7C6F5B),
@@ -91,9 +95,16 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
   List<double> expectedLineValues = [];
   final List<double> percentValues = [];
 
-  late int currentDayIndex;
-  late int currentDayGroupIndex;
   List<double> averageValues = [];
+
+  int currentColumnIndex = 0;
+
+  int get daysTillExam =>
+      widget.examDate.difference(widget.startTime).inDays + 1;
+
+  bool get isLessThanDefault => daysTillExam < widget.displayColumns;
+
+  int get columns => isLessThanDefault ? daysTillExam : widget.displayColumns;
 
   @override
   void initState() {
@@ -171,10 +182,9 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
                     animationDuration: widget.duration,
                     splineType: SplineType.cardinal,
                     cardinalSplineTension: widget.curveTension,
-                    pointColorMapper: (_, index) =>
-                        index >= currentDayGroupIndex
-                            ? widget.correctColor
-                            : widget.mainColor,
+                    pointColorMapper: (_, index) => index >= currentColumnIndex
+                        ? widget.correctColor
+                        : widget.mainColor,
                     markerSettings: MarkerSettings(
                         isVisible: true,
                         shape: DataMarkerType.circle,
@@ -283,10 +293,10 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
     args.borderWidth = 2;
 
     final int index = args.pointIndex!;
-    if (index == widget.displayColumns - 1) {
+    if (index == columns - 1) {
       args.color = widget.correctColor;
       args.borderColor = Colors.white;
-    } else if (index == currentDayGroupIndex) {
+    } else if (index == currentColumnIndex) {
       args.borderColor = widget.correctColor;
       args.color = Colors.white;
     } else {
@@ -297,27 +307,58 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
 
   /// Initial calculations
   _calculateAverageValues() {
-    // Calculate days in a group
-    // Calculate days till exam date and divide with columns count
-    final days = widget.examDate.difference(widget.startTime).inDays;
-    final daysInGroup = days ~/ widget.displayColumns;
+    // If the days from start to exam date is less than default display columns
+    if (isLessThanDefault) {
+      averageValues.addAll(widget.valueList.map((e) => e.toDouble()));
+      final remainDays = daysTillExam - averageValues.length;
+      averageValues.addAll(List.generate(remainDays, (_) => 0));
 
-    // Index of current day from the start time
-    currentDayIndex = DateTime.now().difference(widget.startTime).inDays;
+      return;
+    }
 
-    // Index of the group that current day belongs to
-    currentDayGroupIndex = currentDayIndex ~/ daysInGroup - 1;
-    if (currentDayIndex % daysInGroup != 0) currentDayGroupIndex++;
+    // Calculate days in a group (varies among columns)
+    // Calculate days till exam date and divide into columns
+    final minDaysInGroup = daysTillExam ~/ widget.displayColumns;
 
-    // Calculate average values of each group except the current group
+    // List to know each column has how many days
+    List<int> daysInGroup = List.generate(
+      widget.displayColumns,
+      (_) => minDaysInGroup,
+    );
+
+    // For each remaining day, add to a column from right to left
+    int remainDays = daysTillExam % widget.displayColumns;
+    int index = daysInGroup.length - 1;
+    while (remainDays > 0) {
+      daysInGroup[index]++;
+      remainDays--;
+      index--;
+    }
+
+    // Index of current day from start time
+    int currentDayIndex = DateTime.now().difference(widget.startTime).inDays;
+
+    // Index of the column that contains current day
+    currentColumnIndex = 0;
+    int dayPast = 0;
+    for (int i = 0; i < daysInGroup.length; i++) {
+      dayPast += daysInGroup[i];
+      if (dayPast >= currentDayIndex) {
+        currentColumnIndex = i;
+        break;
+      }
+    }
+
+    // Calculate average values of each group till the current group (exclude the current group)
+    averageValues = [];
     int startGroupIndex = 0;
-    for (int i = 0; i < currentDayGroupIndex; i++) {
+    for (int i = 0; i < currentColumnIndex; i++) {
       int sum = widget.valueList
-          .sublist(startGroupIndex, startGroupIndex + daysInGroup)
+          .sublist(startGroupIndex, startGroupIndex + daysInGroup[i])
           .reduce((a, b) => a + b);
-      averageValues.add(sum / daysInGroup);
+      averageValues.add(sum / daysInGroup[i]);
 
-      startGroupIndex += daysInGroup;
+      startGroupIndex += daysInGroup[i];
     }
 
     // Calculate current day group's average
@@ -327,28 +368,28 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
     averageValues.add(sum / (widget.valueList.length - startGroupIndex));
 
     // The rest are all 0
-    int missingValuesCount = widget.displayColumns - averageValues.length;
-    averageValues.addAll(List.generate(missingValuesCount, (_) => 0));
+    int remainColumns = widget.displayColumns - averageValues.length;
+    averageValues.addAll(List.generate(remainColumns, (_) => 0));
   }
 
   _calculateExpectedLineValues() {
     // Evenly divide expected value range from 10 to 100%
-    double gap = (100 - 10) / (widget.displayColumns - 1);
-    for (int i = 0; i < widget.displayColumns; i++) {
+    double gap = (100 - 10) / (columns - 1);
+    for (int i = 0; i < columns; i++) {
       expectedLineValues.add(10 + i * gap);
     }
   }
 
   _calculateLinePercentValues() {
     // Previous days' percent
-    for (int i = 0; i <= currentDayGroupIndex; i++) {
-      var percent = averageValues[i] / widget.expectedBarValue;
+    for (int i = 0; i <= currentColumnIndex; i++) {
+      final percent = averageValues[i] / widget.expectedBarValue;
       percentValues.add(percent);
     }
 
     // Calculate future prediction
-    for (int i = currentDayGroupIndex + 1; i < widget.displayColumns; i++) {
-      percentValues.add(_calculatePercent(i));
+    for (int i = currentColumnIndex + 1; i < columns; i++) {
+      percentValues.add(_calculatePrediction(i));
     }
   }
 
@@ -356,10 +397,9 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
   /// x is the expected value
   /// t is the actual value
   /// p is the average of previous actual values
-  _calculatePercent(int index) =>
+  _calculatePrediction(int index) =>
       percentValues[index - 1] +
       (percentValues.reduce((a, b) => a + b) / percentValues.length) *
-          (widget.expectedBarValue -
-              percentValues[index - 1] * widget.expectedBarValue) /
+          (widget.expectedBarValue * (1 - percentValues[index - 1])) /
           widget.expectedBarValue;
 }
