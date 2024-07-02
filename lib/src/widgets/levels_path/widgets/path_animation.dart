@@ -66,6 +66,9 @@ class _PathAnimationState extends State<PathAnimation>
   }
 
   _setupFirstTimeOpen() {
+    if(!mounted) {
+      return;
+    }
     /// Add controllers for last cycle
 
     // Controller for upper row
@@ -83,14 +86,14 @@ class _PathAnimationState extends State<PathAnimation>
     if (widget.lastCycleLevelCount > widget.upperRowCount) {
       // draw to the curve
       lastRoundLineControllers[0].addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
+        if (status == AnimationStatus.completed && mounted) {
           lastCycleCurveController.forward();
         }
       });
 
       // draw the lower line
       lastCycleCurveController.addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
+        if (status == AnimationStatus.completed && mounted) {
           lastRoundLineControllers[1].forward();
         }
       });
@@ -116,19 +119,19 @@ class _PathAnimationState extends State<PathAnimation>
       // Connect controllers for all parts of rounds
       for (int i = 1; i <= widget.rounds; i++) {
         lineControllers[(i * 2 - 1) - 1].addStatusListener((status) {
-          if (status == AnimationStatus.completed) {
+          if (status == AnimationStatus.completed && mounted) {
             curveControllers[(i * 2 - 1) - 1].forward();
           }
         });
 
         curveControllers[(i * 2 - 1) - 1].addStatusListener((status) {
-          if (status == AnimationStatus.completed) {
+          if (status == AnimationStatus.completed && mounted) {
             lineControllers[(i * 2) - 1].forward();
           }
         });
 
         lineControllers[(i * 2) - 1].addStatusListener((status) {
-          if (status == AnimationStatus.completed) {
+          if (status == AnimationStatus.completed && mounted) {
             curveControllers[(i * 2) - 1].forward();
           }
         });
@@ -136,7 +139,7 @@ class _PathAnimationState extends State<PathAnimation>
         if (i == widget.rounds) {
           if (lastRoundLineControllers.isNotEmpty) {
             curveControllers[(i * 2) - 1].addStatusListener((status) {
-              if (status == AnimationStatus.completed) {
+              if (status == AnimationStatus.completed && mounted) {
                 // After finishing all cycles, draw the last cycles
                 lastRoundLineControllers[0].forward();
               }
@@ -144,7 +147,7 @@ class _PathAnimationState extends State<PathAnimation>
           }
         } else if (lineControllers.length >= i * 2 + 1) {
           curveControllers[(i * 2) - 1].addStatusListener((status) {
-            if (status == AnimationStatus.completed) {
+            if (status == AnimationStatus.completed && mounted) {
               lineControllers[(i * 2 + 1) - 1].forward();
             }
           });
@@ -157,12 +160,15 @@ class _PathAnimationState extends State<PathAnimation>
   }
 
   _setupNextLevelAnimation() {
+    if(!mounted) {
+      return;
+    }
     nextLevelController.forward();
 
     if (widget.lastCycleLevelCount == 1 ||
         widget.lastCycleLevelCount == widget.upperRowCount + 1) {
       nextLevelController.addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
+        if (status == AnimationStatus.completed && mounted) {
           additionalNextLevelController.forward();
         }
       });
@@ -212,9 +218,11 @@ class _PathAnimationState extends State<PathAnimation>
     for (AnimationController controller in curveControllers) {
       controller.dispose();
     }
-
     nextLevelController.dispose();
     lastCycleCurveController.dispose();
+    for(var item in lastRoundLineControllers) {
+      item.dispose();
+    }
     super.dispose();
   }
 }

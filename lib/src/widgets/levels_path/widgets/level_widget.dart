@@ -132,8 +132,11 @@ class _LevelWidgetState extends State<LevelWidget>
 
   void reverseListener(status) {
     if (status == AnimationStatus.completed) {
-      Future.delayed(const Duration(microseconds: 300),
-          () => _appearanceController.reverse());
+      Future.delayed(const Duration(microseconds: 300), () {
+        if(mounted) {
+          _appearanceController.reverse();
+        } 
+      });
     }
   }
 
