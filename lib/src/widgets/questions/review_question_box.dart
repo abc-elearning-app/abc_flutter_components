@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'action_icon.dart';
-
 class ReviewQuestionBox extends StatefulWidget {
   final int index;
   final QuestionData questionData;
@@ -151,34 +149,20 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
   }
 
   Widget _buildButtons() => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            ActionButton(
-              actionType: ActionType.bookmark,
-              unselectedColor: 'brown',
-              selectedColor: 'orange',
-              isSelected: isBookmarked,
-              onToggle: (isSelected) => widget.onBookmarkClick(isSelected),
-            ),
-            ActionButton(
-              actionType: ActionType.like,
-              unselectedColor: 'brown',
-              selectedColor: 'blue',
-              isSelected: isLiked,
-              onToggle: (isSelected) => widget.onLikeClick(isSelected),
-            ),
-            ActionButton(
-              actionType: ActionType.dislike,
-              unselectedColor: 'brown',
-              selectedColor: 'red',
-              isSelected: isDisliked,
-              onToggle: (isSelected) => widget.onDislikeClick(isSelected),
-            ),
-          ],
-        ),
-      );
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          ActionButtons(
+              bookmarked: true,
+              liked: false,
+              disliked: false,
+              color: 'orange',
+              onBookmark: (isSelected) {},
+              onLike: (isSelected) {},
+              onDislike: (isSelected) {}),
+        ],
+      ));
 
   Widget _buildAnswer(String content, {bool? isCorrect}) {
     IconData icon = Icons.check;

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../flutter_abc_jsc_components.dart';
 
 class InformationData {
-  final String icon;
+  final Widget icon;
   final String title;
   final String content;
 
@@ -21,10 +20,10 @@ class PersonalPlanReadyScreen extends StatelessWidget {
 
   // Image
   final String sideImage;
-  final String reminderIcon;
-  final String examDateIcon;
-  final String questionsIcon;
-  final String passingScoreIcon;
+  final Widget reminderIcon;
+  final Widget examDateIcon;
+  final Widget questionsIcon;
+  final Widget passingScoreIcon;
 
   // Data
   final TimeOfDay? reminderTime;
@@ -39,10 +38,10 @@ class PersonalPlanReadyScreen extends StatelessWidget {
     super.key,
     this.backgroundColor = const Color(0xFFF5F4EE),
     this.mainColor = const Color(0xFFE3A651),
-    this.reminderIcon = 'assets/images/ready_reminder.svg',
-    this.examDateIcon = 'assets/images/ready_calendar.svg',
-    this.questionsIcon = 'assets/images/ready_questions.svg',
-    this.passingScoreIcon = 'assets/images/ready_passing_score.svg',
+    required this.reminderIcon,
+    required this.examDateIcon,
+    required this.questionsIcon,
+    required this.passingScoreIcon,
     this.reminderTime,
     this.examDate,
     required this.sideImage,
@@ -161,7 +160,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SvgPicture.asset(data.icon, height: 40),
+            data.icon,
             const SizedBox(width: 15),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../flutter_abc_jsc_components.dart';
 import '../../animations/blur_effect.dart';
-import '../../questions/action_icon.dart';
 
 enum ButtonType { bookmark, like, dislike }
 
@@ -99,15 +98,6 @@ class _MainQuestionPageState extends State<MainQuestionPage> {
             ),
           ),
         ),
-
-        // Bookmark, like and dislike buttons
-        ValueListenableBuilder(
-            valueListenable: _selectedAnswerIndex,
-            builder: (_, value, __) => Visibility(
-                  visible: value != -1,
-                  child: _buildOptions(
-                      padding: const EdgeInsets.symmetric(vertical: 10)),
-                ))
       ],
     );
   }
@@ -142,13 +132,6 @@ class _MainQuestionPageState extends State<MainQuestionPage> {
                         color: isDarkMode
                             ? Colors.white.withOpacity(0.8)
                             : Colors.black.withOpacity(0.5))),
-                ValueListenableBuilder(
-                  valueListenable: _selectedAnswerIndex,
-                  builder: (_, value, __) => Opacity(
-                      opacity: value == -1 ? 1 : 0,
-                      child:
-                          Transform.scale(scale: 0.8, child: _buildOptions())),
-                )
               ],
             ),
             const SizedBox(height: 10),
@@ -262,42 +245,6 @@ class _MainQuestionPageState extends State<MainQuestionPage> {
           ? CrossFadeState.showSecond
           : CrossFadeState.showFirst,
       duration: const Duration(milliseconds: 200));
-
-  Widget _buildOptions({EdgeInsetsGeometry? padding}) => Padding(
-        padding: padding ?? EdgeInsets.zero,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ActionButton(
-              actionType: ActionType.bookmark,
-              unselectedColor: 'brown',
-              selectedColor: 'orange',
-              isSelected: widget.questionData.bookmarked,
-              onToggle: (isSelected) => widget.onToggleBookmark != null
-                  ? widget.onToggleBookmark!(isSelected)
-                  : null,
-            ),
-            ActionButton(
-              actionType: ActionType.like,
-              unselectedColor: 'brown',
-              selectedColor: 'orange',
-              isSelected: widget.questionData.liked,
-              onToggle: (isSelected) => widget.onToggleLike != null
-                  ? widget.onToggleLike!(isSelected)
-                  : null,
-            ),
-            ActionButton(
-              actionType: ActionType.dislike,
-              unselectedColor: 'brown',
-              selectedColor: 'orange',
-              isSelected: widget.questionData.disliked,
-              onToggle: (isSelected) => widget.onToggleDislike != null
-                  ? widget.onToggleDislike!(isSelected)
-                  : null,
-            ),
-          ],
-        ),
-      );
 
   _answerBackgroundColor(bool isDarkMode, int answerIndex, bool? isCorrect) {
     switch (_checkAnswer(answerIndex, isCorrect)) {
