@@ -1,83 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-class TestData {
-  final int id;
-  final String title;
-  final int answeredQuestions;
-  final int totalQuestions;
-  final double progress;
-  final String background;
+import '../../../../../flutter_abc_jsc_components.dart';
 
-  TestData({
-    required this.id,
-    required this.title,
-    required this.answeredQuestions,
-    required this.totalQuestions,
-    required this.progress,
-    required this.background,
-  });
-}
-
-class TestGrid extends StatelessWidget {
+class TestList extends StatelessWidget {
   final List<TestData> practiceTests;
-  final String title;
+  final void Function(int index) onSelect;
   final bool isDarkMode;
-
   final Color mainColor;
   final Color secondaryColor;
-  final Color backgroundColor;
 
-  final void Function(int index) onSelected;
-
-  const TestGrid({
+  const TestList({
     super.key,
-    required this.title,
     required this.practiceTests,
-    this.mainColor = const Color(0xFFE3A651),
-    this.secondaryColor = const Color(0xFF7C6F5B),
-    this.backgroundColor = const Color(0xFFF5F4EE),
-    required this.onSelected,
+    required this.onSelect,
     required this.isDarkMode,
+    required this.secondaryColor,
+    required this.mainColor,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: isDarkMode ? Colors.black : backgroundColor,
-      appBar: AppBar(
-        backgroundColor: isDarkMode ? Colors.black : backgroundColor,
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: isDarkMode ? Colors.white : Colors.black,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(title,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              color: isDarkMode ? Colors.white : Colors.black,
-            )),
-      ),
-      body: SafeArea(
-        child: GridView.builder(
-            padding: const EdgeInsets.all(10),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 1.3,
-            ),
-            itemCount: practiceTests.length,
-            itemBuilder: (_, index) => _testBox(practiceTests[index])),
-      ),
+    return SizedBox(
+      height: 175,
+      width: double.infinity,
+      child: ListView.builder(
+          padding: const EdgeInsets.only(left: 10, bottom: 10),
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          itemCount: practiceTests.length,
+          itemBuilder: (_, index) => _testBox(practiceTests[index])),
     );
   }
 
   Widget _testBox(TestData data) => GestureDetector(
-        onTap: () => onSelected(data.id),
+        onTap: () => onSelect(data.id),
         child: Container(
-          margin: const EdgeInsets.all(8),
+          width: 200,
+          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage(data.background),

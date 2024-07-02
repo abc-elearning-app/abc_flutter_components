@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 class StartDiagnosticPage extends StatelessWidget {
   final String title;
@@ -36,7 +33,7 @@ class StartDiagnosticPage extends StatelessWidget {
         // Image
         Padding(
             padding: const EdgeInsets.symmetric(vertical: 40),
-            child: IconWidget(icon: image, height: 300)),
+            child: Image.asset(image, height: 300)),
 
         // Subtitle
         Expanded(

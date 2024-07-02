@@ -31,8 +31,8 @@ class ModeOptions extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: modes.length,
-          itemBuilder: (_, index) =>
-              _radioTile(context, modes[index], modes[index].id, selectedModeIndex)),
+          itemBuilder: (_, index) => _radioTile(
+              context, modes[index], modes[index].id, selectedModeIndex)),
     );
   }
 
@@ -60,10 +60,9 @@ class ModeOptions extends StatelessWidget {
                 // Info icon
                 leading: SvgPicture.asset('assets/images/info.svg',
                     height: 20,
-                    colorFilter: ColorFilter.mode(
-                        selectedIndex == modeValue ? Colors.white : Colors.grey,
-                        BlendMode.srcIn)
-                ),
+                    color: selectedIndex == modeValue
+                        ? Colors.white
+                        : Colors.grey),
                 title: Text(modeData.title,
                     style: TextStyle(
                         fontWeight: FontWeight.w500,

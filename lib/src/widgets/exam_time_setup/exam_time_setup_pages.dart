@@ -77,14 +77,20 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
         image: widget.pageImages[2],
         title: 'Diagnostic Test',
         subTitle:
-            'Take our diagnostic test to assess your current level and get a personalized study plan.',
+        'Take our diagnostic test to assess your current level and get a personalized study plan.',
       )
     ];
 
     // Initial selected time
     selectedTime['exam_date'] = DateTime.now().toIso8601String();
-    selectedTime['reminder_hour'] = TimeOfDay.now().hour.toString();
-    selectedTime['reminder_minute'] = TimeOfDay.now().minute.toString();
+    selectedTime['reminder_hour'] = TimeOfDay
+        .now()
+        .hour
+        .toString();
+    selectedTime['reminder_minute'] = TimeOfDay
+        .now()
+        .minute
+        .toString();
 
     pageController.addListener(() {
       if (pageController.page == 0) {
@@ -137,10 +143,14 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
           // Dynamic lower background
           ValueListenableBuilder(
               valueListenable: pageIndex,
-              builder: (_, value, __) => AnimatedContainer(
+              builder: (_, value, __) =>
+                  AnimatedContainer(
                     height: value == -1
                         ? 0
-                        : MediaQuery.of(context).size.height * 0.2,
+                        : MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.2,
                     duration: const Duration(milliseconds: 200),
                     child: Stack(children: [
                       // Background
@@ -177,7 +187,8 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
     );
   }
 
-  Widget _buildNextButton(int pageIndexValue) => Container(
+  Widget _buildNextButton(int pageIndexValue) =>
+      Container(
         width: double.infinity,
         margin: const EdgeInsets.symmetric(horizontal: 10),
         child: ElevatedButton(
@@ -198,7 +209,8 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
         ),
       );
 
-  Widget _buildNotNowButton(int pageIndexValue) => AnimatedContainer(
+  Widget _buildNotNowButton(int pageIndexValue) =>
+      AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         width: double.infinity,
         height: pageIndexValue < 1 ? 0 : 50,
@@ -221,22 +233,30 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
       );
 
   _handleMainButtonClick() {
-    //if not last page
-    if (pageController.page != 2) {
-      if (pageController.page == 0) {
-        widget.onSelectExamDate(DateTime.parse(selectedTime['exam_date']));
-      } else if (pageController.page == 1) {
-        widget.onSelectReminderTime(TimeOfDay(
-            hour: int.parse(selectedTime['reminder_hour']),
-            minute: int.parse(selectedTime['reminder_minute'])));
-      }
-
-      pageController.nextPage(
-          duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
-    }
-    // If at last page
-    else {
-      widget.onStartDiagnostic();
+    switch (pageController.page) {
+      case 0:
+        {
+          widget.onSelectExamDate(DateTime.parse(selectedTime['exam_date']));
+          pageController.nextPage(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+          );
+          break;
+        }
+      case 1:
+        {
+          widget.onSelectReminderTime(TimeOfDay(
+              hour: int.parse(selectedTime['reminder_hour']),
+              minute: int.parse(selectedTime['reminder_minute'])));
+          pageController.nextPage(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+          );
+        }
+      default:
+        {
+          widget.onStartDiagnostic();
+        }
     }
   }
 
@@ -253,41 +273,12 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
 
   _getButtonText(int value) {
     switch (value) {
-      case 0:
-        return 'Next';
       case 1:
         return 'Set Reminder (Recommended)';
       case 2:
         return 'Start Diagnostic Test';
       default:
-        return '';
+        return 'Next';
     }
-  }
-}
-
-class RightOnlyScrollPhysics extends ScrollPhysics {
-  const RightOnlyScrollPhysics({super.parent});
-
-  @override
-  RightOnlyScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return RightOnlyScrollPhysics(parent: buildParent(ancestor));
-  }
-
-  @override
-  double applyBoundaryConditions(ScrollMetrics position, double offset) {
-    // Block leftward swipes by returning the offset, indicating a boundary
-    if (offset < 0) {
-      return offset; // Block leftward swipes
-    }
-    return 0; // Allow rightward swipes
-  }
-
-  @override
-  double applyPhysicsToUserOffset(ScrollMetrics position, double offset) {
-    // Block user-initiated leftward swipes
-    if (offset < 0) {
-      return 0; // No movement allowed
-    }
-    return offset; // Allow rightward swipes
   }
 }

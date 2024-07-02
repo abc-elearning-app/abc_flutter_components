@@ -120,7 +120,7 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
                           angle: _animation.value,
                           child: SvgPicture.asset(
                             'assets/images/chevron_down.svg',
-                            colorFilter: ColorFilter.mode(widget.isDarkMode ? Colors.white : Colors.black, BlendMode.srcIn),
+                            color: widget.isDarkMode ? Colors.white : Colors.black,
                             height: 10,
                           ),
                         );

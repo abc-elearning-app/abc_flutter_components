@@ -86,7 +86,7 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
         squeeze: 0.9,
         onSelectedItemChanged: (int value) => _handleSelectDate(),
         children: List.generate(
-            type == PickerType.hour ? 24 : 59,
+            type == PickerType.hour ? 24 : 60,
             (index) => Align(
                   alignment: type != PickerType.hour
                       ? Alignment.centerLeft
@@ -94,7 +94,7 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
                   child: Text(
                     (type == PickerType.hour
                             ? _getDisplayTime(index)
-                            : _getDisplayTime(index + 1))
+                            : _getDisplayTime(index))
                         .toString(),
                     style: const TextStyle(
                       fontWeight: FontWeight.w500,
@@ -108,7 +108,7 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
 
   _handleSelectDate() => widget.onSelectTime(TimeOfDay(
       hour: _hourController.selectedItem,
-      minute: _minuteController.selectedItem));
+      minute: _minuteController.selectedItem - 1));
 
   _getScrollController(PickerType type) =>
       type == PickerType.hour ? _hourController : _minuteController;

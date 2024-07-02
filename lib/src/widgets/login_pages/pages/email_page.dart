@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 class EmailPage extends StatelessWidget {
   final String image;
@@ -25,7 +24,7 @@ class EmailPage extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-            flex: 2, child: IconWidget(icon: image)),
+            flex: 2, child: Image.asset(image)),
 
         // Detail text
         Expanded(

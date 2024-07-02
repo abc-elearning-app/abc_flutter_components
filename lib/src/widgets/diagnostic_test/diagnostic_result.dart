@@ -140,9 +140,6 @@ class DiagnosticResult extends StatelessWidget {
   }
 
   Widget _buildSubjectResultList() {
-    subjectList.sort(
-        (subject1, subject2) => subject1.progress < subject2.progress ? 0 : 1);
-
     return ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,

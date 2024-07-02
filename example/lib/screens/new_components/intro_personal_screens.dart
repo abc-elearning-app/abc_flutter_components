@@ -33,7 +33,7 @@ class TestIntroPersonalPlanScreen extends StatelessWidget {
 
     return IntroPersonalPlanPages(
       tabList: tabList,
-      isDarkMode: AppTheme.isDarkMode,
+      darkMode: AppTheme.isDarkMode,
       onFinish: () => Navigator.of(context).pop(),
     );
   }
