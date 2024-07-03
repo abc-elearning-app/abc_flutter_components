@@ -3,12 +3,17 @@ import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/icons/icon_box.dart';
 
 class ProgressTileData {
+  final int id;
   final String title;
   final double progress;
   final String icon;
 
-  ProgressTileData(
-      {required this.title, required this.progress, required this.icon});
+  ProgressTileData({
+    required this.id,
+    required this.title,
+    required this.progress,
+    required this.icon,
+  });
 }
 
 class ProgressSection extends StatelessWidget {
@@ -123,7 +128,7 @@ class ProgressSection extends StatelessWidget {
           )),
 
           // Improve button
-          _buildButton(index)
+          _buildButton(data.id)
         ],
       ),
     );
