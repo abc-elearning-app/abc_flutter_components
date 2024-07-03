@@ -106,7 +106,7 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
                         child: Text(
                       widget.subjectAnalysisData.title,
                       style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color:
                               widget.isDarkMode ? Colors.white : Colors.black),
@@ -120,7 +120,8 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
                           angle: _animation.value,
                           child: SvgPicture.asset(
                             'assets/images/chevron_down.svg',
-                            color: widget.isDarkMode ? Colors.white : Colors.black,
+                            color:
+                                widget.isDarkMode ? Colors.white : Colors.black,
                             height: 10,
                           ),
                         );
@@ -155,14 +156,14 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
                         children: [
                           Text('Accuracy Rate',
                               style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   color: widget.isDarkMode
                                       ? Colors.white
                                       : Colors.black)),
                           Text(
                             '${widget.subjectAnalysisData.accuracyRate.toInt()}%',
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: widget.isDarkMode
                                     ? Colors.white
@@ -226,6 +227,7 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
               child: Text(
                 _getTitle(type),
                 style: TextStyle(
+                  fontSize: 14,
                   color: widget.isDarkMode ? Colors.white : Colors.black,
                 ),
               ),

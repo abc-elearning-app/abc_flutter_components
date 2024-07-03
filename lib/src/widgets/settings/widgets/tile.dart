@@ -46,7 +46,7 @@ class SettingTile extends StatelessWidget {
       title: Text(title,
           style: TextStyle(
             fontWeight: FontWeight.w400,
-            fontSize: 18,
+            fontSize: 16,
             color: isDarkMode ? Colors.white : Colors.black
           )),
       trailing: _buildTrailing(),
@@ -99,7 +99,7 @@ class SettingTile extends StatelessWidget {
           padding: const EdgeInsets.only(right: 10),
           child: Text(information!,
               style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.w400,
                   color: isDarkMode ? Colors.white : Colors.black,
                   decoration: TextDecoration.underline)),

@@ -58,6 +58,7 @@ class TestGrid extends StatelessWidget {
         title: Text(title,
             style: TextStyle(
               fontWeight: FontWeight.w500,
+              fontSize: 20,
               color: isDarkMode ? Colors.white : Colors.black,
             )),
       ),
@@ -112,7 +113,7 @@ class TestGrid extends StatelessWidget {
                   Text(
                     data.title,
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: Colors.white,
                     ),
@@ -121,18 +122,15 @@ class TestGrid extends StatelessWidget {
                   // Questions
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: RichText(
-                        text: TextSpan(children: [
-                          const TextSpan(
-                              text: '• ', style: TextStyle(fontSize: 20)),
-                          TextSpan(
-                              text: data.answeredQuestions.toString(),
-                              style: const TextStyle(fontSize: 16)),
-                          TextSpan(text: '/${data.totalQuestions} Answered')
-                        ]),
-                      ),
-                    ),
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Text(
+                          '• ${data.answeredQuestions}/${data.totalQuestions} Answered',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.8),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        )),
                   ),
 
                   // Progress
@@ -150,7 +148,7 @@ class TestGrid extends StatelessWidget {
                         child: RichText(
                           text: TextSpan(
                               style: const TextStyle(
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
                               children: [
@@ -159,8 +157,8 @@ class TestGrid extends StatelessWidget {
                                 const TextSpan(
                                     text: '%',
                                     style: TextStyle(
-                                      fontSize: 12,
-                                    ))
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400))
                               ]),
                         ))
                   ])

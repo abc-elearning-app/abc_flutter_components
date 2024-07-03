@@ -65,26 +65,30 @@ class PremiumButton extends StatelessWidget {
                   elevation: 0,
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // GIF & Text
-                  Transform.translate(
-                      offset: const Offset(-15, 0), child: const GifIcon()),
-                  Expanded(
-                    child: RichText(
-                      textAlign: TextAlign.center,
-                      text: const TextSpan(
-                          style: TextStyle(fontSize: 20),
-                          children: [
-                            TextSpan(
-                                text: 'Upgrade',
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            TextSpan(text: ' to the Premium'),
-                          ]),
+              child: Transform.translate(
+                offset: const Offset(-20, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // GIF & Text
+                    const GifIcon(),
+                    Expanded(
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        text: const TextSpan(
+                            style:
+                                TextStyle(fontSize: 18, fontFamily: 'Poppins'),
+                            children: [
+                              TextSpan(
+                                  text: 'Upgrade',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              TextSpan(text: ' to the Premium'),
+                            ]),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           )

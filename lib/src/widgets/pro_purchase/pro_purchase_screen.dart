@@ -132,7 +132,7 @@ class _ProPurchaseState extends State<ProPurchase> {
             Text(
               'Pass For The First Time With',
               style: TextStyle(
-                  fontSize: 25,
+                  fontSize: 23,
                   color: widget.isDarkMode ? Colors.white : Colors.black,
                   fontWeight: FontWeight.w600,
                   shadows: !widget.isDarkMode
@@ -149,6 +149,7 @@ class _ProPurchaseState extends State<ProPurchase> {
               child: RichText(
                 text: TextSpan(
                     style: TextStyle(
+                        fontFamily: 'Poppins',
                         color: widget.isDarkMode ? Colors.white : Colors.black,
                         shadows: !widget.isDarkMode
                             ? [
@@ -162,13 +163,13 @@ class _ProPurchaseState extends State<ProPurchase> {
                       TextSpan(
                           text: widget.proName,
                           style: TextStyle(
-                              fontSize: 26,
+                              fontSize: 24,
                               color: widget.mainColor,
                               fontWeight: FontWeight.w800)),
                       const TextSpan(
                           text: ' Plan',
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 23,
                             fontWeight: FontWeight.w600,
                           ))
                     ]),
@@ -180,17 +181,18 @@ class _ProPurchaseState extends State<ProPurchase> {
 
   Widget _buildPerks() => ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       shrinkWrap: true,
       itemCount: widget.perks.length,
       itemBuilder: (_, index) => Row(
             children: [
               const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  child: Icon(Icons.check, size: 20)),
+                  child: Icon(Icons.check, size: 18)),
               Text(
                 widget.perks[index],
                 style: TextStyle(
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                   fontStyle: FontStyle.italic,
                   color: widget.isDarkMode ? Colors.white : Colors.black,
@@ -200,7 +202,7 @@ class _ProPurchaseState extends State<ProPurchase> {
           ));
 
   Widget _buildDetailText() => const Padding(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 10),
         child: Text(
           'Subscriptions auto-renew at the cost of the chosen package, unless cancelled 24-hours in advance prior to the end of the current period. The subscription fee is charged to your iTunes account at confirmation of purchase. You may manage your subscription and turn off auto-renewal by going to your Account Settings after purchase. Per Apple policy, no cancellation of the current subscription is allowed during the active subscription period. Once purchased, refunds will not be provided for any unused portion of the term.',
           style: TextStyle(fontSize: 12, color: Colors.grey),

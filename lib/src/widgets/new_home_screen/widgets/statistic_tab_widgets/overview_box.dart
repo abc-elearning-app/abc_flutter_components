@@ -47,12 +47,12 @@ class OverviewBox extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.only(top: 20),
+            padding: const EdgeInsets.only(top: 10),
             decoration: BoxDecoration(
                 color: isDarkMode ? Colors.grey.shade900 : Colors.white,
                 image: DecorationImage(
                   image: AssetImage(background),
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fitWidth,
                 ),
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(16),
@@ -61,7 +61,7 @@ class OverviewBox extends StatelessWidget {
               children: [
                 Text('Overview',
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: 20,
                       fontWeight: FontWeight.w600,
                       color: isDarkMode ? Colors.white : Colors.black,
                     )),
@@ -78,7 +78,7 @@ class OverviewBox extends StatelessWidget {
                         Text(
                           '${accuracyRate.toInt()}%',
                           style: TextStyle(
-                              fontSize: 40,
+                              fontSize: 36,
                               fontWeight: FontWeight.bold,
                               color: isDarkMode ? Colors.white : Colors.black),
                         ),
@@ -109,7 +109,7 @@ class OverviewBox extends StatelessWidget {
                       const Text(
                         'Answered Questions',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -117,7 +117,7 @@ class OverviewBox extends StatelessWidget {
                       Text(
                         '$answeredQuestions/$totalQuestions',
                         style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             fontWeight: FontWeight.w500,
                             color: isDarkMode ? Colors.white : Colors.black),
                       )
@@ -142,13 +142,15 @@ class OverviewBox extends StatelessWidget {
                       const Text(
                         'Correct Answers',
                         style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w500),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       const SizedBox(height: 5),
                       Text(
                         correctAnswers.toString(),
                         style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             fontWeight: FontWeight.w500,
                             color: correctColor),
                       )
