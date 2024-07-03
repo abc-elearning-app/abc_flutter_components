@@ -45,8 +45,10 @@ class _LevelWidgetState extends State<LevelWidget>
     with TickerProviderStateMixin {
   // Controllers
   late AnimationController _appearanceController;
+
   late AnimationController _splashController;
-  late AnimationController _tooltipController;
+
+  // late AnimationController _tooltipController;
 
   // Animations
   late Animation<double> _tooltipAnimation;
@@ -107,22 +109,22 @@ class _LevelWidgetState extends State<LevelWidget>
 
     _splashController.addStatusListener(forwardSplashListener);
 
-    _tooltipController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 500));
-
-    _tooltipAnimation =
-        Tween<double>(begin: -30, end: -20).animate(_tooltipController);
-
-    _tooltipController.addStatusListener(tooltipListener);
+    // _tooltipController = AnimationController(
+    //     vsync: this, duration: const Duration(milliseconds: 500));
+    //
+    // _tooltipAnimation =
+    //     Tween<double>(begin: -15, end: -10).animate(_tooltipController);
+    //
+    // _tooltipController.addStatusListener(tooltipListener);
   }
 
-  void tooltipListener(status) {
-    if (status == AnimationStatus.completed) {
-      _tooltipController.reverse();
-    } else if (status == AnimationStatus.dismissed) {
-      _tooltipController.forward();
-    }
-  }
+  // void tooltipListener(status) {
+  //   if (status == AnimationStatus.completed) {
+  //     _tooltipController.reverse();
+  //   } else if (status == AnimationStatus.dismissed) {
+  //     _tooltipController.forward();
+  //   }
+  // }
 
   void forwardSplashListener(status) {
     if (status == AnimationStatus.completed) {
@@ -133,9 +135,9 @@ class _LevelWidgetState extends State<LevelWidget>
   void reverseListener(status) {
     if (status == AnimationStatus.completed) {
       Future.delayed(const Duration(microseconds: 300), () {
-        if(mounted) {
+        if (mounted) {
           _appearanceController.reverse();
-        } 
+        }
       });
     }
   }
@@ -146,15 +148,17 @@ class _LevelWidgetState extends State<LevelWidget>
     switch (widget.drawType) {
       case DrawType.firstTimeOpen:
         Future.delayed(Duration(milliseconds: delayTime), () {
-          if(mounted) {
+          if (mounted) {
             _appearanceController.forward();
           }
         });
         break;
       case DrawType.nextLevel:
         if (widget.levelData.isCurrent) {
-          Future.delayed(Duration(milliseconds: widget.drawSpeed.inMilliseconds + 900), () {
-            if(mounted) {
+          Future.delayed(
+              Duration(milliseconds: widget.drawSpeed.inMilliseconds + 900),
+              () {
+            if (mounted) {
               _appearanceController.forward();
             }
           });
@@ -166,30 +170,36 @@ class _LevelWidgetState extends State<LevelWidget>
 
     /// Start current level animation
     if (widget.levelData.isCurrent) {
-      Future.delayed(Duration(milliseconds: widget.drawType != DrawType.noAnimation ? delayTime + 1000 : 0), () {
-        if(mounted) {
+      Future.delayed(
+          Duration(
+              milliseconds: widget.drawType != DrawType.noAnimation
+                  ? delayTime + 1000
+                  : 0), () {
+        if (mounted) {
           _splashController.forward();
         }
       });
     }
 
     // Start tooltip animation
-    if (widget.index == 0 && widget.levelData.progress == 0) {
-      _tooltipController.forward();
-    }
+    // if (widget.index == 0 && widget.levelData.progress == 0) {
+    // _tooltipController.forward();
+    // }
   }
 
-  double outerRadius = 36;
+  double outerRadius = 35;
   double circleWidth = 5;
 
   @override
   void dispose() {
     _appearanceController.removeStatusListener(reverseListener);
     _appearanceController.dispose();
+
     _splashController.removeStatusListener(forwardSplashListener);
     _splashController.dispose();
-    _tooltipController.removeStatusListener(tooltipListener);
-    _tooltipController.dispose();
+
+    // _tooltipController.removeStatusListener(tooltipListener);
+    // _tooltipController.dispose();
     super.dispose();
   }
 
@@ -199,8 +209,9 @@ class _LevelWidgetState extends State<LevelWidget>
       alignment: Alignment.center,
       children: [
         // Splash animation
-        if (widget.levelData.isCurrent &&
-            (widget.index != 0 || widget.levelData.progress != 0))
+        if (widget.levelData.isCurrent
+            // && (widget.index != 0 || widget.levelData.progress != 0)
+            )
           CustomPaint(
               size: const Size(20, 20),
               painter: SplashCirclePainter(animation: _splashController)),
@@ -210,37 +221,42 @@ class _LevelWidgetState extends State<LevelWidget>
             animation: _appearanceController,
             builder: (_, __) => Opacity(
                   opacity: _getOpacityValue(),
-                  child: Transform.translate(
-                      offset: Offset(0, _getTranslateValue()),
-                      child: Stack(alignment: Alignment.topCenter, children: [
-                        GestureDetector(
-                          onTap: () => !widget.levelData.isLock
-                              ? widget.onClickLevel(widget.levelData.id)
-                              : null,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              // Regular level or final cup
-                              Transform.scale(
-                                  scale: _scalingAnimation.value,
-                                  child: _getLevelWidget()),
+                  child: Stack(alignment: Alignment.center, children: [
+                    Transform.translate(
+                        offset: Offset(0, _getTranslateValue()),
+                        child: Stack(alignment: Alignment.topCenter, children: [
+                          GestureDetector(
+                            onTap: () => !widget.levelData.isLock
+                                ? widget.onClickLevel(widget.levelData.id)
+                                : null,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                // Regular level or final cup
+                                Transform.scale(
+                                    scale: _scalingAnimation.value,
+                                    child: _getLevelWidget()),
 
-                              // Title
-                              Text(widget.levelData.title,
-                                  style: const TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500))
-                            ],
+                                // Title
+                                Text(widget.levelData.title,
+                                    style: const TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500))
+                              ],
+                            ),
                           ),
-                        ),
-                      ])),
+                        ])),
+                    // if (widget.levelData.isCurrent) _tooltip()
+                  ]),
                 )),
 
         // Tooltip animation
-        if (widget.levelData.isCurrent &&
-            (widget.index == 0 && widget.levelData.progress == 0))
-          _tooltip(),
+        // if (widget.levelData.isCurrent
+        // &&
+        // (widget.index == 0 && widget.levelData.progress == 0)
+        // )
+        // _tooltip(),
       ],
     );
   }
@@ -269,14 +285,23 @@ class _LevelWidgetState extends State<LevelWidget>
             radius: outerRadius - circleWidth,
             backgroundColor: Colors.white,
             child: CircleAvatar(
-              radius: outerRadius - circleWidth - 4,
-              backgroundColor: _getMainColor(),
-              child: SvgPicture.asset(
-                widget.levelData.icon,
-                height: outerRadius,
-                color: _getIconColor(),
-              ),
-            ),
+                radius: outerRadius - circleWidth - 4,
+                backgroundColor: _getMainColor(),
+                child: widget.levelData.progress == 100
+                    ? const Icon(
+                        Icons.check,
+                        color: Colors.white,
+                      )
+                    : widget.levelData.progress == 0
+                        ? IconWidget(
+                            icon: widget.levelData.icon,
+                            height: outerRadius,
+                            color: _getIconColor(),
+                          )
+                        : Text(
+                            '${widget.levelData.progress.toInt()}%',
+                            style: const TextStyle(color: Colors.white),
+                          )),
           ),
         ),
       );
@@ -317,61 +342,64 @@ class _LevelWidgetState extends State<LevelWidget>
 
   Widget _finalLevel() => Padding(
       padding: const EdgeInsets.only(bottom: 5),
-      child: Image.asset(widget.finalLevelImage, scale: 0.8));
+      child: Image.asset(
+        widget.finalLevelImage,
+        scale: 0.8,
+        width: 65,
+      ));
 
-  Widget _tooltip() => AnimatedBuilder(
-        animation: _tooltipAnimation,
-        builder: (_, __) => Transform.translate(
-          offset: Offset(0, _tooltipAnimation.value),
-          child: Stack(children: [
-            Column(
-              children: [
-                // Tooltip is a rectangle with a triangle below
-                Container(
-                    width: 130,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 12),
-                    decoration: BoxDecoration(
-                        image: widget.isFirstGroup
-                            ? const DecorationImage(
-                                image:
-                                    AssetImage('assets/images/level_start.gif'),
-                                fit: BoxFit.cover)
-                            : null,
-                        color: widget.startColor,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white, width: 1),
-                        boxShadow: !widget.isDarkMode
-                            ? [
-                                BoxShadow(
-                                    color: Colors.grey.shade300,
-                                    blurRadius: 5,
-                                    spreadRadius: 2,
-                                    offset: const Offset(2, 2))
-                              ]
-                            : null),
-                    child: Center(
-                      child: Text(widget.isFirstGroup ? 'Start' : 'Jump Here',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          )),
-                    )),
-                Transform.translate(
-                  offset: const Offset(0, -1),
-                  child: CustomPaint(
-                      size: const Size(20, 20),
-                      painter: DownwardTrianglePainter(
-                          mainColor: widget.startColor,
-                          borderColor: Colors.white,
-                          borderWidth: 1)),
-                )
-              ],
-            ),
-          ]),
-        ),
-      );
+  // Widget _tooltip() => AnimatedBuilder(
+  //       animation: _tooltipAnimation,
+  //       builder: (_, __) => Transform.translate(
+  //         offset: Offset(0, _tooltipAnimation.value),
+  //         child: Stack(children: [
+  //           Column(
+  //             children: [
+  //               // Tooltip is a rectangle with a triangle below
+  //               Container(
+  //                   padding:
+  //                       const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+  //                   decoration: BoxDecoration(
+  //                       // image: widget.isFirstGroup
+  //                       //     ? const DecorationImage(
+  //                       //         image:
+  //                       //             AssetImage('assets/images/level_start.gif'),
+  //                       //         fit: BoxFit.cover)
+  //                       //     : null,
+  //                       color: widget.mainColor,
+  //                       borderRadius: BorderRadius.circular(10),
+  //                       border: Border.all(color: Colors.white, width: 1),
+  //                       boxShadow: !widget.isDarkMode
+  //                           ? [
+  //                               BoxShadow(
+  //                                   color: Colors.grey.shade300,
+  //                                   blurRadius: 5,
+  //                                   spreadRadius: 2,
+  //                                   offset: const Offset(2, 2))
+  //                             ]
+  //                           : null),
+  //                   child: const Center(
+  //                     child: Text('Start',
+  //                         style: TextStyle(
+  //                           color: Colors.white,
+  //                           fontSize: 14,
+  //                           fontWeight: FontWeight.w500,
+  //                         )),
+  //                   )),
+  //               Transform.translate(
+  //                 offset: const Offset(0, -1),
+  //                 child: CustomPaint(
+  //                     size: const Size(20, 20),
+  //                     painter: DownwardTrianglePainter(
+  //                         mainColor: widget.mainColor,
+  //                         borderColor: Colors.white,
+  //                         borderWidth: 1)),
+  //               )
+  //             ],
+  //           ),
+  //         ]),
+  //       ),
+  //     );
 
   _getOpacityValue() => widget.drawType == DrawType.firstTimeOpen
       ? _fadingInAnimation.value

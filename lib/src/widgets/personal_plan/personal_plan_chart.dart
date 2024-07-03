@@ -240,7 +240,6 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
   }
 
   /// Chart drawing utils
-
   _buildCustomXAxis(ChartType type) => CategoryAxis(
         isVisible: type != ChartType.line,
         labelStyle: const TextStyle(color: Colors.transparent),
