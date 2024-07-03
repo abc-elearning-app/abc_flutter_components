@@ -85,6 +85,7 @@ class DiagnosticResult extends StatelessWidget {
           title: Text(
             'Diagnostic Test',
             style: TextStyle(
+                fontSize: 20,
                 fontWeight: FontWeight.w500,
                 color: isDarkMode ? Colors.white : Colors.black),
           ),
@@ -127,8 +128,9 @@ class DiagnosticResult extends StatelessWidget {
                     width: double.infinity,
                     child: MainButton(
                         title: 'Next',
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        textStyle: const TextStyle(fontSize: 20),
+                        borderRadius: 16,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        textStyle: const TextStyle(fontSize: 18),
                         onPressed: () => onNext(),
                         backgroundColor: mainColor))
               ],

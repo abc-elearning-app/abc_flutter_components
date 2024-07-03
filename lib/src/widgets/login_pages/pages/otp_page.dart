@@ -50,7 +50,7 @@ class OtpPage extends StatelessWidget {
               child: Text(
                 detail,
                 style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     color: isDarkMode
                         ? Colors.white.withOpacity(0.6)
                         : Colors.black),
@@ -60,7 +60,7 @@ class OtpPage extends StatelessWidget {
           ),
         ),
         Transform.scale(
-          scale: 2,
+          scale: 1.8,
           child: Pinput(
             controller: otpController,
             defaultPinTheme: customPinTheme,
@@ -76,7 +76,7 @@ class OtpPage extends StatelessWidget {
             child: Text(
               'Enter Another Email',
               style: TextStyle(
-                  fontSize: 16, color: isDarkMode ? mainColor : secondaryColor),
+                  fontSize: 14, color: isDarkMode ? mainColor : secondaryColor),
             ),
           ),
         ),

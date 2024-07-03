@@ -65,13 +65,15 @@ class ResultSubjectTile extends StatelessWidget {
                 title,
                 style: const TextStyle(
                     fontWeight: FontWeight.w500,
-                    fontSize: 18,
+                    fontSize: 15,
                     overflow: TextOverflow.ellipsis),
               )),
               Text(
                 '${progress.toInt()}%',
-                style:
-                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15,
+                ),
               )
             ],
           ),
@@ -113,6 +115,7 @@ class ResultSubjectTile extends StatelessWidget {
               Text(
                 _getLevelTitle(),
                 style: TextStyle(
+                    fontSize: 12,
                     color: (isDarkMode ? Colors.white : Colors.black)
                         .withOpacity(0.5)),
               ),

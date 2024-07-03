@@ -82,11 +82,11 @@ class GeneralResultBox extends StatelessWidget {
                 const SizedBox(height: 10),
                 Text('Your Level :',
                     style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         color: isDarkMode ? Colors.white : Colors.black)),
                 Text(_getLevelTitle(levelType),
                     style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 16,
                         color: _getLevelColor(levelType),
                         fontWeight: FontWeight.bold)),
               ],
@@ -113,7 +113,7 @@ class GeneralResultBox extends StatelessWidget {
   }
 
   Widget _buildCircleProgress(LevelType levelType) {
-    const double outerRadius = 125;
+    const double outerRadius = 120;
     const double lineWidth = 16;
 
     return Stack(alignment: Alignment.center, children: [
@@ -123,7 +123,7 @@ class GeneralResultBox extends StatelessWidget {
         child: CircularPercentIndicator(
           radius: outerRadius,
           lineWidth: lineWidth,
-          backgroundColor: _getLevelColor(levelType).withOpacity(0.2),
+          backgroundColor: _getLevelColor(levelType).withOpacity(0.15),
           center: CircularPercentIndicator(
             radius: outerRadius - lineWidth,
             lineWidth: lineWidth,
@@ -142,13 +142,16 @@ class GeneralResultBox extends StatelessWidget {
                   IconWidget(icon: circleProgressImage, height: 80),
                   Text(
                     'Your result is',
-                    style: TextStyle(color: _getLevelColor(levelType)),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: _getLevelColor(levelType),
+                    ),
                   ),
                   Text(
                     '${mainProgress.toInt()}%',
                     style: TextStyle(
                         color: _getLevelColor(levelType),
-                        fontSize: 35,
+                        fontSize: 32,
                         fontWeight: FontWeight.bold),
                   )
                 ],
@@ -201,7 +204,7 @@ class GeneralResultBox extends StatelessWidget {
                 child: Text(_getLevelTitle(type),
                     style: TextStyle(
                         color: _getLevelColor(type),
-                        fontSize: 15,
+                        fontSize: 14,
                         fontWeight: FontWeight.w500))),
           )
         ],

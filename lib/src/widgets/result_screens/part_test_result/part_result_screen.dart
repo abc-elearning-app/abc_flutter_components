@@ -93,7 +93,7 @@ class _PartResultScreenState extends State<PartResultScreen>
                       Text('Part ${widget.partIndex} Completed!',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 26,
+                              fontSize: 24,
                               fontWeight: FontWeight.w600,
                               color: widget.isDarkMode
                                   ? Colors.white
@@ -110,7 +110,7 @@ class _PartResultScreenState extends State<PartResultScreen>
                           congratulationTexts[textIndex],
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.w400,
                               color: widget.isDarkMode
                                   ? Colors.white
@@ -186,7 +186,7 @@ class _PartResultScreenState extends State<PartResultScreen>
           borderSize: BorderSide(width: 1, color: widget.mainColor),
           textColor: isSelected ? Colors.white : widget.mainColor,
           padding: const EdgeInsets.symmetric(vertical: 15),
-          textStyle: const TextStyle(fontSize: 18),
+          textStyle: const TextStyle(fontSize: 16),
           borderRadius: 14,
           onPressed: action,
         ),

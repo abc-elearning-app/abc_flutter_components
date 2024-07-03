@@ -25,7 +25,7 @@ class StudyTabSubjectTile extends StatelessWidget {
       onTap: () => onSelectSubject(subjectData.id),
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
-        padding: const EdgeInsets.all(15),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
             color: Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
             borderRadius: BorderRadius.circular(16),
@@ -55,7 +55,7 @@ class StudyTabSubjectTile extends StatelessWidget {
                 child: Text(
                   subjectData.title,
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 15,
                       fontWeight: FontWeight.w500,
                       color: isDarkMode ? Colors.white : Colors.black),
                 ),
@@ -73,7 +73,7 @@ class StudyTabSubjectTile extends StatelessWidget {
                 '${subjectData.progress.toInt()}%',
                 style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    fontSize: 16,
+                    fontSize: 14,
                     color: isDarkMode ? Colors.white : Colors.black),
               ),
             )

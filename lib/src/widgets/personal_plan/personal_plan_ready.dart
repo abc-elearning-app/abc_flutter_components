@@ -89,7 +89,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                         'Your Personal Plan Is Ready!',
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 26,
+                            fontSize: 24,
                             color: isDarkMode ? Colors.white : Colors.black),
                         textAlign: TextAlign.center,
                       ),
@@ -168,6 +168,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                 Text(
                   data.title,
                   style: TextStyle(
+                      fontSize: 12,
                       color: (isDarkMode ? Colors.white : Colors.black)
                           .withOpacity(0.5)),
                 ),
@@ -175,7 +176,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                   data.content,
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: 16,
+                      fontSize: 14,
                       color: isDarkMode ? Colors.white : Colors.black),
                 )
               ],

@@ -125,7 +125,7 @@ class FinalTestResult extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 20, top: 10),
                       child: Text('Test Subjects',
                           style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.w500,
                               color: isDarkMode ? Colors.white : Colors.black)),
                     ),
@@ -202,7 +202,7 @@ class FinalTestResult extends StatelessWidget {
           borderSize: BorderSide(width: 1, color: buttonMainColor),
           textColor: isSelected ? Colors.white : buttonMainColor,
           padding: const EdgeInsets.symmetric(vertical: 15),
-          textStyle: const TextStyle(fontSize: 18),
+          textStyle: const TextStyle(fontSize: 16),
           borderRadius: 18,
           onPressed: action,
         ),

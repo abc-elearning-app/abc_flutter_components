@@ -36,7 +36,7 @@ class EmailPage extends StatelessWidget {
               child: Text(
                 detail,
                 style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     color: isDarkMode
                         ? Colors.white.withOpacity(0.6)
                         : Colors.black),
@@ -83,7 +83,7 @@ class EmailPage extends StatelessWidget {
               color: isDarkMode
                   ? Colors.white.withOpacity(0.24)
                   : Colors.grey.shade300,
-              fontSize: 18),
+              fontSize: 16),
           fillColor: isDarkMode ? Colors.grey.shade900 : Colors.white,
           focusedBorder: border,
           enabledBorder: border,

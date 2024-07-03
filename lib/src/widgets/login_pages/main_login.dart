@@ -191,7 +191,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
             value == 0 ? 'Log in' : 'Check your email',
             style: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: 26,
+                fontSize: 24,
                 color: widget.isDarkMode ? Colors.white : Colors.black),
           ));
 
@@ -199,16 +199,15 @@ class _MainLoginPageState extends State<MainLoginPage> {
       valueListenable: _pageIndex,
       builder: (_, value, __) => Visibility(
             visible: value == 0,
-            child: GestureDetector(
-              onTap: () => widget.onSkip(),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Text('Skip',
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: IconButton(
+                icon: Text('Skip',
                     style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 16,
                         color:
                             widget.isDarkMode ? Colors.white : Colors.black)),
+                onPressed: widget.onSkip,
               ),
             ),
           ));
@@ -234,7 +233,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
                 valueListenable: _pageIndex,
                 builder: (_, value, __) => Text(
                   value == 0 ? 'Request Code' : 'Submit',
-                  style: const TextStyle(fontSize: 22),
+                  style: const TextStyle(fontSize: 20),
                 ),
               ),
             ),

@@ -134,7 +134,7 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
                   child: Text(
                     widget.tabList[index].title,
                     style: const TextStyle(
-                        fontSize: 25, fontWeight: FontWeight.bold),
+                        fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Expanded(

@@ -76,7 +76,7 @@ class NewTestTab extends StatelessWidget {
                 Text(
                   'Practice Tests',
                   style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.w500,
                       color: isDarkMode ? Colors.white : Colors.black),
                 ),
@@ -88,7 +88,7 @@ class NewTestTab extends StatelessWidget {
                   title: 'See All',
                   textColor: isDarkMode ? mainColor : secondaryColor,
                   textStyle: const TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
                 )
@@ -114,7 +114,7 @@ class NewTestTab extends StatelessWidget {
             child: Text(
               'Exam Mode',
               style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.w500,
                   color: isDarkMode ? Colors.white : Colors.black),
             ),

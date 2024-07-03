@@ -78,7 +78,7 @@ class _ReportMistakePopupState extends State<ReportMistakePopup> {
               children: [
                 Text('Report A Mistake',
                     style: TextStyle(
-                        fontSize: 22,
+                        fontSize: 20,
                         fontWeight: FontWeight.w600,
                         color:
                             widget.isDarkMode ? Colors.white : Colors.black)),
@@ -110,7 +110,7 @@ class _ReportMistakePopupState extends State<ReportMistakePopup> {
           leading: Text(
             mistakeData.title,
             style: TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w500,
                 color: widget.isDarkMode ? Colors.white : Colors.black),
           ),
@@ -149,6 +149,7 @@ class _ReportMistakePopupState extends State<ReportMistakePopup> {
         enabledBorder: underlineDecoration,
         focusedBorder: underlineDecoration,
         hintStyle: TextStyle(
+            fontSize: 16,
             color: (widget.isDarkMode ? Colors.white : Colors.black)
                 .withOpacity(0.24)),
       ),
@@ -167,7 +168,7 @@ class _ReportMistakePopupState extends State<ReportMistakePopup> {
               disabled: !value,
               disabledTextColor: Colors.red,
               padding: const EdgeInsets.symmetric(vertical: 12),
-              textStyle: const TextStyle(fontSize: 18),
+              textStyle: const TextStyle(fontSize: 16),
               onPressed: () {
                 widget.onClick(mistakeList, _textEditingController.text);
                 Navigator.of(context).pop();

@@ -30,7 +30,7 @@ class SelectReminderTimePage extends StatelessWidget {
             child: Text(
               title,
               style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: isDarkMode ? Colors.white : Colors.black),
               textAlign: TextAlign.center,
@@ -40,7 +40,7 @@ class SelectReminderTimePage extends StatelessWidget {
           // Image
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 30),
-            child: Image.asset(image, height: 300),
+            child: Image.asset(image, height: 280),
           ),
           Expanded(
               child: Transform.scale(
