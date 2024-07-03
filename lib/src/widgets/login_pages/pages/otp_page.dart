@@ -37,10 +37,12 @@ class OtpPage extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 30),
-        Expanded(flex: 2, child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Image.asset(image),
-        )),
+        Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Image.asset(image),
+            )),
         Expanded(
           flex: 1,
           child: Padding(
@@ -70,13 +72,15 @@ class OtpPage extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () => onReenterEmail(),
+          onTap: onReenterEmail,
           child: Padding(
             padding: const EdgeInsets.only(top: 30, bottom: 50),
             child: Text(
               'Enter Another Email',
               style: TextStyle(
-                  fontSize: 14, color: isDarkMode ? mainColor : secondaryColor),
+                fontSize: 14,
+                color: isDarkMode ? mainColor : secondaryColor,
+              ),
             ),
           ),
         ),

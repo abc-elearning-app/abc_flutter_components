@@ -28,18 +28,19 @@ class MainLoginPage extends StatefulWidget {
   final void Function() onSkip;
   final void Function(String otp) onSubmit;
 
-  const MainLoginPage(
-      {super.key,
-      this.mainColor = const Color(0xFFE3A651),
-      this.secondaryColor = const Color(0xFF7C6F5B),
-      this.upperBackgroundColor = const Color(0xFFF5F4EE),
-      this.lowerBackgroundColor = Colors.white,
-      this.buttonTextColor = Colors.white,
-      required this.isDarkMode,
-      required this.onRequestCodeClick,
-      required this.onSkip,
-      required this.onSubmit,
-      required this.tabDataList});
+  const MainLoginPage({
+    super.key,
+    this.mainColor = const Color(0xFFE3A651),
+    this.secondaryColor = const Color(0xFF7C6F5B),
+    this.upperBackgroundColor = const Color(0xFFF5F4EE),
+    this.lowerBackgroundColor = Colors.white,
+    this.buttonTextColor = Colors.white,
+    required this.isDarkMode,
+    required this.onRequestCodeClick,
+    required this.onSkip,
+    required this.onSubmit,
+    required this.tabDataList,
+  });
 
   @override
   State<MainLoginPage> createState() => _MainLoginPageState();
@@ -80,15 +81,16 @@ class _MainLoginPageState extends State<MainLoginPage> {
       )
     ];
 
-    _pageController.addListener(() {
-      _pageIndex.value = _pageController.page!.toInt();
-    });
+    _pageController.addListener(_nextPageListener);
 
     super.initState();
   }
 
+  void _nextPageListener() => _pageIndex.value = _pageController.page!.toInt();
+
   @override
   void dispose() {
+    _pageController.removeListener(_nextPageListener);
     _pageController.dispose();
     _pageIndex.dispose();
     _buttonEnable.dispose();
@@ -102,12 +104,10 @@ class _MainLoginPageState extends State<MainLoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor:
-          widget.isDarkMode ? Colors.black : widget.upperBackgroundColor,
+      backgroundColor: _getBackgroundColor(),
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor:
-            widget.isDarkMode ? Colors.black : widget.upperBackgroundColor,
+        backgroundColor: _getBackgroundColor(),
         leading: _buildLeadingButton(),
         title: _buildPageTitle(),
         actions: [_buildSkipButton()],
@@ -220,7 +220,9 @@ class _MainLoginPageState extends State<MainLoginPage> {
             builder: (_, value, __) => ElevatedButton(
               onPressed: value ? _handleButtonClick : null,
               style: ElevatedButton.styleFrom(
-                  disabledBackgroundColor: Colors.grey,
+                  disabledBackgroundColor: widget.isDarkMode
+                      ? Colors.grey.shade700
+                      : Colors.grey.shade300,
                   backgroundColor: widget.mainColor,
                   foregroundColor: widget.buttonTextColor,
                   shape: RoundedRectangleBorder(
@@ -241,6 +243,9 @@ class _MainLoginPageState extends State<MainLoginPage> {
         ),
       );
 
+  _getBackgroundColor() =>
+      widget.isDarkMode ? Colors.black : widget.upperBackgroundColor;
+
   _handleReenterEmail() {
     // Clear all text controllers
     emailController.clear();
@@ -251,7 +256,9 @@ class _MainLoginPageState extends State<MainLoginPage> {
 
     // Go to email page
     _pageController.previousPage(
-        duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+    );
   }
 
   _handleButtonClick() {
@@ -260,7 +267,9 @@ class _MainLoginPageState extends State<MainLoginPage> {
       FocusScope.of(context).unfocus();
 
       _pageController.nextPage(
-          duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+      );
 
       // Handle when request code
       widget.onRequestCodeClick(emailController.text);

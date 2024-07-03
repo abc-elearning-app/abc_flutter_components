@@ -181,7 +181,7 @@ class _ProPurchaseState extends State<ProPurchase> {
 
   Widget _buildPerks() => ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
       shrinkWrap: true,
       itemCount: widget.perks.length,
       itemBuilder: (_, index) => Row(
