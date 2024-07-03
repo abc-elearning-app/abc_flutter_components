@@ -139,7 +139,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${percent.toStringAsFixed(2)}%',
+                        Text('${percent.toInt()}%',
                             style:
                                 const TextStyle(fontWeight: FontWeight.w500)),
                         Text('$passedLevels/$totalLevels Lessons',
@@ -152,7 +152,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                       padding: const EdgeInsets.only(
                         left: 20,
                         right: 20,
-                        bottom: 20,
+                        // bottom: 20,
                         top: 5,
                       ),
                       child: CustomLinearProgress(
@@ -164,7 +164,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                           indicatorColor: Colors.white)),
                   Expanded(
                     child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        // padding: const EdgeInsets.symmetric(vertical: 8),
                         controller: _scrollController,
                         shrinkWrap: true,
                         itemCount: widget.levelGroupList.length,
@@ -195,7 +195,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
     return Column(
       children: [
         // _buildDivider(currentGroup.title, index == 0),
-        const SizedBox(height: 80),
+        const SizedBox(height: 50),
         PathLevel(
             isDarkMode: widget.isDarkMode,
             finalLevelImage: widget.finalLevelImage,
