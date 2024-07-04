@@ -105,7 +105,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                         barSectionHeight: 150,
                         startTime: DateTime(2024, 6, 30),
                         examDate: examDate ?? DateTime(2024, 7, 3),
-                        valueList: const [10, 10, 10],
+                        valueList: const [25, 25, 25],
                       ),
                     ),
 
@@ -115,9 +115,10 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                       child: Text(
                         'Today - ${_getDisplayDate(time: DateTime.now())}',
                         style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18,
-                            color: isDarkMode ? Colors.white : Colors.black),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          color: isDarkMode ? Colors.white : Colors.black,
+                        ),
                       ),
                     ),
 
@@ -135,12 +136,14 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                                   itemCount: informationDataList.length,
                                   itemBuilder: (_, index) =>
                                       _buildInformationTile(
-                                          informationDataList[index]))),
+                                        informationDataList[index],
+                                      ))),
 
                           // Image
                           Transform.translate(
-                              offset: const Offset(0, 50),
-                              child: Image.asset(sideImage, height: 200))
+                            offset: const Offset(0, 20),
+                            child: Image.asset(sideImage, height: 180),
+                          )
                         ],
                       ),
                     )
