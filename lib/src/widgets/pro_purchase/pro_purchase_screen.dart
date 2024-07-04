@@ -17,22 +17,25 @@ class ProPurchase extends StatefulWidget {
   final String proOptionIcon;
   final String limitedOfferFrame;
 
-  final void Function() onRestore;
+  final VoidCallback onRestore;
+  final void Function(String value) onUpgrade;
 
-  const ProPurchase(
-      {super.key,
-      required this.proOptions,
-      required this.perks,
-      required this.onRestore,
-      required this.proName,
-      this.mainColor = const Color(0xFFEEAF56),
-      this.secondaryColor = const Color(0xFF9D8A6B),
-      this.backgroundColor = const Color(0xFFF5F4EE),
-      required this.mainImage,
-      required this.proBannerBackground,
-      required this.isDarkMode,
-      required this.proOptionIcon,
-      required this.limitedOfferFrame});
+  const ProPurchase({
+    super.key,
+    required this.proOptions,
+    required this.perks,
+    required this.onRestore,
+    required this.proName,
+    this.mainColor = const Color(0xFFEEAF56),
+    this.secondaryColor = const Color(0xFF9D8A6B),
+    this.backgroundColor = const Color(0xFFF5F4EE),
+    required this.mainImage,
+    required this.proBannerBackground,
+    required this.isDarkMode,
+    required this.proOptionIcon,
+    required this.limitedOfferFrame,
+    required this.onUpgrade
+  });
 
   @override
   State<ProPurchase> createState() => _ProPurchaseState();
@@ -44,6 +47,7 @@ class _ProPurchaseState extends State<ProPurchase> {
   @override
   void initState() {
     _proBannerData = ValueNotifier(ProBannerData(
+      widget.proOptions[1].id,
         widget.proOptions[1].percentSaved,
         widget.proOptions[1].price,
         widget.proOptions[1].optionTime));
@@ -96,9 +100,11 @@ class _ProPurchaseState extends State<ProPurchase> {
                       onSelect: (index) {
                         final selectedOption = widget.proOptions[index];
                         _proBannerData.value = ProBannerData(
-                            selectedOption.percentSaved,
-                            selectedOption.price,
-                            selectedOption.optionTime);
+                          selectedOption.id,
+                          selectedOption.percentSaved,
+                          selectedOption.price,
+                          selectedOption.optionTime
+                        );
                       },
                     ),
                     _buildDetailText()
@@ -216,7 +222,9 @@ class _ProPurchaseState extends State<ProPurchase> {
         textStyle: const TextStyle(fontSize: 20),
         borderRadius: 16,
         backgroundColor: widget.mainColor,
-        onPressed: () {},
+        onPressed: () {
+          widget.onUpgrade(_proBannerData.value.id);
+        },
         padding: const EdgeInsets.symmetric(vertical: 12),
       ));
 }

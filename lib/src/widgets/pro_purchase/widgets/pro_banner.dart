@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 class ProBannerData {
+  final String id;
   final double percentSaved;
   final double price;
   final ProOptionTime timeType;
 
   ProBannerData(
+    this.id,
     this.percentSaved,
     this.price,
     this.timeType,

@@ -154,9 +154,9 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ActionButtons(
-              bookmarked: true,
-              liked: false,
-              disliked: false,
+              bookmarked: isBookmarked,
+              liked: isLiked,
+              disliked: isDisliked,
               color: 'orange',
               onBookmark: (isSelected) {},
               onLike: (isSelected) {},
