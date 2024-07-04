@@ -106,7 +106,16 @@ class _SettingScreenState extends State<SettingScreen> {
                     isDarkMode: widget.isDarkMode,
                     margin: const EdgeInsets.only(left: 10, right: 10, top: 20),
                     onClick: () => widget.onClickPremium(),
-                    buttonHeight: _buttonHeight),
+                    buttonHeight: _buttonHeight)
+              else
+                const Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.done),
+                    Text('Pro'),
+                  ],
+                ),
               _title('Settings Exam'),
               _tileGroup([
                 ValueListenableBuilder(

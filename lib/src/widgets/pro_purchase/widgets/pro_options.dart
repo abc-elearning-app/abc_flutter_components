@@ -4,6 +4,7 @@ import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 enum ProOptionTime { week, month, year }
 
 class ProOptionData {
+  final String id;
   final String title;
   final double price;
   final double originalPrice;
@@ -12,6 +13,7 @@ class ProOptionData {
   final int freeTrialDays;
 
   ProOptionData(
+    this.id,
     this.title,
     this.price,
     this.originalPrice,
@@ -125,7 +127,8 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
               if (data.freeTrialDays > 0)
                 _buildFreeDayTrials(data.freeTrialDays),
 
-              _buildSavedPercentBox(data.percentSaved, index)
+              if(data.percentSaved > 0) 
+                _buildSavedPercentBox(data.percentSaved, index)
             ]),
           ),
         ),
