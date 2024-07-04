@@ -83,7 +83,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                 Text(
                   '${widget.index + 1}. ${widget.questionData.question}',
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: widget.isDarkMode ? Colors.white : Colors.black),
                 ),
@@ -114,7 +114,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                               Text(
                                 'Explanation',
                                 style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: widget.isDarkMode
                                         ? Colors.white
@@ -125,6 +125,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                                 style: TextStyle(
                                     fontStyle: FontStyle.italic,
                                     fontWeight: FontWeight.w500,
+                                    fontSize: 14,
                                     color: widget.isDarkMode
                                         ? Colors.white
                                         : Colors.grey.shade600),
@@ -200,7 +201,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
           Text(
             content,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 14,
               color: widget.isDarkMode ? Colors.white : Colors.black,
             ),
           ),
@@ -227,7 +228,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
               Text(
                 'Show Explanation',
                 style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     color: widget.explanationColor,
                     fontWeight: FontWeight.w500),
               ),

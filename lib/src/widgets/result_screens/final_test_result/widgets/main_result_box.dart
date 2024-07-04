@@ -121,7 +121,7 @@ class _MainResultBoxState extends State<MainResultBox> {
                       : widget.incorrectColor,
                   Colors.black,
                   widget.isDarkMode ? 0 : 0.2),
-              fontSize: 15),
+              fontSize: 14),
           textAlign: TextAlign.center,
         ),
       );
@@ -156,13 +156,14 @@ class _MainResultBoxState extends State<MainResultBox> {
             children: [
               Text(
                 title,
-                style: const TextStyle(fontSize: 16, color: Color(0xFF939393)),
+                style: const TextStyle(fontSize: 14, color: Color(0xFF939393)),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Text(
                   '$questionNum ${'Questions'}',
                   style: TextStyle(
+                      fontSize: 12,
                       fontWeight: FontWeight.bold,
                       color: widget.isDarkMode ? Colors.white : Colors.black),
                 ),
@@ -225,7 +226,7 @@ class _MainResultBoxState extends State<MainResultBox> {
                 : 'Not Enough To Pass!',
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 20,
+              fontSize: 18,
               color: widget.progress >= widget.passPercent
                   ? Colors.white
                   : widget.incorrectColor,
@@ -243,7 +244,7 @@ class _MainResultBoxState extends State<MainResultBox> {
                 Text(
                   'Community Score: ${widget.averageProgress.toInt()}% ',
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: widget.isDarkMode ? Colors.white : Colors.black),
                 ),

@@ -82,7 +82,7 @@ class FinalTestBox extends StatelessWidget {
                           Text(
                               'Our final test is the ultimate gauge that assesses your readiness for the actual exam.',
                               style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.white)),
                         ],
@@ -108,20 +108,20 @@ class FinalTestBox extends StatelessWidget {
                     RichText(
                         text: TextSpan(
                             style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w400),
+                                fontSize: 14, fontWeight: FontWeight.w400),
                             children: [
                           TextSpan(text: answeredQuestions.toString()),
                           TextSpan(
                               text: '/$totalQuestions Answered',
                               style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   color: Colors.white.withOpacity(0.7)))
                         ])),
                     Text(
                       '${correctPercent.toInt()}% Correct',
                       style: const TextStyle(
                           fontWeight: FontWeight.w400,
-                          fontSize: 16,
+                          fontSize: 14,
                           color: Colors.white),
                     )
                   ],

@@ -67,7 +67,7 @@ class _QuestionCountDialogState extends State<QuestionCountDialog> {
                 child: Text(
                   'How Many Questions Do You Want?',
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: widget.isDarkMode ? Colors.white : Colors.black,
                   ),
@@ -87,7 +87,7 @@ class _QuestionCountDialogState extends State<QuestionCountDialog> {
                             borderRadius: 18,
                             title: 'Cancel',
                             textColor: widget.mainColor,
-                            textStyle: const TextStyle(fontSize: 18),
+                            textStyle: const TextStyle(fontSize: 16),
                             onPressed: () => Navigator.of(context).pop(),
                             borderSize: BorderSide(
                               width: 1,
@@ -106,7 +106,7 @@ class _QuestionCountDialogState extends State<QuestionCountDialog> {
                               borderRadius: 18,
                               title: 'Practice',
                               disabled: !value,
-                              textStyle: const TextStyle(fontSize: 18),
+                              textStyle: const TextStyle(fontSize: 16),
                               onPressed: () => _handlePracticeClick(),
                               backgroundColor: widget.mainColor,
                               padding: const EdgeInsets.symmetric(vertical: 15),
@@ -142,6 +142,7 @@ class _QuestionCountDialogState extends State<QuestionCountDialog> {
                         child: Text(
                           '${(index + 1) * 10}',
                           style: TextStyle(
+                              fontSize: 16,
                               color: selectedOption == index
                                   ? Colors.white
                                   : widget.isDarkMode

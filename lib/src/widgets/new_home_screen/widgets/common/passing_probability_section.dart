@@ -38,7 +38,7 @@ class PassingProbabilitySection extends StatelessWidget {
         alignment: Alignment.bottomCenter,
         children: [
           Container(
-              padding: const EdgeInsets.all(18),
+              padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
                   border: Border.all(
@@ -47,7 +47,7 @@ class PassingProbabilitySection extends StatelessWidget {
                   )),
               child: IconWidget(icon: streakIcon)),
           Transform.translate(
-            offset: const Offset(0, 10),
+            offset: const Offset(0, 5),
             child: Container(
               width: 45,
               padding: const EdgeInsets.symmetric(vertical: 1),
@@ -58,7 +58,7 @@ class PassingProbabilitySection extends StatelessWidget {
               child: Center(
                   child: Text(
                 dayStreak.toString(),
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white, fontSize: 12),
               )),
             ),
           )
@@ -84,14 +84,14 @@ class PassingProbabilitySection extends StatelessWidget {
                 Text(
                   'Passing Probability',
                   style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: isDarkMode ? Colors.white : Colors.black),
                 ),
                 Text(
                   '${passingProbability.toInt()}%',
                   style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: isDarkMode ? Colors.white : Colors.black),
                 ),

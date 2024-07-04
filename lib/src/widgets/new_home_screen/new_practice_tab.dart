@@ -76,12 +76,12 @@ class NewPracticeTab extends StatelessWidget {
                       questionGroupData.title,
                       style: TextStyle(
                           fontWeight: FontWeight.w500,
-                          fontSize: 18,
+                          fontSize: 16,
                           color: isDarkMode ? Colors.white : Colors.black),
                     ),
                     Text(
                       questionGroupData.subtitle,
-                      style: const TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 12),
                     ),
                   ],
                 ),

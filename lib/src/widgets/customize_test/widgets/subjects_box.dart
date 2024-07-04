@@ -75,7 +75,7 @@ class SubjectsBox extends StatelessWidget {
                   textAlign: TextAlign.left,
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: 18,
+                      fontSize: 16,
                       color: isDarkMode ? Colors.white : Colors.black,
                       overflow: TextOverflow.ellipsis)),
             ),

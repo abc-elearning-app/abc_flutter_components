@@ -227,7 +227,7 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
               'Not Now',
               style: TextStyle(
                   color: widget.isDarkMode ? Colors.white : Colors.black,
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.w300),
             )),
       );

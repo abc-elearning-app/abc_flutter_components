@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class TodayQuestionButton extends StatelessWidget {
+class DailyChallengeButton extends StatelessWidget {
   final String buttonBackground;
   final Color mainColor;
   final void Function() onClickDailyChallenge;
 
-  const TodayQuestionButton({
+  const DailyChallengeButton({
     super.key,
     required this.buttonBackground,
     required this.onClickDailyChallenge,
@@ -36,7 +36,7 @@ class TodayQuestionButton extends StatelessWidget {
               "Daily Challenge",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 20,
+                  fontSize: 18,
                   color: Colors.white),
             ),
           )),

@@ -128,7 +128,7 @@ class _CustomizeTestState extends State<CustomizeTest> {
                           child: Text('Feedback Modes',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                fontSize: 20,
+                                fontSize: 18,
                                 color: widget.isDarkMode
                                     ? Colors.white
                                     : Colors.black,
@@ -146,7 +146,7 @@ class _CustomizeTestState extends State<CustomizeTest> {
                           child: Text('Question Count',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                fontSize: 20,
+                                fontSize: 18,
                                 color: widget.isDarkMode
                                     ? Colors.white
                                     : Colors.black,
@@ -166,7 +166,7 @@ class _CustomizeTestState extends State<CustomizeTest> {
                           child: Text('Duration (minutes)',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                fontSize: 20,
+                                fontSize: 18,
                                 color: widget.isDarkMode
                                     ? Colors.white
                                     : Colors.black,
@@ -190,7 +190,7 @@ class _CustomizeTestState extends State<CustomizeTest> {
                               Text('Subjects',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     color: widget.isDarkMode
                                         ? Colors.white
                                         : Colors.black,
@@ -217,7 +217,7 @@ class _CustomizeTestState extends State<CustomizeTest> {
                           child: Text('Passing score (%)',
                               style: TextStyle(
                                   fontWeight: FontWeight.w500,
-                                  fontSize: 20,
+                                  fontSize: 18,
                                   color: widget.isDarkMode
                                       ? Colors.white
                                       : Colors.black)),
@@ -267,7 +267,7 @@ class _CustomizeTestState extends State<CustomizeTest> {
                   Text('Customize Test',
                       style: TextStyle(
                           fontWeight: FontWeight.w500,
-                          fontSize: 20,
+                          fontSize: 18,
                           color:
                               widget.isDarkMode ? Colors.white : Colors.black)),
                   const SizedBox(width: 10),
@@ -324,8 +324,8 @@ class _CustomizeTestState extends State<CustomizeTest> {
         margin: const EdgeInsets.all(10),
         width: double.infinity,
         child: MainButton(
-          title: 'Start',
-          textStyle: const TextStyle(fontSize: 18),
+          title: 'Start Test',
+          textStyle: const TextStyle(fontSize: 16),
           disabled: value,
           backgroundColor: widget.mainColor,
           onPressed: () => widget.onStart(

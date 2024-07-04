@@ -53,7 +53,7 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
                 padding: const EdgeInsets.all(20),
                 child: Text(widget.title,
                     style: TextStyle(
-                        fontSize: 28,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color:
                             widget.isDarkMode ? Colors.white : Colors.black))),
@@ -63,7 +63,7 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
                 padding: const EdgeInsets.only(bottom: 40),
                 child: Image.asset(
                     widget.image,
-                    height: 300)),
+                    height: 280)),
 
             // Option tile & Exam time picker
             Expanded(
@@ -117,7 +117,7 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
                                 : widget.optionBoxFillColor)
                             ? Colors.black
                             : Colors.white,
-                        fontSize: 15,
+                        fontSize: 14,
                       )),
                 ],
               )),

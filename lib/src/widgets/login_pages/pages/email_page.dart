@@ -9,22 +9,22 @@ class EmailPage extends StatelessWidget {
   final TextEditingController emailController;
   final void Function() onEnterEmail;
 
-  const EmailPage(
-      {super.key,
-      required this.image,
-      required this.detail,
-      required this.emailController,
-      required this.onEnterEmail,
-      required this.mainColor,
-      required this.secondaryColor,
-      required this.isDarkMode});
+  const EmailPage({
+    super.key,
+    required this.image,
+    required this.detail,
+    required this.emailController,
+    required this.onEnterEmail,
+    required this.mainColor,
+    required this.secondaryColor,
+    required this.isDarkMode,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(
-            flex: 2, child: Image.asset(image)),
+        Expanded(flex: 2, child: Image.asset(image)),
 
         // Detail text
         Expanded(
@@ -36,7 +36,7 @@ class EmailPage extends StatelessWidget {
               child: Text(
                 detail,
                 style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     color: isDarkMode
                         ? Colors.white.withOpacity(0.6)
                         : Colors.black),
@@ -75,7 +75,7 @@ class EmailPage extends StatelessWidget {
       child: TextField(
         onChanged: (_) => onEnterEmail(),
         controller: emailController,
-        cursorColor: const Color(0xFF307561),
+        cursorColor: isDarkMode ? mainColor : secondaryColor,
         decoration: InputDecoration(
           filled: true,
           hintText: 'Please type your email address!',
@@ -83,7 +83,7 @@ class EmailPage extends StatelessWidget {
               color: isDarkMode
                   ? Colors.white.withOpacity(0.24)
                   : Colors.grey.shade300,
-              fontSize: 18),
+              fontSize: 16),
           fillColor: isDarkMode ? Colors.grey.shade900 : Colors.white,
           focusedBorder: border,
           enabledBorder: border,

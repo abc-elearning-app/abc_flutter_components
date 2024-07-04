@@ -25,14 +25,14 @@ class StartDiagnosticPage extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             child: Text(title,
                 style: TextStyle(
-                    fontSize: 28,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: isDarkMode ? Colors.white : Colors.black),
                 textAlign: TextAlign.center)),
 
         // Image
         Padding(
-            padding: const EdgeInsets.symmetric(vertical: 40),
+            padding: const EdgeInsets.only(bottom: 20),
             child: Image.asset(image, height: 300)),
 
         // Subtitle
@@ -41,7 +41,7 @@ class StartDiagnosticPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Text(subTitle,
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       color: isDarkMode
                           ? Colors.white.withOpacity(0.6)
                           : Colors.black),

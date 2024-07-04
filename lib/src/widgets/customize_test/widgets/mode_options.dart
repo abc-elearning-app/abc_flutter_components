@@ -66,7 +66,7 @@ class ModeOptions extends StatelessWidget {
                 title: Text(modeData.title,
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
-                        fontSize: 18,
+                        fontSize: 16,
                         color: selectedIndex == modeValue || isDarkMode
                             ? Colors.white
                             : Colors.black)),
@@ -98,7 +98,8 @@ class ModeOptions extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
                 modeData.detail,
-                style: const TextStyle(fontStyle: FontStyle.italic),
+                style:
+                    const TextStyle(fontStyle: FontStyle.italic, fontSize: 12),
               ),
             ))
       ],

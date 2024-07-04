@@ -74,7 +74,7 @@ class NewStudyTab extends StatelessWidget {
               streakIcon: streakIcon),
 
           // Button
-          TodayQuestionButton(
+          DailyChallengeButton(
             mainColor: mainColor,
             buttonBackground: buttonBackground,
             onClickDailyChallenge: onClickDailyChallenge,

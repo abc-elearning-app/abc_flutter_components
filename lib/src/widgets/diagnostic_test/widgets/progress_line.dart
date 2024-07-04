@@ -29,9 +29,7 @@ class ProgressLine extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           _buildColorProgress(context, correctColor, correctQuestions),
-          Transform.translate(
-            offset: const Offset(0, 1.5),
-              child: _buildColorProgress(context, incorrectColor, incorrectQuestions)),
+          _buildColorProgress(context, incorrectColor, incorrectQuestions),
         ],
       ),
     );

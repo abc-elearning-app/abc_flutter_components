@@ -54,7 +54,7 @@ class NewStatisticTab extends StatelessWidget {
               child: Text(
                 'Subject Analysis',
                 style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.w500,
                     color: isDarkMode ? Colors.white : Colors.black),
               ),

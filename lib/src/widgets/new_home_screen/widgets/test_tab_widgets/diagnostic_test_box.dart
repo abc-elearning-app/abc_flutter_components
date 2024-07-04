@@ -76,8 +76,9 @@ class DiagnosticTestBox extends StatelessWidget {
                           RichText(
                               text: const TextSpan(
                                   style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.w400,
+                                    fontFamily: 'Poppins',
                                   ),
                                   children: [
                                 TextSpan(
@@ -112,7 +113,7 @@ class DiagnosticTestBox extends StatelessWidget {
                     Text(
                       'Try Again',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: Colors.white,
                       ),

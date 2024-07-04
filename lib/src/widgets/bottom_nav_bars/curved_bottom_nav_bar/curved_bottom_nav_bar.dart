@@ -186,7 +186,7 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
                         style: TextStyle(
                           color: Colors.white.withOpacity(
                               entry.key == _currentPageIndex ? 1 : 0.5),
-                          fontSize: 15,
+                          fontSize: 14,
                           fontWeight: FontWeight.w400,
                         ),
                       ),

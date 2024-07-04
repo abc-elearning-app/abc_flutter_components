@@ -89,7 +89,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                         'Your Personal Plan Is Ready!',
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 26,
+                            fontSize: 24,
                             color: isDarkMode ? Colors.white : Colors.black),
                         textAlign: TextAlign.center,
                       ),
@@ -103,9 +103,9 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                         isDarkMode: isDarkMode,
                         lineSectionHeight: 120,
                         barSectionHeight: 150,
-                        startTime: DateTime(2024, 6, 25),
-                        examDate: examDate ?? DateTime(2024, 7, 6),
-                        valueList: [30, 40, 30, 35, 35, 45, 40],
+                        startTime: DateTime(2024, 6, 30),
+                        examDate: examDate ?? DateTime(2024, 7, 3),
+                        valueList: const [10, 10, 10],
                       ),
                     ),
 
@@ -168,6 +168,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                 Text(
                   data.title,
                   style: TextStyle(
+                      fontSize: 12,
                       color: (isDarkMode ? Colors.white : Colors.black)
                           .withOpacity(0.5)),
                 ),
@@ -175,7 +176,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                   data.content,
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: 16,
+                      fontSize: 14,
                       color: isDarkMode ? Colors.white : Colors.black),
                 )
               ],

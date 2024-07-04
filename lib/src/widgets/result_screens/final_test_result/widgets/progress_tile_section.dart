@@ -3,12 +3,17 @@ import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/icons/icon_box.dart';
 
 class ProgressTileData {
+  final int id;
   final String title;
   final double progress;
   final String icon;
 
-  ProgressTileData(
-      {required this.title, required this.progress, required this.icon});
+  ProgressTileData({
+    required this.id,
+    required this.title,
+    required this.progress,
+    required this.icon,
+  });
 }
 
 class ProgressSection extends StatelessWidget {
@@ -91,7 +96,7 @@ class ProgressSection extends StatelessWidget {
                         child: Text(
                           data.title,
                           style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.w500,
                               color: isDarkMode ? Colors.white : Colors.black,
                               overflow: TextOverflow.ellipsis),
@@ -102,7 +107,7 @@ class ProgressSection extends StatelessWidget {
                     // Progress
                     Text('${data.progress.toInt()}%',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: isDarkMode ? Colors.white : Colors.black,
                         ))
@@ -123,7 +128,7 @@ class ProgressSection extends StatelessWidget {
           )),
 
           // Improve button
-          _buildButton(index)
+          _buildButton(data.id)
         ],
       ),
     );
@@ -134,7 +139,7 @@ class ProgressSection extends StatelessWidget {
         child: MainButton(
           title: 'Improve',
           borderRadius: 20,
-          textStyle: const TextStyle(fontSize: 16),
+          textStyle: const TextStyle(fontSize: 15),
           padding: const EdgeInsets.symmetric(horizontal: 20),
           backgroundColor: mainColor.withOpacity(0.2),
           textColor: mainColor,

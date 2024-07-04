@@ -149,7 +149,7 @@ class _PersonalPlanAnalyzingScreenState
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 28,
+                      fontSize: 24,
                       color: widget.isDarkMode ? Colors.white : Colors.black),
                 ),
               ),
@@ -167,13 +167,13 @@ class _PersonalPlanAnalyzingScreenState
                           color: widget.isDarkMode
                               ? Colors.white
                               : widget.mainColor,
-                          fontSize: 40)),
+                          fontSize: 32)),
                 ),
               ),
 
               const Text(
                 'Analyzing Your Data ...',
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 16),
               )
             ],
           ),

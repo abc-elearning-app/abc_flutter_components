@@ -23,13 +23,14 @@ class IntroPersonalPlanPages extends StatefulWidget {
   final List<IntroPersonalPlanData> tabList;
   final void Function() onFinish;
 
-  const IntroPersonalPlanPages(
-      {super.key,
-      this.upperBackgroundColor = const Color(0xFFF5F4EE),
-      this.lowerBackgroundColor = Colors.white,
-      this.mainColor = const Color(0xFFE3A651),
-      required this.tabList,
-      required this.onFinish});
+  const IntroPersonalPlanPages({
+    super.key,
+    this.upperBackgroundColor = const Color(0xFFF5F4EE),
+    this.lowerBackgroundColor = Colors.white,
+    this.mainColor = const Color(0xFFE3A651),
+    required this.tabList,
+    required this.onFinish,
+  });
 
   @override
   State<IntroPersonalPlanPages> createState() => _IntroPersonalPlanPagesState();
@@ -44,15 +45,16 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
     _pageController = PageController(initialPage: 0);
     _pageIndex = ValueNotifier<double>(0);
 
-    _pageController.addListener(() {
-      _pageIndex.value = _pageController.page!;
-    });
+    _pageController.addListener(_nextPageListener);
 
     super.initState();
   }
 
+  void _nextPageListener() => _pageIndex.value = _pageController.page!;
+
   @override
   void dispose() {
+    _pageController.removeListener(_nextPageListener);
     _pageController.dispose();
     _pageIndex.dispose();
     super.dispose();
@@ -62,7 +64,7 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(children: [
-        _background(),
+        _buildBackground(),
         SafeArea(
           child: Column(
             children: [
@@ -70,8 +72,7 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
                   child: PageView.builder(
                       controller: _pageController,
                       itemCount: widget.tabList.length,
-                      itemBuilder: (_, index) =>
-                          _buildStudyPlanTab(context, index))),
+                      itemBuilder: (_, index) => _buildStudyPlanTab(index))),
               _buildNavigateSection()
             ],
           ),
@@ -80,7 +81,7 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
     );
   }
 
-  Widget _background() => Column(
+  Widget _buildBackground() => Column(
         children: [
           // Upper background
           Expanded(
@@ -112,7 +113,7 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
         ],
       );
 
-  Widget _buildStudyPlanTab(BuildContext context, int index) => Column(
+  Widget _buildStudyPlanTab(int index) => Column(
         children: [
           // Upper part
           Expanded(
@@ -134,7 +135,9 @@ class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
                   child: Text(
                     widget.tabList[index].title,
                     style: const TextStyle(
-                        fontSize: 25, fontWeight: FontWeight.bold),
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 Expanded(
