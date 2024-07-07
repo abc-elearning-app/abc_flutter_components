@@ -103,15 +103,15 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                         isDarkMode: isDarkMode,
                         lineSectionHeight: 120,
                         barSectionHeight: 150,
-                        startTime: DateTime(2024, 6, 30),
-                        examDate: examDate ?? DateTime(2024, 7, 3),
-                        valueList: const [25, 25, 25],
+                        startDate: DateTime(2024, 7, 1),
+                        examDate: examDate ?? DateTime(2024, 7, 15),
+                        valueList: const [48, 30, 20, 30, 40, 35],
                       ),
                     ),
 
                     // Current date
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.only(bottom: 10),
                       child: Text(
                         'Today - ${_getDisplayDate(time: DateTime.now())}',
                         style: TextStyle(
@@ -140,10 +140,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                                       ))),
 
                           // Image
-                          Transform.translate(
-                            offset: const Offset(0, 20),
-                            child: Image.asset(sideImage, height: 180),
-                          )
+                          Image.asset(sideImage, height: 180)
                         ],
                       ),
                     )

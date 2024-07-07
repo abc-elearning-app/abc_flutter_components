@@ -1,31 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/custom_datetime_picker/custom_unrestrict_date_picker.dart';
 
-import '../../custom_datetime_picker/custom_date_picker.dart';
-
 class SelectExamDatePage extends StatefulWidget {
   final String title;
   final String image;
   final Color mainColor;
   final Color secondaryColor;
-  final Color optionBoxFillColor;
   final bool isDarkMode;
-  final Map<String, dynamic> selectedTime;
 
-  final PageController pageController;
-  final ValueNotifier<int> pageIndex;
+  final void Function(int index) onSelectOption;
+  final void Function(DateTime selectedDate) onSelectDate;
 
   const SelectExamDatePage({
     super.key,
     required this.title,
     required this.image,
-    required this.pageController,
     required this.mainColor,
-    required this.optionBoxFillColor,
-    required this.selectedTime,
-    required this.pageIndex,
     required this.isDarkMode,
     required this.secondaryColor,
+    required this.onSelectDate,
+    required this.onSelectOption,
   });
 
   @override
@@ -61,9 +55,7 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
             // Image
             Padding(
                 padding: const EdgeInsets.only(bottom: 40),
-                child: Image.asset(
-                    widget.image,
-                    height: 280)),
+                child: Image.asset(widget.image, height: 280)),
 
             // Option tile & Exam time picker
             Expanded(
@@ -78,9 +70,8 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
                     secondChild: Container(
                       constraints: const BoxConstraints(maxHeight: 200),
                       child: CustomUnrestrictedDatePicker(
-                          onSelectDate: (selectedDate) =>
-                              widget.selectedTime['exam_date'] =
-                                  selectedDate.toIso8601String()),
+                        onSelectDate: widget.onSelectDate,
+                      ),
                     )),
               ),
             ),
@@ -96,27 +87,19 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
           _selectedOptionFrame(
               index: 0,
               selectedIndex: selectedIndex,
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Choose A Date',
                     style: TextStyle(
-                        color: _isColorLight(selectedIndex == 0
-                                ? widget.mainColor
-                                : widget.optionBoxFillColor)
-                            ? Colors.black
-                            : Colors.white,
+                        color: Colors.black,
                         fontWeight: FontWeight.w500,
                         fontSize: 16),
                   ),
                   Text('Pick A Date From Calendar',
                       style: TextStyle(
-                        color: _isColorLight(selectedIndex == 0
-                                ? widget.mainColor
-                                : widget.optionBoxFillColor)
-                            ? Colors.black
-                            : Colors.white,
+                        color: Colors.black,
                         fontSize: 14,
                       )),
                 ],
@@ -126,16 +109,12 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
           _selectedOptionFrame(
               index: 1,
               selectedIndex: selectedIndex,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
                 child: Text(
                   "I Don't Know My Exam Date Yet",
                   style: TextStyle(
-                      color: _isColorLight(selectedIndex == 1
-                              ? widget.mainColor
-                              : widget.optionBoxFillColor)
-                          ? Colors.black
-                          : Colors.white,
+                      color: Colors.black,
                       fontWeight: FontWeight.w500,
                       fontSize: 16),
                 ),
@@ -144,8 +123,11 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
       );
 
   // Outer frame of the options
-  Widget _selectedOptionFrame(
-      {required int index, required int selectedIndex, required Widget child}) {
+  Widget _selectedOptionFrame({
+    required int index,
+    required int selectedIndex,
+    required Widget child,
+  }) {
     bool isSelected = selectedIndex == index;
     return GestureDetector(
       onTap: () => _handleSelectOption(index),
@@ -155,7 +137,7 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           border: isSelected ? null : Border.all(color: widget.secondaryColor),
-          color: isSelected ? widget.secondaryColor : widget.optionBoxFillColor,
+          color: isSelected ? widget.secondaryColor : Colors.white,
         ),
         child: Row(
           children: [
@@ -176,29 +158,6 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
 
   _handleSelectOption(int index) {
     _selectedIndex.value = index;
-
-    if (_selectedIndex.value == 0) {
-      widget.pageIndex.value = 0;
-    } else {
-      // Delay for smoother animation
-      Future.delayed(const Duration(milliseconds: 200), () {
-        widget.pageController.animateToPage(2,
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut);
-      });
-    }
-  }
-
-  // Utils to change text color when
-  _isColorLight(Color color) {
-    // Normalize the RGB components to 0-1 range
-    final r = color.red / 255.0;
-    final g = color.green / 255.0;
-    final b = color.blue / 255.0;
-
-    // Calculate luminance using the WCAG formula
-    final luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-
-    return luminance > 0.8;
+    widget.onSelectOption(index);
   }
 }

@@ -114,7 +114,7 @@ class FinalTestResult extends StatelessWidget {
                       width: double.infinity,
                       child: _buildButton(
                         false,
-                        'Review My Answers',
+                        'Review Your Answers',
                         mainColor,
                         onReviewAnswer,
                       )),

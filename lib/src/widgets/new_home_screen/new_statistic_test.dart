@@ -14,16 +14,17 @@ class NewStatisticTab extends StatelessWidget {
   final String streakIcon;
   final String overviewBackground;
 
-  const NewStatisticTab(
-      {super.key,
-      this.mainColor = const Color(0xFFE3A651),
-      this.darkModeMainColor = const Color(0xFFCFAF83),
-      required this.dayStreak,
-      required this.passingProbability,
-      required this.isDarkMode,
-      required this.subjectList,
-      required this.streakIcon,
-      required this.overviewBackground});
+  const NewStatisticTab({
+    super.key,
+    this.mainColor = const Color(0xFFE3A651),
+    this.darkModeMainColor = const Color(0xFFCFAF83),
+    required this.dayStreak,
+    required this.passingProbability,
+    required this.isDarkMode,
+    required this.subjectList,
+    required this.streakIcon,
+    required this.overviewBackground,
+  });
 
   @override
   Widget build(BuildContext context) {

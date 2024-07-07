@@ -23,6 +23,7 @@ class _ReportTabState extends State<ReportTab> {
   final _reportDataList = <ReportData>[
     ReportData(title: 'Incorrect Answer'),
     ReportData(title: 'Wrong Explanation'),
+    ReportData(title: 'Wrong Category'),
     ReportData(title: 'Grammatical Error'),
     ReportData(title: 'Missing Content'),
     ReportData(title: 'Typo'),

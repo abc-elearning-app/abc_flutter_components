@@ -6,16 +6,16 @@ class SelectReminderTimePage extends StatelessWidget {
   final String title;
   final String image;
   final bool isDarkMode;
-  final Map<String, dynamic> selectedTime;
-  final PageController pageController;
 
-  const SelectReminderTimePage(
-      {super.key,
-      required this.title,
-      required this.image,
-      required this.pageController,
-      required this.selectedTime,
-      required this.isDarkMode});
+  final void Function(TimeOfDay selectedTime) onSelectTime;
+
+  const SelectReminderTimePage({
+    super.key,
+    required this.title,
+    required this.image,
+    required this.onSelectTime,
+    required this.isDarkMode,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +47,7 @@ class SelectReminderTimePage extends StatelessWidget {
                   scale: 1.1,
                   child: Container(
                     margin: const EdgeInsets.symmetric(horizontal: 10),
-                    child: CustomTimePicker(
-                      onSelectTime: (TimeOfDay selectedReminderTime) {
-                        selectedTime['reminder_hour'] =
-                            selectedReminderTime.hour.toString();
-                        selectedTime['reminder_minute'] =
-                            (selectedReminderTime.minute + 1).toString();
-                      },
-                    ),
+                    child: CustomTimePicker(onSelectTime: onSelectTime),
                   )))
         ],
       ),

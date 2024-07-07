@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class CurvedNavigationBar extends StatefulWidget {
   final List<Widget> icons;
@@ -42,11 +41,10 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
   late double _startingPos;
   int _endingIndex = 0;
   late double _pos;
-  double _buttonHide = 0;
+  final double _buttonHide = 0;
   late Widget _icon;
   late AnimationController _animationController;
   late int _length;
-  int _currentPageIndex = 0;
 
   @override
   void initState() {
@@ -98,7 +96,7 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
             blurRadius: 10,
             spreadRadius: 20)
       ]),
-      height: widget.height + 48,
+      height: widget.height + 42,
       child: Stack(
         fit: StackFit.expand,
         alignment: Alignment.bottomCenter,
@@ -146,7 +144,11 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
             bottom: 0 - (75.0 - widget.height),
             child: CustomPaint(
               painter: NavCustomPainter(
-                  _pos, _length, widget.color, Directionality.of(context)),
+                _pos,
+                _length,
+                widget.color,
+                Directionality.of(context),
+              ),
               child: Container(height: 95.0),
             ),
           ),
@@ -185,7 +187,7 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
                         entry.value,
                         style: TextStyle(
                           color: Colors.white.withOpacity(
-                              entry.key == _currentPageIndex ? 1 : 0.5),
+                              entry.key == widget.index ? 1 : 0.5),
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                         ),
@@ -207,7 +209,6 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
     widget.onTap(index);
     final newPosition = index / _length;
     setState(() {
-      _currentPageIndex = index;
       _startingPos = _pos;
       _endingIndex = index;
       _animationController.animateTo(
