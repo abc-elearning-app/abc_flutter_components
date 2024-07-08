@@ -5,6 +5,7 @@ import 'package:tuple/tuple.dart';
 enum StudyActivityChartType { line, bar }
 
 class StudyActivityChart extends StatefulWidget {
+  final int option;
   final List<Tuple2<int, double>> dataList;
   final int displayDays;
 
@@ -55,6 +56,7 @@ class StudyActivityChart extends StatefulWidget {
     this.barRatio = 0.35,
     this.curveTension = 1,
     this.duration = 800,
+    required this.option,
   });
 
   @override
@@ -69,10 +71,16 @@ class _StudyActivityChartState extends State<StudyActivityChart> {
 
   @override
   void initState() {
-    // Initial calculation
-    // _initCalculation();
-
+    _initCalculation();
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant StudyActivityChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.option != widget.option) {
+      _initCalculation();
+    }
   }
 
   _initCalculation() {
@@ -80,6 +88,8 @@ class _StudyActivityChartState extends State<StudyActivityChart> {
         widget.dataList.map((tuple) => tuple.item1).toList();
     final studyTimeList = widget.dataList.map((tuple) => tuple.item2).toList();
 
+    barValues.clear();
+    lineValues.clear();
     switch (widget.displayDays) {
       case 7:
         {
@@ -121,8 +131,6 @@ class _StudyActivityChartState extends State<StudyActivityChart> {
 
   @override
   Widget build(BuildContext context) {
-    _initCalculation();
-
     return Column(
       children: [
         _buildTitle(),
@@ -233,7 +241,7 @@ class _StudyActivityChartState extends State<StudyActivityChart> {
     final int index = args.pointIndex!;
     if (index == 0 || index == lastIndex) {
       args.color = widget.lineColor;
-      args.borderColor = Colors.white;
+      args.borderColor = Colors.grey.shade200;
     } else {
       args.color = Colors.transparent;
       args.borderColor = Colors.transparent;

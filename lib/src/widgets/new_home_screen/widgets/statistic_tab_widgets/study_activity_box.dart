@@ -61,7 +61,7 @@ class _StudyActivityBoxState extends State<StudyActivityBox>
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 15),
+      margin: const EdgeInsets.only(left: 5, right: 5, bottom: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: widget.isDarkMode
@@ -142,20 +142,21 @@ class _StudyActivityBoxState extends State<StudyActivityBox>
                       valueListenable: _displayOption,
                       builder: (_, option, __) {
                         return StudyActivityChart(
+                          key: GlobalKey(),
+                          option: option,
                           displayDays: option == 0
                               ? 7
                               : option == 1
                                   ? 30
                                   : 90,
-                          dataList: const [
-                            Tuple2(35, 6),
-                            Tuple2(40, 8),
-                            Tuple2(36, 7),
-                            Tuple2(42, 8),
-                            Tuple2(35, 6),
-                            // Tuple2(38, 12),
-                            // Tuple2(38, 12),
-                          ],
+                          dataList: List.generate(
+                              option == 0
+                                  ? 7
+                                  : option == 1
+                                      ? 30
+                                      : 90,
+                              (index) => Tuple2(Random().nextInt(50),
+                                  Random().nextInt(12).toDouble())),
                           isDarkMode: widget.isDarkMode,
                         );
                       },
