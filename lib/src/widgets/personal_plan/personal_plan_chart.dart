@@ -13,9 +13,13 @@ class ChartData {
   );
 }
 
+enum ChartCategory { personalPlan, studyActivity }
+
 enum ChartType { line, expected, actual }
 
 class PersonalPlanChart extends StatefulWidget {
+  final ChartCategory chartCategory;
+
   final List<int> valueList;
   final DateTime startDate;
   final DateTime examDate;
@@ -54,6 +58,7 @@ class PersonalPlanChart extends StatefulWidget {
 
   const PersonalPlanChart({
     super.key,
+    required this.chartCategory,
 
     /// Important: length of valueList must equal
     /// the difference (in days) between startDate and currentDate
@@ -80,8 +85,8 @@ class PersonalPlanChart extends StatefulWidget {
     this.leftYAxisTitle = 'Questions Today',
     this.rightYAxisTitle = 'Passing Rate',
     this.curveTension = 1,
-    this.displayColumns = 6,
     this.duration = 800,
+    this.displayColumns = 6,
     required this.isDarkMode,
   });
 
@@ -112,9 +117,10 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
   int get daysTillExam =>
       widget.examDate.difference(widget.startDate).inDays + 1;
 
-  bool get isLessThanDefault => daysTillExam < widget.displayColumns;
+  bool get isLessColumnThanDefault => daysTillExam < widget.displayColumns;
 
-  int get columns => isLessThanDefault ? daysTillExam : widget.displayColumns;
+  int get columns =>
+      isLessColumnThanDefault ? daysTillExam : widget.displayColumns;
 
   @override
   void initState() {
@@ -140,14 +146,14 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
               Text(
                 widget.leftYAxisTitle,
                 style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: widget.isDarkMode ? Colors.white : Colors.black),
               ),
               Text(
                 widget.rightYAxisTitle,
                 style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: widget.isDarkMode ? Colors.white : Colors.black),
               ),
@@ -156,70 +162,105 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
         ),
 
         // Line chart
-        Transform.translate(
-          offset: const Offset(0, 20),
-          child: SizedBox(
-            height: widget.lineSectionHeight,
-            child: SfCartesianChart(
-              onMarkerRender: (args) => _drawLineMarker(args),
-              axes: _buildPlaceHolderYAxis(),
-              primaryXAxis: _buildCustomXAxis(ChartType.line),
-              primaryYAxis: _buildCustomYAxis(ChartType.line),
-              tooltipBehavior: _buildTooltip(ChartType.line),
-              series: [
-                // Expected line
-                SplineSeries<double, String>(
-                    name: 'Expected progress',
-                    dataSource: expectedLineValues,
-                    width: widget.lineWidth,
-                    xValueMapper: (_, index) => index.toString(),
-                    yValueMapper: (value, _) => value,
-                    animationDuration: widget.duration,
-                    splineType: SplineType.cardinal,
-                    cardinalSplineTension: widget.curveTension,
-                    color: widget.expectedColor,
-                    markerSettings: const MarkerSettings(isVisible: false)),
-
-                // Actual line
-                SplineSeries<double, String>(
-                    name: 'Current progress',
-                    dataSource: percentValues,
-                    width: widget.lineWidth,
-                    xValueMapper: (_, index) => index.toString(),
-                    yValueMapper: (value, index) =>
-                        expectedLineValues[index] * value,
-                    animationDuration: widget.duration,
-                    splineType: SplineType.cardinal,
-                    cardinalSplineTension: widget.curveTension,
-                    pointColorMapper: (_, index) => index >= currentColumnIndex
-                        ? widget.correctColor
-                        : widget.mainColor,
-                    markerSettings: MarkerSettings(
-                        isVisible: true,
-                        shape: DataMarkerType.circle,
-                        borderWidth: 2,
-                        borderColor: Colors.white,
-                        height: widget.lineMarkerSize,
-                        width: widget.lineMarkerSize,
-                        color: widget.correctColor)),
-              ],
-            ),
+        SizedBox(
+          height: widget.lineSectionHeight,
+          child: SfCartesianChart(
+            onMarkerRender: (args) => _drawLineMarker(args),
+            axes: _buildPlaceHolderYAxis(),
+            primaryXAxis: _buildCustomXAxis(ChartType.line),
+            primaryYAxis: _buildCustomYAxis(ChartType.line),
+            tooltipBehavior: _buildTooltip(ChartType.line),
+            series: widget.chartCategory == ChartCategory.personalPlan
+                ? _personalPlanLineSeries()
+                : _studyActivityLineSeries(),
           ),
         ),
 
         // Questions progress bar charts
-        SizedBox(
-          height: widget.barSectionHeight,
-          child: Stack(children: [
-            _barChart('Expected Questions', ChartType.expected),
-            _barChart('Actual Questions', ChartType.actual),
-          ]),
+        Transform.translate(
+          offset: const Offset(0, -20),
+          child: SizedBox(
+            height: widget.barSectionHeight,
+            child: Stack(children: [
+              _barChart('Expected Questions', ChartType.expected),
+              _barChart('Actual Questions', ChartType.actual),
+            ]),
+          ),
         ),
       ],
     );
   }
 
-  _barChart(String title, ChartType chartType) => SfCartesianChart(
+  _personalPlanLineSeries() => [
+        // Expected line
+        SplineSeries<double, String>(
+            name: 'Expected progress',
+            dataSource: expectedLineValues,
+            width: widget.lineWidth,
+            xValueMapper: (_, index) => index.toString(),
+            yValueMapper: (value, _) => value,
+            animationDuration: widget.duration,
+            splineType: SplineType.cardinal,
+            cardinalSplineTension: widget.curveTension,
+            color: widget.expectedColor,
+            markerSettings: const MarkerSettings(isVisible: false)),
+
+        // Actual line
+        SplineSeries<double, String>(
+            name: 'Current progress',
+            dataSource: percentValues,
+            width: widget.lineWidth,
+            xValueMapper: (_, index) => index.toString(),
+            yValueMapper: (value, index) => expectedLineValues[index] * value,
+            animationDuration: widget.duration,
+            splineType: SplineType.cardinal,
+            cardinalSplineTension: widget.curveTension,
+            pointColorMapper: (_, index) => index >= currentColumnIndex
+                ? widget.correctColor
+                : widget.mainColor,
+            markerSettings: MarkerSettings(
+                isVisible: true,
+                borderWidth: 2,
+                shape: DataMarkerType.circle,
+                borderColor: Colors.white,
+                height: widget.lineMarkerSize,
+                width: widget.lineMarkerSize,
+                color: widget.correctColor)),
+      ];
+
+  _studyActivityLineSeries() => [
+        SplineSeries<double, String>(
+            name: 'Current progress',
+            dataSource: percentValues,
+            width: widget.lineWidth,
+            xValueMapper: (_, index) => index.toString(),
+            yValueMapper: (value, index) => expectedLineValues[index] * value,
+            animationDuration: widget.duration,
+            splineType: SplineType.cardinal,
+            cardinalSplineTension: widget.curveTension,
+            pointColorMapper: (_, index) => index >= currentColumnIndex
+                ? widget.correctColor
+                : widget.mainColor,
+            markerSettings: MarkerSettings(
+                isVisible: true,
+                borderWidth: 2,
+                shape: DataMarkerType.circle,
+                borderColor: Colors.white,
+                height: widget.lineMarkerSize,
+                width: widget.lineMarkerSize,
+                color: widget.correctColor)),
+        SplineSeries<double, String>(
+          name: 'Study time',
+          width: widget.lineWidth,
+          xValueMapper: (_, index) => index.toString(),
+          yValueMapper: (value, index) => expectedLineValues[index] * value,
+          animationDuration: widget.duration,
+          splineType: SplineType.cardinal,
+          cardinalSplineTension: widget.curveTension,
+        )
+      ];
+
+  Widget _barChart(String title, ChartType chartType) => SfCartesianChart(
           primaryXAxis: _buildCustomXAxis(ChartType.actual),
           primaryYAxis: _buildCustomYAxis(ChartType.actual),
           axes: _buildPlaceHolderYAxis(
@@ -350,7 +391,7 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
   /// Initial calculations
   _calculateAverageValues() {
     // If the days from start to exam date is less than default display columns
-    if (isLessThanDefault) {
+    if (isLessColumnThanDefault) {
       averageValues.addAll(widget.valueList.map((e) => e.toDouble()));
       final remainDays = daysTillExam - averageValues.length;
       averageValues.addAll(List.generate(remainDays, (_) => 0));
