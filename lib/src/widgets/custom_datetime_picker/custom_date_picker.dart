@@ -123,6 +123,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                     child: Text(
                       items[index].toString(),
                       style: TextStyle(
+                          fontFamily: 'Poppins',
                           fontWeight: FontWeight.w500,
                           fontSize: 20,
                           color: _getItemColor(type, index)),

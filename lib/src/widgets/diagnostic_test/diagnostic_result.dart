@@ -124,7 +124,7 @@ class DiagnosticResult extends StatelessWidget {
 
                 // Next button
                 Container(
-                    margin: const EdgeInsets.only(top: 15),
+                    margin: const EdgeInsets.only(top: 15, bottom: 5),
                     width: double.infinity,
                     child: MainButton(
                         title: 'Next',

@@ -36,14 +36,14 @@ class PersonalPlanReadyScreen extends StatelessWidget {
 
   const PersonalPlanReadyScreen({
     super.key,
+    this.reminderTime,
+    this.examDate,
     this.backgroundColor = const Color(0xFFF5F4EE),
     this.mainColor = const Color(0xFFE3A651),
     required this.reminderIcon,
     required this.examDateIcon,
     required this.questionsIcon,
     required this.passingScoreIcon,
-    this.reminderTime,
-    this.examDate,
     required this.sideImage,
     required this.questions,
     required this.passingScore,
@@ -62,7 +62,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
           icon: examDateIcon,
           title: 'Exam date',
           content: _getDisplayDate(
-              time: examDate ?? DateTime.now(), isFullDisplay: true)),
+              time: examDate ?? DateTime.now(), displayFull: true)),
       InformationData(
           icon: questionsIcon, title: 'Questions', content: '$questions/day'),
       InformationData(
@@ -97,27 +97,32 @@ class PersonalPlanReadyScreen extends StatelessWidget {
 
                     // Chart
                     Padding(
-                      padding:
-                          const EdgeInsets.only(left: 10, right: 10, top: 20),
+                      padding: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                        top: 20,
+                      ),
                       child: PersonalPlanChart(
+                        chartCategory: ChartCategory.personalPlan,
                         isDarkMode: isDarkMode,
                         lineSectionHeight: 120,
                         barSectionHeight: 150,
-                        startTime: DateTime(2024, 6, 30),
-                        examDate: examDate ?? DateTime(2024, 7, 3),
-                        valueList: const [10, 10, 10],
+                        startDate: DateTime(2024, 7, 1),
+                        examDate: examDate ?? DateTime(2024, 7, 15),
+                        valueList: const [48, 30, 20, 30, 40, 35, 35],
                       ),
                     ),
 
                     // Current date
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.only(bottom: 10),
                       child: Text(
                         'Today - ${_getDisplayDate(time: DateTime.now())}',
                         style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18,
-                            color: isDarkMode ? Colors.white : Colors.black),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          color: isDarkMode ? Colors.white : Colors.black,
+                        ),
                       ),
                     ),
 
@@ -135,12 +140,11 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                                   itemCount: informationDataList.length,
                                   itemBuilder: (_, index) =>
                                       _buildInformationTile(
-                                          informationDataList[index]))),
+                                        informationDataList[index],
+                                      ))),
 
                           // Image
-                          Transform.translate(
-                              offset: const Offset(0, 50),
-                              child: Image.asset(sideImage, height: 200))
+                          Image.asset(sideImage, height: 180),
                         ],
                       ),
                     )
@@ -206,7 +210,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
     return '$displayHour:$displayMinute ${time.hour <= 12 ? 'am' : 'pm'}';
   }
 
-  _getDisplayDate({required DateTime time, bool isFullDisplay = false}) {
+  _getDisplayDate({required DateTime time, bool displayFull = false}) {
     const List<String> abrMonthNames = [
       '', // Placeholder for 1-based indexing
       'Jan',
@@ -239,6 +243,6 @@ class PersonalPlanReadyScreen extends StatelessWidget {
       'December',
     ];
 
-    return '${isFullDisplay ? fullMonthNames[time.month] : abrMonthNames[time.month]} ${time.day}, ${time.year}';
+    return '${displayFull ? fullMonthNames[time.month] : abrMonthNames[time.month]} ${time.day}, ${time.year}';
   }
 }

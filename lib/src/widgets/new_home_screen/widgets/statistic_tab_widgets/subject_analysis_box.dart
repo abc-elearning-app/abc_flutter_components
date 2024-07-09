@@ -35,15 +35,16 @@ class SubjectAnalysisBox extends StatefulWidget {
   final Color incorrectColor;
   final Color unansweredColor;
 
-  const SubjectAnalysisBox(
-      {super.key,
-      this.iconBackgroundColor = const Color(0xFF7C6F5B),
-      this.backgroundColor = const Color(0xFFFFFDF1),
-      this.correctColor = const Color(0xFF15CB9F),
-      this.incorrectColor = const Color(0xFFFC5656),
-      this.unansweredColor = const Color(0xFFD9D9D9),
-      required this.subjectAnalysisData,
-      required this.isDarkMode});
+  const SubjectAnalysisBox({
+    super.key,
+    this.iconBackgroundColor = const Color(0xFF7C6F5B),
+    this.backgroundColor = const Color(0xFFFFFDF1),
+    this.correctColor = const Color(0xFF15CB9F),
+    this.incorrectColor = const Color(0xFFFC5656),
+    this.unansweredColor = const Color(0xFFD9D9D9),
+    required this.subjectAnalysisData,
+    required this.isDarkMode,
+  });
 
   @override
   State<SubjectAnalysisBox> createState() => _SubjectAnalysisBoxState();
@@ -76,7 +77,7 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: widget.isDarkMode
@@ -94,10 +95,11 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
                   children: [
                     // Icon
                     IconBox(
-                        icon: widget.subjectAnalysisData.icon,
-                        iconColor: Colors.white,
-                        size: 35,
-                        backgroundColor: widget.iconBackgroundColor),
+                      icon: widget.subjectAnalysisData.icon,
+                      iconColor: Colors.white,
+                      size: 35,
+                      backgroundColor: widget.iconBackgroundColor,
+                    ),
 
                     const SizedBox(width: 15),
 

@@ -32,11 +32,11 @@ class TestGrid extends StatelessWidget {
 
   const TestGrid({
     super.key,
-    required this.title,
-    required this.practiceTests,
     this.mainColor = const Color(0xFFE3A651),
     this.secondaryColor = const Color(0xFF7C6F5B),
     this.backgroundColor = const Color(0xFFF5F4EE),
+    required this.title,
+    required this.practiceTests,
     required this.onSelected,
     required this.isDarkMode,
   });
@@ -138,7 +138,7 @@ class TestGrid extends StatelessWidget {
                     LinearPercentIndicator(
                       barRadius: const Radius.circular(15),
                       padding: EdgeInsets.zero,
-                      percent: data.progress / 100,
+                      percent: data.progress,
                       progressColor: mainColor,
                       lineHeight: 25,
                       backgroundColor: Colors.white.withOpacity(0.5),
@@ -150,10 +150,11 @@ class TestGrid extends StatelessWidget {
                               style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
+                                color: Colors.white,
                               ),
                               children: [
                                 TextSpan(
-                                    text: data.progress.toInt().toString()),
+                                    text: '${(data.progress * 100).toInt()}'),
                                 const TextSpan(
                                     text: '%',
                                     style: TextStyle(
