@@ -13,12 +13,9 @@ class ChartData {
   );
 }
 
-enum ChartCategory { personalPlan, studyActivity }
-
 enum ChartType { line, expected, actual }
 
 class PersonalPlanChart extends StatefulWidget {
-  final ChartCategory chartCategory;
 
   final List<int> valueList;
   final DateTime startDate;
@@ -58,8 +55,6 @@ class PersonalPlanChart extends StatefulWidget {
 
   const PersonalPlanChart({
     super.key,
-    required this.chartCategory,
-
     /// Important: length of valueList must equal
     /// the difference (in days) between startDate and currentDate
     /// Eg: startDate is 20/5, today is 25/5 -> valueList length should be 5
@@ -170,9 +165,7 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
             primaryXAxis: _buildCustomXAxis(ChartType.line),
             primaryYAxis: _buildCustomYAxis(ChartType.line),
             tooltipBehavior: _buildTooltip(ChartType.line),
-            series: widget.chartCategory == ChartCategory.personalPlan
-                ? _personalPlanLineSeries()
-                : _studyActivityLineSeries(),
+            series: _personalPlanLineSeries(),
           ),
         ),
 
@@ -226,38 +219,6 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
                 height: widget.lineMarkerSize,
                 width: widget.lineMarkerSize,
                 color: widget.correctColor)),
-      ];
-
-  _studyActivityLineSeries() => [
-        SplineSeries<double, String>(
-            name: 'Current progress',
-            dataSource: percentValues,
-            width: widget.lineWidth,
-            xValueMapper: (_, index) => index.toString(),
-            yValueMapper: (value, index) => expectedLineValues[index] * value,
-            animationDuration: widget.duration,
-            splineType: SplineType.cardinal,
-            cardinalSplineTension: widget.curveTension,
-            pointColorMapper: (_, index) => index >= currentColumnIndex
-                ? widget.correctColor
-                : widget.mainColor,
-            markerSettings: MarkerSettings(
-                isVisible: true,
-                borderWidth: 2,
-                shape: DataMarkerType.circle,
-                borderColor: Colors.white,
-                height: widget.lineMarkerSize,
-                width: widget.lineMarkerSize,
-                color: widget.correctColor)),
-        SplineSeries<double, String>(
-          name: 'Study time',
-          width: widget.lineWidth,
-          xValueMapper: (_, index) => index.toString(),
-          yValueMapper: (value, index) => expectedLineValues[index] * value,
-          animationDuration: widget.duration,
-          splineType: SplineType.cardinal,
-          cardinalSplineTension: widget.curveTension,
-        )
       ];
 
   Widget _barChart(String title, ChartType chartType) => SfCartesianChart(
@@ -464,10 +425,6 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
       ));
       tmpDate = tmpDate.add(Duration(days: daysInGroup[i]));
     }
-
-    // for (int i = 0; i < dateGroups.length; i++) {
-    //   print('$i: ${dateGroups[i].item1} - ${dateGroups[i].item2}');
-    // }
   }
 
   _calculateExpectedLineValues() {

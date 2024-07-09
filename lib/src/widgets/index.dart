@@ -45,7 +45,7 @@ export 'animations/fade_animation.dart';
 export 'animations/move_animation.dart';
 export 'animations/button_pro_animation.dart';
 export 'animations/border_animation.dart';
-export 'exam_time_setup/exam_time_setup_pages.dart';
+export 'personal_plan_setup/personal_setup_pages.dart';
 export 'intro_personal_plan/intro_personal_plan_pages.dart';
 export 'login_pages/main_login.dart';
 export 'personal_plan/personal_plan_analyzing.dart';

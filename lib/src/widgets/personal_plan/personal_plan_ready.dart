@@ -103,7 +103,6 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                         top: 20,
                       ),
                       child: PersonalPlanChart(
-                        chartCategory: ChartCategory.personalPlan,
                         isDarkMode: isDarkMode,
                         lineSectionHeight: 120,
                         barSectionHeight: 150,

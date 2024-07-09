@@ -172,10 +172,10 @@ class _StudyActivityChartState extends State<StudyActivityChart> {
                 ],
               ),
             ),
-            SizedBox(
-              height: widget.barSectionHeight,
-              child: Transform.translate(
-                offset: const Offset(0, -20),
+            Transform.translate(
+              offset: const Offset(0, -20),
+              child: SizedBox(
+                height: widget.barSectionHeight,
                 child: SfCartesianChart(
                   axes: _buildPlaceHolderYAxis(isOpposed: true),
                   primaryXAxis: _buildCustomXAxis(StudyActivityChartType.bar),
@@ -267,7 +267,8 @@ class _StudyActivityChartState extends State<StudyActivityChart> {
 
   _buildCustomXAxis(StudyActivityChartType type) => CategoryAxis(
         isVisible: type != StudyActivityChartType.line,
-        labelStyle: const TextStyle(color: Colors.transparent),
+        labelStyle:
+            TextStyle(color: widget.isDarkMode ? Colors.white : Colors.black),
         majorTickLines: const MajorTickLines(width: 0),
         majorGridLines: const MajorGridLines(color: Colors.transparent),
       );
