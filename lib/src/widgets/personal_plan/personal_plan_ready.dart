@@ -106,9 +106,10 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                         isDarkMode: isDarkMode,
                         lineSectionHeight: 120,
                         barSectionHeight: 150,
-                        startDate: DateTime(2024, 7, 1),
-                        examDate: examDate ?? DateTime(2024, 7, 15),
-                        valueList: const [48, 30, 20, 30, 40, 35, 35],
+                        startDate: DateTime.now(),
+                        examDate: examDate ??
+                            DateTime.now().add(const Duration(days: 5)),
+                        valueList: const [0],
                       ),
                     ),
 
