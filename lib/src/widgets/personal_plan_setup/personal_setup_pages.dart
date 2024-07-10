@@ -3,7 +3,7 @@ import 'pages/select_reminder_time_page.dart';
 import 'pages/start_diagnostic_page.dart';
 import 'package:flutter/material.dart';
 
-class ExamTimeSetupPages extends StatefulWidget {
+class PersonalSetupPages extends StatefulWidget {
   final List<String> pageImages;
   final bool isDarkMode;
   final Color upperBackgroundColor;
@@ -17,7 +17,7 @@ class ExamTimeSetupPages extends StatefulWidget {
   final void Function(DateTime selectedDate) onSelectExamDate;
   final void Function(TimeOfDay selectedReminderTime) onSelectReminderTime;
 
-  const ExamTimeSetupPages({
+  const PersonalSetupPages({
     super.key,
     required this.pageImages,
     this.upperBackgroundColor = const Color(0xFFF5F4EE),
@@ -32,10 +32,10 @@ class ExamTimeSetupPages extends StatefulWidget {
   });
 
   @override
-  State<ExamTimeSetupPages> createState() => _ExamTimeSetupPagesState();
+  State<PersonalSetupPages> createState() => _PersonalSetupPagesState();
 }
 
-class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
+class _PersonalSetupPagesState extends State<PersonalSetupPages> {
   late List<Widget> _tabList;
   late PageController _pageController;
   late ValueNotifier<int> _pageIndex;
@@ -43,6 +43,8 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
   // To store selected date and time at multiple screen
   late DateTime selectedDate;
   late TimeOfDay selectedTime;
+
+  bool examDateSelected = false;
 
   @override
   void initState() {
@@ -56,7 +58,10 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
         image: widget.pageImages[0],
         mainColor: widget.mainColor,
         secondaryColor: widget.secondaryColor,
-        onSelectDate: (selectedDate) => this.selectedDate = selectedDate,
+        onSelectDate: (selectedDate) {
+          examDateSelected = true;
+          this.selectedDate = selectedDate;
+        },
         onSelectOption: (optionIndex) {
           if (optionIndex == 0) {
             _pageIndex.value = 0;
@@ -255,7 +260,11 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
       );
     } else {
       // Skip diagnostic
-      widget.onSkipDiagnostic();
+      if (examDateSelected) {
+        widget.onSkipDiagnostic();
+      } else {
+        Navigator.of(context).pop();
+      }
     }
   }
 

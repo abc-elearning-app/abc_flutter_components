@@ -82,9 +82,12 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Title
-                    const SizedBox(height: 10),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      padding: const EdgeInsets.only(
+                        left: 40,
+                        right: 40,
+                        top: 20,
+                      ),
                       child: Text(
                         'Your Personal Plan Is Ready!',
                         style: TextStyle(
@@ -103,13 +106,13 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                         top: 20,
                       ),
                       child: PersonalPlanChart(
-                        chartCategory: ChartCategory.personalPlan,
                         isDarkMode: isDarkMode,
                         lineSectionHeight: 120,
                         barSectionHeight: 150,
-                        startDate: DateTime(2024, 7, 1),
-                        examDate: examDate ?? DateTime(2024, 7, 15),
-                        valueList: const [48, 30, 20, 30, 40, 35, 35],
+                        startDate: DateTime.now(),
+                        examDate: examDate ??
+                            DateTime.now().add(const Duration(days: 5)),
+                        valueList: const [0],
                       ),
                     ),
 
