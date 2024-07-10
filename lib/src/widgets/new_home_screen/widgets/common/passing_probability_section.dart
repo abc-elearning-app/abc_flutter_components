@@ -28,7 +28,7 @@ class PassingProbabilitySection extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _streakCircle(),
+        // _streakCircle(),
         Expanded(child: _passingProbabilityBox()),
       ],
     );
@@ -66,11 +66,11 @@ class PassingProbabilitySection extends StatelessWidget {
       );
 
   Widget _passingProbabilityBox() => Container(
-        margin: const EdgeInsets.only(left: 20),
+        margin: const EdgeInsets.only(top: 10),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         width: double.infinity,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(16),
           color: isDarkMode
               ? darkModeMainColor.withOpacity(0.3)
               : mainColor.withOpacity(0.16),

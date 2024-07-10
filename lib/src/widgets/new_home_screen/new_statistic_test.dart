@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/common/passing_probability_section.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/statistic_tab_widgets/overview_box.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/statistic_tab_widgets/study_activity_box.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/statistic_tab_widgets/personal_plan_box.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/statistic_tab_widgets/subject_analysis_box.dart';
 
 import '../../../flutter_abc_jsc_components.dart';
 
 class NewStatisticTab extends StatelessWidget {
-  final int dayStreak;
-  final double passingProbability;
   final Color mainColor;
   final Color secondaryColor;
   final Color backgroundColor;
   final Color darkModeMainColor;
+
+  final int dayStreak;
+  final double passingProbability;
   final bool isDarkMode;
   final List<SubjectAnalysisData> subjectList;
+  final DateTime startDate;
+  final DateTime examDate;
+  final List<int> personalPlanValueList;
 
   final String streakIcon;
   final String overviewBackground;
@@ -31,6 +35,9 @@ class NewStatisticTab extends StatelessWidget {
     required this.subjectList,
     required this.streakIcon,
     required this.overviewBackground,
+    required this.startDate,
+    required this.examDate,
+    required this.personalPlanValueList,
   });
 
   @override
@@ -57,11 +64,14 @@ class NewStatisticTab extends StatelessWidget {
               background: overviewBackground,
               isDarkMode: isDarkMode,
             ),
-            StudyActivityBox(
+            PersonalPlanBox(
               isDarkMode: isDarkMode,
               mainColor: mainColor,
               secondaryColor: secondaryColor,
               backgroundColor: const Color(0xFFFFFDF1),
+              startDate: startDate,
+              examDate: examDate,
+              valueList: personalPlanValueList,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 10),

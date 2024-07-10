@@ -281,7 +281,7 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
             axes: _buildPlaceHolderYAxis(),
             primaryXAxis: _buildCustomXAxis(ChartType.line),
             primaryYAxis: _buildCustomYAxis(ChartType.line),
-            tooltipBehavior: _buildTooltip(ChartType.line),
+            tooltipBehavior: _buildTooltip(ChartType.line, 'Pass percent'),
             series: _personalPlanLineSeries(),
           ),
         ),
@@ -345,7 +345,7 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
             isOpposed: true,
             contain3Digits: true,
           ),
-          tooltipBehavior: _buildTooltip(ChartType.actual),
+          tooltipBehavior: _buildTooltip(ChartType.actual, 'Questions'),
           series: <CartesianSeries>[
             StackedColumnSeries<double, String>(
               name: title,
@@ -366,7 +366,7 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
           ]);
 
   /// Chart drawing utils
-  _buildTooltip(ChartType chartType) => TooltipBehavior(
+  _buildTooltip(ChartType chartType, String title) => TooltipBehavior(
       enable: true,
       builder: (_, __, ___, pointIndex, ____) {
         final startDate = dateGroups[pointIndex].item1;
@@ -385,11 +385,20 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
 
         return Container(
           padding: const EdgeInsets.all(5),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: widget.isDarkMode ? Colors.black : Colors.grey,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
+              Text(title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  )),
+              const SizedBox(height: 10),
               Text(
                 '$startDateString - $endDateString',
                 style: const TextStyle(color: Colors.white, fontSize: 12),

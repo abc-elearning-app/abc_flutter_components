@@ -1,51 +1,56 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/statistic_tab_widgets/study_activity_chart.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:tuple/tuple.dart';
 
+import '../../../../../flutter_abc_jsc_components.dart';
 import '../../../icons/icon_box.dart';
-import '../../../segment_control/custom_segment_control.dart';
 
-class StudyActivityBox extends StatefulWidget {
+class PersonalPlanBox extends StatefulWidget {
   final bool isDarkMode;
   final Color mainColor;
   final Color secondaryColor;
   final Color backgroundColor;
   final Color segmentBackgroundColor;
 
-  const StudyActivityBox({
+  final DateTime startDate;
+  final DateTime examDate;
+  final List<int> valueList;
+
+  const PersonalPlanBox({
     super.key,
     required this.isDarkMode,
     required this.backgroundColor,
     required this.mainColor,
     required this.secondaryColor,
+    required this.startDate,
+    required this.examDate,
+    required this.valueList,
     this.segmentBackgroundColor = const Color(0xFFE9E6D7),
   });
 
   @override
-  State<StudyActivityBox> createState() => _StudyActivityBoxState();
+  State<PersonalPlanBox> createState() => _PersonalPlanBoxState();
 }
 
-class _StudyActivityBoxState extends State<StudyActivityBox>
+class _PersonalPlanBoxState extends State<PersonalPlanBox>
     with SingleTickerProviderStateMixin {
   late ValueNotifier<bool> _isExpanded;
   late AnimationController _animationController;
   late Animation _animation;
 
-  late ValueNotifier<int> _displayOption;
+  // late ValueNotifier<int> _displayOption;
 
   @override
   void initState() {
-    _isExpanded = ValueNotifier(false);
+    _isExpanded = ValueNotifier(true);
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
     _animation = Tween<double>(begin: 0, end: pi).animate(_animationController);
 
-    _displayOption = ValueNotifier(0);
+    // _displayOption = ValueNotifier(0);
     super.initState();
   }
 
@@ -54,7 +59,7 @@ class _StudyActivityBoxState extends State<StudyActivityBox>
     _isExpanded.dispose();
     _animationController.dispose();
 
-    _displayOption.dispose();
+    // _displayOption.dispose();
     super.dispose();
   }
 
@@ -91,7 +96,7 @@ class _StudyActivityBoxState extends State<StudyActivityBox>
                     // Title
                     Expanded(
                         child: Text(
-                      'Study Activity',
+                      'Personal Plan',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -123,44 +128,61 @@ class _StudyActivityBoxState extends State<StudyActivityBox>
             valueListenable: _isExpanded,
             builder: (_, value, __) => AnimatedContainer(
               duration: const Duration(milliseconds: 300),
-              height: value ? 400 : 0,
+              height: value ? 290 : 0,
               decoration: BoxDecoration(
                   color:
                       widget.isDarkMode ? Colors.grey.shade900 : Colors.white,
                   borderRadius: const BorderRadius.only(
-                      bottomRight: Radius.circular(20),
-                      bottomLeft: Radius.circular(20))),
+                      bottomRight: Radius.circular(16),
+                      bottomLeft: Radius.circular(16))),
               child: SingleChildScrollView(
                 physics: const NeverScrollableScrollPhysics(),
                 child: Column(
                   children: [
                     // Segment controller
-                    _buildSegmentController(),
+                    // _buildSegmentController(),
+
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 20,
+                        left: 5,
+                        right: 5,
+                      ),
+                      child: PersonalPlanChart(
+                        key: GlobalKey(),
+                        isDarkMode: widget.isDarkMode,
+                        lineSectionHeight: 120,
+                        barSectionHeight: 150,
+                        startDate: widget.startDate,
+                        examDate: widget.examDate,
+                        valueList: widget.valueList,
+                      ),
+                    ),
 
                     // Main chart
-                    ValueListenableBuilder(
-                      valueListenable: _displayOption,
-                      builder: (_, option, __) {
-                        return StudyActivityChart(
-                          key: GlobalKey(),
-                          option: option,
-                          displayDays: option == 0
-                              ? 7
-                              : option == 1
-                                  ? 30
-                                  : 90,
-                          dataList: List.generate(
-                              option == 0
-                                  ? 7
-                                  : option == 1
-                                      ? 30
-                                      : 90,
-                              (index) => Tuple2(Random().nextInt(50),
-                                  Random().nextInt(12).toDouble())),
-                          isDarkMode: widget.isDarkMode,
-                        );
-                      },
-                    ),
+                    // ValueListenableBuilder(
+                    //   valueListenable: _displayOption,
+                    //   builder: (_, option, __) {
+                    //     return StudyActivityChart(
+                    //       key: GlobalKey(),
+                    //       option: option,
+                    //       displayDays: option == 0
+                    //           ? 7
+                    //           : option == 1
+                    //               ? 30
+                    //               : 90,
+                    //       dataList: List.generate(
+                    //           option == 0
+                    //               ? 7
+                    //               : option == 1
+                    //                   ? 30
+                    //                   : 90,
+                    //           (index) => Tuple2(Random().nextInt(50),
+                    //               Random().nextInt(12).toDouble())),
+                    //       isDarkMode: widget.isDarkMode,
+                    //     );
+                    //   },
+                    // ),
                   ],
                 ),
               ),
@@ -171,37 +193,37 @@ class _StudyActivityBoxState extends State<StudyActivityBox>
     );
   }
 
-  Widget _buildSegmentController() => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15),
-        child: ValueListenableBuilder(
-          valueListenable: _displayOption,
-          builder: (_, value, __) => SlidingSegmentedControl<int>(
-              padding: const EdgeInsets.all(5),
-              backgroundColor: widget.segmentBackgroundColor,
-              children: <int, Widget>{
-                0: _buildSegmentButton(0, '7 Days'),
-                1: _buildSegmentButton(1, '30 Days'),
-                2: _buildSegmentButton(2, '90 Days'),
-              },
-              groupValue: value,
-              onValueChanged: _handleSelectOptions),
-        ),
-      );
-
-  Widget _buildSegmentButton(int index, String title) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-        child: Text(title,
-            style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: _displayOption.value == index
-                    ? widget.secondaryColor
-                    : Colors.black)),
-      );
-
-  _handleSelectOptions(int? index) {
-    _displayOption.value = index!;
-  }
+  // Widget _buildSegmentController() => Padding(
+  //       padding: const EdgeInsets.symmetric(vertical: 15),
+  //       child: ValueListenableBuilder(
+  //         valueListenable: _displayOption,
+  //         builder: (_, value, __) => SlidingSegmentedControl<int>(
+  //             padding: const EdgeInsets.all(5),
+  //             backgroundColor: widget.segmentBackgroundColor,
+  //             children: <int, Widget>{
+  //               0: _buildSegmentButton(0, '7 Days'),
+  //               1: _buildSegmentButton(1, '30 Days'),
+  //               2: _buildSegmentButton(2, '90 Days'),
+  //             },
+  //             groupValue: value,
+  //             onValueChanged: _handleSelectOptions),
+  //       ),
+  //     );
+  //
+  // Widget _buildSegmentButton(int index, String title) => Padding(
+  //       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+  //       child: Text(title,
+  //           style: TextStyle(
+  //               fontSize: 14,
+  //               fontWeight: FontWeight.w400,
+  //               color: _displayOption.value == index
+  //                   ? widget.secondaryColor
+  //                   : Colors.black)),
+  //     );
+  //
+  // _handleSelectOptions(int? index) {
+  //   _displayOption.value = index!;
+  // }
 
   _handleToggleExpand() {
     if (!_isExpanded.value) {
