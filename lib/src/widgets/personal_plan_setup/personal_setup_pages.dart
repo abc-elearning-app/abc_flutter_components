@@ -44,6 +44,8 @@ class _PersonalSetupPagesState extends State<PersonalSetupPages> {
   late DateTime selectedDate;
   late TimeOfDay selectedTime;
 
+  bool examDateSelected = false;
+
   @override
   void initState() {
     _pageController = PageController(keepPage: true);
@@ -56,7 +58,10 @@ class _PersonalSetupPagesState extends State<PersonalSetupPages> {
         image: widget.pageImages[0],
         mainColor: widget.mainColor,
         secondaryColor: widget.secondaryColor,
-        onSelectDate: (selectedDate) => this.selectedDate = selectedDate,
+        onSelectDate: (selectedDate) {
+          examDateSelected = true;
+          this.selectedDate = selectedDate;
+        },
         onSelectOption: (optionIndex) {
           if (optionIndex == 0) {
             _pageIndex.value = 0;
@@ -255,7 +260,11 @@ class _PersonalSetupPagesState extends State<PersonalSetupPages> {
       );
     } else {
       // Skip diagnostic
-      widget.onSkipDiagnostic();
+      if (examDateSelected) {
+        widget.onSkipDiagnostic();
+      } else {
+        Navigator.of(context).pop();
+      }
     }
   }
 

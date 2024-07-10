@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/customize_test/provider/customize_test_provider.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/customize_test/widgets/slider_tile.dart';
 
@@ -306,7 +304,7 @@ class _CustomizeTestState extends State<CustomizeTest> {
 
   Widget _buildStartButton(BuildContext context) {
     final provider = context.read<CustomizeTestProvider>();
-    return Stack(children: [
+    return Stack(alignment: Alignment.center, children: [
       Selector<CustomizeTestProvider, bool>(
         selector: (_, provider) =>
             provider.subjectSelection.where((isSelected) => isSelected).isEmpty,
@@ -316,27 +314,22 @@ class _CustomizeTestState extends State<CustomizeTest> {
           child: MainButton(
             title: 'Start Test',
             textStyle: const TextStyle(fontSize: 16),
-            disabled: value,
-            backgroundColor: widget.mainColor,
-            onPressed: () => widget.onStart(
-              provider.selectedModeValue,
-              provider.selectedQuestions,
-              provider.selectedDuration,
-              provider.selectedPassingScore,
-              provider.subjectSelection,
-            ),
+            disabled: widget.isPro ? value : false,
+            backgroundColor: Color.lerp(
+                widget.mainColor, Colors.black, widget.isPro ? 0 : 0.5),
+            onPressed: !widget.isPro
+                ? widget.onGetPro
+                : () => widget.onStart(
+                      provider.selectedModeValue,
+                      provider.selectedQuestions,
+                      provider.selectedDuration,
+                      provider.selectedPassingScore,
+                      provider.subjectSelection,
+                    ),
           ),
         ),
       ),
-      if (!widget.isPro) GestureDetector(
-        onTap: widget.onGetPro,
-        child: Container(
-          color: Colors.black.withOpacity(0.5),
-          width: double.infinity,
-          height: 65,
-          child: const Icon(Icons.lock, size: 32,),
-        ),
-      )
+      if (!widget.isPro) const Icon(Icons.lock, size: 30, color: Colors.white)
     ]);
   }
 
