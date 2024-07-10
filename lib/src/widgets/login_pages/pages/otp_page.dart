@@ -24,15 +24,16 @@ class OtpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
     final customPinTheme = PinTheme(
-        textStyle: const TextStyle(fontSize: 12),
-        width: 30,
-        height: 30,
+        textStyle: TextStyle(fontSize: screenSize.width / 7.2 * 0.4),
+        width: screenSize.width / 7.2,
+        height: screenSize.width / 7.2,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
             color: isDarkMode ? Colors.grey.shade900 : Colors.white,
-            border: Border.all(
-                width: 0.5, color: isDarkMode ? mainColor : secondaryColor)));
+            border: Border.all(width: 0.5, color: isDarkMode ? mainColor : secondaryColor)));
 
     return Column(
       children: [
@@ -61,14 +62,16 @@ class OtpPage extends StatelessWidget {
             ),
           ),
         ),
-        Transform.scale(
-          scale: 1.8,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Pinput(
             controller: otpController,
             defaultPinTheme: customPinTheme,
             focusedPinTheme: customPinTheme,
             onChanged: (_) => onEnterOtp(),
-            onCompleted: (pin) {},
+            onCompleted: (_) {},
+            length: 6,
+            keyboardType: TextInputType.number,
           ),
         ),
         GestureDetector(
