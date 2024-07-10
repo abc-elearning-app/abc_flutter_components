@@ -263,7 +263,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
       widget.onRequestCodeClick(emailController.text);
 
       // Check enable button when move to otp page
-      _buttonEnable.value = otpController.text.length == 4;
+      _buttonEnable.value = otpController.text.length == 6;
     } else {
       widget.onSubmit(otpController.text);
     }
