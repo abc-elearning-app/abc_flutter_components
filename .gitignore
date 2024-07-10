@@ -45,5 +45,7 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+.fvmrc
 abc_app
 abc-app
+pubspec.lock
