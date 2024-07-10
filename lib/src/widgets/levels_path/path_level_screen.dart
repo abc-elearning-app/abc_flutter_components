@@ -47,7 +47,7 @@ class PathLevelScreen extends StatefulWidget {
     required this.title,
     required this.onClickLevel,
     required this.backgroundImage,
-    this.finalLevelImage = 'assets/images/final_cup.png',
+    required this.finalLevelImage,
     this.backgroundColor = const Color(0xFFF5F4EE),
     this.passColor = const Color(0xFF15CB9F),
     this.mainColor = const Color(0xFFE3A651),

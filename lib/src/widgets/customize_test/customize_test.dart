@@ -9,6 +9,7 @@ class CustomizeTestWrapper extends StatelessWidget {
   final Color mainColor;
   final Color secondaryColor;
   final Color backgroundColor;
+  final String infoIcon;
 
   final bool isDarkMode;
   final bool isPro;
@@ -39,6 +40,7 @@ class CustomizeTestWrapper extends StatelessWidget {
     required this.isDarkMode,
     required this.proVersion,
     required this.onGetPro,
+    required this.infoIcon,
   });
 
   @override
@@ -56,6 +58,7 @@ class CustomizeTestWrapper extends StatelessWidget {
           isDarkMode: isDarkMode,
           proVersion: proVersion,
           onGetPro: onGetPro,
+          infoIcon: infoIcon,
         ));
   }
 }
@@ -64,6 +67,7 @@ class CustomizeTest extends StatefulWidget {
   final Color mainColor;
   final Color secondaryColor;
   final Color backgroundColor;
+  final String infoIcon;
 
   final bool isDarkMode;
   final bool isPro;
@@ -81,18 +85,20 @@ class CustomizeTest extends StatefulWidget {
     List<bool> subjectSelections,
   ) onStart;
 
-  const CustomizeTest(
-      {super.key,
-      required this.mainColor,
-      required this.secondaryColor,
-      required this.backgroundColor,
-      required this.isPro,
-      required this.isDarkMode,
-      required this.modes,
-      required this.subjects,
-      required this.onStart,
-      required this.proVersion,
-      required this.onGetPro});
+  const CustomizeTest({
+    super.key,
+    required this.mainColor,
+    required this.secondaryColor,
+    required this.backgroundColor,
+    required this.isPro,
+    required this.isDarkMode,
+    required this.modes,
+    required this.subjects,
+    required this.onStart,
+    required this.proVersion,
+    required this.onGetPro,
+    required this.infoIcon,
+  });
 
   @override
   State<CustomizeTest> createState() => _CustomizeTestState();
@@ -140,6 +146,7 @@ class _CustomizeTestState extends State<CustomizeTest> {
                         modes: widget.modes,
                         mainColor: widget.mainColor,
                         isDarkMode: widget.isDarkMode,
+                        infoIcon: widget.infoIcon,
                       ),
 
                       // Select amount of questions
@@ -300,37 +307,37 @@ class _CustomizeTestState extends State<CustomizeTest> {
       selector: (_, provider) =>
           provider.subjectSelection.where((isSelected) => isSelected).isEmpty,
       builder: (_, value, __) => Stack(
-          children: [
-            Container(
-              margin: const EdgeInsets.all(10),
-              width: double.infinity,
-              child: MainButton(
-                title: 'Start Test',
-                textStyle: const TextStyle(fontSize: 16),
-                disabled: value,
-                backgroundColor: widget.mainColor,
-                onPressed: () => widget.onStart(
+        children: [
+          Container(
+            margin: const EdgeInsets.all(10),
+            width: double.infinity,
+            child: MainButton(
+              title: 'Start Test',
+              textStyle: const TextStyle(fontSize: 16),
+              disabled: value,
+              backgroundColor: widget.mainColor,
+              onPressed: () => widget.onStart(
+                provider.selectedModeValue,
+                provider.selectedQuestions,
+                provider.selectedDuration,
+                provider.selectedPassingScore,
+                provider.subjectSelection,
+              ),
+            ),
+          ),
+          if (!widget.proVersion)
+            Positioned.fill(
+              child: InkWell(
+                onTap: () => widget.onStart(
                   provider.selectedModeValue,
                   provider.selectedQuestions,
                   provider.selectedDuration,
                   provider.selectedPassingScore,
                   provider.subjectSelection,
                 ),
-              ),
-            ),
-            if(!widget.proVersion) 
-              Positioned.fill(
-                child: InkWell(
-                  onTap: () => widget.onStart(
-                    provider.selectedModeValue,
-                    provider.selectedQuestions,
-                    provider.selectedDuration,
-                    provider.selectedPassingScore,
-                    provider.subjectSelection,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                         color: Colors.black38,
@@ -342,13 +349,12 @@ class _CustomizeTestState extends State<CustomizeTest> {
                           GetProIcon(darkMode: widget.isDarkMode),
                           const SizedBox(width: 12)
                         ],
-                      )
-                    ),
-                  ),
+                      )),
                 ),
-              )
-          ],
-        ),
+              ),
+            )
+        ],
+      ),
     );
   }
 

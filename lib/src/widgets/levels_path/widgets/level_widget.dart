@@ -370,7 +370,7 @@ class _LevelWidgetState extends State<LevelWidget>
   //                       // image: widget.isFirstGroup
   //                       //     ? const DecorationImage(
   //                       //         image:
-  //                       //             AssetImage('assets/images/level_start.gif'),
+  //                       //             AssetImage('assets/static/images/level_start.gif'),
   //                       //         fit: BoxFit.cover)
   //                       //     : null,
   //                       color: widget.mainColor,

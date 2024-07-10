@@ -34,6 +34,7 @@ class NewStudyTab extends StatelessWidget {
   final int dayStreak;
   final double passingProbability;
   final bool isDarkMode;
+  final bool isSetupStudyPlan;
 
   final void Function() onClickDailyChallenge;
   final void Function(String id) onSelectSubject;
@@ -56,6 +57,7 @@ class NewStudyTab extends StatelessWidget {
     required this.isDarkMode,
     required this.onClickDailyChallenge,
     required this.onSelectSubject,
+    required this.isSetupStudyPlan,
   });
 
   @override
@@ -66,12 +68,14 @@ class NewStudyTab extends StatelessWidget {
         children: [
           // Day streak and passing probability
           PassingProbabilitySection(
-              isDarkMode: isDarkMode,
-              dayStreak: dayStreak,
-              passingProbability: passingProbability,
-              mainColor: mainColor,
-              darkModeMainColor: darkModeMainColor,
-              streakIcon: streakIcon),
+            isDarkMode: isDarkMode,
+            dayStreak: dayStreak,
+            passingProbability: passingProbability,
+            mainColor: mainColor,
+            darkModeMainColor: darkModeMainColor,
+            streakIcon: streakIcon,
+            isSetupStudyPlan: isSetupStudyPlan,
+          ),
 
           // Button
           DailyChallengeButton(

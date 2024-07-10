@@ -48,7 +48,10 @@ class _PersonalPlanBoxState extends State<PersonalPlanBox>
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
-    _animation = Tween<double>(begin: 0, end: pi).animate(_animationController);
+    _animation = Tween<double>(begin: 1.5 * pi, end: pi / 2)
+        .animate(_animationController);
+
+    _animationController.forward();
 
     // _displayOption = ValueNotifier(0);
     super.initState();
@@ -109,14 +112,11 @@ class _PersonalPlanBoxState extends State<PersonalPlanBox>
                       animation: _animation,
                       builder: (BuildContext context, Widget? child) {
                         return Transform.rotate(
-                          angle: _animation.value,
-                          child: SvgPicture.asset(
-                            'assets/images/chevron_down.svg',
-                            color:
-                                widget.isDarkMode ? Colors.white : Colors.black,
-                            height: 10,
-                          ),
-                        );
+                            angle: _animation.value,
+                            child: const Icon(
+                              Icons.chevron_left_rounded,
+                              size: 35,
+                            ));
                       },
                     )
                   ],

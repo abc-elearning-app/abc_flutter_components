@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
@@ -19,19 +20,23 @@ class MainResultBox extends StatefulWidget {
   final int correctQuestions;
   final int incorrectQuestions;
 
-  const MainResultBox(
-      {super.key,
-      required this.isPro,
-      required this.isDarkMode,
-      required this.correctColor,
-      required this.incorrectColor,
-      required this.progress,
-      required this.averageProgress,
-      required this.correctQuestions,
-      required this.incorrectQuestions,
-      required this.mainColor,
-      required this.isFirstTime,
-      required this.passPercent});
+  final String bannerShapeImage;
+
+  const MainResultBox({
+    super.key,
+    required this.isPro,
+    required this.isDarkMode,
+    required this.correctColor,
+    required this.incorrectColor,
+    required this.progress,
+    required this.averageProgress,
+    required this.correctQuestions,
+    required this.incorrectQuestions,
+    required this.mainColor,
+    required this.isFirstTime,
+    required this.passPercent,
+    required this.bannerShapeImage,
+  });
 
   @override
   State<MainResultBox> createState() => _MainResultBoxState();
@@ -59,45 +64,47 @@ class _MainResultBoxState extends State<MainResultBox> {
             if (!widget.isFirstTime) const SizedBox(height: 10),
 
             // Progress chart
-            Column(
-              children: [
-                // Chart
-                HalfCircleProgressIndicator(
-                  correctColor: widget.correctColor,
-                  incorrectColor: widget.incorrectColor,
-                  progress: widget.progress / 100,
-                  lineWidth: 20,
-                  radius: 125,
-                  center: Container(
-                    margin: const EdgeInsets.only(bottom: 30),
-                    child: RichText(
-                      text: TextSpan(
-                          style: DefaultTextStyle.of(context).style.copyWith(
-                              color: widget.progress < 0.8
-                                  ? widget.incorrectColor
-                                  : widget.correctColor,
-                              fontWeight: FontWeight.bold),
-                          children: [
-                            TextSpan(
-                                text: '${widget.progress.round()}',
-                                style: const TextStyle(fontSize: 70)),
-                            const TextSpan(
-                                text: '%', style: TextStyle(fontSize: 40))
-                          ]),
-                    ),
-                  ),
+            HalfCircleProgressIndicator(
+              correctColor: widget.correctColor,
+              incorrectColor: widget.incorrectColor,
+              progress: widget.progress / 100,
+              lineWidth: 20,
+              radius: 125,
+              center: Container(
+                margin: const EdgeInsets.only(bottom: 30),
+                child: RichText(
+                  text: TextSpan(
+                      style: DefaultTextStyle.of(context).style.copyWith(
+                          color: widget.progress < 0.8
+                              ? widget.incorrectColor
+                              : widget.correctColor,
+                          fontWeight: FontWeight.bold),
+                      children: [
+                        TextSpan(
+                            text: '${widget.progress.round()}',
+                            style: const TextStyle(fontSize: 70)),
+                        const TextSpan(
+                            text: '%', style: TextStyle(fontSize: 40))
+                      ]),
                 ),
+              ),
+            ),
 
-                // Chart explanation
-                _buildExplanation(),
+            // Chart explanation
+            _buildExplanation(),
 
-                // Linear progress
-                if (widget.isFirstTime) _buildLinearProgress(context),
+            // Linear progress
+            if (widget.isFirstTime) _buildLinearProgress(context),
 
-                // Average community score
-                if (widget.isFirstTime) _buildCommunityScore()
-              ],
-            )
+            // Average community score
+            if (widget.isFirstTime)
+              Text(
+                'Community Score: ${widget.averageProgress.toInt()}% ',
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: widget.isDarkMode ? Colors.white : Colors.black),
+              )
           ],
         ),
       ),
@@ -198,7 +205,7 @@ class _MainResultBoxState extends State<MainResultBox> {
         // Average point
         Positioned(
             left: MediaQuery.of(context).size.width *
-                0.008 *
+                0.0075 *
                 widget.averageProgress,
             child: CircleAvatar(
               radius: 9,
@@ -213,8 +220,8 @@ class _MainResultBoxState extends State<MainResultBox> {
   Widget _buildBanner() => Transform.translate(
         offset: const Offset(0, -25),
         child: Stack(alignment: Alignment.center, children: [
-          SvgPicture.asset(
-            'assets/images/banner_shape.svg',
+          IconWidget(
+            icon: widget.bannerShapeImage,
             height: 50,
             color: widget.progress >= widget.passPercent
                 ? widget.correctColor
@@ -233,44 +240,5 @@ class _MainResultBoxState extends State<MainResultBox> {
             ),
           ),
         ]),
-      );
-
-  Widget _buildCommunityScore() => StatefulBuilder(
-        builder: (_, setState) {
-          return Column(
-            children: [
-              // Main title
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Text(
-                  'Community Score: ${widget.averageProgress.toInt()}% ',
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: widget.isDarkMode ? Colors.white : Colors.black),
-                ),
-                const SizedBox(width: 10),
-                GestureDetector(
-                  onTap: () =>
-                      setState(() => isShowingDetail = !isShowingDetail),
-                  child: SvgPicture.asset('assets/images/info_icon.svg'),
-                )
-              ]),
-
-              // Explanation
-              AnimatedContainer(
-                height: isShowingDetail ? 100 : 0,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.fastOutSlowIn,
-                child: const Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text(
-                      'Never gonna give you up, Never gonna let you down, Never gonna run around and desert you, Never gonna make you cry, Never gonna say goodbye, Never gonna tell a lie and hurt you',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14)),
-                ),
-              )
-            ],
-          );
-        },
       );
 }
