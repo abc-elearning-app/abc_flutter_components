@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/icons/get_pro_icon.dart';
 
 import '../../../utils/image_utils.dart';
 
@@ -66,18 +67,11 @@ class SettingTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (showPro)
-              Container(
-                  padding: const EdgeInsets.all(5),
-                  margin: const EdgeInsets.only(right: 8),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: isDarkMode
-                          ? Colors.white.withOpacity(0.24)
-                          : Colors.black),
-                  child: Image.asset(
-                    'assets/static/icons/pro_content_icon.png',
-                    height: 20,
-                  )),
+            GetProIcon(
+              padding: const EdgeInsets.all(5),
+              margin: const EdgeInsets.only(right: 8),
+              darkMode: isDarkMode
+            ),
             const SizedBox(width: 10),
             StatefulBuilder(
               builder: (_, setState) => Switch(

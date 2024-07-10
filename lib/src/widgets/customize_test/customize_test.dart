@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/customize_test/provider/customize_test_provider.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/customize_test/widgets/slider_tile.dart';
+import 'package:provider/provider.dart';
 
 import '../../../flutter_abc_jsc_components.dart';
-
-import 'package:provider/provider.dart';
 
 class CustomizeTestWrapper extends StatelessWidget {
   final Color mainColor;
@@ -16,6 +14,8 @@ class CustomizeTestWrapper extends StatelessWidget {
   final bool isPro;
   final List<ModeData> modes;
   final List<CustomizeSubjectData> subjects;
+
+  final bool proVersion;
 
   // Callback
   final void Function() getPro;
@@ -38,6 +38,7 @@ class CustomizeTestWrapper extends StatelessWidget {
     required this.onStart,
     required this.isDarkMode,
     required this.getPro,
+    required this.proVersion,
   });
 
   @override
@@ -54,6 +55,7 @@ class CustomizeTestWrapper extends StatelessWidget {
           onStart: onStart,
           isDarkMode: isDarkMode,
           getPro: getPro,
+          proVersion: proVersion,
         ));
   }
 }
@@ -67,6 +69,8 @@ class CustomizeTest extends StatefulWidget {
   final bool isPro;
   final List<ModeData> modes;
   final List<CustomizeSubjectData> subjects;
+
+  final bool proVersion;
 
   final void Function() getPro;
   final void Function(
@@ -87,6 +91,7 @@ class CustomizeTest extends StatefulWidget {
       required this.modes,
       required this.subjects,
       required this.onStart,
+      required this.proVersion,
       required this.getPro});
 
   @override
@@ -271,20 +276,7 @@ class _CustomizeTestState extends State<CustomizeTest> {
                           color:
                               widget.isDarkMode ? Colors.white : Colors.black)),
                   const SizedBox(width: 10),
-                  GestureDetector(
-                    onTap: widget.getPro,
-                    child: Container(
-                      width: 90,
-                      height: 30,
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                          color: widget.isDarkMode
-                              ? Colors.white.withOpacity(0.24)
-                              : Colors.black,
-                          borderRadius: BorderRadius.circular(16)),
-                      child: Image.asset('assets/static/icons/pro_content_icon.png'),
-                    ),
-                  ),
+                  GetProIcon(onPressed: widget.getPro, darkMode: widget.isDarkMode)
                 ],
               ),
       );
@@ -320,23 +312,56 @@ class _CustomizeTestState extends State<CustomizeTest> {
     return Selector<CustomizeTestProvider, bool>(
       selector: (_, provider) =>
           provider.subjectSelection.where((isSelected) => isSelected).isEmpty,
-      builder: (_, value, __) => Container(
-        margin: const EdgeInsets.all(10),
-        width: double.infinity,
-        child: MainButton(
-          title: 'Start Test',
-          textStyle: const TextStyle(fontSize: 16),
-          disabled: value,
-          backgroundColor: widget.mainColor,
-          onPressed: () => widget.onStart(
-            provider.selectedModeValue,
-            provider.selectedQuestions,
-            provider.selectedDuration,
-            provider.selectedPassingScore,
-            provider.subjectSelection,
-          ),
+      builder: (_, value, __) => Stack(
+          children: [
+            Container(
+              margin: const EdgeInsets.all(10),
+              width: double.infinity,
+              child: MainButton(
+                title: 'Start Test',
+                textStyle: const TextStyle(fontSize: 16),
+                disabled: value,
+                backgroundColor: widget.mainColor,
+                onPressed: () => widget.onStart(
+                  provider.selectedModeValue,
+                  provider.selectedQuestions,
+                  provider.selectedDuration,
+                  provider.selectedPassingScore,
+                  provider.subjectSelection,
+                ),
+              ),
+            ),
+            if(!widget.proVersion) 
+              Positioned.fill(
+                child: InkWell(
+                  onTap: () => widget.onStart(
+                    provider.selectedModeValue,
+                    provider.selectedQuestions,
+                    provider.selectedDuration,
+                    provider.selectedPassingScore,
+                    provider.subjectSelection,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.black38,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          GetProIcon(darkMode: widget.isDarkMode),
+                          const SizedBox(width: 12)
+                        ],
+                      )
+                    ),
+                  ),
+                ),
+              )
+          ],
         ),
-      ),
     );
   }
 }
