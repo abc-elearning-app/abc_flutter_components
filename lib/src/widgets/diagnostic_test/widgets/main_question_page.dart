@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/icons/get_pro_icon.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../flutter_abc_jsc_components.dart';
@@ -214,10 +215,7 @@ class _MainQuestionPageState extends State<MainQuestionPage> {
                   ),
                   const SizedBox(width: 10),
                   if (!widget.isPro)
-                    SvgPicture.asset(
-                      'assets/images/pro_content.svg',
-                      height: 25,
-                    )
+                    GetProIcon(darkMode: widget.isDarkMode)
                 ],
               ),
               const SizedBox(height: 10),

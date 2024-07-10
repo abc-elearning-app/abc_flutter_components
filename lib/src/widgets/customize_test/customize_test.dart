@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/customize_test/provider/customize_test_provider.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/customize_test/widgets/slider_tile.dart';
+import 'package:provider/provider.dart';
 
 import '../../../flutter_abc_jsc_components.dart';
-
-import 'package:provider/provider.dart';
 
 class CustomizeTestWrapper extends StatelessWidget {
   final Color mainColor;
@@ -16,6 +15,8 @@ class CustomizeTestWrapper extends StatelessWidget {
   final bool isPro;
   final List<ModeData> modes;
   final List<CustomizeSubjectData> subjects;
+
+  final bool proVersion;
 
   // Callback
   final void Function() onGetPro;
@@ -38,6 +39,7 @@ class CustomizeTestWrapper extends StatelessWidget {
     required this.subjects,
     required this.onStart,
     required this.isDarkMode,
+    required this.proVersion,
     required this.onGetPro,
   });
 
@@ -54,6 +56,7 @@ class CustomizeTestWrapper extends StatelessWidget {
           subjects: subjects,
           onStart: onStart,
           isDarkMode: isDarkMode,
+          proVersion: proVersion,
           onGetPro: onGetPro,
         ));
   }
@@ -69,6 +72,8 @@ class CustomizeTest extends StatefulWidget {
   final List<ModeData> modes;
   final List<CustomizeSubjectData> subjects;
 
+  final bool proVersion;
+
   final void Function() onGetPro;
   final void Function(
     int modeIndex,
@@ -78,18 +83,18 @@ class CustomizeTest extends StatefulWidget {
     List<bool> subjectSelections,
   ) onStart;
 
-  const CustomizeTest({
-    super.key,
-    required this.mainColor,
-    required this.secondaryColor,
-    required this.backgroundColor,
-    required this.isPro,
-    required this.isDarkMode,
-    required this.modes,
-    required this.subjects,
-    required this.onStart,
-    required this.onGetPro,
-  });
+  const CustomizeTest(
+      {super.key,
+      required this.mainColor,
+      required this.secondaryColor,
+      required this.backgroundColor,
+      required this.isPro,
+      required this.isDarkMode,
+      required this.modes,
+      required this.subjects,
+      required this.onStart,
+      required this.proVersion,
+      required this.onGetPro});
 
   @override
   State<CustomizeTest> createState() => _CustomizeTestState();
@@ -304,33 +309,60 @@ class _CustomizeTestState extends State<CustomizeTest> {
 
   Widget _buildStartButton(BuildContext context) {
     final provider = context.read<CustomizeTestProvider>();
-    return Stack(alignment: Alignment.center, children: [
-      Selector<CustomizeTestProvider, bool>(
-        selector: (_, provider) =>
-            provider.subjectSelection.where((isSelected) => isSelected).isEmpty,
-        builder: (_, value, __) => Container(
-          margin: const EdgeInsets.all(10),
-          width: MediaQuery.of(context).size.width,
-          child: MainButton(
-            title: 'Start Test',
-            textStyle: const TextStyle(fontSize: 16),
-            disabled: widget.isPro ? value : false,
-            backgroundColor: Color.lerp(
-                widget.mainColor, Colors.black, widget.isPro ? 0 : 0.5),
-            onPressed: !widget.isPro
-                ? widget.onGetPro
-                : () => widget.onStart(
-                      provider.selectedModeValue,
-                      provider.selectedQuestions,
-                      provider.selectedDuration,
-                      provider.selectedPassingScore,
-                      provider.subjectSelection,
+    return Selector<CustomizeTestProvider, bool>(
+      selector: (_, provider) =>
+          provider.subjectSelection.where((isSelected) => isSelected).isEmpty,
+      builder: (_, value, __) => Stack(
+          children: [
+            Container(
+              margin: const EdgeInsets.all(10),
+              width: double.infinity,
+              child: MainButton(
+                title: 'Start Test',
+                textStyle: const TextStyle(fontSize: 16),
+                disabled: value,
+                backgroundColor: widget.mainColor,
+                onPressed: () => widget.onStart(
+                  provider.selectedModeValue,
+                  provider.selectedQuestions,
+                  provider.selectedDuration,
+                  provider.selectedPassingScore,
+                  provider.subjectSelection,
+                ),
+              ),
+            ),
+            if(!widget.proVersion) 
+              Positioned.fill(
+                child: InkWell(
+                  onTap: () => widget.onStart(
+                    provider.selectedModeValue,
+                    provider.selectedQuestions,
+                    provider.selectedDuration,
+                    provider.selectedPassingScore,
+                    provider.subjectSelection,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.black38,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          GetProIcon(darkMode: widget.isDarkMode),
+                          const SizedBox(width: 12)
+                        ],
+                      )
                     ),
-          ),
+                  ),
+                ),
+              )
+          ],
         ),
-      ),
-      if (!widget.isPro) const Icon(Icons.lock, size: 30, color: Colors.white)
-    ]);
+    );
   }
 
   _textColor() => widget.isDarkMode ? Colors.white : Colors.black;

@@ -5,6 +5,7 @@ import 'package:flutter_abc_jsc_components/src/widgets/bottom_sheets/report_tab.
 import 'package:flutter_abc_jsc_components/src/widgets/animations/page_animation.dart';
 
 class QuestionData {
+  final int questionId;
   final String question;
   final List<AnswerData> answers;
   final String explanation;
@@ -14,6 +15,7 @@ class QuestionData {
   bool disliked;
 
   QuestionData({
+    required this.questionId,
     required this.question,
     required this.answers,
     required this.explanation,

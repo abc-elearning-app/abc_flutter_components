@@ -15,6 +15,7 @@ class MainButton extends StatelessWidget {
   final bool disabled;
   final TextStyle? textStyle;
   final double borderRadius;
+  final Widget? icon;
 
   const MainButton(
       {super.key,
@@ -31,6 +32,7 @@ class MainButton extends StatelessWidget {
       this.disabledTextColor,
       this.disabledColor,
       this.textStyle,
+      this.icon,
       this.borderRadius = 12});
 
   @override
@@ -65,12 +67,21 @@ class MainButton extends StatelessWidget {
               });
               onPressed.call();
             },
-      child: loading
+      child: icon != null ? Stack(
+        children: [
+          icon!,
+          _text()
+        ],
+      ) : _text(),
+    );
+  }
+
+  Widget _text() {
+    return loading
           ? _makeLoading(loadingColor ?? Colors.grey)
           : Text(title,
               style: (textStyle ?? const TextStyle())
-                  .copyWith(color: textColor ?? Colors.white)),
-    );
+                  .copyWith(color: textColor ?? Colors.white));
   }
 
   Widget _makeLoading(Color color) {
