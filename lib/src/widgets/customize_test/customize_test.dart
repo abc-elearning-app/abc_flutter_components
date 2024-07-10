@@ -9,7 +9,6 @@ class CustomizeTestWrapper extends StatelessWidget {
   final Color mainColor;
   final Color secondaryColor;
   final Color backgroundColor;
-  final String getProTextImage;
 
   final bool isDarkMode;
   final bool isPro;
@@ -33,7 +32,6 @@ class CustomizeTestWrapper extends StatelessWidget {
     this.mainColor = const Color(0xFFE3A651),
     this.secondaryColor = const Color(0xFF7C6F5B),
     this.backgroundColor = const Color(0xFFF5F4EE),
-    required this.getProTextImage,
     required this.isPro,
     required this.modes,
     required this.subjects,
@@ -258,18 +256,7 @@ class _CustomizeTestState extends State<CustomizeTest> {
                   const SizedBox(width: 10),
                   GestureDetector(
                     onTap: widget.onGetPro,
-                    child: Container(
-                      width: 80,
-                      height: 25,
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                          color: widget.isDarkMode
-                              ? Colors.white.withOpacity(0.24)
-                              : Colors.black,
-                          borderRadius: BorderRadius.circular(16)),
-                      child: const IconWidget(
-                          icon: 'assets/images/get_pro_text.png'),
-                    ),
+                    child: GetProIcon(darkMode: widget.isDarkMode),
                   ),
                 ],
               ),
