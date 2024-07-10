@@ -3,15 +3,13 @@ import 'pages/select_reminder_time_page.dart';
 import 'pages/start_diagnostic_page.dart';
 import 'package:flutter/material.dart';
 
-class ExamTimeSetupPages extends StatefulWidget {
+class PersonalSetupPages extends StatefulWidget {
   final List<String> pageImages;
   final bool isDarkMode;
   final Color upperBackgroundColor;
   final Color lowerBackgroundColor;
   final Color mainColor;
   final Color secondaryColor;
-  final Color optionBoxFillColor;
-  final Color mainButtonTextColor;
 
   // Callbacks
   final void Function() onStartDiagnostic;
@@ -19,15 +17,13 @@ class ExamTimeSetupPages extends StatefulWidget {
   final void Function(DateTime selectedDate) onSelectExamDate;
   final void Function(TimeOfDay selectedReminderTime) onSelectReminderTime;
 
-  const ExamTimeSetupPages({
+  const PersonalSetupPages({
     super.key,
     required this.pageImages,
     this.upperBackgroundColor = const Color(0xFFF5F4EE),
     this.lowerBackgroundColor = Colors.white,
     this.mainColor = const Color(0xFFE3A651),
     this.secondaryColor = const Color(0xFF7C6F5B),
-    this.mainButtonTextColor = Colors.white,
-    this.optionBoxFillColor = Colors.white,
     required this.onStartDiagnostic,
     required this.onSkipDiagnostic,
     required this.onSelectExamDate,
@@ -36,76 +32,79 @@ class ExamTimeSetupPages extends StatefulWidget {
   });
 
   @override
-  State<ExamTimeSetupPages> createState() => _ExamTimeSetupPagesState();
+  State<PersonalSetupPages> createState() => _PersonalSetupPagesState();
 }
 
-class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
-  late List<Widget> tabList;
-  late PageController pageController;
-  late ValueNotifier<int> pageIndex;
+class _PersonalSetupPagesState extends State<PersonalSetupPages> {
+  late List<Widget> _tabList;
+  late PageController _pageController;
+  late ValueNotifier<int> _pageIndex;
 
   // To store selected date and time at multiple screen
-  Map<String, dynamic> selectedTime = {};
+  late DateTime selectedDate;
+  late TimeOfDay selectedTime;
+
+  bool examDateSelected = false;
 
   @override
   void initState() {
-    pageController = PageController(keepPage: true);
-    pageIndex = ValueNotifier(-1);
+    _pageController = PageController(keepPage: true);
+    _pageIndex = ValueNotifier(-1);
 
-    tabList = [
+    _tabList = [
       SelectExamDatePage(
         title: 'When Is Your Exam ?',
         isDarkMode: widget.isDarkMode,
         image: widget.pageImages[0],
         mainColor: widget.mainColor,
         secondaryColor: widget.secondaryColor,
-        optionBoxFillColor: widget.optionBoxFillColor,
-        pageController: pageController,
-        selectedTime: selectedTime,
-        pageIndex: pageIndex,
+        onSelectDate: (selectedDate) {
+          examDateSelected = true;
+          this.selectedDate = selectedDate;
+        },
+        onSelectOption: (optionIndex) {
+          if (optionIndex == 0) {
+            _pageIndex.value = 0;
+          } else {
+            // Delay for smoother animation
+            Future.delayed(const Duration(milliseconds: 200), () {
+              _pageController.animateToPage(2,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOut);
+            });
+          }
+        },
       ),
       SelectReminderTimePage(
         title: 'Would You Like To Set Study Reminders?',
         isDarkMode: widget.isDarkMode,
         image: widget.pageImages[1],
-        selectedTime: selectedTime,
-        pageController: pageController,
+        onSelectTime: (selectedTime) => this.selectedTime = selectedTime,
       ),
       StartDiagnosticPage(
-        pageController: pageController,
         isDarkMode: widget.isDarkMode,
         image: widget.pageImages[2],
         title: 'Diagnostic Test',
         subTitle:
-        'Take our diagnostic test to assess your current level and get a personalized study plan.',
+            'Take our diagnostic test to assess your current level and get a personalized study plan.',
       )
     ];
 
-    // Initial selected time
-    selectedTime['exam_date'] = DateTime.now().toIso8601String();
-    selectedTime['reminder_hour'] = TimeOfDay
-        .now()
-        .hour
-        .toString();
-    selectedTime['reminder_minute'] = TimeOfDay
-        .now()
-        .minute
-        .toString();
-
-    pageController.addListener(() {
-      if (pageController.page == 0) {
-        pageIndex.value = -1;
+    _pageController.addListener(() {
+      if (_pageController.page == 0) {
+        _pageIndex.value = -1;
       } else {
-        pageIndex.value = pageController.page!.toInt();
+        _pageIndex.value = _pageController.page!.toInt();
       }
     });
+
     super.initState();
   }
 
   @override
   void dispose() {
-    pageController.dispose();
-    pageIndex.dispose();
+    _pageController.dispose();
+    _pageIndex.dispose();
     super.dispose();
   }
 
@@ -134,23 +133,19 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
               // Main content
               PageView.builder(
                   physics: const NeverScrollableScrollPhysics(),
-                  controller: pageController,
-                  itemCount: tabList.length,
-                  itemBuilder: (_, index) => tabList[index])
+                  controller: _pageController,
+                  itemCount: _tabList.length,
+                  itemBuilder: (_, index) => _tabList[index])
             ]),
           ),
 
           // Dynamic lower background
           ValueListenableBuilder(
-              valueListenable: pageIndex,
-              builder: (_, value, __) =>
-                  AnimatedContainer(
+              valueListenable: _pageIndex,
+              builder: (_, value, __) => AnimatedContainer(
                     height: value == -1
                         ? 0
-                        : MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.2,
+                        : MediaQuery.of(context).size.height * 0.2,
                     duration: const Duration(milliseconds: 200),
                     child: Stack(children: [
                       // Background
@@ -187,8 +182,7 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
     );
   }
 
-  Widget _buildNextButton(int pageIndexValue) =>
-      Container(
+  Widget _buildNextButton(int pageIndexValue) => Container(
         width: double.infinity,
         margin: const EdgeInsets.symmetric(horizontal: 10),
         child: ElevatedButton(
@@ -200,17 +194,16 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
                   borderRadius: BorderRadius.circular(15))),
           child: Text(
             _getButtonText(pageIndexValue),
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
-              color: widget.mainButtonTextColor,
+              color: Colors.white,
               fontWeight: FontWeight.w600,
             ),
           ),
         ),
       );
 
-  Widget _buildNotNowButton(int pageIndexValue) =>
-      AnimatedContainer(
+  Widget _buildNotNowButton(int pageIndexValue) => AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         width: double.infinity,
         height: pageIndexValue < 1 ? 0 : 50,
@@ -233,11 +226,11 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
       );
 
   _handleMainButtonClick() {
-    switch (pageController.page) {
+    switch (_pageController.page) {
       case 0:
         {
-          widget.onSelectExamDate(DateTime.parse(selectedTime['exam_date']));
-          pageController.nextPage(
+          widget.onSelectExamDate(selectedDate);
+          _pageController.nextPage(
             duration: const Duration(milliseconds: 200),
             curve: Curves.easeInOut,
           );
@@ -245,10 +238,8 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
         }
       case 1:
         {
-          widget.onSelectReminderTime(TimeOfDay(
-              hour: int.parse(selectedTime['reminder_hour']),
-              minute: int.parse(selectedTime['reminder_minute'])));
-          pageController.nextPage(
+          widget.onSelectReminderTime(selectedTime);
+          _pageController.nextPage(
             duration: const Duration(milliseconds: 200),
             curve: Curves.easeInOut,
           );
@@ -261,13 +252,19 @@ class _ExamTimeSetupPagesState extends State<ExamTimeSetupPages> {
   }
 
   _handleNotNowButtonClick() {
-    if (pageController.page == 1) {
+    if (_pageController.page == 1) {
       // Skip reminder
-      pageController.nextPage(
-          duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+      );
     } else {
       // Skip diagnostic
-      widget.onSkipDiagnostic();
+      if (examDateSelected) {
+        widget.onSkipDiagnostic();
+      } else {
+        Navigator.of(context).pop();
+      }
     }
   }
 

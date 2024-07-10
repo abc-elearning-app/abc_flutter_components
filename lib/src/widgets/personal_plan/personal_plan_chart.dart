@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:tuple/tuple.dart';
 
 // Data class
 class ChartData {
@@ -16,7 +17,7 @@ enum ChartType { line, expected, actual }
 
 class PersonalPlanChart extends StatefulWidget {
   final List<int> valueList;
-  final DateTime startTime;
+  final DateTime startDate;
   final DateTime examDate;
 
   final Color mainColor;
@@ -58,7 +59,7 @@ class PersonalPlanChart extends StatefulWidget {
     /// the difference (in days) between startDate and currentDate
     /// Eg: startDate is 20/5, today is 25/5 -> valueList length should be 5
     required this.valueList,
-    required this.startTime,
+    required this.startDate,
     required this.examDate,
     this.expectedBarValue = 50,
     this.mainColor = const Color(0xFFE3A651),
@@ -79,8 +80,8 @@ class PersonalPlanChart extends StatefulWidget {
     this.leftYAxisTitle = 'Questions Today',
     this.rightYAxisTitle = 'Passing Rate',
     this.curveTension = 1,
-    this.displayColumns = 6,
     this.duration = 800,
+    this.displayColumns = 6,
     required this.isDarkMode,
   });
 
@@ -89,34 +90,160 @@ class PersonalPlanChart extends StatefulWidget {
 }
 
 class _PersonalPlanChartState extends State<PersonalPlanChart> {
-  late TooltipBehavior _tooltip;
+  // late TooltipBehavior _tooltip;
 
+  // Input data list
   List<ChartData> dataList = [];
   List<double> expectedLineValues = [];
   final List<double> percentValues = [];
 
+  // Bar's average value
   List<double> averageValues = [];
 
+  // For displaying tooltip
+  List<Tuple2<DateTime, DateTime>> dateGroups = [];
+
+  // Amount of days displayed in a column
+  List<int> daysInGroup = [];
+
+  // Index of the column that contains the current day
   int currentColumnIndex = 0;
 
   int get daysTillExam =>
-      widget.examDate.difference(widget.startTime).inDays + 1;
+      widget.examDate.difference(widget.startDate).inDays + 2;
 
-  bool get isLessThanDefault => daysTillExam < widget.displayColumns;
+  bool get isLessColumnThanDefault => daysTillExam < widget.displayColumns;
 
-  int get columns => isLessThanDefault ? daysTillExam : widget.displayColumns;
+  int get columns =>
+      isLessColumnThanDefault ? daysTillExam : widget.displayColumns;
 
   @override
   void initState() {
-    _tooltip = TooltipBehavior(enable: true);
-
     // Initial calculations
     _calculateAverageValues();
+    _createDateGroups();
     _calculateExpectedLineValues();
     _calculateLinePercentValues();
-
     super.initState();
   }
+
+  /// Initial calculations
+  _calculateAverageValues() {
+    // If the days from start to exam date is less than default display columns
+    if (isLessColumnThanDefault) {
+      averageValues.addAll(widget.valueList.map((e) => e.toDouble()));
+      final remainDays = daysTillExam - averageValues.length;
+      averageValues.addAll(List.generate(remainDays, (_) => 0));
+
+      daysInGroup = List.generate(
+        columns,
+        (_) => 1,
+      );
+
+      return;
+    }
+
+    // Calculate days in a group (varies among columns)
+    // Calculate days till exam date and divide into columns
+    final minDaysInGroup = daysTillExam ~/ widget.displayColumns;
+
+    // List to know each column has how many days
+    daysInGroup = List.generate(
+      columns,
+      (_) => minDaysInGroup,
+    );
+
+    // For each remaining day, add to a column from right to left
+    int remainDays = daysTillExam % widget.displayColumns;
+    int index = daysInGroup.length - 1;
+    while (remainDays > 0) {
+      daysInGroup[index]++;
+      remainDays--;
+      index--;
+    }
+
+    // Index of current day from start time
+    int currentDayIndex = DateTime.now().difference(widget.startDate).inDays;
+
+    // Index of the column that contains current day
+    currentColumnIndex = 0;
+    int dayPast = 0;
+    for (int i = 0; i < daysInGroup.length; i++) {
+      dayPast += daysInGroup[i];
+      if (dayPast >= currentDayIndex) {
+        currentColumnIndex = i;
+        break;
+      }
+    }
+
+    // Calculate average values of each group till the current group (exclude the current group)
+    averageValues = [];
+    int startGroupIndex = 0;
+    for (int i = 0; i < currentColumnIndex; i++) {
+      int sum = widget.valueList
+          .sublist(startGroupIndex, startGroupIndex + daysInGroup[i])
+          .reduce((a, b) => a + b);
+      averageValues.add(sum / daysInGroup[i]);
+
+      startGroupIndex += daysInGroup[i];
+    }
+
+    // Calculate current day group's average
+    int sum = widget.valueList
+        .sublist(startGroupIndex, widget.valueList.length)
+        .reduce((a, b) => a + b);
+    averageValues.add(sum / (widget.valueList.length - startGroupIndex));
+
+    // The rest are all 0
+    int remainColumns = widget.displayColumns - averageValues.length;
+    averageValues.addAll(List.generate(remainColumns, (_) => 0));
+  }
+
+  _createDateGroups() {
+    DateTime tmpDate = widget.startDate;
+    for (int i = 0; i < columns; i++) {
+      dateGroups.add(Tuple2(
+        tmpDate,
+        tmpDate.add(Duration(days: daysInGroup[i] - 1)),
+      ));
+      tmpDate = tmpDate.add(Duration(days: daysInGroup[i]));
+    }
+  }
+
+  _calculateExpectedLineValues() {
+    // Evenly divide expected value range from 10 to 100%
+    double gap = (100 - 10) / (columns - 1);
+    for (int i = 0; i < columns; i++) {
+      expectedLineValues.add(10 + i * gap);
+    }
+  }
+
+  _calculateLinePercentValues() {
+    // Previous days' percent
+    for (int i = 0; i <= currentColumnIndex; i++) {
+      if (i == 0 && averageValues[i] == 0) {
+        percentValues.add(0.2);
+      } else {
+        final percent = averageValues[i] / widget.expectedBarValue;
+        percentValues.add(percent);
+      }
+    }
+
+    // Calculate future prediction
+    for (int i = currentColumnIndex + 1; i < columns; i++) {
+      percentValues.add(_calculatePrediction(i));
+    }
+  }
+
+  /// Formula: t(n+1) = t(n) + p * ( x(n+1) - t(n) )
+  /// x is the expected value
+  /// t is the actual value
+  /// p is the average of previous actual values
+  _calculatePrediction(int index) =>
+      percentValues[index - 1] +
+      (percentValues.reduce((a, b) => a + b) / percentValues.length) *
+          (widget.expectedBarValue * (1 - percentValues[index - 1])) /
+          widget.expectedBarValue;
 
   @override
   Widget build(BuildContext context) {
@@ -131,14 +258,14 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
               Text(
                 widget.leftYAxisTitle,
                 style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: widget.isDarkMode ? Colors.white : Colors.black),
               ),
               Text(
                 widget.rightYAxisTitle,
                 style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: widget.isDarkMode ? Colors.white : Colors.black),
               ),
@@ -147,99 +274,148 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
         ),
 
         // Line chart
-        Transform.translate(
-          offset: const Offset(0, 20),
-          child: SizedBox(
-            height: widget.lineSectionHeight,
-            child: SfCartesianChart(
-              onMarkerRender: (args) => _drawLineMarker(args),
-              axes: _buildPlaceHolderYAxis(),
-              primaryXAxis: _buildCustomXAxis(ChartType.line),
-              primaryYAxis: _buildCustomYAxis(ChartType.line),
-              tooltipBehavior: _tooltip,
-              series: [
-                // Expected line
-                SplineSeries<double, String>(
-                    name: 'Expected',
-                    dataSource: expectedLineValues,
-                    width: widget.lineWidth,
-                    xValueMapper: (_, index) => index.toString(),
-                    yValueMapper: (value, _) => value,
-                    animationDuration: widget.duration,
-                    splineType: SplineType.cardinal,
-                    cardinalSplineTension: widget.curveTension,
-                    color: widget.expectedColor,
-                    markerSettings: const MarkerSettings(isVisible: false)),
-
-                // Actual line
-                SplineSeries<double, String>(
-                    name: 'Progress',
-                    dataSource: percentValues,
-                    width: widget.lineWidth,
-                    xValueMapper: (_, index) => index.toString(),
-                    yValueMapper: (value, index) =>
-                        expectedLineValues[index] * value,
-                    animationDuration: widget.duration,
-                    splineType: SplineType.cardinal,
-                    cardinalSplineTension: widget.curveTension,
-                    pointColorMapper: (_, index) => index >= currentColumnIndex
-                        ? widget.correctColor
-                        : widget.mainColor,
-                    markerSettings: MarkerSettings(
-                        isVisible: true,
-                        shape: DataMarkerType.circle,
-                        borderWidth: 2,
-                        borderColor: Colors.white,
-                        height: widget.lineMarkerSize,
-                        width: widget.lineMarkerSize,
-                        color: widget.correctColor)),
-              ],
-            ),
+        SizedBox(
+          height: widget.lineSectionHeight,
+          child: SfCartesianChart(
+            onMarkerRender: (args) => _drawLineMarker(args),
+            axes: _buildPlaceHolderYAxis(),
+            primaryXAxis: _buildCustomXAxis(ChartType.line),
+            primaryYAxis: _buildCustomYAxis(ChartType.line),
+            tooltipBehavior: _buildTooltip(ChartType.line, 'Pass percent'),
+            series: _personalPlanLineSeries(),
           ),
         ),
 
-        // Questions progress charts
-        SizedBox(
-          height: widget.barSectionHeight,
-          child: SfCartesianChart(
-              primaryXAxis: _buildCustomXAxis(ChartType.actual),
-              primaryYAxis: _buildCustomYAxis(ChartType.actual),
-              axes: _buildPlaceHolderYAxis(
-                isOpposed: true,
-                contain3Digits: true,
-              ),
-              tooltipBehavior: _tooltip,
-              series: <CartesianSeries>[
-                StackedColumnSeries<double, String>(
-                  name: 'Correct Questions',
-                  dataSource: averageValues,
-                  width: widget.barRatio,
-                  xValueMapper: (_, index) => index.toString(),
-                  yValueMapper: (value, _) => value,
-                  animationDuration: widget.duration,
-                  pointColorMapper: (data, index) => _getBarColor(index),
-                ),
-                StackedColumnSeries<double, String>(
-                  name: 'Expected Questions',
-                  width: widget.barRatio,
-                  dataSource: averageValues,
-                  xValueMapper: (_, index) => index.toString(),
-                  yValueMapper: (value, _) => widget.expectedBarValue - value,
-                  animationDuration: widget.duration,
-                  pointColorMapper: (data, index) =>
-                      _getBarColor(index).withOpacity(0.2),
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(50),
-                    topLeft: Radius.circular(50),
-                  ),
-                ),
-              ]),
+        // Questions progress bar charts
+        Transform.translate(
+          offset: const Offset(0, -20),
+          child: SizedBox(
+            height: widget.barSectionHeight,
+            child: Stack(children: [
+              _barChart('Expected Questions', ChartType.expected),
+              _barChart('Actual Questions', ChartType.actual),
+            ]),
+          ),
         ),
       ],
     );
   }
 
+  _personalPlanLineSeries() => [
+        // Expected line
+        SplineSeries<double, String>(
+            name: 'Expected progress',
+            dataSource: expectedLineValues,
+            width: widget.lineWidth,
+            xValueMapper: (_, index) => index.toString(),
+            yValueMapper: (value, _) => value,
+            animationDuration: widget.duration,
+            splineType: SplineType.cardinal,
+            cardinalSplineTension: widget.curveTension,
+            color: widget.expectedColor,
+            markerSettings: const MarkerSettings(isVisible: false)),
+
+        // Actual line
+        SplineSeries<double, String>(
+            name: 'Current progress',
+            dataSource: percentValues,
+            width: widget.lineWidth,
+            xValueMapper: (_, index) => index.toString(),
+            yValueMapper: (value, index) => expectedLineValues[index] * value,
+            animationDuration: widget.duration,
+            splineType: SplineType.cardinal,
+            cardinalSplineTension: widget.curveTension,
+            pointColorMapper: (_, index) => index >= currentColumnIndex
+                ? widget.correctColor
+                : widget.mainColor,
+            markerSettings: MarkerSettings(
+                isVisible: true,
+                borderWidth: 2,
+                shape: DataMarkerType.circle,
+                borderColor: Colors.white,
+                height: widget.lineMarkerSize,
+                width: widget.lineMarkerSize,
+                color: widget.correctColor)),
+      ];
+
+  Widget _barChart(String title, ChartType chartType) => SfCartesianChart(
+          primaryXAxis: _buildCustomXAxis(ChartType.actual),
+          primaryYAxis: _buildCustomYAxis(ChartType.actual),
+          axes: _buildPlaceHolderYAxis(
+            isOpposed: true,
+            contain3Digits: true,
+          ),
+          tooltipBehavior: _buildTooltip(ChartType.actual, 'Questions'),
+          series: <CartesianSeries>[
+            StackedColumnSeries<double, String>(
+              name: title,
+              dataSource: averageValues,
+              width: widget.barRatio,
+              xValueMapper: (_, index) => index.toString(),
+              yValueMapper: (value, _) => chartType == ChartType.expected
+                  ? widget.expectedBarValue
+                  : value,
+              animationDuration: widget.duration,
+              pointColorMapper: (data, index) => _getBarColor(index)
+                  .withOpacity(chartType == ChartType.expected ? 0.2 : 1),
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(50),
+                topLeft: Radius.circular(50),
+              ),
+            ),
+          ]);
+
   /// Chart drawing utils
+  _buildTooltip(ChartType chartType, String title) => TooltipBehavior(
+      enable: true,
+      builder: (_, __, ___, pointIndex, ____) {
+        final startDate = dateGroups[pointIndex].item1;
+        final endDate = dateGroups[pointIndex].item2;
+        final startDateString = '${startDate.day}/${startDate.month}';
+        final endDateString = '${endDate.day}/${endDate.month}';
+
+        double value = 0;
+        if (!(widget.valueList.length == 1 &&
+            widget.valueList[0] == 0 &&
+            pointIndex == 0)) {
+          value = chartType == ChartType.line
+              ? (percentValues[pointIndex] * 100)
+              : ((averageValues[pointIndex] / widget.expectedBarValue) * 100);
+        }
+
+        return Container(
+          padding: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: widget.isDarkMode ? Colors.black : Colors.grey,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  )),
+              const SizedBox(height: 10),
+              Text(
+                '$startDateString - $endDateString',
+                style: const TextStyle(color: Colors.white, fontSize: 12),
+              ),
+              const SizedBox(width: 80, child: Divider()),
+              Text(
+                '${value.toInt()}%',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              )
+            ],
+          ),
+        );
+      });
+
   _buildCustomXAxis(ChartType type) => CategoryAxis(
         isVisible: type != ChartType.line,
         labelStyle: const TextStyle(color: Colors.transparent),
@@ -282,7 +458,7 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
       ];
 
   Color _getBarColor(int index) {
-    if (index != widget.displayColumns - 1) return widget.mainColor;
+    if (index != columns - 1) return widget.mainColor;
     return widget.correctColor;
   }
 
@@ -303,102 +479,4 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
       args.borderColor = Colors.transparent;
     }
   }
-
-  /// Initial calculations
-  _calculateAverageValues() {
-    // If the days from start to exam date is less than default display columns
-    if (isLessThanDefault) {
-      averageValues.addAll(widget.valueList.map((e) => e.toDouble()));
-      final remainDays = daysTillExam - averageValues.length;
-      averageValues.addAll(List.generate(remainDays, (_) => 0));
-
-      return;
-    }
-
-    // Calculate days in a group (varies among columns)
-    // Calculate days till exam date and divide into columns
-    final minDaysInGroup = daysTillExam ~/ widget.displayColumns;
-
-    // List to know each column has how many days
-    List<int> daysInGroup = List.generate(
-      widget.displayColumns,
-      (_) => minDaysInGroup,
-    );
-
-    // For each remaining day, add to a column from right to left
-    int remainDays = daysTillExam % widget.displayColumns;
-    int index = daysInGroup.length - 1;
-    while (remainDays > 0) {
-      daysInGroup[index]++;
-      remainDays--;
-      index--;
-    }
-
-    // Index of current day from start time
-    int currentDayIndex = DateTime.now().difference(widget.startTime).inDays;
-
-    // Index of the column that contains current day
-    currentColumnIndex = 0;
-    int dayPast = 0;
-    for (int i = 0; i < daysInGroup.length; i++) {
-      dayPast += daysInGroup[i];
-      if (dayPast >= currentDayIndex) {
-        currentColumnIndex = i;
-        break;
-      }
-    }
-
-    // Calculate average values of each group till the current group (exclude the current group)
-    averageValues = [];
-    int startGroupIndex = 0;
-    for (int i = 0; i < currentColumnIndex; i++) {
-      int sum = widget.valueList
-          .sublist(startGroupIndex, startGroupIndex + daysInGroup[i])
-          .reduce((a, b) => a + b);
-      averageValues.add(sum / daysInGroup[i]);
-
-      startGroupIndex += daysInGroup[i];
-    }
-
-    // Calculate current day group's average
-    int sum = widget.valueList
-        .sublist(startGroupIndex, widget.valueList.length)
-        .reduce((a, b) => a + b);
-    averageValues.add(sum / (widget.valueList.length - startGroupIndex));
-
-    // The rest are all 0
-    int remainColumns = widget.displayColumns - averageValues.length;
-    averageValues.addAll(List.generate(remainColumns, (_) => 0));
-  }
-
-  _calculateExpectedLineValues() {
-    // Evenly divide expected value range from 10 to 100%
-    double gap = (100 - 10) / (columns - 1);
-    for (int i = 0; i < columns; i++) {
-      expectedLineValues.add(10 + i * gap);
-    }
-  }
-
-  _calculateLinePercentValues() {
-    // Previous days' percent
-    for (int i = 0; i <= currentColumnIndex; i++) {
-      final percent = averageValues[i] / widget.expectedBarValue;
-      percentValues.add(percent);
-    }
-
-    // Calculate future prediction
-    for (int i = currentColumnIndex + 1; i < columns; i++) {
-      percentValues.add(_calculatePrediction(i));
-    }
-  }
-
-  /// Formula: t(n+1) = t(n) + p * ( x(n+1) - t(n) )
-  /// x is the expected value
-  /// t is the actual value
-  /// p is the average of previous actual values
-  _calculatePrediction(int index) =>
-      percentValues[index - 1] +
-      (percentValues.reduce((a, b) => a + b) / percentValues.length) *
-          (widget.expectedBarValue * (1 - percentValues[index - 1])) /
-          widget.expectedBarValue;
 }

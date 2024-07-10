@@ -5,15 +5,14 @@ class StartDiagnosticPage extends StatelessWidget {
   final String subTitle;
   final String image;
   final bool isDarkMode;
-  final PageController pageController;
 
-  const StartDiagnosticPage(
-      {super.key,
-      required this.title,
-      required this.image,
-      required this.subTitle,
-      required this.pageController,
-      required this.isDarkMode});
+  const StartDiagnosticPage({
+    super.key,
+    required this.title,
+    required this.image,
+    required this.subTitle,
+    required this.isDarkMode,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -9,6 +9,7 @@ class CustomizeTestWrapper extends StatelessWidget {
   final Color mainColor;
   final Color secondaryColor;
   final Color backgroundColor;
+  final String getProTextImage;
 
   final bool isDarkMode;
   final bool isPro;
@@ -18,7 +19,7 @@ class CustomizeTestWrapper extends StatelessWidget {
   final bool proVersion;
 
   // Callback
-  final void Function() getPro;
+  final void Function() onGetPro;
   final void Function(
     int modeIndex,
     int questionCount,
@@ -32,13 +33,14 @@ class CustomizeTestWrapper extends StatelessWidget {
     this.mainColor = const Color(0xFFE3A651),
     this.secondaryColor = const Color(0xFF7C6F5B),
     this.backgroundColor = const Color(0xFFF5F4EE),
+    required this.getProTextImage,
     required this.isPro,
     required this.modes,
     required this.subjects,
     required this.onStart,
     required this.isDarkMode,
-    required this.getPro,
     required this.proVersion,
+    required this.onGetPro,
   });
 
   @override
@@ -54,8 +56,8 @@ class CustomizeTestWrapper extends StatelessWidget {
           subjects: subjects,
           onStart: onStart,
           isDarkMode: isDarkMode,
-          getPro: getPro,
           proVersion: proVersion,
+          onGetPro: onGetPro,
         ));
   }
 }
@@ -72,7 +74,7 @@ class CustomizeTest extends StatefulWidget {
 
   final bool proVersion;
 
-  final void Function() getPro;
+  final void Function() onGetPro;
   final void Function(
     int modeIndex,
     int questionCount,
@@ -92,7 +94,7 @@ class CustomizeTest extends StatefulWidget {
       required this.subjects,
       required this.onStart,
       required this.proVersion,
-      required this.getPro});
+      required this.onGetPro});
 
   @override
   State<CustomizeTest> createState() => _CustomizeTestState();
@@ -115,137 +117,123 @@ class _CustomizeTestState extends State<CustomizeTest> {
       appBar: _buildAppBar(context),
       backgroundColor:
           widget.isDarkMode ? Colors.black : widget.backgroundColor,
-      body: Stack(children: [
-        SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Answer mode
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Text('Feedback Modes',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18,
-                                color: widget.isDarkMode
-                                    ? Colors.white
-                                    : Colors.black,
-                              )),
-                        ),
-                        ModeOptions(
-                          modes: widget.modes,
-                          mainColor: widget.mainColor,
-                          isDarkMode: widget.isDarkMode,
-                        ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Answer mode
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Text('Feedback Modes',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                              color: _textColor(),
+                            )),
+                      ),
+                      ModeOptions(
+                        modes: widget.modes,
+                        mainColor: widget.mainColor,
+                        isDarkMode: widget.isDarkMode,
+                      ),
 
-                        // Select amount of questions
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, top: 20),
-                          child: Text('Question Count',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18,
-                                color: widget.isDarkMode
-                                    ? Colors.white
-                                    : Colors.black,
-                              )),
-                        ),
-                        SliderTile(
-                            type: SliderType.question,
-                            mainColor: widget.mainColor,
-                            secondaryColor: widget.secondaryColor,
-                            isDarkMode: widget.isDarkMode,
-                            minValue: 10,
-                            maxValue: 50),
-
-                        // Select amount of minutes
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, top: 20),
-                          child: Text('Duration (minutes)',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18,
-                                color: widget.isDarkMode
-                                    ? Colors.white
-                                    : Colors.black,
-                              )),
-                        ),
-                        SliderTile(
-                            type: SliderType.duration,
-                            mainColor: widget.mainColor,
-                            secondaryColor: widget.secondaryColor,
-                            isDarkMode: widget.isDarkMode,
-                            minValue: 10,
-                            maxValue: 100),
-
-                        // Select subjects
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // Title
-                              Text('Subjects',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 18,
-                                    color: widget.isDarkMode
-                                        ? Colors.white
-                                        : Colors.black,
-                                  )),
-
-                              _buildSelectAllButton(context)
-                            ],
-                          ),
-                        ),
-                        SubjectsBox(
-                          subjects: widget.subjects,
+                      // Select amount of questions
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, top: 20),
+                        child: Text('Question Count',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                              color: _textColor(),
+                            )),
+                      ),
+                      SliderTile(
+                          type: SliderType.question,
                           mainColor: widget.mainColor,
                           secondaryColor: widget.secondaryColor,
                           isDarkMode: widget.isDarkMode,
-                        ),
+                          minValue: 10,
+                          maxValue: 50),
 
-                        // Select amount of mistakes
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            left: 10,
-                            right: 10,
-                            top: 20,
-                          ),
-                          child: Text('Passing score (%)',
-                              style: TextStyle(
+                      // Select amount of minutes
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, top: 20),
+                        child: Text('Duration (minutes)',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                              color: _textColor(),
+                            )),
+                      ),
+                      SliderTile(
+                          type: SliderType.duration,
+                          mainColor: widget.mainColor,
+                          secondaryColor: widget.secondaryColor,
+                          isDarkMode: widget.isDarkMode,
+                          minValue: 10,
+                          maxValue: 100),
+
+                      // Select subjects
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Title
+                            Text('Subjects',
+                                style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 18,
-                                  color: widget.isDarkMode
-                                      ? Colors.white
-                                      : Colors.black)),
+                                  color: _textColor(),
+                                )),
+
+                            _buildSelectAllButton(context)
+                          ],
                         ),
-                        SliderTile(
-                            type: SliderType.passingScore,
-                            mainColor: widget.mainColor,
-                            secondaryColor: widget.secondaryColor,
-                            isDarkMode: widget.isDarkMode,
-                            minValue: 10,
-                            maxValue: 100),
-                      ],
-                    ),
+                      ),
+                      SubjectsBox(
+                        subjects: widget.subjects,
+                        mainColor: widget.mainColor,
+                        secondaryColor: widget.secondaryColor,
+                        isDarkMode: widget.isDarkMode,
+                      ),
+
+                      // Select amount of mistakes
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 10,
+                          right: 10,
+                          top: 20,
+                        ),
+                        child: Text('Passing score (%)',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18,
+                                color: _textColor())),
+                      ),
+                      SliderTile(
+                          type: SliderType.passingScore,
+                          mainColor: widget.mainColor,
+                          secondaryColor: widget.secondaryColor,
+                          isDarkMode: widget.isDarkMode,
+                          minValue: 10,
+                          maxValue: 100),
+                    ],
                   ),
                 ),
-                _buildStartButton(context)
-              ],
-            ),
+              ),
+              _buildStartButton(context)
+            ],
           ),
         ),
-
-        // if (!widget.isPro) Container(color: Colors.black.withOpacity(0.2))
-      ]),
+      ),
     );
   }
 
@@ -262,24 +250,36 @@ class _CustomizeTestState extends State<CustomizeTest> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: widget.isPro
-            ? Text('Customize Test',
-                style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: widget.isDarkMode ? Colors.white : Colors.black))
+            ? _title()
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Customize Test',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                          color:
-                              widget.isDarkMode ? Colors.white : Colors.black)),
+                  _title(),
                   const SizedBox(width: 10),
-                  GetProIcon(onPressed: widget.getPro, darkMode: widget.isDarkMode)
+                  GestureDetector(
+                    onTap: widget.onGetPro,
+                    child: Container(
+                      width: 80,
+                      height: 25,
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                          color: widget.isDarkMode
+                              ? Colors.white.withOpacity(0.24)
+                              : Colors.black,
+                          borderRadius: BorderRadius.circular(16)),
+                      child: const IconWidget(
+                          icon: 'assets/images/get_pro_text.png'),
+                    ),
+                  ),
                 ],
               ),
       );
+
+  Widget _title() => Text('Customize Test',
+      style: TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 20,
+          color: widget.isDarkMode ? Colors.white : Colors.black));
 
   Widget _buildSelectAllButton(BuildContext context) => Row(
         children: [
@@ -364,4 +364,6 @@ class _CustomizeTestState extends State<CustomizeTest> {
         ),
     );
   }
+
+  _textColor() => widget.isDarkMode ? Colors.white : Colors.black;
 }

@@ -12,10 +12,12 @@ class CustomUnrestrictedDatePicker extends StatefulWidget {
       {super.key, required this.onSelectDate, this.initialDate});
 
   @override
-  _CustomUnrestrictedDatePickerState createState() => _CustomUnrestrictedDatePickerState();
+  _CustomUnrestrictedDatePickerState createState() =>
+      _CustomUnrestrictedDatePickerState();
 }
 
-class _CustomUnrestrictedDatePickerState extends State<CustomUnrestrictedDatePicker> {
+class _CustomUnrestrictedDatePickerState
+    extends State<CustomUnrestrictedDatePicker> {
   final _dayController = FixedExtentScrollController(initialItem: 0);
   final _monthController = FixedExtentScrollController(initialItem: 0);
   final _yearController = FixedExtentScrollController(initialItem: 0);
@@ -41,10 +43,7 @@ class _CustomUnrestrictedDatePickerState extends State<CustomUnrestrictedDatePic
   ];
 
   final yearItems =
-  List.generate(30, (index) =>
-      (DateTime
-          .now()
-          .year + index).toString());
+      List.generate(30, (index) => (DateTime.now().year + index).toString());
 
   @override
   void initState() {
@@ -59,9 +58,7 @@ class _CustomUnrestrictedDatePickerState extends State<CustomUnrestrictedDatePic
           duration: scrollDuration, curve: Curves.easeInOut);
       _monthController.animateToItem(currentDateTime.month - 1,
           duration: scrollDuration, curve: Curves.easeInOut);
-      _yearController.animateToItem(currentDateTime.year - DateTime
-          .now()
-          .year,
+      _yearController.animateToItem(currentDateTime.year - DateTime.now().year,
           duration: scrollDuration, curve: Curves.easeInOut);
     });
 
@@ -133,8 +130,7 @@ class _CustomUnrestrictedDatePickerState extends State<CustomUnrestrictedDatePic
         onSelectedItemChanged: (int value) => _handleSelectDate(type),
         children: List.generate(
             items.length,
-                (index) =>
-                Align(
+            (index) => Align(
                   alignment: type != PickerType.day
                       ? Alignment.centerLeft
                       : Alignment.centerRight,
@@ -145,8 +141,9 @@ class _CustomUnrestrictedDatePickerState extends State<CustomUnrestrictedDatePic
                     child: Text(
                       items[index].toString(),
                       style: TextStyle(
+                          fontFamily: 'Poppins',
                           fontWeight: FontWeight.w500,
-                          fontSize: 20,
+                          fontSize: 18,
                           color: type == PickerType.day
                               ? _getDayItemColor(index, maxDayIndex)
                               : null),
@@ -172,9 +169,7 @@ class _CustomUnrestrictedDatePickerState extends State<CustomUnrestrictedDatePic
           setState(() {
             // Update the maximum days of selected month
             maxDayIndex = _getDaysInMonth(
-                _yearController.selectedItem + DateTime
-                    .now()
-                    .year,
+                _yearController.selectedItem + DateTime.now().year,
                 _monthController.selectedItem + 1);
 
             // Scroll back to exist day
@@ -189,9 +184,7 @@ class _CustomUnrestrictedDatePickerState extends State<CustomUnrestrictedDatePic
 
     // Trigger callback
     widget.onSelectDate(DateTime(
-        DateTime
-            .now()
-            .year + _yearController.selectedItem,
+        DateTime.now().year + _yearController.selectedItem,
         _monthController.selectedItem + 1,
         _dayController.selectedItem + 1));
   }
@@ -214,7 +207,7 @@ class _CustomUnrestrictedDatePickerState extends State<CustomUnrestrictedDatePic
       case PickerType.month:
         return 0.2;
       case PickerType.year:
-        return 0.5 ;
+        return 0.5;
     }
   }
 
@@ -225,20 +218,7 @@ class _CustomUnrestrictedDatePickerState extends State<CustomUnrestrictedDatePic
       return isLeapYear ? 29 : 28;
     }
 
-    const daysInMonth = <int>[
-      31,
-      -1,
-      31,
-      30,
-      31,
-      30,
-      31,
-      31,
-      30,
-      31,
-      30,
-      31
-    ];
+    const daysInMonth = <int>[31, -1, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
     return daysInMonth[month - 1];
   }

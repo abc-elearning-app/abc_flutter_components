@@ -20,22 +20,23 @@ class LevelWidget extends StatefulWidget {
 
   final void Function(String id) onClickLevel;
 
-  const LevelWidget(
-      {super.key,
-      required this.levelData,
-      this.isPlaceholder = false,
-      required this.isFinal,
-      required this.drawType,
-      required this.drawSpeed,
-      required this.index,
-      required this.startColor,
-      required this.finalLevelImage,
-      required this.isFirstGroup,
-      required this.passColor,
-      required this.mainColor,
-      required this.lockColor,
-      required this.onClickLevel,
-      required this.isDarkMode});
+  const LevelWidget({
+    super.key,
+    required this.levelData,
+    this.isPlaceholder = false,
+    required this.isFinal,
+    required this.drawType,
+    required this.drawSpeed,
+    required this.index,
+    required this.startColor,
+    required this.finalLevelImage,
+    required this.isFirstGroup,
+    required this.passColor,
+    required this.mainColor,
+    required this.lockColor,
+    required this.onClickLevel,
+    required this.isDarkMode,
+  });
 
   @override
   State<LevelWidget> createState() => _LevelWidgetState();
@@ -209,12 +210,15 @@ class _LevelWidgetState extends State<LevelWidget>
       alignment: Alignment.center,
       children: [
         // Splash animation
-        if (widget.levelData.isCurrent
+        if (widget.levelData.isCurrent && !widget.isFinal
             // && (widget.index != 0 || widget.levelData.progress != 0)
             )
           CustomPaint(
               size: const Size(20, 20),
-              painter: SplashCirclePainter(animation: _splashController)),
+              painter: SplashCirclePainter(
+                animation: _splashController,
+                color: widget.mainColor,
+              )),
 
         // Level
         AnimatedBuilder(
@@ -342,10 +346,13 @@ class _LevelWidgetState extends State<LevelWidget>
 
   Widget _finalLevel() => Padding(
       padding: const EdgeInsets.only(bottom: 5),
-      child: Image.asset(
-        widget.finalLevelImage,
-        scale: 0.8,
-        width: 65,
+      child: Opacity(
+        opacity: widget.levelData.isCurrent ? 1 : 0.6,
+        child: Image.asset(
+          widget.finalLevelImage,
+          scale: 0.8,
+          width: 65,
+        ),
       ));
 
   // Widget _tooltip() => AnimatedBuilder(
@@ -434,16 +441,20 @@ class PlaceholderLevel extends StatelessWidget {
 }
 
 class SplashCirclePainter extends CustomPainter {
+  final Color color;
   final Animation<double> animation;
 
-  SplashCirclePainter({required this.animation}) : super(repaint: animation);
+  SplashCirclePainter({
+    required this.animation,
+    required this.color,
+  }) : super(repaint: animation);
 
   @override
   void paint(Canvas canvas, Size size) {
     double maxRadius = 30;
 
     Paint paint = Paint()
-      ..color = const Color(0xFFE3A651).withOpacity(1 * (1 - animation.value))
+      ..color = color.withOpacity(1 * (1 - animation.value))
       ..style = PaintingStyle.stroke
       ..strokeWidth = 60;
 
