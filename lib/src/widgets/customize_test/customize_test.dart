@@ -239,7 +239,7 @@ class _CustomizeTestState extends State<CustomizeTest> {
           ),
         ),
 
-        if (!widget.isPro) Container(color: Colors.black.withOpacity(0.2))
+        // if (!widget.isPro) Container(color: Colors.black.withOpacity(0.2))
       ]),
     );
   }
@@ -282,7 +282,7 @@ class _CustomizeTestState extends State<CustomizeTest> {
                               ? Colors.white.withOpacity(0.24)
                               : Colors.black,
                           borderRadius: BorderRadius.circular(16)),
-                      child: Image.asset('assets/images/get_pro_text.png'),
+                      child: Image.asset('assets/static/icons/pro_content_icon.png'),
                     ),
                   ),
                 ],

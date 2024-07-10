@@ -75,7 +75,7 @@ class SettingTile extends StatelessWidget {
                           ? Colors.white.withOpacity(0.24)
                           : Colors.black),
                   child: Image.asset(
-                    'assets/images/get_pro_text.png',
+                    'assets/static/icons/pro_content_icon.png',
                     height: 20,
                   )),
             const SizedBox(width: 10),

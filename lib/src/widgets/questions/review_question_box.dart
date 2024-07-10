@@ -11,6 +11,8 @@ class ReviewQuestionBox extends StatefulWidget {
   final Color mainColor;
   final Color secondaryColor;
   final Color explanationColor;
+  
+  final Widget Function(BuildContext context, String text, TextStyle textStyle)? renderTextBuilder;
 
   // Callbacks
   final void Function(bool isSelected) onBookmarkClick;
@@ -28,6 +30,7 @@ class ReviewQuestionBox extends StatefulWidget {
     required this.onProClick,
     required this.isPro,
     required this.isDarkMode,
+    this.renderTextBuilder,
     this.explanationColor = const Color(0xFF5497FF),
     this.mainColor = const Color(0xFFE3A651),
     this.secondaryColor = const Color(0xFF7C6F5B),
@@ -40,21 +43,23 @@ class ReviewQuestionBox extends StatefulWidget {
 class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
   bool isShowExplanation = false;
 
-  late bool isBookmarked;
-  late bool isLiked;
-  late bool isDisliked;
-
-  @override
-  void initState() {
-    isBookmarked = widget.questionData.bookmarked;
-    isLiked = widget.questionData.liked;
-    isDisliked = widget.questionData.disliked;
-
-    super.initState();
-  }
+  bool get isBookmarked => widget.questionData.bookmarked;
+  bool get isLiked => widget.questionData.liked;
+  bool get isDisliked => widget.questionData.disliked;
 
   @override
   Widget build(BuildContext context) {
+    TextStyle textStyle = TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      color: widget.isDarkMode ? Colors.white : Colors.black
+    );
+    TextStyle explanationTextStyle = TextStyle(
+      fontStyle: FontStyle.italic,
+      fontWeight: FontWeight.w500,
+      fontSize: 14,
+      color: widget.isDarkMode ? Colors.white : Colors.grey.shade600
+    );
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
@@ -80,14 +85,13 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                 _buildButtons(),
 
                 // Question and answers
-                Text(
-                  '${widget.index + 1}. ${widget.questionData.question}',
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: widget.isDarkMode ? Colors.white : Colors.black),
-                ),
-
+                if(widget.renderTextBuilder != null)
+                  widget.renderTextBuilder!.call(context, widget.questionData.question, textStyle)
+                else 
+                    Text(
+                      '${widget.index + 1}. ${widget.questionData.question}',
+                      style: textStyle,
+                    ),
                 Column(
                   children: List.generate(
                       widget.questionData.answers.length,
@@ -120,16 +124,13 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                                         ? Colors.white
                                         : Colors.black),
                               ),
-                              Text(
-                                widget.questionData.explanation,
-                                style: TextStyle(
-                                    fontStyle: FontStyle.italic,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14,
-                                    color: widget.isDarkMode
-                                        ? Colors.white
-                                        : Colors.grey.shade600),
-                              )
+                              if(widget.renderTextBuilder != null)
+                                widget.renderTextBuilder!.call(context, widget.questionData.explanation, explanationTextStyle)
+                              else 
+                                Text(
+                                  widget.questionData.explanation,
+                                  style: explanationTextStyle,
+                                )
                             ],
                           ),
                         ),
@@ -155,13 +156,14 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           ActionButtons(
-              bookmarked: isBookmarked,
-              liked: isLiked,
-              disliked: isDisliked,
-              color: 'orange',
-              onBookmark: (isSelected) {},
-              onLike: (isSelected) {},
-              onDislike: (isSelected) {}),
+            bookmarked: isBookmarked,
+            liked: isLiked,
+            disliked: isDisliked,
+            color: 'orange',
+            onBookmark: widget.onBookmarkClick,
+            onLike: widget.onLikeClick,
+            onDislike: widget.onDislikeClick
+          ),
         ],
       ));
 
@@ -185,7 +187,10 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
     } else if (isCorrect == false) {
       iconColor = Colors.red;
     }
-
+    TextStyle textStyle = TextStyle(
+      fontSize: 14,
+      color: widget.isDarkMode ? Colors.white : Colors.black,
+    );
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -198,13 +203,13 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                 size: isCorrect != null ? 20 : 15,
               )),
           const SizedBox(width: 15),
-          Text(
-            content,
-            style: TextStyle(
-              fontSize: 14,
-              color: widget.isDarkMode ? Colors.white : Colors.black,
+          if(widget.renderTextBuilder != null)
+            Expanded(child: widget.renderTextBuilder!.call(context, content, textStyle))
+          else 
+            Text(
+              content,
+              style: textStyle,
             ),
-          ),
         ],
       ),
     );
