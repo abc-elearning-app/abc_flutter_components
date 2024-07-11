@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 
-class DailyChallengeButton extends StatelessWidget {
+class StudyPlanButton extends StatelessWidget {
   final String buttonBackground;
   final Color mainColor;
+  final String title;
   final void Function() onClickDailyChallenge;
 
-  const DailyChallengeButton({
+  const StudyPlanButton({
     super.key,
     required this.buttonBackground,
     required this.onClickDailyChallenge,
     required this.mainColor,
+    required this.title,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 30, bottom: 20),
+      margin: const EdgeInsets.only(bottom: 15),
       decoration: BoxDecoration(
           color: mainColor,
           borderRadius: BorderRadius.circular(16),
@@ -30,11 +32,11 @@ class DailyChallengeButton extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16))),
           onPressed: onClickDailyChallenge,
-          child: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 15),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15),
             child: Text(
-              "Daily Challenge",
-              style: TextStyle(
+              title,
+              style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                   color: Colors.white),

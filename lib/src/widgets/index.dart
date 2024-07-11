@@ -87,3 +87,5 @@ export 'icons/get_pro_icon.dart';
 export 'new_home_screen/widgets/common/passing_probability_section.dart';
 export 'new_home_screen/widgets/statistic_tab_widgets/overview_box.dart';
 export 'new_home_screen/widgets/statistic_tab_widgets/personal_plan_box.dart';
+export 'new_home_screen/widgets/study_tab_widgets/study_plan_button.dart';
+export 'new_home_screen/widgets/study_tab_widgets/study_tab_subject_tile.dart';

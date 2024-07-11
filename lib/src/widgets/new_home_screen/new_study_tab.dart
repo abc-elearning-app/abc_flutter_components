@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/common/passing_probability_section.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/study_tab_widgets/study_tab_subject_tile.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/study_tab_widgets/today_question_button.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/study_tab_widgets/study_plan_button.dart';
 
 class SubjectData {
   final String id;
@@ -36,13 +36,14 @@ class NewStudyTab extends StatelessWidget {
   final bool isDarkMode;
   final bool isSetupStudyPlan;
 
+  final int studyPlanQuestions;
+  final int studyPlanDoneQuestions;
+
   final void Function() onClickDailyChallenge;
   final void Function(String id) onSelectSubject;
 
   const NewStudyTab({
     super.key,
-    this.streakIcon = 'assets/images/fire.svg',
-    this.buttonBackground = 'assets/images/study_tab_button_bg.png',
     this.mainColor = const Color(0xFFE3A651),
     this.darkModeMainColor = const Color(0xFFCFAF83),
     this.beginnerColor = const Color(0xFFFC5656),
@@ -51,6 +52,8 @@ class NewStudyTab extends StatelessWidget {
     this.beginnerBackgroundColor = const Color(0xFFFFDEDE),
     this.intermediateBackgroundColor = const Color(0xFFFFE8DE),
     this.advancedBackgroundColor = const Color(0xFFD3F7FF),
+    required this.streakIcon,
+    required this.buttonBackground,
     required this.dayStreak,
     required this.passingProbability,
     required this.subjectDataList,
@@ -58,6 +61,8 @@ class NewStudyTab extends StatelessWidget {
     required this.onClickDailyChallenge,
     required this.onSelectSubject,
     required this.isSetupStudyPlan,
+    required this.studyPlanQuestions,
+    required this.studyPlanDoneQuestions,
   });
 
   @override
@@ -74,11 +79,32 @@ class NewStudyTab extends StatelessWidget {
             mainColor: mainColor,
             darkModeMainColor: darkModeMainColor,
             streakIcon: streakIcon,
-            isSetupStudyPlan: isSetupStudyPlan,
           ),
 
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: isSetupStudyPlan
+                  ? RichText(
+                      text: TextSpan(
+                          style: TextStyle(
+                              color: isDarkMode ? Colors.white : Colors.black,
+                              fontFamily: 'Poppins',
+                              fontSize: 12),
+                          children: [
+                          const TextSpan(text: "Today's Plan: "),
+                          TextSpan(
+                              text:
+                                  '$studyPlanDoneQuestions/$studyPlanDoneQuestions',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600)),
+                          const TextSpan(text: ' questions'),
+                        ]))
+                  : const Text(
+                      'Set up study plan to maximize your passing probability!')),
+
           // Button
-          DailyChallengeButton(
+          StudyPlanButton(
+            title: 'DUCK',
             mainColor: mainColor,
             buttonBackground: buttonBackground,
             onClickDailyChallenge: onClickDailyChallenge,

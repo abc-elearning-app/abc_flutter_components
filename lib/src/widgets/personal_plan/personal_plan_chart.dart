@@ -29,7 +29,6 @@ class PersonalPlanChart extends StatefulWidget {
 
   // Value range
   final double minBarValue;
-  final double maxBarValue;
   final double barValueInterval;
 
   final double minLineValue;
@@ -67,7 +66,6 @@ class PersonalPlanChart extends StatefulWidget {
     this.correctColor = const Color(0xFF00CA9F),
     this.expectedColor = const Color(0xFFF1D6A9),
     this.minBarValue = 0,
-    this.maxBarValue = 50,
     this.barValueInterval = 25,
     this.lineSectionHeight = 150,
     this.barSectionHeight = 150,
@@ -278,7 +276,8 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
           height: widget.lineSectionHeight,
           child: SfCartesianChart(
             onMarkerRender: (args) => _drawLineMarker(args),
-            axes: _buildPlaceHolderYAxis(),
+            axes: _buildPlaceHolderYAxis(
+                contain3Digits: widget.expectedBarValue > 90),
             primaryXAxis: _buildCustomXAxis(ChartType.line),
             primaryYAxis: _buildCustomYAxis(ChartType.line),
             tooltipBehavior: _buildTooltip(ChartType.line, 'Pass percent'),
@@ -430,7 +429,7 @@ class _PersonalPlanChartState extends State<PersonalPlanChart> {
             type == ChartType.line ? widget.minLineValue : widget.minBarValue,
         maximum: (type == ChartType.line
                 ? widget.maxLineValue
-                : widget.maxBarValue) +
+                : (widget.expectedBarValue ~/ 10 * 10 + 1)) +
             (type != ChartType.line ? 5 : 0),
         interval: type == ChartType.line
             ? widget.lineValueInterval

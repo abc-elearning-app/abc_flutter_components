@@ -12,7 +12,6 @@ class PassingProbabilitySection extends StatelessWidget {
   final Color darkModeMainColor;
 
   final bool isDarkMode;
-  final bool isSetupStudyPlan;
 
   const PassingProbabilitySection({
     super.key,
@@ -22,7 +21,6 @@ class PassingProbabilitySection extends StatelessWidget {
     required this.dayStreak,
     required this.isDarkMode,
     required this.streakIcon,
-    required this.isSetupStudyPlan,
   });
 
   @override
@@ -68,11 +66,11 @@ class PassingProbabilitySection extends StatelessWidget {
       );
 
   Widget _passingProbabilityBox() => Container(
-        margin: const EdgeInsets.only(top: 10),
+        margin: const EdgeInsets.only(top: 10, left: 5, right: 5),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         width: double.infinity,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           color: isDarkMode
               ? darkModeMainColor.withOpacity(0.3)
               : mainColor.withOpacity(0.16),
@@ -107,17 +105,6 @@ class PassingProbabilitySection extends StatelessWidget {
                 percent: passingProbability,
                 indicatorColor: Colors.white,
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Divider(
-                  color: isDarkMode ? Colors.white : Colors.grey.shade400),
-            ),
-            Text(
-              isSetupStudyPlan
-                  ? 'Your ability to overcome challenges today: 6/100'
-                  : 'Make a study plan to complete your challenge today',
-              style: const TextStyle(fontSize: 11),
             ),
           ],
         ),

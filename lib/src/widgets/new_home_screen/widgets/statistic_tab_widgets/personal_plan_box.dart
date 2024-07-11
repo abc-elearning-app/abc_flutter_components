@@ -17,6 +17,8 @@ class PersonalPlanBox extends StatefulWidget {
   final DateTime examDate;
   final List<int> valueList;
 
+  final int expectedQuestions;
+
   const PersonalPlanBox({
     super.key,
     required this.isDarkMode,
@@ -26,6 +28,7 @@ class PersonalPlanBox extends StatefulWidget {
     required this.startDate,
     required this.examDate,
     required this.valueList,
+    required this.expectedQuestions,
     this.segmentBackgroundColor = const Color(0xFFE9E6D7),
   });
 
@@ -149,13 +152,13 @@ class _PersonalPlanBoxState extends State<PersonalPlanBox>
                         right: 5,
                       ),
                       child: PersonalPlanChart(
-                        key: GlobalKey(),
-                        isDarkMode: widget.isDarkMode,
-                        lineSectionHeight: 120,
-                        barSectionHeight: 150,
-                        startDate: widget.startDate,
-                        examDate: widget.examDate,
-                        valueList: widget.valueList,
+                          isDarkMode: widget.isDarkMode,
+                          lineSectionHeight: 120,
+                          barSectionHeight: 150,
+                          startDate: widget.startDate,
+                          examDate: widget.examDate,
+                          valueList: widget.valueList,
+                          expectedBarValue: widget.expectedQuestions,
                       ),
                     ),
 

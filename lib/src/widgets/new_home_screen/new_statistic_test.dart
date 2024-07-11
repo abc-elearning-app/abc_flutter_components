@@ -57,7 +57,6 @@ class NewStatisticTab extends StatelessWidget {
               isDarkMode: isDarkMode,
               mainColor: mainColor,
               darkModeMainColor: darkModeMainColor,
-              isSetupStudyPlan: isSetupStudyPlan,
             ),
             OverviewBox(
               answeredQuestions: 155,
@@ -75,6 +74,7 @@ class NewStatisticTab extends StatelessWidget {
               startDate: startDate,
               examDate: examDate,
               valueList: personalPlanValueList,
+              expectedQuestions: 50,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 10),
