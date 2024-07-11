@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 class IconBox extends StatelessWidget {
   final Color iconColor;
@@ -10,14 +10,15 @@ class IconBox extends StatelessWidget {
   final EdgeInsets padding;
   final double borderRadius;
 
-  const IconBox(
-      {super.key,
-      required this.iconColor,
-      required this.backgroundColor,
-      required this.icon,
-      this.size = 30,
-      this.padding = const EdgeInsets.all(5),
-      this.borderRadius = 8});
+  const IconBox({
+    super.key,
+    required this.iconColor,
+    required this.backgroundColor,
+    required this.icon,
+    this.size = 30,
+    this.padding = const EdgeInsets.all(5),
+    this.borderRadius = 8,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +29,6 @@ class IconBox extends StatelessWidget {
         decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: BorderRadius.circular(borderRadius)),
-        child: SvgPicture.asset(
-          icon,
-          color: iconColor,
-        ));
+        child: IconWidget(icon: icon, color: iconColor));
   }
 }

@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/icons/icon_box.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 enum QuestionType { correct, incorrect, unanswered }
@@ -87,7 +86,14 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
           borderRadius: BorderRadius.circular(20),
           color: widget.isDarkMode
               ? Colors.white.withOpacity(0.3)
-              : widget.backgroundColor),
+              : widget.backgroundColor,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade200,
+              spreadRadius: 2,
+              blurRadius: 2
+            )
+          ]),
       child: Column(
         children: [
           GestureDetector(

@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/account/user_information.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/premium_button.dart';
 
 enum PackageType { weekly, monthly, yearly }
@@ -113,7 +113,15 @@ class AccountTab extends StatelessWidget {
                   ),
 
                 // User information (avatar, email, name)
-                _userInformation(),
+                Padding(
+                  padding: EdgeInsets.only(top: isPro ? 15 : 0),
+                  child: UserInformation(
+                      isPro: isPro,
+                      avatar: avatar,
+                      email: email,
+                      username: username,
+                      crownIcon: crownIcon),
+                ),
 
                 if (isPro)
                   const Padding(
@@ -140,48 +148,6 @@ class AccountTab extends StatelessWidget {
       ],
     );
   }
-
-  Widget _userInformation() => Padding(
-    padding: EdgeInsets.only(top: isPro ? 15 : 0),
-    child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Stack(alignment: Alignment.topCenter, children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor:
-                    isPro ? const Color(0xFFF0BD3A) : Colors.transparent,
-                child: CircleAvatar(
-                    backgroundImage: avatar.isEmpty
-                        ? null
-                        : CachedNetworkImageProvider(avatar),
-                    radius: 35 / 2,
-                    child:
-                        avatar.isEmpty ? Text(username[0].toUpperCase()) : null),
-              ),
-
-              // Crown for pro account
-              if (isPro)
-                Transform.translate(
-                    offset: const Offset(0, -10),
-                    child: IconWidget(
-                      icon: crownIcon,
-                      height: 12,
-                    )),
-            ]),
-            const SizedBox(width: 15),
-
-            // Email
-            Text(
-              email,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-  );
 
   Widget _proInformation() => Column(
         children: [

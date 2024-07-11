@@ -13,11 +13,14 @@ class SettingScreen extends StatefulWidget {
   final String appVersion;
   final bool notificationOn;
 
+  final bool isLoggedIn;
+  final String avatar;
+  final String username;
+  final String crownIcon;
+
   final Color mainColor;
   final Color backgroundColor;
   final Color switchActiveTrackColor;
-
-  final String avatar;
 
   final String circleIcon;
   final String dnaIcon;
@@ -75,6 +78,9 @@ class SettingScreen extends StatefulWidget {
     required this.triangleIcon,
     required this.premiumIcon,
     required this.premiumBackground,
+    required this.isLoggedIn,
+    required this.username,
+    required this.crownIcon,
   });
 
   @override
@@ -266,6 +272,7 @@ class _SettingScreenState extends State<SettingScreen> {
         title: Text(
           'Settings',
           style: TextStyle(
+              fontSize: 18,
               fontWeight: FontWeight.w500,
               color: widget.isDarkMode ? Colors.white : Colors.black),
         ),
@@ -273,10 +280,16 @@ class _SettingScreenState extends State<SettingScreen> {
           Padding(
               padding: const EdgeInsets.only(right: 10),
               child: IconButton(
-                icon: IconWidget(
-                  icon: widget.avatar,
-                  height: 40,
-                ),
+                icon: widget.isLoggedIn
+                    ? UserAvatar(
+                        isPro: widget.isPro,
+                        avatar: widget.avatar,
+                        username: widget.username,
+                        crownIcon: widget.crownIcon)
+                    : IconWidget(
+                        icon: widget.avatar,
+                        height: 40,
+                      ),
                 onPressed: widget.onAvatarClick,
               ))
         ],

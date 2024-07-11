@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../../../../flutter_abc_jsc_components.dart';
 import '../../../icons/icon_box.dart';
@@ -12,6 +11,7 @@ class PersonalPlanBox extends StatefulWidget {
   final Color secondaryColor;
   final Color backgroundColor;
   final Color segmentBackgroundColor;
+  final String studyPlanLogo;
 
   final DateTime startDate;
   final DateTime examDate;
@@ -29,6 +29,7 @@ class PersonalPlanBox extends StatefulWidget {
     required this.examDate,
     required this.valueList,
     required this.expectedQuestions,
+    required this.studyPlanLogo,
     this.segmentBackgroundColor = const Color(0xFFE9E6D7),
   });
 
@@ -74,11 +75,17 @@ class _PersonalPlanBoxState extends State<PersonalPlanBox>
     return Container(
       margin: const EdgeInsets.only(left: 5, right: 5, bottom: 15),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: widget.isDarkMode
-            ? Colors.white.withOpacity(0.3)
-            : widget.backgroundColor,
-      ),
+          borderRadius: BorderRadius.circular(16),
+          color: widget.isDarkMode
+              ? Colors.white.withOpacity(0.3)
+              : widget.backgroundColor,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade200,
+              blurRadius: 2,
+              spreadRadius: 2,
+            )
+          ]),
       child: Column(
         children: [
           GestureDetector(
@@ -91,7 +98,7 @@ class _PersonalPlanBoxState extends State<PersonalPlanBox>
                   children: [
                     // Icon
                     IconBox(
-                      icon: 'assets/images/subject_icon.svg',
+                      icon: widget.studyPlanLogo,
                       iconColor: Colors.white,
                       size: 35,
                       backgroundColor: widget.secondaryColor,
@@ -152,13 +159,13 @@ class _PersonalPlanBoxState extends State<PersonalPlanBox>
                         right: 5,
                       ),
                       child: PersonalPlanChart(
-                          isDarkMode: widget.isDarkMode,
-                          lineSectionHeight: 120,
-                          barSectionHeight: 150,
-                          startDate: widget.startDate,
-                          examDate: widget.examDate,
-                          valueList: widget.valueList,
-                          expectedBarValue: widget.expectedQuestions,
+                        isDarkMode: widget.isDarkMode,
+                        lineSectionHeight: 120,
+                        barSectionHeight: 150,
+                        startDate: widget.startDate,
+                        examDate: widget.examDate,
+                        valueList: widget.valueList,
+                        expectedBarValue: widget.expectedQuestions,
                       ),
                     ),
 

@@ -90,3 +90,5 @@ export 'new_home_screen/widgets/statistic_tab_widgets/personal_plan_box.dart';
 export 'new_home_screen/widgets/study_tab_widgets/study_plan_button.dart';
 export 'new_home_screen/widgets/study_tab_widgets/study_tab_subject_tile.dart';
 export 'account/account_tab.dart';
+export 'account/user_information.dart';
+export 'account/user_avatar.dart';
