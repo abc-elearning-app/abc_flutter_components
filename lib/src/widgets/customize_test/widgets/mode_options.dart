@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/customize_test/provider/customize_test_provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -15,12 +16,14 @@ class ModeOptions extends StatelessWidget {
   final List<ModeData> modes;
   final Color mainColor;
   final bool isDarkMode;
+  final String infoIcon;
 
   const ModeOptions({
     super.key,
     required this.modes,
     required this.mainColor,
     required this.isDarkMode,
+    required this.infoIcon,
   });
 
   @override
@@ -58,7 +61,8 @@ class ModeOptions extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20)),
               child: ListTile(
                 // Info icon
-                leading: SvgPicture.asset('assets/images/info.svg',
+                leading: IconWidget(
+                    icon: infoIcon,
                     height: 20,
                     color: selectedIndex == modeValue
                         ? Colors.white

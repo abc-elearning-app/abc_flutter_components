@@ -19,6 +19,7 @@ class FinalTestResult extends StatelessWidget {
   final String doneImage;
   final String failImage;
   final String reviseImage;
+  final String bannerShape;
 
   final Color correctColor;
   final Color incorrectColor;
@@ -67,6 +68,7 @@ class FinalTestResult extends StatelessWidget {
     required this.doneImage,
     required this.failImage,
     required this.reviseImage,
+    required this.bannerShape,
     this.passPercent = 80,
   });
 
@@ -107,6 +109,7 @@ class FinalTestResult extends StatelessWidget {
                     mainColor: mainColor,
                     correctColor: correctColor,
                     incorrectColor: incorrectColor,
+                    bannerShapeImage: bannerShape,
                   ),
 
                   Container(

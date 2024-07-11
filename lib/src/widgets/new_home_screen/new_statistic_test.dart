@@ -15,6 +15,7 @@ class NewStatisticTab extends StatelessWidget {
   final int dayStreak;
   final double passingProbability;
   final bool isDarkMode;
+  final bool isSetupStudyPlan;
   final List<SubjectAnalysisData> subjectList;
   final DateTime startDate;
   final DateTime examDate;
@@ -38,6 +39,7 @@ class NewStatisticTab extends StatelessWidget {
     required this.startDate,
     required this.examDate,
     required this.personalPlanValueList,
+    required this.isSetupStudyPlan,
   });
 
   @override
@@ -72,6 +74,7 @@ class NewStatisticTab extends StatelessWidget {
               startDate: startDate,
               examDate: examDate,
               valueList: personalPlanValueList,
+              expectedQuestions: 50,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 10),
@@ -88,6 +91,7 @@ class NewStatisticTab extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: subjectList.length,
                 itemBuilder: (_, index) => SubjectAnalysisBox(
+                    dotIcon: 'assets/static/icons/dot.svg',
                     subjectAnalysisData: subjectList[index],
                     isDarkMode: isDarkMode))
           ],

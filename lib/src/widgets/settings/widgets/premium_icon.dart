@@ -4,16 +4,25 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:gif/gif.dart';
 
-class GifIcon extends StatefulWidget {
-  const GifIcon({super.key});
+class PremiumIcon extends StatefulWidget {
+  final String premiumIcon;
+  final String premiumBackground;
+
+  const PremiumIcon({
+    super.key,
+    required this.premiumIcon,
+    required this.premiumBackground,
+  });
 
   @override
-  State<GifIcon> createState() => _GifIconState();
+  State<PremiumIcon> createState() => _PremiumIconState();
 }
 
-class _GifIconState extends State<GifIcon> with SingleTickerProviderStateMixin {
+class _PremiumIconState extends State<PremiumIcon>
+    with SingleTickerProviderStateMixin {
   late Timer _timer;
   late ValueNotifier<double> _rotation;
   late GifController _gifController;
@@ -46,13 +55,13 @@ class _GifIconState extends State<GifIcon> with SingleTickerProviderStateMixin {
         valueListenable: _rotation,
         builder: (_, value, __) => Transform.rotate(
             angle: value,
-            child: Image.asset(
-              'assets/images/premium_background.png',
+            child: IconWidget(
+              icon: widget.premiumBackground,
               width: 80,
             )),
       ),
       Gif(
-        image: const AssetImage("assets/images/premium.gif"),
+        image: AssetImage(widget.premiumIcon),
         controller: _gifController,
         duration: const Duration(milliseconds: 2500),
         autostart: Autostart.no,

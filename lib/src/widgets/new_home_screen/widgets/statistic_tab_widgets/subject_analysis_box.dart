@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/icons/icon_box.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -34,6 +35,7 @@ class SubjectAnalysisBox extends StatefulWidget {
   final Color correctColor;
   final Color incorrectColor;
   final Color unansweredColor;
+  final String dotIcon;
 
   const SubjectAnalysisBox({
     super.key,
@@ -44,6 +46,7 @@ class SubjectAnalysisBox extends StatefulWidget {
     this.unansweredColor = const Color(0xFFD9D9D9),
     required this.subjectAnalysisData,
     required this.isDarkMode,
+    required this.dotIcon,
   });
 
   @override
@@ -63,7 +66,9 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
-    _animation = Tween<double>(begin: 0, end: pi).animate(_animationController);
+    _animation = Tween<double>(begin: 1.5 * pi, end: pi / 2)
+        .animate(_animationController);
+
     super.initState();
   }
 
@@ -120,11 +125,9 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
                       builder: (BuildContext context, Widget? child) {
                         return Transform.rotate(
                           angle: _animation.value,
-                          child: SvgPicture.asset(
-                            'assets/images/chevron_down.svg',
-                            color:
-                                widget.isDarkMode ? Colors.white : Colors.black,
-                            height: 10,
+                          child: const Icon(
+                            Icons.chevron_left_rounded,
+                            size: 35,
                           ),
                         );
                       },
@@ -218,8 +221,8 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
       child: Row(
         children: [
-          Image.asset(
-            'assets/images/dot.png',
+          IconWidget(
+            icon: widget.dotIcon,
             color: _getColor(type),
             height: 8,
           ),

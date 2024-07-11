@@ -27,9 +27,11 @@ class PersonalPlanReadyScreen extends StatelessWidget {
 
   // Data
   final TimeOfDay? reminderTime;
-  final DateTime? examDate;
-  final int questions;
+  final int expectedQuestions;
   final double passingScore;
+  final DateTime startDate;
+  final DateTime examDate;
+  final List<int> chartValueList;
   final bool isDarkMode;
 
   final void Function() onStartLearning;
@@ -37,7 +39,6 @@ class PersonalPlanReadyScreen extends StatelessWidget {
   const PersonalPlanReadyScreen({
     super.key,
     this.reminderTime,
-    this.examDate,
     this.backgroundColor = const Color(0xFFF5F4EE),
     this.mainColor = const Color(0xFFE3A651),
     required this.reminderIcon,
@@ -45,10 +46,13 @@ class PersonalPlanReadyScreen extends StatelessWidget {
     required this.questionsIcon,
     required this.passingScoreIcon,
     required this.sideImage,
-    required this.questions,
+    required this.expectedQuestions,
     required this.passingScore,
     required this.onStartLearning,
     required this.isDarkMode,
+    required this.startDate,
+    required this.examDate,
+    required this.chartValueList,
   });
 
   @override
@@ -61,10 +65,11 @@ class PersonalPlanReadyScreen extends StatelessWidget {
       InformationData(
           icon: examDateIcon,
           title: 'Exam date',
-          content: _getDisplayDate(
-              time: examDate ?? DateTime.now(), displayFull: true)),
+          content: _getDisplayDate(time: examDate, displayFull: true)),
       InformationData(
-          icon: questionsIcon, title: 'Questions', content: '$questions/day'),
+          icon: questionsIcon,
+          title: 'Questions',
+          content: '$expectedQuestions/day'),
       InformationData(
           icon: passingScoreIcon,
           title: 'Passing Score',
@@ -106,13 +111,14 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                         top: 20,
                       ),
                       child: PersonalPlanChart(
+                        key: GlobalKey(),
                         isDarkMode: isDarkMode,
                         lineSectionHeight: 120,
                         barSectionHeight: 150,
-                        startDate: DateTime.now(),
-                        examDate: examDate ??
-                            DateTime.now().add(const Duration(days: 5)),
-                        valueList: const [0],
+                        startDate: startDate,
+                        examDate: examDate,
+                        valueList: chartValueList,
+                        expectedBarValue: expectedQuestions,
                       ),
                     ),
 

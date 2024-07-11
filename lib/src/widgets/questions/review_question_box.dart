@@ -242,7 +242,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Transform.flip(
                     flipY: isShowExplanation,
-                    child: SvgPicture.asset('assets/images/chevron_down.svg')),
+                    child: SvgPicture.asset('assets/static/images/chevron_down.svg')),
               ),
 
               // Pro icon

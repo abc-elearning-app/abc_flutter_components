@@ -17,6 +17,8 @@ class PersonalPlanBox extends StatefulWidget {
   final DateTime examDate;
   final List<int> valueList;
 
+  final int expectedQuestions;
+
   const PersonalPlanBox({
     super.key,
     required this.isDarkMode,
@@ -26,6 +28,7 @@ class PersonalPlanBox extends StatefulWidget {
     required this.startDate,
     required this.examDate,
     required this.valueList,
+    required this.expectedQuestions,
     this.segmentBackgroundColor = const Color(0xFFE9E6D7),
   });
 
@@ -48,7 +51,10 @@ class _PersonalPlanBoxState extends State<PersonalPlanBox>
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
-    _animation = Tween<double>(begin: 0, end: pi).animate(_animationController);
+    _animation = Tween<double>(begin: 1.5 * pi, end: pi / 2)
+        .animate(_animationController);
+
+    _animationController.forward();
 
     // _displayOption = ValueNotifier(0);
     super.initState();
@@ -109,14 +115,11 @@ class _PersonalPlanBoxState extends State<PersonalPlanBox>
                       animation: _animation,
                       builder: (BuildContext context, Widget? child) {
                         return Transform.rotate(
-                          angle: _animation.value,
-                          child: SvgPicture.asset(
-                            'assets/images/chevron_down.svg',
-                            color:
-                                widget.isDarkMode ? Colors.white : Colors.black,
-                            height: 10,
-                          ),
-                        );
+                            angle: _animation.value,
+                            child: const Icon(
+                              Icons.chevron_left_rounded,
+                              size: 35,
+                            ));
                       },
                     )
                   ],
@@ -149,13 +152,13 @@ class _PersonalPlanBoxState extends State<PersonalPlanBox>
                         right: 5,
                       ),
                       child: PersonalPlanChart(
-                        key: GlobalKey(),
-                        isDarkMode: widget.isDarkMode,
-                        lineSectionHeight: 120,
-                        barSectionHeight: 150,
-                        startDate: widget.startDate,
-                        examDate: widget.examDate,
-                        valueList: widget.valueList,
+                          isDarkMode: widget.isDarkMode,
+                          lineSectionHeight: 120,
+                          barSectionHeight: 150,
+                          startDate: widget.startDate,
+                          examDate: widget.examDate,
+                          valueList: widget.valueList,
+                          expectedBarValue: widget.expectedQuestions,
                       ),
                     ),
 

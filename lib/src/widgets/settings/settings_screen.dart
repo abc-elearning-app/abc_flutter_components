@@ -19,6 +19,13 @@ class SettingScreen extends StatefulWidget {
 
   final String avatar;
 
+  final String circleIcon;
+  final String dnaIcon;
+  final String starIcon;
+  final String triangleIcon;
+  final String premiumIcon;
+  final String premiumBackground;
+
   final void Function() onAvatarClick;
 
   // Callbacks
@@ -62,6 +69,12 @@ class SettingScreen extends StatefulWidget {
     required this.notificationOn,
     required this.onAvatarClick,
     required this.avatar,
+    required this.circleIcon,
+    required this.dnaIcon,
+    required this.starIcon,
+    required this.triangleIcon,
+    required this.premiumIcon,
+    required this.premiumBackground,
   });
 
   @override
@@ -103,10 +116,17 @@ class _SettingScreenState extends State<SettingScreen> {
             children: [
               if (!widget.isPro)
                 PremiumButton(
-                    isDarkMode: widget.isDarkMode,
-                    margin: const EdgeInsets.only(left: 10, right: 10, top: 20),
-                    onClick: () => widget.onClickPremium(),
-                    buttonHeight: _buttonHeight)
+                  isDarkMode: widget.isDarkMode,
+                  margin: const EdgeInsets.only(left: 10, right: 10, top: 20),
+                  onClick: () => widget.onClickPremium(),
+                  buttonHeight: _buttonHeight,
+                  circleIcon: widget.circleIcon,
+                  dnaIcon: widget.dnaIcon,
+                  starIcon: widget.starIcon,
+                  triangleIcon: widget.triangleIcon,
+                  premiumIcon: widget.premiumIcon,
+                  premiumBackground: widget.premiumBackground,
+                )
               else
                 const Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -234,7 +254,8 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   PreferredSizeWidget _customAppBar() => AppBar(
-        backgroundColor: widget.isDarkMode ? Colors.black : widget.backgroundColor,
+        backgroundColor:
+            widget.isDarkMode ? Colors.black : widget.backgroundColor,
         scrolledUnderElevation: 0,
         leading: IconButton(
             icon: Icon(

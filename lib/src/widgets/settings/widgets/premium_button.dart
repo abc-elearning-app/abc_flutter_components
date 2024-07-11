@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'floating_icons.dart';
-import 'gif_icon.dart';
+import 'premium_icon.dart';
 
 class PremiumButton extends StatelessWidget {
   final double buttonHeight;
@@ -9,6 +9,13 @@ class PremiumButton extends StatelessWidget {
   final EdgeInsets? margin;
 
   final bool isDarkMode;
+
+  final String circleIcon;
+  final String dnaIcon;
+  final String starIcon;
+  final String triangleIcon;
+  final String premiumIcon;
+  final String premiumBackground;
 
   final void Function() onClick;
 
@@ -19,6 +26,10 @@ class PremiumButton extends StatelessWidget {
     required this.buttonHeight,
     required this.isDarkMode,
     required this.onClick,
+    required this.circleIcon,
+    required this.dnaIcon,
+    required this.starIcon,
+    required this.triangleIcon, required this.premiumIcon, required this.premiumBackground,
   });
 
   @override
@@ -26,7 +37,7 @@ class PremiumButton extends StatelessWidget {
     return Container(
       margin: margin,
       decoration:
-          BoxDecoration(borderRadius: BorderRadius.circular(15), boxShadow: [
+      BoxDecoration(borderRadius: BorderRadius.circular(15), boxShadow: [
         BoxShadow(
             color: isDarkMode ? Colors.black : Colors.grey.shade300,
             blurRadius: 2,
@@ -52,7 +63,13 @@ class PremiumButton extends StatelessWidget {
                   ])),
 
           // Floating icons
-          FloatingAnimation(buttonHeight: buttonHeight),
+          FloatingAnimation(
+            buttonHeight: buttonHeight,
+            circleIcon: circleIcon,
+            dnaIcon: dnaIcon,
+            starIcon: starIcon,
+            triangleIcon: triangleIcon,
+          ),
 
           // Button
           SizedBox(
@@ -70,19 +87,21 @@ class PremiumButton extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // GIF & Text
-                    const GifIcon(),
+                    PremiumIcon(
+                      premiumIcon: premiumIcon,
+                      premiumBackground: premiumBackground,
+                    ),
                     Expanded(
                       child: RichText(
                         textAlign: TextAlign.center,
                         text: const TextSpan(
                             style:
-                                TextStyle(fontSize: 18, fontFamily: 'Poppins'),
+                            TextStyle(fontSize: 18, fontFamily: 'Poppins'),
                             children: [
                               TextSpan(
                                   text: 'Upgrade',
                                   style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
+                                  TextStyle(fontWeight: FontWeight.bold)),
                               TextSpan(text: ' to the Premium'),
                             ]),
                       ),

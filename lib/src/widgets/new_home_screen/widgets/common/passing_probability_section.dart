@@ -66,11 +66,11 @@ class PassingProbabilitySection extends StatelessWidget {
       );
 
   Widget _passingProbabilityBox() => Container(
-        margin: const EdgeInsets.only(top: 10),
+        margin: const EdgeInsets.only(top: 10, left: 5, right: 5),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         width: double.infinity,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           color: isDarkMode
               ? darkModeMainColor.withOpacity(0.3)
               : mainColor.withOpacity(0.16),
@@ -97,16 +97,15 @@ class PassingProbabilitySection extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 5),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.only(top: 10, bottom: 8),
               child: CustomLinearProgress(
                 mainColor: mainColor,
                 backgroundColor: Colors.white.withOpacity(isDarkMode ? 0.3 : 1),
                 percent: passingProbability,
                 indicatorColor: Colors.white,
               ),
-            )
+            ),
           ],
         ),
       );

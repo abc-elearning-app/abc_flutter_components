@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 class FloatDirection {
   int xDirection;
@@ -12,8 +13,19 @@ class FloatDirection {
 
 class FloatingAnimation extends StatefulWidget {
   final double buttonHeight;
+  final String circleIcon;
+  final String dnaIcon;
+  final String starIcon;
+  final String triangleIcon;
 
-  const FloatingAnimation({super.key, required this.buttonHeight});
+  const FloatingAnimation({
+    super.key,
+    required this.buttonHeight,
+    required this.circleIcon,
+    required this.dnaIcon,
+    required this.starIcon,
+    required this.triangleIcon,
+  });
 
   @override
   State<FloatingAnimation> createState() => _FloatingAnimationState();
@@ -30,8 +42,8 @@ class _FloatingAnimationState extends State<FloatingAnimation> {
   double circleX = 0;
   double circleY = 0;
 
-  double halfCircleX = 0;
-  double halfCircleY = 0;
+  double dnaX = 0;
+  double dnaY = 0;
 
   double starX = 0;
   double starY = 0;
@@ -61,8 +73,8 @@ class _FloatingAnimationState extends State<FloatingAnimation> {
         starX = originalWidth / 3;
         starY = 0;
 
-        halfCircleX = -originalWidth / 3;
-        halfCircleY = 0;
+        dnaX = -originalWidth / 3;
+        dnaY = 0;
 
         circleX = 0;
         circleY = -originalHeight / 2;
@@ -82,12 +94,12 @@ class _FloatingAnimationState extends State<FloatingAnimation> {
     double xLimit = originalWidth / 2 - 10;
     double yLimit = originalHeight / 2 - 10;
 
-    _updateDirection('x', halfCircleX, xLimit, halfCircleDirection);
+    _updateDirection('x', dnaX, xLimit, halfCircleDirection);
     _updateDirection('x', circleX, xLimit, circleDirection);
     _updateDirection('x', triangleX, xLimit, triangleDirection);
     _updateDirection('x', starX, xLimit, starDirection);
 
-    _updateDirection('y', halfCircleY, yLimit, halfCircleDirection);
+    _updateDirection('y', dnaY, yLimit, halfCircleDirection);
     _updateDirection('y', circleY, yLimit, circleDirection);
     _updateDirection('y', triangleY, yLimit, triangleDirection);
     _updateDirection('y', starY, yLimit, starDirection);
@@ -113,12 +125,12 @@ class _FloatingAnimationState extends State<FloatingAnimation> {
   _animate() {
     double disposition = 0.5;
     setState(() {
-      halfCircleX += disposition * halfCircleDirection.xDirection;
+      dnaX += disposition * halfCircleDirection.xDirection;
       circleX += disposition / 2 * circleDirection.xDirection;
       starX += disposition / 3 * starDirection.xDirection;
       triangleX += disposition / 5 * triangleDirection.xDirection;
 
-      halfCircleY += disposition * halfCircleDirection.yDirection;
+      dnaY += disposition * halfCircleDirection.yDirection;
       circleY += disposition * circleDirection.yDirection;
       starY += disposition * starDirection.yDirection;
       triangleY += disposition * triangleDirection.yDirection;
@@ -138,10 +150,10 @@ class _FloatingAnimationState extends State<FloatingAnimation> {
     return Stack(
       alignment: Alignment.topLeft,
       children: [
-        _buildIcon(circleX, circleY, 'floating_circle'),
-        _buildIcon(halfCircleX, halfCircleY, 'floating_dna'),
-        _buildIcon(starX, starY, 'floating_star'),
-        _buildIcon(triangleX, triangleY, 'floating_triangle'),
+        _buildIcon(circleX, circleY, widget.circleIcon),
+        _buildIcon(dnaX, dnaY, widget.dnaIcon),
+        _buildIcon(starX, starY, widget.starIcon),
+        _buildIcon(triangleX, triangleY, widget.triangleIcon),
       ],
     );
   }
@@ -150,5 +162,5 @@ class _FloatingAnimationState extends State<FloatingAnimation> {
       offset: Offset(x, y),
       child: Transform.rotate(
           angle: rotationCounter,
-          child: Image.asset('assets/images/$image.png', height: iconSize)));
+          child: IconWidget(icon: image, height: iconSize)));
 }
