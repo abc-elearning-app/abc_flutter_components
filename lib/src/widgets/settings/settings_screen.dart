@@ -27,7 +27,6 @@ class SettingScreen extends StatefulWidget {
   final String starIcon;
   final String triangleIcon;
   final String premiumIcon;
-  final String premiumBackground;
 
   final void Function() onAvatarClick;
 
@@ -77,7 +76,6 @@ class SettingScreen extends StatefulWidget {
     required this.starIcon,
     required this.triangleIcon,
     required this.premiumIcon,
-    required this.premiumBackground,
     required this.isLoggedIn,
     required this.username,
     required this.crownIcon,
@@ -131,16 +129,6 @@ class _SettingScreenState extends State<SettingScreen> {
                   starIcon: widget.starIcon,
                   triangleIcon: widget.triangleIcon,
                   premiumIcon: widget.premiumIcon,
-                  premiumBackground: widget.premiumBackground,
-                )
-              else
-                const Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.done),
-                    Text('Pro'),
-                  ],
                 ),
               _title('Settings Exam'),
               _tileGroup([

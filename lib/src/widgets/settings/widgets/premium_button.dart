@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 import 'floating_icons.dart';
-import 'premium_icon.dart';
 
 class PremiumButton extends StatelessWidget {
   final double buttonHeight;
@@ -15,7 +15,6 @@ class PremiumButton extends StatelessWidget {
   final String starIcon;
   final String triangleIcon;
   final String premiumIcon;
-  final String premiumBackground;
 
   final void Function() onClick;
 
@@ -29,7 +28,8 @@ class PremiumButton extends StatelessWidget {
     required this.circleIcon,
     required this.dnaIcon,
     required this.starIcon,
-    required this.triangleIcon, required this.premiumIcon, required this.premiumBackground,
+    required this.triangleIcon,
+    required this.premiumIcon,
   });
 
   @override
@@ -37,7 +37,7 @@ class PremiumButton extends StatelessWidget {
     return Container(
       margin: margin,
       decoration:
-      BoxDecoration(borderRadius: BorderRadius.circular(15), boxShadow: [
+          BoxDecoration(borderRadius: BorderRadius.circular(15), boxShadow: [
         BoxShadow(
             color: isDarkMode ? Colors.black : Colors.grey.shade300,
             blurRadius: 2,
@@ -83,25 +83,22 @@ class PremiumButton extends StatelessWidget {
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent),
               child: Transform.translate(
-                offset: const Offset(-20, 0),
+                offset: const Offset(-35, 0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    PremiumIcon(
-                      premiumIcon: premiumIcon,
-                      premiumBackground: premiumBackground,
-                    ),
+                    Lottie.asset(premiumIcon),
                     Expanded(
                       child: RichText(
                         textAlign: TextAlign.center,
                         text: const TextSpan(
                             style:
-                            TextStyle(fontSize: 18, fontFamily: 'Poppins'),
+                                TextStyle(fontSize: 18, fontFamily: 'Poppins'),
                             children: [
                               TextSpan(
                                   text: 'Upgrade',
                                   style:
-                                  TextStyle(fontWeight: FontWeight.bold)),
+                                      TextStyle(fontWeight: FontWeight.bold)),
                               TextSpan(text: ' to the Premium'),
                             ]),
                       ),

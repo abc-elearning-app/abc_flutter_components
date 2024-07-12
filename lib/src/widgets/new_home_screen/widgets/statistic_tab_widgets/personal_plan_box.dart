@@ -79,13 +79,15 @@ class _PersonalPlanBoxState extends State<PersonalPlanBox>
           color: widget.isDarkMode
               ? Colors.white.withOpacity(0.3)
               : widget.backgroundColor,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade200,
-              blurRadius: 2,
-              spreadRadius: 2,
-            )
-          ]),
+          boxShadow: !widget.isDarkMode
+              ? [
+                  BoxShadow(
+                    color: Colors.grey.shade200,
+                    blurRadius: 2,
+                    spreadRadius: 2,
+                  )
+                ]
+              : null),
       child: Column(
         children: [
           GestureDetector(

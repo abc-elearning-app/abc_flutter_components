@@ -87,13 +87,14 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
           color: widget.isDarkMode
               ? Colors.white.withOpacity(0.3)
               : widget.backgroundColor,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade200,
-              spreadRadius: 2,
-              blurRadius: 2
-            )
-          ]),
+          boxShadow: !widget.isDarkMode
+              ? [
+                  BoxShadow(
+                      color: Colors.grey.shade200,
+                      spreadRadius: 2,
+                      blurRadius: 2)
+                ]
+              : null),
       child: Column(
         children: [
           GestureDetector(

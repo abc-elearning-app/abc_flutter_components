@@ -20,7 +20,6 @@ class AccountTab extends StatelessWidget {
   final String starIcon;
   final String triangleIcon;
   final String premiumIcon;
-  final String premiumBackground;
 
   final String syncIcon;
   final String deleteAccountIcon;
@@ -45,7 +44,6 @@ class AccountTab extends StatelessWidget {
     required this.starIcon,
     required this.triangleIcon,
     required this.premiumIcon,
-    required this.premiumBackground,
     required this.isPro,
     required this.syncIcon,
     required this.deleteAccountIcon,
@@ -104,8 +102,7 @@ class AccountTab extends StatelessWidget {
                       dnaIcon: dnaIcon,
                       starIcon: starIcon,
                       triangleIcon: triangleIcon,
-                      premiumIcon: premiumIcon,
-                      premiumBackground: premiumBackground),
+                      premiumIcon: premiumIcon),
                 if (!isPro)
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 15),
