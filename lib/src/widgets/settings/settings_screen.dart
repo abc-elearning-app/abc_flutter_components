@@ -31,12 +31,11 @@ class SettingScreen extends StatefulWidget {
   final void Function() onAvatarClick;
 
   // Callbacks
-  final void Function() onToggleNotification;
+  final void Function(bool value) onToggleNotification;
   final void Function() onProPurchase;
   final void Function() onDisableReminder;
   final void Function() onClickReset;
   final void Function() onToggleDarkMode;
-  final void Function() onClickPremium;
   final void Function() onClickPolicy;
   final void Function() onClickAppVersion;
   final void Function() onClickContact;
@@ -64,7 +63,6 @@ class SettingScreen extends StatefulWidget {
     required this.onClickAppVersion,
     required this.onClickContact,
     required this.onClickRate,
-    required this.onClickPremium,
     required this.onChangeExamDate,
     required this.onShare,
     required this.appVersion,
@@ -122,7 +120,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 PremiumButton(
                   isDarkMode: widget.isDarkMode,
                   margin: const EdgeInsets.only(left: 10, right: 10, top: 20),
-                  onClick: () => widget.onClickPremium(),
+                  onClick: widget.onProPurchase,
                   buttonHeight: _buttonHeight,
                   circleIcon: widget.circleIcon,
                   dnaIcon: widget.dnaIcon,
@@ -318,7 +316,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
   _toggleNotification() {
     _notificationOn.value = !_notificationOn.value;
-    widget.onToggleNotification();
+    widget.onToggleNotification(_notificationOn.value);
   }
 
   _changeDate(BuildContext context) async {
