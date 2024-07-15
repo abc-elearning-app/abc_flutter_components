@@ -73,7 +73,7 @@ class _PersonalPlanBoxState extends State<PersonalPlanBox>
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(left: 5, right: 5, bottom: 15),
+      margin: const EdgeInsets.only(left: 5, right: 5, bottom: 15, top: 15),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           color: widget.isDarkMode
