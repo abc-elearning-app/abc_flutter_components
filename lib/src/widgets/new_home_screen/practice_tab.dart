@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class QuestionGroupData {
   final String id;
@@ -9,20 +8,21 @@ class QuestionGroupData {
   final String icon;
   final Color iconBackgroundColor;
 
-  QuestionGroupData(
-      {required this.title,
-      required this.subtitle,
-      required this.icon,
-      required this.id,
-      this.iconBackgroundColor = Colors.grey});
+  QuestionGroupData({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.id,
+    this.iconBackgroundColor = Colors.grey,
+  });
 }
 
-class NewPracticeTab extends StatelessWidget {
+class PracticeTab extends StatelessWidget {
   final List<QuestionGroupData> groupList;
   final bool isDarkMode;
   final void Function(String id) onSelect;
 
-  const NewPracticeTab({
+  const PracticeTab({
     super.key,
     required this.groupList,
     required this.isDarkMode,

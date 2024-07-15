@@ -46,10 +46,9 @@ class SettingTile extends StatelessWidget {
           content: iconString, color: isDarkMode ? 'white' : ' black'),
       title: Text(title,
           style: TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-            color: isDarkMode ? Colors.white : Colors.black
-          )),
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+              color: isDarkMode ? Colors.white : Colors.black)),
       trailing: _buildTrailing(),
     );
   }
@@ -67,11 +66,10 @@ class SettingTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (showPro)
-            GetProIcon(
-              padding: const EdgeInsets.all(5),
-              margin: const EdgeInsets.only(right: 8),
-              darkMode: isDarkMode
-            ),
+              GetProIcon(
+                  padding: const EdgeInsets.all(5),
+                  margin: const EdgeInsets.only(right: 8),
+                  darkMode: isDarkMode),
             const SizedBox(width: 10),
             StatefulBuilder(
               builder: (_, setState) => Switch(
@@ -79,8 +77,10 @@ class SettingTile extends StatelessWidget {
                 inactiveTrackColor: Colors.black.withOpacity(0.08),
                 inactiveThumbColor: isDarkMode ? Colors.white : Colors.black,
                 activeTrackColor: activeTrackColor,
-                thumbIcon: const MaterialStatePropertyAll(Icon(Icons.abc, color: Colors.transparent)),
-                trackOutlineColor: MaterialStatePropertyAll(isDarkMode ? Colors.white : mainColor),
+                thumbIcon: const MaterialStatePropertyAll(
+                    Icon(Icons.abc, color: Colors.transparent)),
+                trackOutlineColor: MaterialStatePropertyAll(
+                    isDarkMode ? Colors.white : mainColor),
                 trackOutlineWidth: const MaterialStatePropertyAll(1),
                 value: value!,
                 onChanged: (_) => showPro ? null : onClick(),
