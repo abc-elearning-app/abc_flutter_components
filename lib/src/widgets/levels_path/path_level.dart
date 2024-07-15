@@ -16,7 +16,7 @@ class LevelData {
       {required this.id,
       required this.title,
       required this.progress,
-      this.icon = 'assets/images/topic_icon_0.svg',
+      this.icon = 'assets/static/icons/topic_icon_0.svg',
       this.isCurrent = false,
       this.isLock = true,
       this.isFreeToday = false});
