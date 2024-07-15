@@ -13,28 +13,29 @@ class SettingScreen extends StatefulWidget {
   final String appVersion;
   final bool notificationOn;
 
+  final bool isLoggedIn;
+  final String avatar;
+  final String username;
+  final String crownIcon;
+
   final Color mainColor;
   final Color backgroundColor;
   final Color switchActiveTrackColor;
-
-  final String avatar;
 
   final String circleIcon;
   final String dnaIcon;
   final String starIcon;
   final String triangleIcon;
   final String premiumIcon;
-  final String premiumBackground;
 
   final void Function() onAvatarClick;
 
   // Callbacks
-  final void Function() onToggleNotification;
+  final void Function(bool value) onToggleNotification;
   final void Function() onProPurchase;
   final void Function() onDisableReminder;
   final void Function() onClickReset;
   final void Function() onToggleDarkMode;
-  final void Function() onClickPremium;
   final void Function() onClickPolicy;
   final void Function() onClickAppVersion;
   final void Function() onClickContact;
@@ -62,7 +63,6 @@ class SettingScreen extends StatefulWidget {
     required this.onClickAppVersion,
     required this.onClickContact,
     required this.onClickRate,
-    required this.onClickPremium,
     required this.onChangeExamDate,
     required this.onShare,
     required this.appVersion,
@@ -74,7 +74,9 @@ class SettingScreen extends StatefulWidget {
     required this.starIcon,
     required this.triangleIcon,
     required this.premiumIcon,
-    required this.premiumBackground,
+    required this.isLoggedIn,
+    required this.username,
+    required this.crownIcon,
   });
 
   @override
@@ -118,23 +120,13 @@ class _SettingScreenState extends State<SettingScreen> {
                 PremiumButton(
                   isDarkMode: widget.isDarkMode,
                   margin: const EdgeInsets.only(left: 10, right: 10, top: 20),
-                  onClick: () => widget.onClickPremium(),
+                  onClick: widget.onProPurchase,
                   buttonHeight: _buttonHeight,
                   circleIcon: widget.circleIcon,
                   dnaIcon: widget.dnaIcon,
                   starIcon: widget.starIcon,
                   triangleIcon: widget.triangleIcon,
                   premiumIcon: widget.premiumIcon,
-                  premiumBackground: widget.premiumBackground,
-                )
-              else
-                const Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.done),
-                    Text('Pro'),
-                  ],
                 ),
               _title('Settings Exam'),
               _tileGroup([
@@ -266,6 +258,7 @@ class _SettingScreenState extends State<SettingScreen> {
         title: Text(
           'Settings',
           style: TextStyle(
+              fontSize: 18,
               fontWeight: FontWeight.w500,
               color: widget.isDarkMode ? Colors.white : Colors.black),
         ),
@@ -273,10 +266,16 @@ class _SettingScreenState extends State<SettingScreen> {
           Padding(
               padding: const EdgeInsets.only(right: 10),
               child: IconButton(
-                icon: IconWidget(
-                  icon: widget.avatar,
-                  height: 40,
-                ),
+                icon: widget.isLoggedIn
+                    ? UserAvatar(
+                        isPro: widget.isPro,
+                        avatar: widget.avatar,
+                        username: widget.username,
+                        crownIcon: widget.crownIcon)
+                    : IconWidget(
+                        icon: widget.avatar,
+                        height: 40,
+                      ),
                 onPressed: widget.onAvatarClick,
               ))
         ],
@@ -317,7 +316,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
   _toggleNotification() {
     _notificationOn.value = !_notificationOn.value;
-    widget.onToggleNotification();
+    widget.onToggleNotification(_notificationOn.value);
   }
 
   _changeDate(BuildContext context) async {

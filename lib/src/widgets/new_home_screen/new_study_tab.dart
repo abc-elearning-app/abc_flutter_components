@@ -39,7 +39,7 @@ class NewStudyTab extends StatelessWidget {
   final int studyPlanQuestions;
   final int studyPlanDoneQuestions;
 
-  final void Function() onClickDailyChallenge;
+  final void Function() onClickStudyPlan;
   final void Function(String id) onSelectSubject;
 
   const NewStudyTab({
@@ -58,7 +58,7 @@ class NewStudyTab extends StatelessWidget {
     required this.passingProbability,
     required this.subjectDataList,
     required this.isDarkMode,
-    required this.onClickDailyChallenge,
+    required this.onClickStudyPlan,
     required this.onSelectSubject,
     required this.isSetupStudyPlan,
     required this.studyPlanQuestions,
@@ -100,14 +100,16 @@ class NewStudyTab extends StatelessWidget {
                           const TextSpan(text: ' questions'),
                         ]))
                   : const Text(
-                      'Set up study plan to maximize your passing probability!')),
+                      'Set up study plan to maximize your passing probability!',
+                      textAlign: TextAlign.center,
+                    )),
 
           // Button
           StudyPlanButton(
             title: 'DUCK',
             mainColor: mainColor,
             buttonBackground: buttonBackground,
-            onClickDailyChallenge: onClickDailyChallenge,
+            onClickStudyPlan: onClickStudyPlan,
           ),
 
           // Subject list

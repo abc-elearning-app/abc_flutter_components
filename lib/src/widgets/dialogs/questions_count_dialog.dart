@@ -9,13 +9,14 @@ class QuestionCountDialog extends StatefulWidget {
 
   final void Function(int questions) onPracticeClick;
 
-  const QuestionCountDialog(
-      {super.key,
-      required this.isDarkMode,
-      this.mainColor = const Color(0xFFE3A651),
-      this.secondaryColor = const Color(0xFF7C6F5B),
-      this.backgroundColor = const Color(0xFFF5F4EE),
-      required this.onPracticeClick});
+  const QuestionCountDialog({
+    super.key,
+    required this.isDarkMode,
+    this.mainColor = const Color(0xFFE3A651),
+    this.secondaryColor = const Color(0xFF7C6F5B),
+    this.backgroundColor = const Color(0xFFF5F4EE),
+    required this.onPracticeClick,
+  });
 
   @override
   State<QuestionCountDialog> createState() => _QuestionCountDialogState();
@@ -77,7 +78,7 @@ class _QuestionCountDialogState extends State<QuestionCountDialog> {
             ),
             _buildOptions(),
             Padding(
-              padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
+              padding: const EdgeInsets.only(top: 20, left: 15, right: 15, bottom: 15),
               child: Row(
                 children: [
                   Expanded(

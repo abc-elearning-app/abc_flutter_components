@@ -56,7 +56,7 @@ class ResultSubjectTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   color: Color.lerp(iconBackgroundColor, Colors.white, 0.7),
                 ),
-                child: SvgPicture.asset(icon, color: color),
+                child: IconWidget(icon: icon, color: color, height: 25),
               ),
 
               // Title
@@ -69,7 +69,7 @@ class ResultSubjectTile extends StatelessWidget {
                     overflow: TextOverflow.ellipsis),
               )),
               Text(
-                '${progress.toInt()}%',
+                '${progress.ceil()}%',
                 style: const TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 15,

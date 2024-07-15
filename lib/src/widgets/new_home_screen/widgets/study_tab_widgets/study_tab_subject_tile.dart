@@ -24,7 +24,7 @@ class StudyTabSubjectTile extends StatelessWidget {
     return GestureDetector(
       onTap: () => onSelectSubject(subjectData.id),
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
             color: Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
@@ -33,22 +33,22 @@ class StudyTabSubjectTile extends StatelessWidget {
                 ? [
                     BoxShadow(
                         color: Colors.grey.shade200,
-                        offset: const Offset(0, 2),
-                        spreadRadius: 2)
+                        offset: const Offset(0, 1),
+                        spreadRadius: 1,
+                        blurRadius: 1)
                   ]
                 : null),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: tileSecondaryColor,
-              ),
-              child: HomeIcon(icon: subjectData.icon, tileColor: tileColor)
-            ),
+                padding: const EdgeInsets.all(10),
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: tileSecondaryColor,
+                ),
+                child: HomeIcon(icon: subjectData.icon, tileColor: tileColor)),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -81,14 +81,5 @@ class StudyTabSubjectTile extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _getLevelTitle(double progress) {
-    if (progress < 40) {
-      return 'Beginner';
-    } else if (progress < 80) {
-      return 'Intermediate';
-    }
-    return 'Advanced';
   }
 }

@@ -75,6 +75,7 @@ class NewStatisticTab extends StatelessWidget {
               examDate: examDate,
               valueList: personalPlanValueList,
               expectedQuestions: 50,
+              studyPlanLogo: '',
             ),
             Padding(
               padding: const EdgeInsets.only(left: 10),

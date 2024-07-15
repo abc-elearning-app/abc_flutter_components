@@ -68,6 +68,7 @@ class _ProBannerState extends State<ProBanner> {
                 style: TextStyle(
                     fontSize: 14,
                     color: widget.textColor,
+                    fontFamily: 'Poppins',
                     fontWeight: FontWeight.w500),
                 children: [
                   const TextSpan(text: 'Save '),
@@ -75,13 +76,13 @@ class _ProBannerState extends State<ProBanner> {
                       text: '${widget.data.percentSaved.toInt()}%',
                       style: const TextStyle(
                           color: Color(0xFFFFD600),
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold)),
                   const TextSpan(text: ' - Only '),
                   TextSpan(
                       text: '\$${widget.data.price}',
                       style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w800)),
+                          fontSize: 16, fontWeight: FontWeight.w800)),
                   TextSpan(text: ' For 1 ${widget.data.timeType.name}')
                 ]),
           )),

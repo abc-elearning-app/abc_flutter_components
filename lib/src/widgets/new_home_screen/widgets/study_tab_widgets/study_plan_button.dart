@@ -4,12 +4,12 @@ class StudyPlanButton extends StatelessWidget {
   final String buttonBackground;
   final Color mainColor;
   final String title;
-  final void Function() onClickDailyChallenge;
+  final void Function() onClickStudyPlan;
 
   const StudyPlanButton({
     super.key,
     required this.buttonBackground,
-    required this.onClickDailyChallenge,
+    required this.onClickStudyPlan,
     required this.mainColor,
     required this.title,
   });
@@ -31,7 +31,7 @@ class StudyPlanButton extends StatelessWidget {
               shadowColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16))),
-          onPressed: onClickDailyChallenge,
+          onPressed: onClickStudyPlan,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
             child: Text(
