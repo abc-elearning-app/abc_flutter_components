@@ -48,11 +48,11 @@ class CustomizeTestWrapper extends StatelessWidget {
           isPro: isPro,
           modes: modes,
           subjects: subjects,
-          onStart: onStart,
-          isDarkMode: isDarkMode,
           proVersion: proVersion,
-          onGetPro: onGetPro,
           infoIcon: infoIcon,
+          isDarkMode: isDarkMode,
+          onStart: onStart,
+          onGetPro: onGetPro,
         ));
   }
 }
@@ -299,7 +299,7 @@ class _CustomizeTestState extends State<CustomizeTest> {
             child: MainButton(
               title: 'Start Test',
               textStyle: const TextStyle(fontSize: 16),
-              disabled: value,
+              disabled: widget.isPro ? value : false,
               backgroundColor: widget.mainColor,
               onPressed: () => widget.onStart(SubjectsValue(
                 duration: provider.selectedDuration, 
@@ -312,28 +312,19 @@ class _CustomizeTestState extends State<CustomizeTest> {
           ),
           if (!widget.proVersion)
             Positioned.fill(
-              child: InkWell(
-                onTap: () => widget.onStart(SubjectsValue(
-                  duration: provider.selectedDuration, 
-                  passingScore: provider.selectedPassingScore, 
-                  testSettingId: provider.selectedModeValue, 
-                  topicIds: provider.topicIdsSelected,
-                  totalQuestion: provider.selectedQuestions
-                )),
+              child: GestureDetector(
+                onTap: widget.onGetPro,
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
-                        color: Colors.black38,
+                        color: Colors.black.withOpacity(0.5),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          GetProIcon(darkMode: widget.isDarkMode),
-                          const SizedBox(width: 12)
-                        ],
+                      child: const Icon(
+                        Icons.lock,
+                        color: Colors.white,
+                        size: 30,
                       )),
                 ),
               ),

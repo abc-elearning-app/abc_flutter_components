@@ -22,8 +22,8 @@ class LevelWidget extends StatefulWidget {
 
   const LevelWidget({
     super.key,
-    required this.levelData,
     this.isPlaceholder = false,
+    required this.levelData,
     required this.isFinal,
     required this.drawType,
     required this.drawSpeed,

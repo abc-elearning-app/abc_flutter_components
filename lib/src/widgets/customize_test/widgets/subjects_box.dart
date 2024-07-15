@@ -79,9 +79,12 @@ class SubjectsBox extends StatelessWidget {
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                   color: secondaryColor,
-                  borderRadius: BorderRadius.circular(8)
-                ),
-              child: IconWidget(icon: subjectData.icon, color: Colors.white, width: 24),
+                  borderRadius: BorderRadius.circular(8)),
+              child: IconWidget(
+                icon: subjectData.icon,
+                color: Colors.white,
+                width: 24,
+              ),
             ),
             const SizedBox(width: 15),
             // Title
