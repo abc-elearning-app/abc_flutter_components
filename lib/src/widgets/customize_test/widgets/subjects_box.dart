@@ -3,12 +3,29 @@ import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/customize_test/provider/customize_test_provider.dart';
 import 'package:provider/provider.dart';
 
+class SubjectsValue {
+  final int testSettingId;
+  final int totalQuestion;
+  final int duration;
+  final int passingScore;
+  final List<int> topicIds;
+  SubjectsValue({
+    required this.duration,
+    required this.passingScore,
+    required this.testSettingId,
+    required this.topicIds,
+    required this.totalQuestion,
+  });
+}
+
 class CustomizeSubjectData {
+  final int id;
   final String title;
   bool isSelected;
   String icon;
 
   CustomizeSubjectData({
+    required this.id,
     required this.icon,
     required this.title,
     this.isSelected = false,
@@ -42,17 +59,15 @@ class SubjectsBox extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: subjects.length,
-            itemBuilder: (_, index) =>
-                _subjectTile(context, subjects[index], index)));
+            itemBuilder: (_, index) => _subjectTile(context, subjects[index])));
   }
 
   Widget _subjectTile(
     BuildContext context,
     CustomizeSubjectData subjectData,
-    int index,
   ) {
     return GestureDetector(
-      onTap: () => _toggle(context, index),
+      onTap: () => _toggle(context, subjectData.id),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         child: Row(
@@ -82,7 +97,7 @@ class SubjectsBox extends StatelessWidget {
 
             // Checkbox
             Selector<CustomizeTestProvider, bool>(
-                selector: (_, provider) => provider.subjectSelection[index],
+                selector: (_, provider) => provider.topicIdsSelected.contains(subjectData.id),
                 builder: (_, value, __) => MyCheckBox(
                     activeColor: mainColor,
                     fillColor: Colors.white.withOpacity(0.08),
@@ -90,13 +105,13 @@ class SubjectsBox extends StatelessWidget {
                         isDarkMode ? Colors.white.withOpacity(0.16) : mainColor,
                     iconColor: Colors.white,
                     value: value,
-                    onChanged: (_) => _toggle(context, index)))
+                    onChanged: (_) => _toggle(context, subjectData.id)))
           ],
         ),
       ),
     );
   }
 
-  _toggle(BuildContext context, int index) =>
-      context.read<CustomizeTestProvider>().toggleSubject(index);
+  _toggle(BuildContext context, int value) =>
+      context.read<CustomizeTestProvider>().toggleSubject(value);
 }

@@ -20,13 +20,7 @@ class CustomizeTestWrapper extends StatelessWidget {
 
   // Callback
   final void Function() onGetPro;
-  final void Function(
-    int modeIndex,
-    int questionCount,
-    int duration,
-    int passingScore,
-    List<bool> subjectSelections,
-  ) onStart;
+  final void Function(SubjectsValue value) onStart;
 
   const CustomizeTestWrapper({
     super.key,
@@ -77,13 +71,7 @@ class CustomizeTest extends StatefulWidget {
   final bool proVersion;
 
   final void Function() onGetPro;
-  final void Function(
-    int modeIndex,
-    int questionCount,
-    int duration,
-    int passingScore,
-    List<bool> subjectSelections,
-  ) onStart;
+  final void Function(SubjectsValue value) onStart;
 
   const CustomizeTest({
     super.key,
@@ -110,7 +98,7 @@ class _CustomizeTestState extends State<CustomizeTest> {
     if (mounted) {
       context
           .read<CustomizeTestProvider>()
-          .init(widget.subjects.length, widget.modes);
+          .init(widget.subjects.map((e) => e.id).toList(), widget.modes);
     }
     super.initState();
   }
@@ -285,16 +273,14 @@ class _CustomizeTestState extends State<CustomizeTest> {
               )),
           const SizedBox(width: 10),
           Selector<CustomizeTestProvider, bool>(
-            selector: (_, provider) => provider.allSubjectSelected,
+            selector: (_, provider) => provider.selectedAll,
             builder: (_, value, __) => Padding(
               padding: const EdgeInsets.only(right: 3),
               child: MyCheckBox(
                 activeColor: widget.mainColor,
                 borderColor: widget.mainColor,
                 value: value,
-                onChanged: (value) => context
-                    .read<CustomizeTestProvider>()
-                    .toggleAllSubjects(value),
+                onChanged: context.read<CustomizeTestProvider>().toggleAllSubjects,
               ),
             ),
           ),
@@ -304,8 +290,7 @@ class _CustomizeTestState extends State<CustomizeTest> {
   Widget _buildStartButton(BuildContext context) {
     final provider = context.read<CustomizeTestProvider>();
     return Selector<CustomizeTestProvider, bool>(
-      selector: (_, provider) =>
-          provider.subjectSelection.where((isSelected) => isSelected).isEmpty,
+      selector: (_, provider) => provider.topicIdsSelected.isEmpty,
       builder: (_, value, __) => Stack(
         children: [
           Container(
@@ -316,25 +301,25 @@ class _CustomizeTestState extends State<CustomizeTest> {
               textStyle: const TextStyle(fontSize: 16),
               disabled: value,
               backgroundColor: widget.mainColor,
-              onPressed: () => widget.onStart(
-                provider.selectedModeValue,
-                provider.selectedQuestions,
-                provider.selectedDuration,
-                provider.selectedPassingScore,
-                provider.subjectSelection,
-              ),
+              onPressed: () => widget.onStart(SubjectsValue(
+                duration: provider.selectedDuration, 
+                passingScore: provider.selectedPassingScore, 
+                testSettingId: provider.selectedModeValue, 
+                topicIds: provider.topicIdsSelected,
+                totalQuestion: provider.selectedQuestions
+              )),
             ),
           ),
           if (!widget.proVersion)
             Positioned.fill(
               child: InkWell(
-                onTap: () => widget.onStart(
-                  provider.selectedModeValue,
-                  provider.selectedQuestions,
-                  provider.selectedDuration,
-                  provider.selectedPassingScore,
-                  provider.subjectSelection,
-                ),
+                onTap: () => widget.onStart(SubjectsValue(
+                  duration: provider.selectedDuration, 
+                  passingScore: provider.selectedPassingScore, 
+                  testSettingId: provider.selectedModeValue, 
+                  topicIds: provider.topicIdsSelected,
+                  totalQuestion: provider.selectedQuestions
+                )),
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: Container(

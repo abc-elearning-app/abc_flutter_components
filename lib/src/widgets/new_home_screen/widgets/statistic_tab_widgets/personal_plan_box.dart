@@ -91,7 +91,7 @@ class _PersonalPlanBoxState extends State<PersonalPlanBox>
                   children: [
                     // Icon
                     IconBox(
-                      icon: 'assets/images/subject_icon.svg',
+                      icon: 'assets/static/icons/subject_icon.svg',
                       iconColor: Colors.white,
                       size: 35,
                       backgroundColor: widget.secondaryColor,

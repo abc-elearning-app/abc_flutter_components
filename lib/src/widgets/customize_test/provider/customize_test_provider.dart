@@ -7,13 +7,10 @@ class CustomizeTestProvider extends ChangeNotifier {
   int selectedQuestions = 20;
   int selectedDuration = 20;
   int selectedPassingScore = 80;
-  List<bool> subjectSelection = [];
+  Map<int, bool> mapTopicIdsSelected = {};
 
-  bool allSubjectSelected = true;
-
-  void init(int subjectLength, List<ModeData> modes) {
-    // Initialize a boolean list for selecting subjects
-    subjectSelection.addAll(List.generate(subjectLength, (_) => true));
+  void init(List<int> topicIds, List<ModeData> modes) {
+    mapTopicIdsSelected = topicIds.asMap().map((key, value) => MapEntry(value, true));
     selectedModeValue = modes.first.id;
   }
 
@@ -37,17 +34,25 @@ class CustomizeTestProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleSubject(int index) {
-    subjectSelection[index] = !subjectSelection[index];
-    allSubjectSelected = subjectSelection.where((e) => !e).isEmpty;
+  void toggleSubject(int id) {
+    mapTopicIdsSelected[id] = !mapTopicIdsSelected[id]!;
     notifyListeners();
   }
 
   void toggleAllSubjects(bool value) {
-    for (int i = 0; i < subjectSelection.length; i++) {
-      subjectSelection[i] = value;
-    }
-    allSubjectSelected = value;
+    mapTopicIdsSelected = mapTopicIdsSelected.map((key, _) => MapEntry(key, value));
     notifyListeners();
   }
+
+  List<int> get topicIdsSelected {
+    List<int> ids = [];
+    for(var entry in mapTopicIdsSelected.entries) {
+      if(entry.value) {
+        ids.add(entry.key);
+      }
+    }
+    return ids;
+  }
+
+  bool get selectedAll => topicIdsSelected.length == mapTopicIdsSelected.length;
 }
