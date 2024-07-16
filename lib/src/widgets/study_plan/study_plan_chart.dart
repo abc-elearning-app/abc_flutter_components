@@ -15,7 +15,7 @@ class ChartData {
 
 enum ChartType { line, expected, actual }
 
-class PersonalPlanChart extends StatefulWidget {
+class StudyPlanChart extends StatefulWidget {
   final List<int> valueList;
   final DateTime startDate;
   final DateTime examDate;
@@ -51,7 +51,7 @@ class PersonalPlanChart extends StatefulWidget {
   final double duration;
   final bool isDarkMode;
 
-  const PersonalPlanChart({
+  const StudyPlanChart({
     super.key,
 
     /// Important: length of valueList must equal
@@ -84,10 +84,10 @@ class PersonalPlanChart extends StatefulWidget {
   });
 
   @override
-  State<PersonalPlanChart> createState() => _PersonalPlanChartState();
+  State<StudyPlanChart> createState() => _StudyPlanChartState();
 }
 
-class _PersonalPlanChartState extends State<PersonalPlanChart> {
+class _StudyPlanChartState extends State<StudyPlanChart> {
   // late TooltipBehavior _tooltip;
 
   // Input data list

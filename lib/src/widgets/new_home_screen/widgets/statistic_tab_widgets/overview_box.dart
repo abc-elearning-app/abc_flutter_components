@@ -4,7 +4,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/final_test_result/widgets/half_circle_progress.dart';
 
-class OverviewBox extends StatelessWidget {
+class OverviewBoxComponent extends StatelessWidget {
   final int answeredQuestions;
   final int totalQuestions;
   final int correctAnswers;
@@ -17,7 +17,7 @@ class OverviewBox extends StatelessWidget {
 
   final String background;
 
-  const OverviewBox({
+  const OverviewBoxComponent({
     super.key,
     required this.answeredQuestions,
     required this.totalQuestions,

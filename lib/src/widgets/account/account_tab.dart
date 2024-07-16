@@ -5,7 +5,7 @@ import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/premium_
 
 enum PackageType { weekly, monthly, yearly }
 
-class AccountTab extends StatelessWidget {
+class AccountTabComponent extends StatelessWidget {
   final bool isDarkMode;
   final bool isPro;
   final String appName;
@@ -36,7 +36,7 @@ class AccountTab extends StatelessWidget {
   final void Function() onLogout;
   final void Function() onDeleteAccount;
 
-  const AccountTab({
+  const AccountTabComponent({
     super.key,
     required this.isDarkMode,
     required this.circleIcon,

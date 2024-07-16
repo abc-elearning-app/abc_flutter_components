@@ -17,12 +17,12 @@ class QuestionGroupData {
   });
 }
 
-class PracticeTab extends StatelessWidget {
+class PracticeTabComponent extends StatelessWidget {
   final List<QuestionGroupData> groupList;
   final bool isDarkMode;
   final void Function(String id) onSelect;
 
-  const PracticeTab({
+  const PracticeTabComponent({
     super.key,
     required this.groupList,
     required this.isDarkMode,

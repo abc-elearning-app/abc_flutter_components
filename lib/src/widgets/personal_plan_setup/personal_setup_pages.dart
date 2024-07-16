@@ -3,7 +3,7 @@ import 'pages/select_reminder_time_page.dart';
 import 'pages/start_diagnostic_page.dart';
 import 'package:flutter/material.dart';
 
-class PersonalSetupPages extends StatefulWidget {
+class StudyPlanSetupComponent extends StatefulWidget {
   final List<String> pageImages;
   final bool isDarkMode;
   final Color upperBackgroundColor;
@@ -15,10 +15,11 @@ class PersonalSetupPages extends StatefulWidget {
   final void Function() onStartDiagnostic;
   final void Function() onSkipDiagnostic;
   final void Function() onSkipSetup;
+  final void Function() onSkipNotification;
   final void Function(DateTime selectedDate) onSelectExamDate;
   final void Function(TimeOfDay selectedReminderTime) onSelectReminderTime;
 
-  const PersonalSetupPages({
+  const StudyPlanSetupComponent({
     super.key,
     required this.pageImages,
     this.upperBackgroundColor = const Color(0xFFF5F4EE),
@@ -31,13 +32,15 @@ class PersonalSetupPages extends StatefulWidget {
     required this.onSelectReminderTime,
     required this.onSkipSetup,
     required this.isDarkMode,
+    required this.onSkipNotification,
   });
 
   @override
-  State<PersonalSetupPages> createState() => _PersonalSetupPagesState();
+  State<StudyPlanSetupComponent> createState() =>
+      _StudyPlanSetupComponentState();
 }
 
-class _PersonalSetupPagesState extends State<PersonalSetupPages> {
+class _StudyPlanSetupComponentState extends State<StudyPlanSetupComponent> {
   late List<Widget> _tabList;
   late PageController _pageController;
   late ValueNotifier<int> _pageIndex;
@@ -260,6 +263,7 @@ class _PersonalSetupPagesState extends State<PersonalSetupPages> {
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
       );
+      widget.onSkipNotification();
     } else {
       // Skip diagnostic
       if (examDateSelected) {

@@ -12,7 +12,7 @@ class FloatingTextData {
   FloatingTextData(this.initX, this.initY, this.text);
 }
 
-class PersonalPlanAnalyzingScreen extends StatefulWidget {
+class StudyPlanAnalyzingComponent extends StatefulWidget {
   final Color backgroundColor;
   final Color mainColor;
   final Color secondaryColor;
@@ -24,7 +24,7 @@ class PersonalPlanAnalyzingScreen extends StatefulWidget {
   final bool isDarkMode;
   final void Function() onFinish;
 
-  const PersonalPlanAnalyzingScreen({
+  const StudyPlanAnalyzingComponent({
     super.key,
     this.backgroundColor = const Color(0xFFF5F4EE),
     this.mainColor = const Color(0xFF7C6F5B),
@@ -39,12 +39,12 @@ class PersonalPlanAnalyzingScreen extends StatefulWidget {
   });
 
   @override
-  State<PersonalPlanAnalyzingScreen> createState() =>
-      _PersonalPlanAnalyzingScreenState();
+  State<StudyPlanAnalyzingComponent> createState() =>
+      _StudyPlanAnalyzingComponentState();
 }
 
-class _PersonalPlanAnalyzingScreenState
-    extends State<PersonalPlanAnalyzingScreen> with TickerProviderStateMixin {
+class _StudyPlanAnalyzingComponentState
+    extends State<StudyPlanAnalyzingComponent> with TickerProviderStateMixin {
   final _progressValue = ValueNotifier<int>(0);
   late Timer _timer;
 
