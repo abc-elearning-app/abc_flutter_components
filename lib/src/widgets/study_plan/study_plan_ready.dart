@@ -60,10 +60,10 @@ class StudyPlanReadyComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final informationDataList = <InformationData>[
-      InformationData(
+      if (isNotificationEnabled && reminderTime != null) InformationData(
           icon: reminderIcon,
           title: 'Reminder',
-          content: _getDisplayReminderTime(reminderTime ?? TimeOfDay.now())),
+          content: _getDisplayReminderTime(reminderTime!)),
       InformationData(
           icon: examDateIcon,
           title: 'Exam date',
