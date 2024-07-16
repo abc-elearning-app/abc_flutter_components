@@ -83,7 +83,7 @@ class _PersonalPlanBoxComponentState extends State<PersonalPlanBoxComponent>
               ? [
                   BoxShadow(
                     color: Colors.grey.shade200,
-                    blurRadius: 2,
+                    blurRadius: 5,
                     spreadRadius: 2,
                   )
                 ]

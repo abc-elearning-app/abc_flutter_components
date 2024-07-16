@@ -39,8 +39,8 @@ class OverviewBoxComponent extends StatelessWidget {
           boxShadow: !isDarkMode
               ? [
                   BoxShadow(
-                      color: Colors.grey.shade300,
-                      blurRadius: 2,
+                      color: Colors.grey.shade200,
+                      blurRadius: 5,
                       spreadRadius: 2)
                 ]
               : null),

@@ -52,9 +52,9 @@ class PracticeTabComponent extends StatelessWidget {
               boxShadow: !isDarkMode
                   ? [
                       BoxShadow(
-                          color: Colors.grey.shade300,
-                          spreadRadius: 1,
-                          blurRadius: 1)
+                          color: Colors.grey.shade200,
+                          blurRadius: 5,
+                          spreadRadius: 2)
                     ]
                   : null),
           child: Row(

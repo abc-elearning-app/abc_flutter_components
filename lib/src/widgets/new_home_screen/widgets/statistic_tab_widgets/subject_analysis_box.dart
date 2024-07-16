@@ -91,8 +91,8 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
               ? [
                   BoxShadow(
                       color: Colors.grey.shade200,
-                      spreadRadius: 2,
-                      blurRadius: 2)
+                      blurRadius: 5,
+                      spreadRadius: 2)
                 ]
               : null),
       child: Column(
