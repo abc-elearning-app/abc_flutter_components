@@ -3,7 +3,7 @@ import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/test_tab_widgets/diagnostic_test_box.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/test_tab_widgets/final_test_box.dart';
 
-class NewTestTab extends StatelessWidget {
+class TestTab extends StatelessWidget {
   final List<TopicData> topics;
   final List<TestData> tests;
   final double diagnosticProgress;
@@ -26,7 +26,7 @@ class NewTestTab extends StatelessWidget {
   final void Function() onClickFinalTest;
   final void Function() onSeeAll;
 
-  const NewTestTab({
+  const TestTab({
     super.key,
     this.topics = const [],
     this.tests = const [],

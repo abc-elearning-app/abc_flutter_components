@@ -280,7 +280,8 @@ class _CustomizeTestState extends State<CustomizeTest> {
                 activeColor: widget.mainColor,
                 borderColor: widget.mainColor,
                 value: value,
-                onChanged: context.read<CustomizeTestProvider>().toggleAllSubjects,
+                onChanged:
+                    context.read<CustomizeTestProvider>().toggleAllSubjects,
               ),
             ),
           ),
@@ -302,11 +303,11 @@ class _CustomizeTestState extends State<CustomizeTest> {
               disabled: widget.isPro ? value : false,
               backgroundColor: widget.mainColor,
               onPressed: () => widget.onStart(SubjectsValue(
-                duration: provider.selectedDuration, 
-                passingScore: provider.selectedPassingScore, 
-                testSettingId: provider.selectedModeValue, 
+                duration: provider.selectedDuration,
+                passingScore: provider.selectedPassingScore,
+                testSettingId: provider.selectedModeValue,
                 topicIds: provider.topicIdsSelected,
-                totalQuestion: provider.selectedQuestions
+                totalQuestion: provider.selectedQuestions,
               )),
             ),
           ),

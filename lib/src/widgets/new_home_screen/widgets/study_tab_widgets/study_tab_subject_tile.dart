@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/study_tab_widgets/home_icon.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+
+class SubjectData {
+  final String id;
+  final String icon;
+  final String title;
+  final double progress;
+
+  SubjectData({
+    required this.id,
+    required this.icon,
+    required this.title,
+    required this.progress,
+  });
+}
 
 class StudyTabSubjectTile extends StatelessWidget {
   final SubjectData subjectData;

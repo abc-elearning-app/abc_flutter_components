@@ -83,7 +83,7 @@ class PremiumButton extends StatelessWidget {
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent),
               child: Transform.translate(
-                offset: const Offset(-35, 0),
+                offset: const Offset(-10, 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [

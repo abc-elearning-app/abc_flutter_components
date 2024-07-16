@@ -14,6 +14,7 @@ class PersonalSetupPages extends StatefulWidget {
   // Callbacks
   final void Function() onStartDiagnostic;
   final void Function() onSkipDiagnostic;
+  final void Function() onSkipSetup;
   final void Function(DateTime selectedDate) onSelectExamDate;
   final void Function(TimeOfDay selectedReminderTime) onSelectReminderTime;
 
@@ -28,6 +29,7 @@ class PersonalSetupPages extends StatefulWidget {
     required this.onSkipDiagnostic,
     required this.onSelectExamDate,
     required this.onSelectReminderTime,
+    required this.onSkipSetup,
     required this.isDarkMode,
   });
 
@@ -263,7 +265,8 @@ class _PersonalSetupPagesState extends State<PersonalSetupPages> {
       if (examDateSelected) {
         widget.onSkipDiagnostic();
       } else {
-        Navigator.of(context).pop();
+        // If user not setup study plan
+        widget.onSkipSetup();
       }
     }
   }
