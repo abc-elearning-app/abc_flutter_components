@@ -158,7 +158,7 @@ class _LevelWidgetState extends State<LevelWidget>
       case DrawType.nextLevel:
         if (widget.levelData.isCurrent) {
           Future.delayed(
-              Duration(milliseconds: widget.drawSpeed.inMilliseconds + 900),
+              Duration(milliseconds: widget.drawSpeed.inMilliseconds + 1200),
               () {
             if (mounted) {
               _appearanceController.forward();
@@ -229,29 +229,32 @@ class _LevelWidgetState extends State<LevelWidget>
                   child: Stack(alignment: Alignment.center, children: [
                     Transform.translate(
                         offset: Offset(0, _getTranslateValue()),
-                        child: Stack(alignment: Alignment.topCenter, children: [
-                          GestureDetector(
-                            onTap: () => !widget.levelData.isLock
-                                ? widget.onClickLevel(widget.levelData.id)
-                                : null,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                // Regular level or final cup
-                                Transform.scale(
-                                    scale: _scalingAnimation.value,
-                                    child: _getLevelWidget()),
+                        child: GestureDetector(
+                          onTap: () => !widget.levelData.isLock
+                              ? widget.onClickLevel(widget.levelData.id)
+                              : null,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              // Regular level or final cup
+                              Transform.scale(
+                                  scale: _scalingAnimation.value,
+                                  child: _getLevelWidget()),
 
-                                // Title
-                                Text(widget.levelData.title,
+                              // Title
+                              SizedBox(
+                                width: 120,
+                                child: Text(widget.levelData.title,
+                                    textAlign: TextAlign.center,
+                                    maxLines: 3,
                                     style: const TextStyle(
                                         color: Colors.grey,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500))
-                              ],
-                            ),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500)),
+                              )
+                            ],
                           ),
-                        ])),
+                        )),
                     // if (widget.levelData.isCurrent) _tooltip()
                   ]),
                 )),
@@ -267,7 +270,7 @@ class _LevelWidgetState extends State<LevelWidget>
   }
 
   Widget _getLevelWidget() {
-    if (widget.isFinal) return _finalLevel();
+    // if (widget.isFinal) return _finalLevel();
     if (widget.levelData.isLock) return _lockLevel();
     return _defaultLevel();
   }

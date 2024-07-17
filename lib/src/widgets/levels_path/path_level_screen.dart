@@ -125,6 +125,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                     widget.title,
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
+                      fontSize: 20,
                       color: widget.isDarkMode ? Colors.white : Colors.black,
                     ),
                   ),
@@ -152,7 +153,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                       padding: const EdgeInsets.only(
                         left: 20,
                         right: 20,
-                        // bottom: 20,
+                        bottom: 15,
                         top: 5,
                       ),
                       child: CustomLinearProgress(
@@ -164,7 +165,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                           indicatorColor: Colors.white)),
                   Expanded(
                     child: ListView.builder(
-                        // padding: const EdgeInsets.symmetric(vertical: 8),
+                        padding: const EdgeInsets.only(bottom: 20),
                         controller: _scrollController,
                         shrinkWrap: true,
                         itemCount: widget.levelGroupList.length,
@@ -194,9 +195,8 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
         milliseconds: (widget.drawSpeed.inMilliseconds - 50).clamp(100, 1000));
     return Column(
       children: [
-        // _buildDivider(currentGroup.title, index == 0),
-        const SizedBox(height: 50),
-        PathLevel(
+        _buildDivider(currentGroup.title, index == 0),
+        PathLevelComponent(
             isDarkMode: widget.isDarkMode,
             finalLevelImage: widget.finalLevelImage,
             levelList: currentGroup.levels,

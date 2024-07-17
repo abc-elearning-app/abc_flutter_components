@@ -64,96 +64,82 @@ class _PartResultComponentState extends State<PartResultComponent>
   Widget build(BuildContext context) {
     int textIndex = Random().nextInt(2);
 
-    return Scaffold(
-      backgroundColor:
-          widget.isDarkMode ? Colors.black : widget.backgroundColor,
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        backgroundColor:
-            widget.isDarkMode ? Colors.black : widget.backgroundColor,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back,
-              color: widget.isDarkMode ? Colors.white : Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      body: Stack(children: [
-        Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // Title
-                      Text('Part ${widget.partIndex} Completed!',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
-                              color: widget.isDarkMode
-                                  ? Colors.white
-                                  : Colors.black)),
+    return Stack(children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Title
+                    Text('Part ${widget.partIndex} Completed!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                            color: widget.isDarkMode
+                                ? Colors.white
+                                : Colors.black)),
 
-                      // Detail
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 5,
-                          right: 5,
-                          top: 15,
-                        ),
-                        child: Text(
-                          congratulationTexts[textIndex],
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: widget.isDarkMode
-                                  ? Colors.white
-                                  : Colors.black),
-                        ),
+                    // Detail
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 5,
+                        right: 5,
+                        top: 15,
                       ),
-
-                      // Image
-                      Lottie.asset(widget.passImage, height: 300),
-
-                      CircularProgressBox(
-                          isDarkMode: widget.isDarkMode,
-                          backgroundColor: widget.boxBackgroundColor,
-                          correctQuestions: widget.correctQuestions,
-                          totalQuestions: widget.totalQuestions,
-                          correctColor: widget.correctColor,
-                          incorrectColor: widget.incorrectColor,
-                          progressTextColor: widget.secondaryColor),
-
-                      LinearProgressBox(
-                        passingProbability: widget.passingProbability,
-                        improvedPercent: widget.improvedPercent,
-                        backgroundColor: widget.secondaryColor,
-                        progressColor: widget.mainColor,
-                        improveColor: widget.correctColor,
+                      child: Text(
+                        congratulationTexts[textIndex],
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: widget.isDarkMode
+                                ? Colors.white
+                                : Colors.black),
                       ),
-                    ],
-                  ),
+                    ),
+
+                    // Image
+                    Lottie.asset(widget.passImage, height: 280),
+
+                    CircularProgressBox(
+                        isDarkMode: widget.isDarkMode,
+                        backgroundColor: widget.boxBackgroundColor,
+                        correctQuestions: widget.correctQuestions,
+                        totalQuestions: widget.totalQuestions,
+                        correctColor: widget.correctColor,
+                        incorrectColor: widget.incorrectColor,
+                        progressTextColor: widget.secondaryColor),
+
+                    LinearProgressBox(
+                      passingProbability: widget.passingProbability,
+                      improvedPercent: widget.improvedPercent,
+                      backgroundColor: widget.secondaryColor,
+                      progressColor: widget.mainColor,
+                      improveColor: widget.correctColor,
+                    ),
+                  ],
                 ),
               ),
+            ),
 
-              // Buttons
-              _buildButtonRow(),
-            ],
-          ),
+            // Buttons
+            _buildButtonRow(),
+          ],
         ),
+      ),
 
-        // Pass effect
-        IgnorePointer(
-            child: Transform.translate(
-          offset: const Offset(0, -50),
-          child: const ConfettiEffect(),
-        )),
-      ]),
-    );
+      // Pass effect
+      IgnorePointer(
+          child: Transform.translate(
+        offset: const Offset(0, -50),
+        child: const ConfettiEffect(),
+      )),
+    ]);
   }
 
   Widget _buildButtonRow() => Row(
@@ -175,7 +161,7 @@ class _PartResultComponentState extends State<PartResultComponent>
 
   Widget _button(bool isSelected, String title, void Function() action) =>
       Container(
-        margin: const EdgeInsets.only(left: 10, right: 10, bottom: 25, top: 10),
+        margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
         child: MainButton(
           title: title,
           backgroundColor: isSelected

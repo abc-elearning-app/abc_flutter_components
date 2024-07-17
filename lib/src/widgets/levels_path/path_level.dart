@@ -25,7 +25,7 @@ class LevelData {
   });
 }
 
-class PathLevel extends StatefulWidget {
+class PathLevelComponent extends StatefulWidget {
   final List<LevelData> levelList;
   final DrawType drawType;
 
@@ -54,7 +54,7 @@ class PathLevel extends StatefulWidget {
 
   final void Function(String id) onClickLevel;
 
-  const PathLevel({
+  const PathLevelComponent({
     super.key,
     required this.levelList,
     required this.drawType,
@@ -75,10 +75,10 @@ class PathLevel extends StatefulWidget {
   });
 
   @override
-  State<PathLevel> createState() => _PathLevelState();
+  State<PathLevelComponent> createState() => _PathLevelComponentState();
 }
 
-class _PathLevelState extends State<PathLevel>
+class _PathLevelComponentState extends State<PathLevelComponent>
     with AutomaticKeepAliveClientMixin {
   late int totalCycleCount;
   late int currentCycleCount;
@@ -95,17 +95,16 @@ class _PathLevelState extends State<PathLevel>
   }
 
   _calculateData() {
-    final upperRowCount = widget.upperRowCount;
-    final lowerRowCount = widget.lowerRowCount;
-    final groupCount = upperRowCount + lowerRowCount;
+    final groupCount = widget.upperRowCount + widget.lowerRowCount;
 
     final totalLength = widget.levelList.length;
     totalCycleCount = totalLength > groupCount
         ? totalLength ~/ groupCount - (totalLength % groupCount == 0 ? 1 : 0)
         : 0;
 
-    final currentLength =
+    int currentLength =
         widget.levelList.indexWhere((level) => level.isCurrent) + 1;
+    // if (currentLength == 0) currentLength = widget.levelList.length;
     currentCycleCount = currentLength > groupCount
         ? currentLength ~/ groupCount -
             (currentLength % groupCount == 0 ? 1 : 0)
@@ -127,30 +126,31 @@ class _PathLevelState extends State<PathLevel>
           drawType: widget.drawType == DrawType.nextLevel
               ? DrawType.noAnimation
               : widget.drawType,
-          roundDrawSpeed: widget.cycleSpeed,
+          cycleDrawSpeed: widget.cycleSpeed,
           lastCycleDrawSpeed: widget.lastCycleSpeed,
           upperRowCount: widget.upperRowCount,
           lowerRoundCount: widget.lowerRowCount,
-          rounds: totalCycleCount,
+          cycles: totalCycleCount,
           lastCycleLevelCount: lastCycleTotalCount,
           lineColor: widget.lineBackgroundColor),
 
-      FutureBuilder(
-          future: Future.delayed(Duration(
-              milliseconds:
-                  widget.drawType == DrawType.firstTimeOpen ? 500 : 0)),
-          builder: (context, snapShot) =>
-              snapShot.connectionState == ConnectionState.done
-                  ? PathAnimation(
-                      drawType: widget.drawType,
-                      roundDrawSpeed: widget.cycleSpeed,
-                      lastCycleDrawSpeed: widget.lastCycleSpeed,
-                      upperRowCount: widget.upperRowCount,
-                      lowerRoundCount: widget.lowerRowCount,
-                      rounds: currentCycleCount,
-                      lastCycleLevelCount: lastCycleCurrentCount,
-                      lineColor: widget.mainColor)
-                  : const SizedBox()),
+      if (lastCycleCurrentCount > 0)
+        FutureBuilder(
+            future: Future.delayed(Duration(
+                milliseconds:
+                    widget.drawType == DrawType.firstTimeOpen ? 500 : 0)),
+            builder: (context, snapShot) =>
+                snapShot.connectionState == ConnectionState.done
+                    ? PathAnimation(
+                        drawType: widget.drawType,
+                        cycleDrawSpeed: widget.cycleSpeed,
+                        lastCycleDrawSpeed: widget.lastCycleSpeed,
+                        upperRowCount: widget.upperRowCount,
+                        lowerRoundCount: widget.lowerRowCount,
+                        cycles: currentCycleCount,
+                        lastCycleLevelCount: lastCycleCurrentCount,
+                        lineColor: widget.mainColor)
+                    : const SizedBox()),
 
       LevelGrid(
           isDarkMode: widget.isDarkMode,
