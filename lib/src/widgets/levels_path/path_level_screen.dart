@@ -3,19 +3,21 @@ import 'package:flutter_abc_jsc_components/src/widgets/progress/custom_linear_pr
 
 import '../../../flutter_abc_jsc_components.dart';
 
+enum LevelGroupType { passed, current, upcoming }
+
 class LevelGroup {
   final String title;
   final String startImage;
   final Color startColor;
   final List<LevelData> levels;
-  final DrawType drawType;
+  LevelGroupType levelGroupType;
 
   LevelGroup({
     required this.title,
     required this.startImage,
     required this.startColor,
-    required this.drawType,
     required this.levels,
+    this.levelGroupType = LevelGroupType.upcoming,
   });
 }
 
@@ -39,6 +41,8 @@ class PathLevelScreen extends StatefulWidget {
   final Duration drawSpeed;
   final bool isDarkMode;
 
+  final bool? openType;
+
   final void Function(String id) onClickLevel;
 
   const PathLevelScreen({
@@ -58,6 +62,7 @@ class PathLevelScreen extends StatefulWidget {
     this.lowerRowCount = 2,
     this.drawSpeed = const Duration(milliseconds: 250),
     required this.isDarkMode,
+    this.openType,
   });
 
   @override
@@ -191,16 +196,32 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
 
   Widget _buildGroup(int index) {
     final currentGroup = widget.levelGroupList[index];
+
     final lastCycleDrawSpeed = Duration(
         milliseconds: (widget.drawSpeed.inMilliseconds - 50).clamp(100, 1000));
+
+    late DrawType drawType = widget.openType == null
+        ? DrawType.firstTimeOpen
+        : widget.openType == true
+            ? currentGroup.levelGroupType == LevelGroupType.current
+                ? DrawType.nextLevel
+                : DrawType.noAnimation
+            : DrawType.noAnimation;
+
+    print('-----');
+    print('Draw type: $drawType');
+    print('Open type: ${widget.openType}');
+    print('Group type: ${currentGroup.levelGroupType}');
+
     return Column(
       children: [
         _buildDivider(currentGroup.title, index == 0),
         PathLevelComponent(
+            levelGroupType: currentGroup.levelGroupType,
             isDarkMode: widget.isDarkMode,
             finalLevelImage: widget.finalLevelImage,
             levelList: currentGroup.levels,
-            drawType: currentGroup.drawType,
+            drawType: drawType,
             isFirstGroup: index == 0,
             cycleSpeed: widget.drawSpeed,
             lastCycleSpeed: lastCycleDrawSpeed,
@@ -220,8 +241,12 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
   }
 
   Widget _buildDivider(String title, bool isFirstDivider) => Padding(
-        padding: EdgeInsets.only(
-            left: 10, right: 10, bottom: 50, top: isFirstDivider ? 10 : 50),
+        padding: const EdgeInsets.only(
+          left: 10,
+          right: 10,
+          bottom: 50,
+          top: 30,
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

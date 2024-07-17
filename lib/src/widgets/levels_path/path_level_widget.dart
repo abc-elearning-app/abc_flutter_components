@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/level_grid.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/path_animation.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/start_image.dart';
@@ -49,6 +50,7 @@ class PathLevelComponent extends StatefulWidget {
   final String finalLevelImage;
 
   final bool isFirstGroup;
+  final LevelGroupType levelGroupType;
 
   final bool isDarkMode;
 
@@ -72,6 +74,7 @@ class PathLevelComponent extends StatefulWidget {
     required this.lineBackgroundColor,
     required this.onClickLevel,
     required this.isDarkMode,
+    required this.levelGroupType,
   });
 
   @override
@@ -102,8 +105,11 @@ class _PathLevelComponentState extends State<PathLevelComponent>
         ? totalLength ~/ groupCount - (totalLength % groupCount == 0 ? 1 : 0)
         : 0;
 
-    int currentLength =
-        widget.levelList.indexWhere((level) => level.isCurrent) + 1;
+    int currentLength = widget.levelGroupType == LevelGroupType.passed
+        ? totalLength
+        : widget.levelGroupType == LevelGroupType.upcoming
+            ? 0
+            : widget.levelList.indexWhere((level) => level.isCurrent) + 1;
     // if (currentLength == 0) currentLength = widget.levelList.length;
     currentCycleCount = currentLength > groupCount
         ? currentLength ~/ groupCount -
@@ -134,7 +140,7 @@ class _PathLevelComponentState extends State<PathLevelComponent>
           lastCycleLevelCount: lastCycleTotalCount,
           lineColor: widget.lineBackgroundColor),
 
-      if (lastCycleCurrentCount > 0)
+      if (widget.levelGroupType != LevelGroupType.upcoming)
         FutureBuilder(
             future: Future.delayed(Duration(
                 milliseconds:

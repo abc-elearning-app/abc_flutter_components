@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/levels_path/path_level.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/levels_path/path_level_widget.dart';
 
 import 'level_widget.dart';
 import 'path_animation.dart';
