@@ -14,7 +14,7 @@ class InformationData {
   });
 }
 
-class PersonalPlanReadyScreen extends StatelessWidget {
+class StudyPlanReadyComponent extends StatelessWidget {
   final Color backgroundColor;
   final Color mainColor;
 
@@ -33,10 +33,11 @@ class PersonalPlanReadyScreen extends StatelessWidget {
   final DateTime examDate;
   final List<int> chartValueList;
   final bool isDarkMode;
+  final bool isNotificationEnabled;
 
   final void Function() onStartLearning;
 
-  const PersonalPlanReadyScreen({
+  const StudyPlanReadyComponent({
     super.key,
     this.reminderTime,
     this.backgroundColor = const Color(0xFFF5F4EE),
@@ -53,15 +54,16 @@ class PersonalPlanReadyScreen extends StatelessWidget {
     required this.startDate,
     required this.examDate,
     required this.chartValueList,
+    required this.isNotificationEnabled,
   });
 
   @override
   Widget build(BuildContext context) {
     final informationDataList = <InformationData>[
-      InformationData(
+      if (isNotificationEnabled && reminderTime != null) InformationData(
           icon: reminderIcon,
           title: 'Reminder',
-          content: _getDisplayReminderTime(reminderTime ?? TimeOfDay.now())),
+          content: _getDisplayReminderTime(reminderTime!)),
       InformationData(
           icon: examDateIcon,
           title: 'Exam date',
@@ -110,7 +112,7 @@ class PersonalPlanReadyScreen extends StatelessWidget {
                         right: 10,
                         top: 20,
                       ),
-                      child: PersonalPlanChart(
+                      child: StudyPlanChart(
                         key: GlobalKey(),
                         isDarkMode: isDarkMode,
                         lineSectionHeight: 120,

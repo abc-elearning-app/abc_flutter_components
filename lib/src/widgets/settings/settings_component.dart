@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/constants/app_svg_icons.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/premium_button.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/tile.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/setting_tile.dart';
 import 'package:intl/intl.dart';
 
-class SettingScreen extends StatefulWidget {
+class SettingComponent extends StatefulWidget {
   final bool isDarkMode;
   final bool isPro;
   final DateTime examDate;
@@ -44,7 +44,7 @@ class SettingScreen extends StatefulWidget {
   final void Function(DateTime date) onChangeExamDate;
   final void Function(TimeOfDay time) onChangeRemindTime;
 
-  const SettingScreen({
+  const SettingComponent({
     super.key,
     this.mainColor = const Color(0xFF6C5F4B),
     this.switchActiveTrackColor = const Color(0xFFF4E8D6),
@@ -80,10 +80,10 @@ class SettingScreen extends StatefulWidget {
   });
 
   @override
-  State<SettingScreen> createState() => _SettingScreenState();
+  State<SettingComponent> createState() => _SettingComponentState();
 }
 
-class _SettingScreenState extends State<SettingScreen> {
+class _SettingComponentState extends State<SettingComponent> {
   final double _buttonHeight = 70;
   late ValueNotifier _remindTime;
   late ValueNotifier _examDate;

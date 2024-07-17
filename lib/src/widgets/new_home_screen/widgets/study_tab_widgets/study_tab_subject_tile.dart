@@ -46,9 +46,8 @@ class StudyTabSubjectTile extends StatelessWidget {
                 ? [
                     BoxShadow(
                         color: Colors.grey.shade200,
-                        offset: const Offset(0, 1),
-                        spreadRadius: 1,
-                        blurRadius: 1)
+                        blurRadius: 5,
+                        spreadRadius: 1)
                   ]
                 : null),
         child: Row(

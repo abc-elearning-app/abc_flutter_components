@@ -16,7 +16,7 @@ class SubjectResultData {
   });
 }
 
-class DiagnosticResult extends StatelessWidget {
+class DiagnosticResultComponent extends StatelessWidget {
   final List<SubjectResultData> subjectList;
   final bool isDarkMode;
 
@@ -42,7 +42,7 @@ class DiagnosticResult extends StatelessWidget {
   final double mainProgress;
   final void Function() onNext;
 
-  const DiagnosticResult({
+  const DiagnosticResultComponent({
     super.key,
     this.beginnerColor = const Color(0xFFFC5656),
     this.intermediateColor = const Color(0xFFFF8754),

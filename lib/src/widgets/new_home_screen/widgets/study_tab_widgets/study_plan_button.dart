@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class StudyPlanButton extends StatelessWidget {
+class StudyPlanButtonComponent extends StatelessWidget {
   final String buttonBackground;
   final Color mainColor;
   final String title;
   final void Function() onClickStudyPlan;
 
-  const StudyPlanButton({
+  const StudyPlanButtonComponent({
     super.key,
     required this.buttonBackground,
     required this.onClickStudyPlan,

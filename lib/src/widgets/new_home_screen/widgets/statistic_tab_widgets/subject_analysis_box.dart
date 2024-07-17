@@ -83,7 +83,7 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(16),
           color: widget.isDarkMode
               ? Colors.white.withOpacity(0.3)
               : widget.backgroundColor,
@@ -91,8 +91,8 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
               ? [
                   BoxShadow(
                       color: Colors.grey.shade200,
-                      spreadRadius: 2,
-                      blurRadius: 2)
+                      blurRadius: 5,
+                      spreadRadius: 2)
                 ]
               : null),
       child: Column(

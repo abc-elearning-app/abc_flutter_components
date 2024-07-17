@@ -1,8 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/animations/sprinkle_effect.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/part_test_result/widgets/circular_progress_box.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/part_test_result/widgets/linear_progress_box.dart';
@@ -10,7 +8,7 @@ import 'package:lottie/lottie.dart';
 
 import '../../../../flutter_abc_jsc_components.dart';
 
-class PartResultScreen extends StatefulWidget {
+class PartResultComponent extends StatefulWidget {
   final int partIndex;
   final int correctQuestions;
   final int totalQuestions;
@@ -31,7 +29,7 @@ class PartResultScreen extends StatefulWidget {
   final void Function() onTryAgain;
   final void Function() onContinue;
 
-  const PartResultScreen({
+  const PartResultComponent({
     super.key,
     required this.partIndex,
     required this.correctQuestions,
@@ -51,10 +49,10 @@ class PartResultScreen extends StatefulWidget {
   });
 
   @override
-  State<PartResultScreen> createState() => _PartResultScreenState();
+  State<PartResultComponent> createState() => _PartResultComponentState();
 }
 
-class _PartResultScreenState extends State<PartResultScreen>
+class _PartResultComponentState extends State<PartResultComponent>
     with SingleTickerProviderStateMixin {
   final congratulationTexts = <String>[
     "Now go forth and conquer your to-do list! Remember, procrastination is the enemy of progress.",

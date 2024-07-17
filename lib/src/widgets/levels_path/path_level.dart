@@ -10,16 +10,19 @@ class LevelData {
   bool isFreeToday;
   bool isLock;
   bool isCurrent;
+  bool isPreviousCurrent;
   String icon;
 
-  LevelData(
-      {required this.id,
-      required this.title,
-      required this.progress,
-      this.icon = 'assets/static/icons/topic_icon_0.svg',
-      this.isCurrent = false,
-      this.isLock = true,
-      this.isFreeToday = false});
+  LevelData({
+    required this.id,
+    required this.title,
+    required this.progress,
+    required this.icon,
+    this.isCurrent = false,
+    this.isPreviousCurrent = false,
+    this.isLock = true,
+    this.isFreeToday = false,
+  });
 }
 
 class PathLevel extends StatefulWidget {
@@ -75,7 +78,8 @@ class PathLevel extends StatefulWidget {
   State<PathLevel> createState() => _PathLevelState();
 }
 
-class _PathLevelState extends State<PathLevel> with AutomaticKeepAliveClientMixin{
+class _PathLevelState extends State<PathLevel>
+    with AutomaticKeepAliveClientMixin {
   late int totalCycleCount;
   late int currentCycleCount;
   late int lastCycleTotalCount;

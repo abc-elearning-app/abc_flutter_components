@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 
 class LevelWidget extends StatefulWidget {
   final int index;
@@ -295,6 +296,7 @@ class _LevelWidgetState extends State<LevelWidget>
                     ? const Icon(
                         Icons.check,
                         color: Colors.white,
+                        size: 30,
                       )
                     : widget.levelData.progress == 0
                         ? IconWidget(

@@ -17,12 +17,12 @@ class QuestionGroupData {
   });
 }
 
-class PracticeTab extends StatelessWidget {
+class PracticeTabComponent extends StatelessWidget {
   final List<QuestionGroupData> groupList;
   final bool isDarkMode;
   final void Function(String id) onSelect;
 
-  const PracticeTab({
+  const PracticeTabComponent({
     super.key,
     required this.groupList,
     required this.isDarkMode,
@@ -52,9 +52,9 @@ class PracticeTab extends StatelessWidget {
               boxShadow: !isDarkMode
                   ? [
                       BoxShadow(
-                          color: Colors.grey.shade300,
-                          spreadRadius: 1,
-                          blurRadius: 1)
+                          color: Colors.grey.shade200,
+                          blurRadius: 5,
+                          spreadRadius: 2)
                     ]
                   : null),
           child: Row(
