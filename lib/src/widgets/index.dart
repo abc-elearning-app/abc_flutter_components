@@ -54,7 +54,7 @@ export 'diagnostic_test/diagnostic_result.dart';
 export 'spider_chart/spider_chart.dart';
 export 'page_indicator/page_indicator.dart';
 export 'levels_path/base_path_level_screen.dart';
-export 'levels_path/path_level.dart';
+export 'levels_path/path_level_component.dart';
 export 'levels_path/widgets/path_animation.dart';
 export 'levels_path/path_level_screen.dart';
 export 'diagnostic_test/diagnostic_question.dart';

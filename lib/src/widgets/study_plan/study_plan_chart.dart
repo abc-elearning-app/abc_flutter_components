@@ -429,8 +429,7 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
             type == ChartType.line ? widget.minLineValue : widget.minBarValue,
         maximum: (type == ChartType.line
                 ? widget.maxLineValue
-                : (widget.expectedBarValue ~/ 10 * 10 + 1)) +
-            (type != ChartType.line ? 5 : 0),
+                : (widget.expectedBarValue ~/ 10 + 1) * 10) + 5,
         interval: type == ChartType.line
             ? widget.lineValueInterval
             : widget.barValueInterval,

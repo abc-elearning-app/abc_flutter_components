@@ -3,19 +3,21 @@ import 'package:flutter_abc_jsc_components/src/widgets/progress/custom_linear_pr
 
 import '../../../flutter_abc_jsc_components.dart';
 
+enum LevelGroupType { passed, current, upcoming }
+
 class LevelGroup {
   final String title;
   final String startImage;
   final Color startColor;
   final List<LevelData> levels;
-  final DrawType drawType;
+  LevelGroupType levelGroupType;
 
   LevelGroup({
     required this.title,
     required this.startImage,
     required this.startColor,
-    required this.drawType,
     required this.levels,
+    this.levelGroupType = LevelGroupType.upcoming,
   });
 }
 
@@ -39,6 +41,8 @@ class PathLevelScreen extends StatefulWidget {
   final Duration drawSpeed;
   final bool isDarkMode;
 
+  final bool? openType;
+
   final void Function(String id) onClickLevel;
 
   const PathLevelScreen({
@@ -58,6 +62,7 @@ class PathLevelScreen extends StatefulWidget {
     this.lowerRowCount = 2,
     this.drawSpeed = const Duration(milliseconds: 250),
     required this.isDarkMode,
+    this.openType,
   });
 
   @override
@@ -87,7 +92,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
 
   _initialCalculate() {
     for (var group in widget.levelGroupList) {
-      passedLevels += group.levels.indexWhere((level) => level.isCurrent);
+      passedLevels += group.levels.where((level) => level.progress > 0).length;
       totalLevels += group.levels.length;
     }
 
@@ -125,6 +130,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                     widget.title,
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
+                      fontSize: 20,
                       color: widget.isDarkMode ? Colors.white : Colors.black,
                     ),
                   ),
@@ -152,7 +158,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                       padding: const EdgeInsets.only(
                         left: 20,
                         right: 20,
-                        // bottom: 20,
+                        bottom: 15,
                         top: 5,
                       ),
                       child: CustomLinearProgress(
@@ -164,7 +170,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                           indicatorColor: Colors.white)),
                   Expanded(
                     child: ListView.builder(
-                        // padding: const EdgeInsets.symmetric(vertical: 8),
+                        padding: const EdgeInsets.only(bottom: 20),
                         controller: _scrollController,
                         shrinkWrap: true,
                         itemCount: widget.levelGroupList.length,
@@ -190,38 +196,59 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
 
   Widget _buildGroup(int index) {
     final currentGroup = widget.levelGroupList[index];
+
     final lastCycleDrawSpeed = Duration(
         milliseconds: (widget.drawSpeed.inMilliseconds - 50).clamp(100, 1000));
+
+    late DrawType drawType = widget.openType == null
+        ? DrawType.firstTimeOpen
+        : widget.openType == true
+            ? currentGroup.levelGroupType == LevelGroupType.current
+                ? DrawType.nextLevel
+                : DrawType.noAnimation
+            : DrawType.noAnimation;
+
+    print('-----');
+    print('Draw type: $drawType');
+    print('Open type: ${widget.openType}');
+    print('Group type: ${currentGroup.levelGroupType}');
+
     return Column(
       children: [
-        // _buildDivider(currentGroup.title, index == 0),
-        const SizedBox(height: 50),
-        PathLevel(
-            isDarkMode: widget.isDarkMode,
-            finalLevelImage: widget.finalLevelImage,
-            levelList: currentGroup.levels,
-            drawType: currentGroup.drawType,
-            isFirstGroup: index == 0,
-            cycleSpeed: widget.drawSpeed,
-            lastCycleSpeed: lastCycleDrawSpeed,
-            startColor: currentGroup.startColor,
-            startImage: currentGroup.startImage,
-            mainColor: widget.mainColor,
-            lockColor: widget.lockColor,
-            passColor: widget.passColor,
-            lineBackgroundColor: widget.isDarkMode
-                ? Colors.grey.shade900
-                : widget.lineBackgroundColor,
-            upperRowCount: widget.upperRowCount,
-            lowerRowCount: widget.lowerRowCount,
-            onClickLevel: widget.onClickLevel),
+        _buildDivider(currentGroup.title, index == 0),
+        PathLevelComponent(
+          levelGroupType: currentGroup.levelGroupType,
+          isDarkMode: widget.isDarkMode,
+          finalLevelImage: widget.finalLevelImage,
+          levelList: currentGroup.levels,
+          drawType: drawType,
+          isFirstGroup: index == 0,
+          cycleSpeed: widget.drawSpeed,
+          lastCycleSpeed: lastCycleDrawSpeed,
+          startColor: currentGroup.startColor,
+          startImage: currentGroup.startImage,
+          mainColor: widget.mainColor,
+          lockColor: widget.lockColor,
+          passColor: widget.passColor,
+          lineBackgroundColor: widget.isDarkMode
+              ? Colors.grey.shade900
+              : widget.lineBackgroundColor,
+          upperRowCount: widget.upperRowCount,
+          lowerRowCount: widget.lowerRowCount,
+          onClickLevel: widget.onClickLevel,
+          isLastGroup: index == widget.levelGroupList.length - 1,
+        ),
       ],
     );
   }
 
   Widget _buildDivider(String title, bool isFirstDivider) => Padding(
-        padding: EdgeInsets.only(
-            left: 10, right: 10, bottom: 50, top: isFirstDivider ? 10 : 50),
+        padding: const EdgeInsets.only(
+          left: 10,
+          right: 10,
+          bottom: 50,
+          top: 30,
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

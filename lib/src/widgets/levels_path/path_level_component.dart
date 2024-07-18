@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/level_grid.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/path_animation.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/start_image.dart';
@@ -25,7 +26,7 @@ class LevelData {
   });
 }
 
-class PathLevel extends StatefulWidget {
+class PathLevelComponent extends StatefulWidget {
   final List<LevelData> levelList;
   final DrawType drawType;
 
@@ -49,12 +50,14 @@ class PathLevel extends StatefulWidget {
   final String finalLevelImage;
 
   final bool isFirstGroup;
+  final LevelGroupType levelGroupType;
 
   final bool isDarkMode;
+  final bool isLastGroup;
 
   final void Function(String id) onClickLevel;
 
-  const PathLevel({
+  const PathLevelComponent({
     super.key,
     required this.levelList,
     required this.drawType,
@@ -72,13 +75,15 @@ class PathLevel extends StatefulWidget {
     required this.lineBackgroundColor,
     required this.onClickLevel,
     required this.isDarkMode,
+    required this.levelGroupType,
+    required this.isLastGroup,
   });
 
   @override
-  State<PathLevel> createState() => _PathLevelState();
+  State<PathLevelComponent> createState() => _PathLevelComponentState();
 }
 
-class _PathLevelState extends State<PathLevel>
+class _PathLevelComponentState extends State<PathLevelComponent>
     with AutomaticKeepAliveClientMixin {
   late int totalCycleCount;
   late int currentCycleCount;
@@ -95,17 +100,19 @@ class _PathLevelState extends State<PathLevel>
   }
 
   _calculateData() {
-    final upperRowCount = widget.upperRowCount;
-    final lowerRowCount = widget.lowerRowCount;
-    final groupCount = upperRowCount + lowerRowCount;
+    final groupCount = widget.upperRowCount + widget.lowerRowCount;
 
     final totalLength = widget.levelList.length;
     totalCycleCount = totalLength > groupCount
         ? totalLength ~/ groupCount - (totalLength % groupCount == 0 ? 1 : 0)
         : 0;
 
-    final currentLength =
-        widget.levelList.indexWhere((level) => level.isCurrent) + 1;
+    int currentLength = widget.levelGroupType == LevelGroupType.passed
+        ? totalLength
+        : widget.levelGroupType == LevelGroupType.upcoming
+            ? 0
+            : widget.levelList.indexWhere((level) => level.isCurrent) + 1;
+    // if (currentLength == 0) currentLength = widget.levelList.length;
     currentCycleCount = currentLength > groupCount
         ? currentLength ~/ groupCount -
             (currentLength % groupCount == 0 ? 1 : 0)
@@ -127,45 +134,48 @@ class _PathLevelState extends State<PathLevel>
           drawType: widget.drawType == DrawType.nextLevel
               ? DrawType.noAnimation
               : widget.drawType,
-          roundDrawSpeed: widget.cycleSpeed,
+          cycleDrawSpeed: widget.cycleSpeed,
           lastCycleDrawSpeed: widget.lastCycleSpeed,
           upperRowCount: widget.upperRowCount,
           lowerRoundCount: widget.lowerRowCount,
-          rounds: totalCycleCount,
+          cycles: totalCycleCount,
           lastCycleLevelCount: lastCycleTotalCount,
           lineColor: widget.lineBackgroundColor),
 
-      FutureBuilder(
-          future: Future.delayed(Duration(
-              milliseconds:
-                  widget.drawType == DrawType.firstTimeOpen ? 500 : 0)),
-          builder: (context, snapShot) =>
-              snapShot.connectionState == ConnectionState.done
-                  ? PathAnimation(
-                      drawType: widget.drawType,
-                      roundDrawSpeed: widget.cycleSpeed,
-                      lastCycleDrawSpeed: widget.lastCycleSpeed,
-                      upperRowCount: widget.upperRowCount,
-                      lowerRoundCount: widget.lowerRowCount,
-                      rounds: currentCycleCount,
-                      lastCycleLevelCount: lastCycleCurrentCount,
-                      lineColor: widget.mainColor)
-                  : const SizedBox()),
+      if (widget.levelGroupType != LevelGroupType.upcoming)
+        FutureBuilder(
+            future: Future.delayed(Duration(
+                milliseconds:
+                    widget.drawType == DrawType.firstTimeOpen ? 500 : 0)),
+            builder: (context, snapShot) =>
+                snapShot.connectionState == ConnectionState.done
+                    ? PathAnimation(
+                        drawType: widget.drawType,
+                        cycleDrawSpeed: widget.cycleSpeed,
+                        lastCycleDrawSpeed: widget.lastCycleSpeed,
+                        upperRowCount: widget.upperRowCount,
+                        lowerRoundCount: widget.lowerRowCount,
+                        cycles: currentCycleCount,
+                        lastCycleLevelCount: lastCycleCurrentCount,
+                        lineColor: widget.mainColor)
+                    : const SizedBox()),
 
       LevelGrid(
-          isDarkMode: widget.isDarkMode,
-          drawType: widget.drawType,
-          drawSpeed: widget.cycleSpeed,
-          longRowCount: widget.upperRowCount,
-          shortRowCount: widget.lowerRowCount,
-          levelDataList: widget.levelList,
-          finalLevelImage: widget.finalLevelImage,
-          startColor: widget.startColor,
-          isFirstGroup: widget.isFirstGroup,
-          mainColor: widget.mainColor,
-          passColor: widget.passColor,
-          lockColor: widget.lockColor,
-          onClickLevel: widget.onClickLevel),
+        isDarkMode: widget.isDarkMode,
+        drawType: widget.drawType,
+        drawSpeed: widget.cycleSpeed,
+        longRowCount: widget.upperRowCount,
+        shortRowCount: widget.lowerRowCount,
+        levelDataList: widget.levelList,
+        finalLevelImage: widget.finalLevelImage,
+        startColor: widget.startColor,
+        isFirstGroup: widget.isFirstGroup,
+        mainColor: widget.mainColor,
+        passColor: widget.passColor,
+        lockColor: widget.lockColor,
+        onClickLevel: widget.onClickLevel,
+        isLastGroup: widget.isLastGroup,
+      ),
     ]);
   }
 }

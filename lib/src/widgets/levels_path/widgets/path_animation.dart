@@ -11,20 +11,21 @@ class PathAnimation extends StatefulWidget {
   final int upperRowCount;
   final int lowerRoundCount;
   final int lastCycleLevelCount;
-  final int rounds;
-  final Duration roundDrawSpeed;
+  final int cycles;
+  final Duration cycleDrawSpeed;
   final Duration lastCycleDrawSpeed;
 
-  const PathAnimation(
-      {super.key,
-      required this.drawType,
-      required this.rounds,
-      required this.lastCycleLevelCount,
-      required this.upperRowCount,
-      required this.lowerRoundCount,
-      required this.roundDrawSpeed,
-      required this.lastCycleDrawSpeed,
-      this.lineColor = const Color(0xFFE3A651)});
+  const PathAnimation({
+    super.key,
+    required this.drawType,
+    required this.cycles,
+    required this.lastCycleLevelCount,
+    required this.upperRowCount,
+    required this.lowerRoundCount,
+    required this.cycleDrawSpeed,
+    required this.lastCycleDrawSpeed,
+    this.lineColor = const Color(0xFFE3A651),
+  });
 
   @override
   _PathAnimationState createState() => _PathAnimationState();
@@ -47,7 +48,7 @@ class _PathAnimationState extends State<PathAnimation>
 
     lastCycleCurveController = AnimationController(
         vsync: this,
-        duration: widget.roundDrawSpeed - const Duration(milliseconds: 100));
+        duration: widget.cycleDrawSpeed - const Duration(milliseconds: 100));
     nextLevelController =
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
     additionalNextLevelController = AnimationController(
@@ -66,9 +67,10 @@ class _PathAnimationState extends State<PathAnimation>
   }
 
   _setupFirstTimeOpen() {
-    if(!mounted) {
+    if (!mounted) {
       return;
     }
+
     /// Add controllers for last cycle
 
     // Controller for upper row
@@ -100,24 +102,24 @@ class _PathAnimationState extends State<PathAnimation>
     }
 
     /// Add controllers for previous rounds (if exist)
-    if (widget.rounds == 0) {
+    if (widget.cycles == 0) {
       // Start the animation if there's no round
       lastRoundLineControllers[0].forward();
     } else {
       // Add animation controllers (each round have 2 lines + 2 curves)
       // -> double the rounds
-      for (int i = 1; i <= widget.rounds * 2; i++) {
+      for (int i = 1; i <= widget.cycles * 2; i++) {
         // Add lines
         lineControllers.add(
-            AnimationController(vsync: this, duration: widget.roundDrawSpeed));
+            AnimationController(vsync: this, duration: widget.cycleDrawSpeed));
 
         // Add curves
         curveControllers.add(
-            AnimationController(vsync: this, duration: widget.roundDrawSpeed));
+            AnimationController(vsync: this, duration: widget.cycleDrawSpeed));
       }
 
       // Connect controllers for all parts of rounds
-      for (int i = 1; i <= widget.rounds; i++) {
+      for (int i = 1; i <= widget.cycles; i++) {
         lineControllers[(i * 2 - 1) - 1].addStatusListener((status) {
           if (status == AnimationStatus.completed && mounted) {
             curveControllers[(i * 2 - 1) - 1].forward();
@@ -136,7 +138,7 @@ class _PathAnimationState extends State<PathAnimation>
           }
         });
 
-        if (i == widget.rounds) {
+        if (i == widget.cycles) {
           if (lastRoundLineControllers.isNotEmpty) {
             curveControllers[(i * 2) - 1].addStatusListener((status) {
               if (status == AnimationStatus.completed && mounted) {
@@ -160,9 +162,10 @@ class _PathAnimationState extends State<PathAnimation>
   }
 
   _setupNextLevelAnimation() {
-    if(!mounted) {
+    if (!mounted) {
       return;
     }
+
     nextLevelController.forward();
 
     if (widget.lastCycleLevelCount == 1 ||
@@ -195,7 +198,7 @@ class _PathAnimationState extends State<PathAnimation>
           painter: PathLine(
               drawType: widget.drawType,
               lineColor: widget.lineColor,
-              cycles: widget.rounds,
+              cycles: widget.cycles,
               lastCycleLevelCount: widget.lastCycleLevelCount,
               upperRowCount: widget.upperRowCount,
               lowerRowCount: widget.lowerRoundCount,
@@ -220,7 +223,7 @@ class _PathAnimationState extends State<PathAnimation>
     }
     nextLevelController.dispose();
     lastCycleCurveController.dispose();
-    for(var item in lastRoundLineControllers) {
+    for (var item in lastRoundLineControllers) {
       item.dispose();
     }
     super.dispose();
