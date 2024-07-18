@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/levels_path/path_level_widget.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/levels_path/path_level_component.dart';
 
 import 'level_widget.dart';
 import 'path_animation.dart';
@@ -13,6 +13,7 @@ class LevelGrid extends StatelessWidget {
   final String finalLevelImage;
   final bool isFirstGroup;
   final bool isDarkMode;
+  final bool isLastGroup;
 
   final Color mainColor;
   final Color passColor;
@@ -36,6 +37,7 @@ class LevelGrid extends StatelessWidget {
     required this.lockColor,
     required this.onClickLevel,
     required this.isDarkMode,
+    required this.isLastGroup,
   });
 
   @override
@@ -65,7 +67,9 @@ class LevelGrid extends StatelessWidget {
                 lockColor: lockColor,
                 passColor: passColor,
                 mainColor: mainColor,
-                onClickLevel: onClickLevel)
+                onClickLevel: onClickLevel,
+                isLastGroup: isLastGroup,
+              )
             : const PlaceholderLevel();
         levelsInARow.add(level);
         i++;

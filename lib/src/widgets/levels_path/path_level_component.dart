@@ -53,6 +53,7 @@ class PathLevelComponent extends StatefulWidget {
   final LevelGroupType levelGroupType;
 
   final bool isDarkMode;
+  final bool isLastGroup;
 
   final void Function(String id) onClickLevel;
 
@@ -75,6 +76,7 @@ class PathLevelComponent extends StatefulWidget {
     required this.onClickLevel,
     required this.isDarkMode,
     required this.levelGroupType,
+    required this.isLastGroup,
   });
 
   @override
@@ -159,19 +161,21 @@ class _PathLevelComponentState extends State<PathLevelComponent>
                     : const SizedBox()),
 
       LevelGrid(
-          isDarkMode: widget.isDarkMode,
-          drawType: widget.drawType,
-          drawSpeed: widget.cycleSpeed,
-          longRowCount: widget.upperRowCount,
-          shortRowCount: widget.lowerRowCount,
-          levelDataList: widget.levelList,
-          finalLevelImage: widget.finalLevelImage,
-          startColor: widget.startColor,
-          isFirstGroup: widget.isFirstGroup,
-          mainColor: widget.mainColor,
-          passColor: widget.passColor,
-          lockColor: widget.lockColor,
-          onClickLevel: widget.onClickLevel),
+        isDarkMode: widget.isDarkMode,
+        drawType: widget.drawType,
+        drawSpeed: widget.cycleSpeed,
+        longRowCount: widget.upperRowCount,
+        shortRowCount: widget.lowerRowCount,
+        levelDataList: widget.levelList,
+        finalLevelImage: widget.finalLevelImage,
+        startColor: widget.startColor,
+        isFirstGroup: widget.isFirstGroup,
+        mainColor: widget.mainColor,
+        passColor: widget.passColor,
+        lockColor: widget.lockColor,
+        onClickLevel: widget.onClickLevel,
+        isLastGroup: widget.isLastGroup,
+      ),
     ]);
   }
 }

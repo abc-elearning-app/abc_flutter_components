@@ -92,7 +92,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
 
   _initialCalculate() {
     for (var group in widget.levelGroupList) {
-      passedLevels += group.levels.indexWhere((level) => level.isCurrent);
+      passedLevels += group.levels.where((level) => level.progress > 0).length;
       totalLevels += group.levels.length;
     }
 
@@ -217,25 +217,27 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
       children: [
         _buildDivider(currentGroup.title, index == 0),
         PathLevelComponent(
-            levelGroupType: currentGroup.levelGroupType,
-            isDarkMode: widget.isDarkMode,
-            finalLevelImage: widget.finalLevelImage,
-            levelList: currentGroup.levels,
-            drawType: drawType,
-            isFirstGroup: index == 0,
-            cycleSpeed: widget.drawSpeed,
-            lastCycleSpeed: lastCycleDrawSpeed,
-            startColor: currentGroup.startColor,
-            startImage: currentGroup.startImage,
-            mainColor: widget.mainColor,
-            lockColor: widget.lockColor,
-            passColor: widget.passColor,
-            lineBackgroundColor: widget.isDarkMode
-                ? Colors.grey.shade900
-                : widget.lineBackgroundColor,
-            upperRowCount: widget.upperRowCount,
-            lowerRowCount: widget.lowerRowCount,
-            onClickLevel: widget.onClickLevel),
+          levelGroupType: currentGroup.levelGroupType,
+          isDarkMode: widget.isDarkMode,
+          finalLevelImage: widget.finalLevelImage,
+          levelList: currentGroup.levels,
+          drawType: drawType,
+          isFirstGroup: index == 0,
+          cycleSpeed: widget.drawSpeed,
+          lastCycleSpeed: lastCycleDrawSpeed,
+          startColor: currentGroup.startColor,
+          startImage: currentGroup.startImage,
+          mainColor: widget.mainColor,
+          lockColor: widget.lockColor,
+          passColor: widget.passColor,
+          lineBackgroundColor: widget.isDarkMode
+              ? Colors.grey.shade900
+              : widget.lineBackgroundColor,
+          upperRowCount: widget.upperRowCount,
+          lowerRowCount: widget.lowerRowCount,
+          onClickLevel: widget.onClickLevel,
+          isLastGroup: index == widget.levelGroupList.length - 1,
+        ),
       ],
     );
   }

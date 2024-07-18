@@ -13,6 +13,7 @@ class LevelWidget extends StatefulWidget {
   final String finalLevelImage;
   final bool isFirstGroup;
   final bool isDarkMode;
+  final bool isLastGroup;
 
   final Color startColor;
   final Color passColor;
@@ -37,6 +38,7 @@ class LevelWidget extends StatefulWidget {
     required this.lockColor,
     required this.onClickLevel,
     required this.isDarkMode,
+    required this.isLastGroup,
   });
 
   @override
@@ -270,7 +272,7 @@ class _LevelWidgetState extends State<LevelWidget>
   }
 
   Widget _getLevelWidget() {
-    // if (widget.isFinal) return _finalLevel();
+    if (widget.isFinal && widget.isLastGroup) return _finalLevel();
     if (widget.levelData.isLock) return _lockLevel();
     return _defaultLevel();
   }
@@ -305,7 +307,7 @@ class _LevelWidgetState extends State<LevelWidget>
                         ? IconWidget(
                             icon: widget.levelData.icon,
                             height: outerRadius,
-                            color: _getIconColor(),
+                            color: Colors.white,
                           )
                         : Text(
                             '${widget.levelData.progress.toInt()}%',
@@ -321,22 +323,27 @@ class _LevelWidgetState extends State<LevelWidget>
           Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.grey.shade300,
-                      blurRadius: 1,
-                      spreadRadius: 1)
-                ]),
+                boxShadow: !widget.isDarkMode
+                    ? [
+                        BoxShadow(
+                            color: Colors.grey.shade300,
+                            blurRadius: 1,
+                            spreadRadius: 1)
+                      ]
+                    : null),
             child: CircleAvatar(
               radius: outerRadius,
-              backgroundColor: Colors.white,
+              backgroundColor:
+                  widget.isDarkMode ? Colors.grey.shade700 : Colors.white,
               child: CircleAvatar(
                 radius: outerRadius - circleWidth - 2,
-                backgroundColor: Colors.grey.shade100,
-                child: SvgPicture.asset(
-                  widget.levelData.icon,
+                backgroundColor: widget.isDarkMode
+                    ? Colors.grey.shade600
+                    : Colors.grey.shade100,
+                child: IconWidget(
+                  icon: widget.levelData.icon,
                   height: outerRadius,
-                  color: _getIconColor(),
+                  color: widget.isDarkMode ? Colors.white : Colors.grey,
                 ),
               ),
             ),
@@ -432,8 +439,6 @@ class _LevelWidgetState extends State<LevelWidget>
 
     return widget.passColor;
   }
-
-  _getIconColor() => widget.levelData.isLock ? Colors.grey : Colors.white;
 }
 
 class PlaceholderLevel extends StatelessWidget {
