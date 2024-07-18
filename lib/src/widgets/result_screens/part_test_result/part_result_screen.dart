@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/animations/sprinkle_effect.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/animations/confetti_effect.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/part_test_result/widgets/circular_progress_box.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/part_test_result/widgets/linear_progress_box.dart';
 import 'package:lottie/lottie.dart';

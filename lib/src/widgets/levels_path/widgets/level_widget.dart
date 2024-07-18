@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lottie/lottie.dart';
 
 class LevelWidget extends StatefulWidget {
   final int index;
@@ -520,7 +518,7 @@ class DownwardTrianglePainter extends CustomPainter {
       ..strokeWidth = borderWidth;
 
     // Draw the border lines manually, excluding the top edge
-    canvas.drawLine(Offset(size.width / 2, size.height / 3), Offset(0, 0),
+    canvas.drawLine(Offset(size.width / 2, size.height / 3), const Offset(0, 0),
         borderPaint); // Left edge
     canvas.drawLine(Offset(size.width / 2, size.height / 3),
         Offset(size.width, 0), borderPaint); // Right edge

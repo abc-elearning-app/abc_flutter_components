@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/icons/get_pro_icon.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ReviewQuestionBox extends StatefulWidget {

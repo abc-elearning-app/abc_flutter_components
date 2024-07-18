@@ -31,19 +31,19 @@ class RatingDialog extends StatefulWidget {
 }
 
 class _RatingDialogState extends State<RatingDialog> {
-  late ValueNotifier<bool> rateHighStars;
-  int selectedStar = 0;
+  late ValueNotifier<bool> _isHighStarRated;
   bool isSelected = false;
+  int selectedStar = 0;
 
   @override
   void initState() {
-    rateHighStars = ValueNotifier<bool>(false);
+    _isHighStarRated = ValueNotifier<bool>(true);
     super.initState();
   }
 
   @override
   void dispose() {
-    rateHighStars.dispose();
+    _isHighStarRated.dispose();
     super.dispose();
   }
 
@@ -68,7 +68,7 @@ class _RatingDialogState extends State<RatingDialog> {
               child: IconButton(
                 icon: CircleAvatar(
                   radius: 12,
-                  backgroundColor: Colors.grey.shade200,
+                  backgroundColor: Colors.grey.shade100,
                   child: Icon(
                     Icons.close_outlined,
                     color: widget.mainColor,
@@ -114,24 +114,18 @@ class _RatingDialogState extends State<RatingDialog> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  padding: const EdgeInsets.symmetric(vertical: 5),
                   child: StarLineWidget(
                     isDarkMode: widget.isDarkMode,
                     starImages: widget.starImages,
                     unselectedStarImage: widget.unselectedStarImage,
-                    onSelect: (int star) {
-                      selectedStar = star;
-                      rateHighStars.value = star >= 3;
-                      if (!isSelected) {
-                        setState(() => isSelected = true);
-                      }
-                    },
+                    onSelect: _handleSelectStar,
                   ),
                 ),
 
                 // Action buttons
                 ValueListenableBuilder(
-                  valueListenable: rateHighStars,
+                  valueListenable: _isHighStarRated,
                   builder: (_, isRateHighStar, __) => Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -186,5 +180,13 @@ class _RatingDialogState extends State<RatingDialog> {
         ]),
       ),
     );
+  }
+
+  _handleSelectStar(int star) {
+    selectedStar = star;
+    _isHighStarRated.value = star > 3;
+    if (!isSelected) {
+      setState(() => isSelected = true);
+    }
   }
 }

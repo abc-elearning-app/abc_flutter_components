@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/level_grid.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/path_animation.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/start_image.dart';
 
 class LevelData {

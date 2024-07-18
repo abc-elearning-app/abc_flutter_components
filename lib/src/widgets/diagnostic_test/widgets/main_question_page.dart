@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/icons/get_pro_icon.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../flutter_abc_jsc_components.dart';

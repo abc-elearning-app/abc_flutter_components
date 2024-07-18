@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/progress/custom_linear_progress.dart';
-import 'package:flutter_svg/svg.dart';
 
 class PassingProbabilityComponent extends StatelessWidget {
   final int dayStreak;

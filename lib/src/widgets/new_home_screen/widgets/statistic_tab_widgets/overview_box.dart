@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/final_test_result/widgets/half_circle_progress.dart';
 
 class OverviewBoxComponent extends StatelessWidget {

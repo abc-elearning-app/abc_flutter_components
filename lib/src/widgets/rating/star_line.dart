@@ -32,14 +32,14 @@ class _StarLineWidgetState extends State<StarLineWidget>
   void initState() {
     starControllers = List.generate(
         5,
-        (id) => AnimationController(
+        (_) => AnimationController(
               vsync: this,
               duration: const Duration(milliseconds: 300),
             ));
     starAnimations = List.generate(
         5,
         (index) => Tween<double>(
-              begin: 0.8,
+              begin: 0.7,
               end: 1,
             ).animate(starControllers[index]));
     super.initState();
@@ -62,24 +62,16 @@ class _StarLineWidgetState extends State<StarLineWidget>
         children: List.generate(
             widget.starImages.length,
             (id) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-                  child: Opacity(
-                    opacity: selectedStars >= id + 1 ? 1 : 0.5,
-                    child: GestureDetector(
-                      onTap: () => _handleSelection(id),
-                      child: ScaleTransition(
-                        scale: starAnimations[id],
-                        child: IconWidget(
-                          icon: selectedStars <= id
-                              ? widget.unselectedStarImage
-                              : widget.starImages[id],
-                          color: selectedStars <= id
-                              ? widget.isDarkMode
-                                  ? Colors.white
-                                  : null
-                              : null,
-                          width: 35,
-                        ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                  child: GestureDetector(
+                    onTap: () => _handleSelection(id),
+                    child: ScaleTransition(
+                      scale: starAnimations[id],
+                      child: IconWidget(
+                        icon: _getIcon(id),
+                        color: _getColor(id),
+                        width: 35,
                       ),
                     ),
                   ),
@@ -88,25 +80,30 @@ class _StarLineWidgetState extends State<StarLineWidget>
     );
   }
 
-  _handleSelection(int id) {
-    setState(() {
-      selectedStars = id + 1;
+  _getIcon(int id) =>
+      selectedStars <= id ? widget.unselectedStarImage : widget.starImages[id];
 
-      for (int i = 0; i < selectedStars; i++) {
-        Future.delayed(Duration(milliseconds: 30 * i), () {
+  _getColor(int id) =>
+      selectedStars <= id && widget.isDarkMode ? Colors.white : null;
+
+  _handleSelection(int id) {
+    setState(() => selectedStars = id + 1);
+
+    for (int i = 0; i < 5; i++) {
+      if (i < selectedStars) {
+        Future.delayed(Duration(milliseconds: 50 * i), () {
           if (mounted) {
             starControllers[i].forward();
           }
         });
-      }
-      for (int i = 4; i >= selectedStars; i--) {
-        Future.delayed(Duration(milliseconds: 20 * (5 - i)), () {
+      } else {
+        Future.delayed(Duration(milliseconds: 50 * (5 - i)), () {
           if (mounted) {
             starControllers[i].reverse();
           }
         });
       }
-    });
+    }
 
     widget.onSelect(selectedStars);
   }

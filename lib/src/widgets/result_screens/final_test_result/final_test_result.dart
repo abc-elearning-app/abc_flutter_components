@@ -3,7 +3,7 @@ import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/animations/sad_effect.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../animations/sprinkle_effect.dart';
+import '../../animations/confetti_effect.dart';
 import 'widgets/main_result_box.dart';
 
 enum ResultType { fail, normal, pass }

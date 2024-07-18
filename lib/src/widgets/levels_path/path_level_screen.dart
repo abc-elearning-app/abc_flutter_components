@@ -208,11 +208,6 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                 : DrawType.noAnimation
             : DrawType.noAnimation;
 
-    print('-----');
-    print('Draw type: $drawType');
-    print('Open type: ${widget.openType}');
-    print('Group type: ${currentGroup.levelGroupType}');
-
     return Column(
       children: [
         _buildDivider(currentGroup.title, index == 0),
