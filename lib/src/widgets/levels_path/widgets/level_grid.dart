@@ -46,6 +46,33 @@ class LevelGrid extends StatelessWidget {
   }
 
   Widget _buildLevelWidgets() {
+    if (levelDataList.length == 2) {
+      return SizedBox(
+        height: 120,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: List.generate(
+              2,
+              (i) => LevelWidget(
+                    index: i,
+                    isDarkMode: isDarkMode,
+                    levelData: levelDataList[i],
+                    finalLevelImage: finalLevelImage,
+                    isFinal: i == levelDataList.length - 1,
+                    drawType: drawType,
+                    drawSpeed: drawSpeed,
+                    startColor: startColor,
+                    isFirstGroup: isFirstGroup,
+                    lockColor: lockColor,
+                    passColor: passColor,
+                    mainColor: mainColor,
+                    onClickLevel: onClickLevel,
+                    isLastGroup: isLastGroup,
+                  )),
+        ),
+      );
+    }
+
     List<Widget> row = [];
     int i = 0;
 

@@ -211,9 +211,9 @@ class _LevelWidgetState extends State<LevelWidget>
       alignment: Alignment.center,
       children: [
         // Splash animation
-        if (widget.levelData.isCurrent && !widget.isFinal
-            // && (widget.index != 0 || widget.levelData.progress != 0)
-            )
+        if (widget.levelData.isCurrent &&
+            !widget.isLastGroup ||
+            (widget.isLastGroup && !widget.isFinal))
           CustomPaint(
               size: const Size(20, 20),
               painter: SplashCirclePainter(

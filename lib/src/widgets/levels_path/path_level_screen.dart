@@ -82,8 +82,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
     _scrollController = ScrollController();
     _backgroundOffset = ValueNotifier<double>(0);
 
-    _scrollController.addListener(
-        () => _backgroundOffset.value = _scrollController.offset / 15);
+    _scrollController.addListener(_scrollListener);
 
     _initialCalculate();
 
@@ -91,12 +90,68 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
   }
 
   _initialCalculate() {
+    // Calculation for linear progress bar
     for (var group in widget.levelGroupList) {
       passedLevels += group.levels.where((level) => level.progress > 0).length;
       totalLevels += group.levels.length;
     }
-
     percent = passedLevels / totalLevels * 100;
+
+    // Calculation for auto scroll
+    double currentPosition = 0;
+    for (LevelGroup group in widget.levelGroupList) {
+      double groupHeight = 0;
+
+      if (group.levelGroupType == LevelGroupType.current) {
+        int levelsTillCurrent =
+            group.levels.indexWhere((level) => level.isCurrent) + 1;
+        int completeCycleCount =
+            levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
+        groupHeight += completeCycleCount * 240;
+        int remainLevels = levelsTillCurrent -
+            completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
+        groupHeight += remainLevels > widget.upperRowCount ? 240 : 120;
+
+        currentPosition += groupHeight;
+        break;
+      }
+
+      if (group.levels.length == 2) {
+        currentPosition += 120;
+        continue;
+      }
+
+      int completeCycleCount =
+          group.levels.length ~/ (widget.upperRowCount + widget.lowerRowCount);
+      groupHeight += completeCycleCount * 240;
+      int remainLevels = group.levels.length -
+          completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
+      groupHeight += remainLevels > widget.upperRowCount ? 240 : 120;
+
+      currentPosition += groupHeight;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      double screenHeight = MediaQuery.of(context).size.height;
+
+      if (currentPosition > screenHeight * 0.5) {
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(currentPosition,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.linear);
+        }
+      }
+    });
+  }
+
+  void _scrollListener() {
+    _backgroundOffset.value = _scrollController.offset / 15;
+
+    // Avoid overscroll
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent) {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    }
   }
 
   @override
@@ -197,8 +252,9 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
   Widget _buildGroup(int index) {
     final currentGroup = widget.levelGroupList[index];
 
-    final lastCycleDrawSpeed = Duration(
-        milliseconds: (widget.drawSpeed.inMilliseconds - 50).clamp(100, 1000));
+    final lastCycleDrawSpeed = widget.drawSpeed;
+    // Duration(
+    //     milliseconds: (widget.drawSpeed.inMilliseconds - 20).clamp(100, 1000));
 
     late DrawType drawType = widget.openType == null
         ? DrawType.firstTimeOpen

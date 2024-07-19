@@ -31,8 +31,7 @@ class PathAnimation extends StatefulWidget {
   _PathAnimationState createState() => _PathAnimationState();
 }
 
-class _PathAnimationState extends State<PathAnimation>
-    with TickerProviderStateMixin {
+class _PathAnimationState extends State<PathAnimation> with TickerProviderStateMixin {
   List<AnimationController> lineControllers = [];
   List<AnimationController> curveControllers = [];
 
@@ -46,13 +45,9 @@ class _PathAnimationState extends State<PathAnimation>
   void initState() {
     super.initState();
 
-    lastCycleCurveController = AnimationController(
-        vsync: this,
-        duration: widget.cycleDrawSpeed - const Duration(milliseconds: 100));
-    nextLevelController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1));
-    additionalNextLevelController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 300));
+    lastCycleCurveController = AnimationController(vsync: this, duration: widget.cycleDrawSpeed - const Duration(milliseconds: 100));
+    nextLevelController = AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    additionalNextLevelController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
 
     switch (widget.drawType) {
       case DrawType.firstTimeOpen:
@@ -74,14 +69,12 @@ class _PathAnimationState extends State<PathAnimation>
     /// Add controllers for last cycle
 
     // Controller for upper row
-    lastRoundLineControllers.add(
-        AnimationController(vsync: this, duration: widget.lastCycleDrawSpeed));
+    lastRoundLineControllers.add(AnimationController(vsync: this, duration: widget.lastCycleDrawSpeed));
 
     // If there exist lower row
     if (widget.lastCycleLevelCount > widget.upperRowCount) {
       // Lower row controller
-      lastRoundLineControllers.add(AnimationController(
-          vsync: this, duration: widget.lastCycleDrawSpeed));
+      lastRoundLineControllers.add(AnimationController(vsync: this, duration: widget.lastCycleDrawSpeed));
     }
 
     // Connect last cycle controllers
@@ -110,12 +103,10 @@ class _PathAnimationState extends State<PathAnimation>
       // -> double the rounds
       for (int i = 1; i <= widget.cycles * 2; i++) {
         // Add lines
-        lineControllers.add(
-            AnimationController(vsync: this, duration: widget.cycleDrawSpeed));
+        lineControllers.add(AnimationController(vsync: this, duration: widget.cycleDrawSpeed));
 
         // Add curves
-        curveControllers.add(
-            AnimationController(vsync: this, duration: widget.cycleDrawSpeed));
+        curveControllers.add(AnimationController(vsync: this, duration: widget.cycleDrawSpeed));
       }
 
       // Connect controllers for all parts of rounds
@@ -166,10 +157,9 @@ class _PathAnimationState extends State<PathAnimation>
       return;
     }
 
-    nextLevelController.forward();
+    Future.delayed(const Duration(milliseconds: 200), () => nextLevelController.forward());
 
-    if (widget.lastCycleLevelCount == 1 ||
-        widget.lastCycleLevelCount == widget.upperRowCount + 1) {
+    if (widget.lastCycleLevelCount == 1 || widget.lastCycleLevelCount == widget.upperRowCount + 1) {
       nextLevelController.addStatusListener((status) {
         if (status == AnimationStatus.completed && mounted) {
           additionalNextLevelController.forward();
@@ -272,6 +262,13 @@ class PathLine extends CustomPainter {
     _drawLine(canvas, paint, size, drawType);
   }
 
+  void _draw2LevelLine(
+    Canvas canvas,
+    Paint paint,
+    Size size,
+    DrawType drawType,
+  ) {}
+
   void _drawLine(
     Canvas canvas,
     Paint paint,
@@ -292,9 +289,7 @@ class PathLine extends CustomPainter {
     /// Draw complete cycles
     for (int i = 1; i <= cycles; i++) {
       // First Line (1st line of 1st cycle if different)
-      startX = i == 1
-          ? size.width - size.width / (upperRowCount + 1)
-          : size.width * 0.8;
+      startX = i == 1 ? size.width - size.width / (upperRowCount + 1) : size.width * 0.8;
       startY = roundHeight;
 
       endX = size.width * 0.2;
@@ -310,10 +305,8 @@ class PathLine extends CustomPainter {
         canvas.drawLine(
           Offset(startX, startY),
           Offset(
-            lerpDouble(startX, endX, lineControllers[(i * 2 - 1) - 1].value) ??
-                0,
-            lerpDouble(startY, endY, lineControllers[(i * 2 - 1) - 1].value) ??
-                0,
+            lerpDouble(startX, endX, lineControllers[(i * 2 - 1) - 1].value) ?? 0,
+            lerpDouble(startY, endY, lineControllers[(i * 2 - 1) - 1].value) ?? 0,
           ),
           paint,
         );
@@ -416,13 +409,10 @@ class PathLine extends CustomPainter {
     if (drawType != DrawType.nextLevel) {
       if (lastCycleLevelCount <= upperRowCount) {
         // If there is no previous complete cycles, starting point is different
-        startX = cycles == 0
-            ? size.width - (size.width / (upperRowCount + 1))
-            : size.width * 0.8;
+        startX = cycles == 0 ? size.width - (size.width / (upperRowCount + 1)) : size.width * 0.8;
         startY = roundHeight;
 
-        endX = size.width -
-            ((size.width / (upperRowCount + 1)) * lastCycleLevelCount);
+        endX = size.width - ((size.width / (upperRowCount + 1)) * lastCycleLevelCount);
         endY = startY;
 
         if (drawType != DrawType.firstTimeOpen) {
@@ -442,9 +432,7 @@ class PathLine extends CustomPainter {
           );
         }
       } else {
-        double upperStartX = cycles == 0
-            ? size.width - (size.width / (upperRowCount + 1))
-            : size.width * 0.8;
+        double upperStartX = cycles == 0 ? size.width - (size.width / (upperRowCount + 1)) : size.width * 0.8;
         double upperStartY = roundHeight;
 
         double upperEndX = size.width * 0.2;
@@ -460,12 +448,8 @@ class PathLine extends CustomPainter {
           canvas.drawLine(
             Offset(upperStartX, upperStartY),
             Offset(
-              lerpDouble(upperStartX, upperEndX,
-                      lastRoundLineControllers[0].value) ??
-                  0,
-              lerpDouble(upperStartY, upperEndY,
-                      lastRoundLineControllers[0].value) ??
-                  0,
+              lerpDouble(upperStartX, upperEndX, lastRoundLineControllers[0].value) ?? 0,
+              lerpDouble(upperStartY, upperEndY, lastRoundLineControllers[0].value) ?? 0,
             ),
             paint,
           );
@@ -496,8 +480,7 @@ class PathLine extends CustomPainter {
         startX = centerX;
         startY = centerY + size.height / 2;
 
-        endX = (size.width / (lowerRowCount + 1)) *
-            (lastCycleLevelCount - upperRowCount);
+        endX = (size.width / (lowerRowCount + 1)) * (lastCycleLevelCount - upperRowCount);
         endY = startY;
 
         if (drawType != DrawType.firstTimeOpen) {
@@ -519,9 +502,7 @@ class PathLine extends CustomPainter {
       }
     } else {
       if (lastCycleLevelCount == 1) {
-        startX = cycles != 0
-            ? size.width * 0.8
-            : size.width - (size.width / (upperRowCount + 1));
+        startX = cycles != 0 ? size.width * 0.8 : size.width - (size.width / (upperRowCount + 1));
         startY = centerY + size.height / 2;
 
         endX = size.width - (size.width / (upperRowCount + 1));
@@ -531,22 +512,17 @@ class PathLine extends CustomPainter {
           canvas.drawLine(
             Offset(startX, startY),
             Offset(
-              lerpDouble(startX, endX, additionalNextLevelController.value) ??
-                  0,
-              lerpDouble(startY, endY, additionalNextLevelController.value) ??
-                  0,
+              lerpDouble(startX, endX, additionalNextLevelController.value) ?? 0,
+              lerpDouble(startY, endY, additionalNextLevelController.value) ?? 0,
             ),
             paint,
           );
         }
       } else if (lastCycleLevelCount <= upperRowCount) {
-        startX = cycles != 0
-            ? size.width * 0.8
-            : size.width - (size.width / (upperRowCount + 1));
+        startX = cycles != 0 ? size.width * 0.8 : size.width - (size.width / (upperRowCount + 1));
         startY = centerY + size.height / 2;
 
-        endX = size.width -
-            (size.width / (upperRowCount + 1)) * (lastCycleLevelCount - 1);
+        endX = size.width - (size.width / (upperRowCount + 1)) * (lastCycleLevelCount - 1);
         endY = startY;
 
         canvas.drawLine(
@@ -572,9 +548,7 @@ class PathLine extends CustomPainter {
           );
         }
       } else if (lastCycleLevelCount == upperRowCount + 1) {
-        startX = cycles != 0
-            ? size.width * 0.8
-            : size.width - (size.width / (upperRowCount + 1));
+        startX = cycles != 0 ? size.width * 0.8 : size.width - (size.width / (upperRowCount + 1));
         startY = centerY + size.height / 2;
 
         endX = size.width * 0.2;
@@ -610,18 +584,14 @@ class PathLine extends CustomPainter {
           canvas.drawLine(
             Offset(startX, startY),
             Offset(
-              lerpDouble(startX, endX, additionalNextLevelController.value) ??
-                  0,
-              lerpDouble(startY, endY, additionalNextLevelController.value) ??
-                  0,
+              lerpDouble(startX, endX, additionalNextLevelController.value) ?? 0,
+              lerpDouble(startY, endY, additionalNextLevelController.value) ?? 0,
             ),
             paint,
           );
         }
       } else {
-        startX = cycles != 0
-            ? size.width * 0.8
-            : size.width - (size.width / (upperRowCount + 1));
+        startX = cycles != 0 ? size.width * 0.8 : size.width - (size.width / (upperRowCount + 1));
         startY = centerY + size.height / 2;
 
         endX = size.width * 0.2;
@@ -648,8 +618,7 @@ class PathLine extends CustomPainter {
         startX = centerX;
         startY = centerY + size.height / 2;
 
-        endX = (size.width / (lowerRowCount + 1)) *
-            (lastCycleLevelCount - upperRowCount - 1);
+        endX = (size.width / (lowerRowCount + 1)) * (lastCycleLevelCount - upperRowCount - 1);
         endY = startY;
 
         canvas.drawLine(
