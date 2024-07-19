@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/rating/star_line.dart';
 
-class RatingDialog extends StatefulWidget {
+class RatingDialogComponent extends StatefulWidget {
   final Color mainColor;
   final Color backgroundColor;
   final bool isDarkMode;
@@ -14,7 +14,7 @@ class RatingDialog extends StatefulWidget {
 
   final void Function(int starCount) onRate;
 
-  const RatingDialog({
+  const RatingDialogComponent({
     super.key,
     required this.mainColor,
     required this.backgroundColor,
@@ -27,23 +27,22 @@ class RatingDialog extends StatefulWidget {
   });
 
   @override
-  State<RatingDialog> createState() => _RatingDialogState();
+  State<RatingDialogComponent> createState() => _RatingDialogComponentState();
 }
 
-class _RatingDialogState extends State<RatingDialog> {
-  late ValueNotifier<bool> _isHighStarRated;
+class _RatingDialogComponentState extends State<RatingDialogComponent> {
+  late ValueNotifier<int> _starRated;
   bool isSelected = false;
-  int selectedStar = 0;
 
   @override
   void initState() {
-    _isHighStarRated = ValueNotifier<bool>(true);
+    _starRated = ValueNotifier(0);
     super.initState();
   }
 
   @override
   void dispose() {
-    _isHighStarRated.dispose();
+    _starRated.dispose();
     super.dispose();
   }
 
@@ -125,13 +124,13 @@ class _RatingDialogState extends State<RatingDialog> {
 
                 // Action buttons
                 ValueListenableBuilder(
-                  valueListenable: _isHighStarRated,
-                  builder: (_, isRateHighStar, __) => Container(
+                  valueListenable: _starRated,
+                  builder: (_, star, __) => Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: MainButton(
                       borderRadius: 36,
-                      title: isRateHighStar
+                      title: star > 3 || star == 0
                           ? 'Rate us on the Playstore'
                           : 'Feedback',
                       backgroundColor: widget.mainColor,
@@ -149,7 +148,7 @@ class _RatingDialogState extends State<RatingDialog> {
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
-                      onPressed: () => widget.onRate(selectedStar),
+                      onPressed: () => widget.onRate(_starRated.value),
                     ),
                   ),
                 ),
@@ -183,8 +182,7 @@ class _RatingDialogState extends State<RatingDialog> {
   }
 
   _handleSelectStar(int star) {
-    selectedStar = star;
-    _isHighStarRated.value = star > 3;
+    _starRated.value = star;
     if (!isSelected) {
       setState(() => isSelected = true);
     }

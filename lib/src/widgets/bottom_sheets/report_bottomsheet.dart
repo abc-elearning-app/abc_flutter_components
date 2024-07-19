@@ -9,7 +9,7 @@ class FeedbackData {
   FeedbackData(this.title, {this.isSelected = false});
 }
 
-class ReportPopup extends StatefulWidget {
+class ReportPopupComponent extends StatefulWidget {
   final String? title;
   final List<String> options;
   final String buttonTitle;
@@ -23,7 +23,7 @@ class ReportPopup extends StatefulWidget {
 
   final void Function(List<FeedbackData> mistakeData, String reason) onClick;
 
-  const ReportPopup({
+  const ReportPopupComponent({
     super.key,
     this.mainColor = const Color(0xFFE3A651),
     this.secondaryColor = const Color(0xFF7C6F5B),
@@ -37,10 +37,10 @@ class ReportPopup extends StatefulWidget {
   });
 
   @override
-  State<ReportPopup> createState() => _ReportPopupState();
+  State<ReportPopupComponent> createState() => _ReportPopupComponentState();
 }
 
-class _ReportPopupState extends State<ReportPopup> {
+class _ReportPopupComponentState extends State<ReportPopupComponent> {
   late ValueNotifier<bool> _enableButton;
   late ValueNotifier<bool> _otherReasonSelected;
   late TextEditingController _textEditingController;
@@ -203,6 +203,7 @@ class _ReportPopupState extends State<ReportPopup> {
               backgroundColor: widget.mainColor,
               disabledColor: Color.lerp(widget.mainColor, Colors.black, 0.5),
               disabled: !value,
+              textColor: !value ? Colors.grey : Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 15),
               textStyle: const TextStyle(
                 fontSize: 16,
