@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
-class FeedbackData {
-  // TODO: Need id ?
-  final String title;
+class ReportData {
+  final int id;
+  final String name;
   bool isSelected;
 
-  FeedbackData(this.title, {this.isSelected = false});
+  ReportData({
+    required this.id,
+    required this.name,
+    this.isSelected = false,
+  });
 }
 
-class ReportPopupComponent extends StatefulWidget {
+class ReportBottomsheetComponent extends StatefulWidget {
   final String? title;
   final List<String> options;
   final String buttonTitle;
+  final String dropdownIcon;
 
   final bool isDarkMode;
   final Color mainColor;
@@ -20,10 +25,11 @@ class ReportPopupComponent extends StatefulWidget {
   final Color backgroundColor;
 
   final bool showHandle;
+  final bool leftCheckbox;
 
-  final void Function(List<FeedbackData> mistakeData, String reason) onClick;
+  final void Function(List<ReportData> selectedOptions, String reason) onClick;
 
-  const ReportPopupComponent({
+  const ReportBottomsheetComponent({
     super.key,
     this.mainColor = const Color(0xFFE3A651),
     this.secondaryColor = const Color(0xFF7C6F5B),
@@ -34,18 +40,20 @@ class ReportPopupComponent extends StatefulWidget {
     required this.isDarkMode,
     required this.onClick,
     required this.options,
+    this.dropdownIcon = '',
+    this.leftCheckbox = true,
   });
 
   @override
-  State<ReportPopupComponent> createState() => _ReportPopupComponentState();
+  State<ReportBottomsheetComponent> createState() => _ReportBottomsheetComponentState();
 }
 
-class _ReportPopupComponentState extends State<ReportPopupComponent> {
+class _ReportBottomsheetComponentState extends State<ReportBottomsheetComponent> {
   late ValueNotifier<bool> _enableButton;
   late ValueNotifier<bool> _otherReasonSelected;
   late TextEditingController _textEditingController;
 
-  late List<FeedbackData> options;
+  late List<ReportData> options;
 
   @override
   void initState() {
@@ -53,8 +61,8 @@ class _ReportPopupComponentState extends State<ReportPopupComponent> {
     _textEditingController = TextEditingController();
     _otherReasonSelected = ValueNotifier(false);
 
-    options = widget.options.map((option) => FeedbackData(option)).toList();
-    options.add(FeedbackData('Other'));
+    options = List.generate(widget.options.length, (index) => ReportData(id: index + 1, name: widget.options[index]));
+    options.add(ReportData(id: 0, name: 'Other'));
 
     super.initState();
   }
@@ -72,14 +80,15 @@ class _ReportPopupComponentState extends State<ReportPopupComponent> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        if (!widget.showHandle) IconWidget(icon: widget.dropdownIcon),
         Container(
           margin: const EdgeInsets.only(top: 10),
           padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(40),
-              topRight: Radius.circular(40),
+              topLeft: Radius.circular(36),
+              topRight: Radius.circular(36),
             ),
             color: widget.isDarkMode ? Colors.black : widget.backgroundColor,
           ),
@@ -92,26 +101,26 @@ class _ReportPopupComponentState extends State<ReportPopupComponent> {
                     width: 60,
                     height: 4,
                     margin: const EdgeInsets.only(bottom: 15),
-                    decoration: BoxDecoration(
-                        color: widget.isDarkMode ? Colors.white : Colors.black,
-                        borderRadius: BorderRadius.circular(100)),
+                    decoration: BoxDecoration(color: widget.isDarkMode ? Colors.white : Colors.black, borderRadius: BorderRadius.circular(100)),
                   ),
 
                 if (widget.title != null)
-                  Text(widget.title!,
-                      style: TextStyle(
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: Text(widget.title!,
+                        style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
-                          color:
-                              widget.isDarkMode ? Colors.white : Colors.black)),
+                          color: widget.isDarkMode ? Colors.white : Colors.black,
+                        )),
+                  ),
 
                 // List of options
                 ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: options.length,
-                    itemBuilder: (_, index) =>
-                        _optionRow(options[index], index)),
+                    itemBuilder: (_, index) => _optionRow(options[index], index)),
 
                 _reasonTextField(),
 
@@ -124,38 +133,44 @@ class _ReportPopupComponentState extends State<ReportPopupComponent> {
     );
   }
 
-  Widget _optionRow(FeedbackData mistakeData, int index) => StatefulBuilder(
+  Widget _optionRow(ReportData mistakeData, int index) => StatefulBuilder(
         builder: (_, setState) => GestureDetector(
           onTap: () => setState(() => _updateSelection(index)),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Row(
               children: [
-                MyCheckBox(
-                  activeColor: widget.mainColor,
-                  fillColor: widget.isDarkMode
-                      ? Colors.white.withOpacity(0.08)
-                      : Colors.white,
-                  borderColor: widget.isDarkMode
-                      ? Colors.white.withOpacity(0.16)
-                      : widget.mainColor,
-                  iconColor: Colors.white,
-                  value: mistakeData.isSelected,
-                  onChanged: (_) => setState(() => _updateSelection(index)),
-                ),
-                const SizedBox(width: 20),
+                if (widget.leftCheckbox) _buildCheckBox(mistakeData, index),
                 Expanded(
                   child: Text(
-                    mistakeData.title,
+                    mistakeData.name,
                     style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: widget.isDarkMode ? Colors.white : Colors.black),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: widget.isDarkMode ? Colors.white : Colors.black,
+                    ),
                   ),
                 ),
+                if (!widget.leftCheckbox) _buildCheckBox(mistakeData, index),
               ],
             ),
           ),
+        ),
+      );
+
+  Widget _buildCheckBox(ReportData mistakeData, int index) => Padding(
+        padding: EdgeInsets.only(left: widget.leftCheckbox ? 0 : 20, right: widget.leftCheckbox ? 20 : 0),
+        child: MyCheckBox(
+          activeColor: widget.mainColor,
+          fillColor: widget.isDarkMode ? Colors.white.withOpacity(0.08) : Colors.white,
+          borderColor: widget.isDarkMode
+              ? Colors.white.withOpacity(0.16)
+              : widget.showHandle
+                  ? widget.mainColor
+                  : widget.secondaryColor,
+          iconColor: Colors.white,
+          value: mistakeData.isSelected,
+          onChanged: (_) => setState(() => _updateSelection(index)),
         ),
       );
 
@@ -163,12 +178,8 @@ class _ReportPopupComponentState extends State<ReportPopupComponent> {
     return ValueListenableBuilder(
       valueListenable: _otherReasonSelected,
       builder: (_, value, __) {
-        final underlineDecoration = UnderlineInputBorder(
-            borderSide: BorderSide(
-                width: 1,
-                color: widget.isDarkMode
-                    ? Colors.white.withOpacity(0.24)
-                    : Colors.black));
+        final underlineDecoration =
+            UnderlineInputBorder(borderSide: BorderSide(width: 1, color: widget.isDarkMode ? Colors.white.withOpacity(0.24) : Colors.black));
         return AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           height: value ? 50 : 0,
@@ -180,10 +191,7 @@ class _ReportPopupComponentState extends State<ReportPopupComponent> {
                     hintText: 'Other reasons',
                     enabledBorder: value ? underlineDecoration : null,
                     focusedBorder: value ? underlineDecoration : null,
-                    hintStyle: TextStyle(
-                        fontSize: 16,
-                        color: (widget.isDarkMode ? Colors.white : Colors.black)
-                            .withOpacity(0.24)),
+                    hintStyle: TextStyle(fontSize: 16, color: (widget.isDarkMode ? Colors.white : Colors.black).withOpacity(0.24)),
                   ),
                 )
               : const SizedBox.shrink(),
@@ -212,8 +220,7 @@ class _ReportPopupComponentState extends State<ReportPopupComponent> {
               onPressed: _onSubmit)));
 
   _onSubmit() {
-    widget.onClick(options.where((option) => option.isSelected).toList(),
-        _textEditingController.text);
+    widget.onClick(options.where((option) => option.isSelected).toList(), _textEditingController.text);
     Navigator.of(context).pop();
   }
 
@@ -228,7 +235,6 @@ class _ReportPopupComponentState extends State<ReportPopupComponent> {
     _checkEnableButton();
   }
 
-  _checkEnableButton() => _enableButton.value =
-      !((options.last.isSelected && _textEditingController.text.isEmpty) ||
-          options.where((option) => option.isSelected).isEmpty);
+  _checkEnableButton() =>
+      _enableButton.value = !((options.last.isSelected && _textEditingController.text.isEmpty) || options.where((option) => option.isSelected).isEmpty);
 }

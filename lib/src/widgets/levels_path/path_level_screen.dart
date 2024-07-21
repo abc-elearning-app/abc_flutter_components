@@ -241,7 +241,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
   Widget _backgroundImage() => ValueListenableBuilder(
       valueListenable: _backgroundOffset,
       builder: (_, value, __) => Transform.translate(
-          offset: Offset(0, -value),
+          offset: Offset(0, -value / 3),
           child: Container(
               height: 450,
               decoration: BoxDecoration(
@@ -294,12 +294,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
   }
 
   Widget _buildDivider(String title, bool isFirstDivider) => Padding(
-        padding: const EdgeInsets.only(
-          left: 10,
-          right: 10,
-          bottom: 50,
-          top: 30,
-        ),
+        padding: const EdgeInsets.all(20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

@@ -52,9 +52,10 @@ class PracticeTabComponent extends StatelessWidget {
               boxShadow: !isDarkMode
                   ? [
                       BoxShadow(
-                          color: Colors.grey.shade200,
-                          blurRadius: 5,
-                          spreadRadius: 2)
+                        color: Colors.grey.shade200,
+                        blurRadius: 5,
+                        spreadRadius: 2,
+                      )
                     ]
                   : null),
           child: Row(
@@ -64,8 +65,9 @@ class PracticeTabComponent extends StatelessWidget {
                   width: 60,
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                      color: questionGroupData.iconBackgroundColor,
-                      borderRadius: BorderRadius.circular(16)),
+                    color: questionGroupData.iconBackgroundColor,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                   child: IconWidget(icon: questionGroupData.icon)),
               const SizedBox(width: 15),
               Expanded(
@@ -75,9 +77,10 @@ class PracticeTabComponent extends StatelessWidget {
                     Text(
                       questionGroupData.title,
                       style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                          color: isDarkMode ? Colors.white : Colors.black),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        color: isDarkMode ? Colors.white : Colors.black,
+                      ),
                     ),
                     Text(
                       questionGroupData.subtitle,
