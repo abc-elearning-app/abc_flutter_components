@@ -90,7 +90,7 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
           boxShadow: !widget.isDarkMode
               ? [
                   BoxShadow(
-                      color: Colors.grey.shade200,
+                      color: Colors.grey.shade300,
                       blurRadius: 5,
                       spreadRadius: 2)
                 ]

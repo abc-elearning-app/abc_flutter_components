@@ -34,7 +34,7 @@ class ProPurchase extends StatefulWidget {
     required this.isDarkMode,
     required this.proOptionIcon,
     required this.limitedOfferFrame,
-    required this.onUpgrade
+    required this.onUpgrade,
   });
 
   @override
@@ -48,9 +48,10 @@ class _ProPurchaseState extends State<ProPurchase> {
   void initState() {
     _proBannerData = ValueNotifier(ProBannerData(
       widget.proOptions[1].id,
-        widget.proOptions[1].percentSaved,
-        widget.proOptions[1].price,
-        widget.proOptions[1].optionTime));
+      widget.proOptions[1].percentSaved,
+      widget.proOptions[1].price,
+      widget.proOptions[1].optionTime,
+    ));
 
     super.initState();
   }
@@ -76,9 +77,7 @@ class _ProPurchaseState extends State<ProPurchase> {
                       gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: widget.isDarkMode
-                              ? [Colors.black, Colors.grey.shade900]
-                              : [widget.backgroundColor, Colors.white],
+                          colors: widget.isDarkMode ? [Colors.black, Colors.grey.shade900] : [widget.backgroundColor, Colors.white],
                           stops: const [0.1, 0.9])),
                 )),
                 Column(
@@ -99,12 +98,7 @@ class _ProPurchaseState extends State<ProPurchase> {
                       proOptionIcon: widget.proOptionIcon,
                       onSelect: (index) {
                         final selectedOption = widget.proOptions[index];
-                        _proBannerData.value = ProBannerData(
-                          selectedOption.id,
-                          selectedOption.percentSaved,
-                          selectedOption.price,
-                          selectedOption.optionTime
-                        );
+                        _proBannerData.value = ProBannerData(selectedOption.id, selectedOption.percentSaved, selectedOption.price, selectedOption.optionTime);
                       },
                     ),
                     _buildDetailText()
@@ -141,14 +135,7 @@ class _ProPurchaseState extends State<ProPurchase> {
                   fontSize: 23,
                   color: widget.isDarkMode ? Colors.white : Colors.black,
                   fontWeight: FontWeight.w600,
-                  shadows: !widget.isDarkMode
-                      ? [
-                          Shadow(
-                              color: Colors.grey.shade400,
-                              blurRadius: 3,
-                              offset: const Offset(1, 3))
-                        ]
-                      : null),
+                  shadows: !widget.isDarkMode ? [Shadow(color: Colors.grey.shade400, blurRadius: 3, offset: const Offset(1, 3))] : null),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
@@ -157,21 +144,9 @@ class _ProPurchaseState extends State<ProPurchase> {
                     style: TextStyle(
                         fontFamily: 'Poppins',
                         color: widget.isDarkMode ? Colors.white : Colors.black,
-                        shadows: !widget.isDarkMode
-                            ? [
-                                Shadow(
-                                    color: Colors.grey.shade300,
-                                    blurRadius: 3,
-                                    offset: const Offset(1, 3))
-                              ]
-                            : null),
+                        shadows: !widget.isDarkMode ? [Shadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(1, 3))] : null),
                     children: [
-                      TextSpan(
-                          text: widget.proName,
-                          style: TextStyle(
-                              fontSize: 24,
-                              color: widget.mainColor,
-                              fontWeight: FontWeight.w800)),
+                      TextSpan(text: widget.proName, style: TextStyle(fontSize: 24, color: widget.mainColor, fontWeight: FontWeight.w800)),
                       const TextSpan(
                           text: ' Plan',
                           style: TextStyle(
@@ -192,9 +167,7 @@ class _ProPurchaseState extends State<ProPurchase> {
       itemCount: widget.perks.length,
       itemBuilder: (_, index) => Row(
             children: [
-              const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  child: Icon(Icons.check, size: 18)),
+              const Padding(padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), child: Icon(Icons.check, size: 18)),
               Text(
                 widget.perks[index],
                 style: TextStyle(

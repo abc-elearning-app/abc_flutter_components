@@ -18,47 +18,38 @@ class FinalTestBox extends StatelessWidget {
 
   final void Function() onClickFinal;
 
-  const FinalTestBox(
-      {super.key,
-      required this.icon,
-      required this.background,
-      required this.mainColor,
-      required this.answeredQuestions,
-      required this.totalQuestions,
-      required this.correctPercent,
-      required this.progress,
-      required this.isDarkMode,
-      required this.secondaryColor,
-      required this.onClickFinal,
-      required this.gradientColors});
+  const FinalTestBox({
+    super.key,
+    required this.icon,
+    required this.background,
+    required this.mainColor,
+    required this.answeredQuestions,
+    required this.totalQuestions,
+    required this.correctPercent,
+    required this.progress,
+    required this.isDarkMode,
+    required this.secondaryColor,
+    required this.onClickFinal,
+    required this.gradientColors,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onClickFinal,
       child: Container(
-        margin: const EdgeInsets.all(15),
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage(background),
               fit: BoxFit.cover,
             ),
-            boxShadow: !isDarkMode
-                ? [
-                    BoxShadow(
-                        color: Colors.grey.shade300,
-                        blurRadius: 2,
-                        spreadRadius: 2,
-                        offset: const Offset(0, 1))
-                  ]
-                : null,
+            boxShadow: !isDarkMode ? [BoxShadow(color: Colors.grey.shade300, blurRadius: 2, spreadRadius: 2, offset: const Offset(0, 1))] : null,
             borderRadius: BorderRadius.circular(15)),
         child: Stack(children: [
           Positioned.fill(
               child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: _gradientColors()),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), gradient: _gradientColors()),
           )),
           Padding(
             padding: const EdgeInsets.all(15),
@@ -74,17 +65,9 @@ class FinalTestBox extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Final Test',
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white)),
-                          Text(
-                              'Our final test is the ultimate gauge that assesses your readiness for the actual exam.',
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white)),
+                          Text('Final Test', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white)),
+                          Text('Our final test is the ultimate gauge that assesses your readiness for the actual exam.',
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white)),
                         ],
                       ),
                     )
@@ -106,23 +89,13 @@ class FinalTestBox extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     RichText(
-                        text: TextSpan(
-                            style: const TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w400),
-                            children: [
-                          TextSpan(text: answeredQuestions.toString()),
-                          TextSpan(
-                              text: '/$totalQuestions Answered',
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.white.withOpacity(0.7)))
-                        ])),
+                        text: TextSpan(style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400), children: [
+                      TextSpan(text: answeredQuestions.toString()),
+                      TextSpan(text: '/$totalQuestions Answered', style: TextStyle(fontSize: 12, color: Colors.white.withOpacity(0.7)))
+                    ])),
                     Text(
                       '${correctPercent.toInt()}% Correct',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
-                          color: Colors.white),
+                      style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.white),
                     )
                   ],
                 )

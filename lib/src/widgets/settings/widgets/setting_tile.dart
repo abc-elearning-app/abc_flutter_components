@@ -24,31 +24,27 @@ class SettingTile extends StatelessWidget {
   final void Function() onClick;
   final void Function()? onProPurchase;
 
-  const SettingTile(
-      {super.key,
-      this.value,
-      this.information,
-      this.showPro = false,
-      this.mainColor,
-      this.activeTrackColor,
-      required this.isDarkMode,
-      required this.iconString,
-      required this.title,
-      required this.onClick,
-      required this.type,
-      this.onProPurchase});
+  const SettingTile({
+    super.key,
+    this.value,
+    this.information,
+    this.showPro = false,
+    this.mainColor,
+    this.activeTrackColor,
+    required this.isDarkMode,
+    required this.iconString,
+    required this.title,
+    required this.onClick,
+    required this.type,
+    this.onProPurchase,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () => showPro ? onProPurchase!() : onClick(),
-      leading: ResponsiveIcon(
-          content: iconString, color: isDarkMode ? 'white' : ' black'),
-      title: Text(title,
-          style: TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 16,
-              color: isDarkMode ? Colors.white : Colors.black)),
+      leading: ResponsiveIcon(content: iconString, color: isDarkMode ? 'white' : ' black'),
+      title: Text(title, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: isDarkMode ? Colors.white : Colors.black)),
       trailing: _buildTrailing(),
     );
   }
@@ -65,11 +61,7 @@ class SettingTile extends StatelessWidget {
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (showPro)
-              GetProIcon(
-                  padding: const EdgeInsets.all(5),
-                  margin: const EdgeInsets.only(right: 8),
-                  darkMode: isDarkMode),
+            if (showPro) GetProIcon(padding: const EdgeInsets.all(5), margin: const EdgeInsets.only(right: 8), darkMode: isDarkMode),
             const SizedBox(width: 10),
             StatefulBuilder(
               builder: (_, setState) => Switch(
@@ -77,13 +69,11 @@ class SettingTile extends StatelessWidget {
                 inactiveTrackColor: Colors.black.withOpacity(0.08),
                 inactiveThumbColor: isDarkMode ? Colors.white : Colors.black,
                 activeTrackColor: activeTrackColor,
-                thumbIcon: const MaterialStatePropertyAll(
-                    Icon(Icons.abc, color: Colors.transparent)),
-                trackOutlineColor: MaterialStatePropertyAll(
-                    isDarkMode ? Colors.white : mainColor),
+                thumbIcon: const MaterialStatePropertyAll(Icon(Icons.abc, color: Colors.transparent)),
+                trackOutlineColor: MaterialStatePropertyAll(isDarkMode ? Colors.white : mainColor),
                 trackOutlineWidth: const MaterialStatePropertyAll(1),
                 value: value!,
-                onChanged: (_) => showPro ? null : onClick(),
+                onChanged: (_) => showPro ? onProPurchase!() : onClick(),
               ),
             ),
           ],
@@ -92,11 +82,8 @@ class SettingTile extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.only(right: 10),
           child: Text(information!,
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: isDarkMode ? Colors.white : Colors.black,
-                  decoration: TextDecoration.underline)),
+              style:
+                  TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black, decoration: TextDecoration.underline)),
         );
     }
   }

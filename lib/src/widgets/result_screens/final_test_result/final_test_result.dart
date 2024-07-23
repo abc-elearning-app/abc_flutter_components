@@ -126,11 +126,8 @@ class FinalTestResult extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20, top: 10),
-                      child: Text('Test Subjects',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: isDarkMode ? Colors.white : Colors.black)),
+                      child:
+                          Text('Test Subjects', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: isDarkMode ? Colors.white : Colors.black)),
                     ),
                   ),
                   ProgressSection(
@@ -175,8 +172,7 @@ class FinalTestResult extends StatelessWidget {
   }
 
   Widget _buildImage() => Stack(alignment: Alignment.bottomCenter, children: [
-        if (isFirstTime && progress >= passPercent)
-          const Positioned(top: 0, child: ConfettiEffect()),
+        if (isFirstTime && progress >= passPercent) const Positioned(top: 0, child: ConfettiEffect()),
         Transform.translate(
             offset: Offset(0, isFirstTime ? 20 : 0),
             child: Transform.scale(
@@ -189,19 +185,11 @@ class FinalTestResult extends StatelessWidget {
         if (isFirstTime && progress < passPercent) const SadEffect(),
       ]);
 
-  Widget _buildButton(
-    bool isSelected,
-    String title,
-    Color buttonMainColor,
-    void Function() action,
-  ) =>
-      Container(
+  Widget _buildButton(bool isSelected, String title, Color buttonMainColor, void Function() action) => Container(
         margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
         child: MainButton(
           title: title,
-          backgroundColor: isSelected
-              ? buttonMainColor
-              : Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
+          backgroundColor: isSelected ? buttonMainColor : Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
           borderSize: BorderSide(width: 1, color: buttonMainColor),
           textColor: isSelected ? Colors.white : buttonMainColor,
           padding: const EdgeInsets.symmetric(vertical: 15),

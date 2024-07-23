@@ -48,6 +48,7 @@ class PathLevelComponent extends StatefulWidget {
   // Images
   final String startImage;
   final String finalLevelImage;
+  final String finalLevelAnimation;
 
   final bool isFirstGroup;
   final LevelGroupType levelGroupType;
@@ -77,6 +78,7 @@ class PathLevelComponent extends StatefulWidget {
     required this.isDarkMode,
     required this.levelGroupType,
     required this.isLastGroup,
+    required this.finalLevelAnimation,
   });
 
   @override
@@ -128,8 +130,7 @@ class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticK
       if (widget.levelGroupType == LevelGroupType.passed) currentLevelPosition = 2;
     }
 
-    return Stack(
-        children: [
+    return Stack(children: [
       // Start image
       if (widget.levelList.length != 2) PathStartImage(drawType: widget.drawType, imagePath: widget.startImage),
 
@@ -178,6 +179,7 @@ class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticK
         shortRowCount: widget.lowerRowCount,
         levelDataList: widget.levelList,
         finalLevelImage: widget.finalLevelImage,
+        finalLevelAnimation: widget.finalLevelAnimation,
         startColor: widget.startColor,
         isFirstGroup: widget.isFirstGroup,
         mainColor: widget.mainColor,

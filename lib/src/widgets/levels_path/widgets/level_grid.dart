@@ -11,6 +11,7 @@ class LevelGrid extends StatelessWidget {
   final Duration drawSpeed;
   final List<LevelData> levelDataList;
   final String finalLevelImage;
+  final String finalLevelAnimation;
   final bool isFirstGroup;
   final bool isDarkMode;
   final bool isLastGroup;
@@ -38,6 +39,7 @@ class LevelGrid extends StatelessWidget {
     required this.onClickLevel,
     required this.isDarkMode,
     required this.isLastGroup,
+    required this.finalLevelAnimation,
   });
 
   @override
@@ -58,6 +60,7 @@ class LevelGrid extends StatelessWidget {
                     isDarkMode: isDarkMode,
                     levelData: levelDataList[i],
                     finalLevelImage: finalLevelImage,
+                    finalLevelAnimation: finalLevelAnimation,
                     isFinal: i == levelDataList.length - 1,
                     drawType: drawType,
                     drawSpeed: drawSpeed,
@@ -86,6 +89,7 @@ class LevelGrid extends StatelessWidget {
                 isDarkMode: isDarkMode,
                 levelData: levelDataList[i],
                 finalLevelImage: finalLevelImage,
+                finalLevelAnimation: finalLevelAnimation,
                 isFinal: i == levelDataList.length - 1,
                 drawType: drawType,
                 drawSpeed: drawSpeed,
@@ -108,9 +112,7 @@ class LevelGrid extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: row.length % 2 != 0
-                ? levelsInARow
-                : levelsInARow.reversed.toList(),
+            children: row.length % 2 != 0 ? levelsInARow : levelsInARow.reversed.toList(),
           ),
         ),
       );

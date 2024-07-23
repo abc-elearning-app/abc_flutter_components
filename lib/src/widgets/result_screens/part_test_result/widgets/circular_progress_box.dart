@@ -13,15 +13,16 @@ class CircularProgressBox extends StatelessWidget {
 
   final bool isDarkMode;
 
-  const CircularProgressBox(
-      {super.key,
-      required this.backgroundColor,
-      required this.correctQuestions,
-      required this.totalQuestions,
-      required this.correctColor,
-      required this.incorrectColor,
-      required this.progressTextColor,
-      required this.isDarkMode});
+  const CircularProgressBox({
+    super.key,
+    required this.backgroundColor,
+    required this.correctQuestions,
+    required this.totalQuestions,
+    required this.correctColor,
+    required this.incorrectColor,
+    required this.progressTextColor,
+    required this.isDarkMode,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,16 +40,10 @@ class CircularProgressBox extends StatelessWidget {
             Expanded(
                 child: RichText(
               text: TextSpan(
-                  style: TextStyle(
-                      color: isDarkMode ? Colors.white : Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400),
+                  style: TextStyle(color: isDarkMode ? Colors.white : Colors.black, fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.w400),
                   children: [
                     const TextSpan(text: 'You correctly answered '),
-                    TextSpan(
-                        text: '$correctQuestions/$totalQuestions',
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w600)),
+                    TextSpan(text: '$correctQuestions/$totalQuestions', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     const TextSpan(text: ' questions on the first turn.'),
                   ]),
             )),

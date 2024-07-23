@@ -108,8 +108,7 @@ class _SettingComponentState extends State<SettingComponent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          widget.isDarkMode ? Colors.black : widget.backgroundColor,
+      backgroundColor: widget.isDarkMode ? Colors.black : widget.backgroundColor,
       appBar: _customAppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -246,8 +245,7 @@ class _SettingComponentState extends State<SettingComponent> {
   }
 
   PreferredSizeWidget _customAppBar() => AppBar(
-        backgroundColor:
-            widget.isDarkMode ? Colors.black : widget.backgroundColor,
+        backgroundColor: widget.isDarkMode ? Colors.black : widget.backgroundColor,
         scrolledUnderElevation: 0,
         leading: IconButton(
             icon: Icon(
@@ -257,21 +255,14 @@ class _SettingComponentState extends State<SettingComponent> {
             onPressed: () => Navigator.of(context).pop()),
         title: Text(
           'Settings',
-          style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: widget.isDarkMode ? Colors.white : Colors.black),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: widget.isDarkMode ? Colors.white : Colors.black),
         ),
         actions: [
           Padding(
               padding: const EdgeInsets.only(right: 10),
               child: IconButton(
                 icon: widget.isLoggedIn
-                    ? UserAvatar(
-                        isPro: widget.isPro,
-                        avatar: widget.avatar,
-                        username: widget.username,
-                        crownIcon: widget.crownIcon)
+                    ? UserAvatar(isPro: widget.isPro, avatar: widget.avatar, username: widget.username, crownIcon: widget.crownIcon)
                     : IconWidget(
                         icon: widget.avatar,
                         height: 40,
@@ -292,25 +283,20 @@ class _SettingComponentState extends State<SettingComponent> {
   Widget _tileGroup(List<Widget> tiles) => Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       margin: const EdgeInsets.symmetric(horizontal: 15),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1)),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1)),
       child: ListView.separated(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: tiles.length,
         itemBuilder: (_, index) => tiles[index],
-        separatorBuilder: (BuildContext context, int index) => const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            child: Divider(color: Colors.grey)),
+        separatorBuilder: (BuildContext context, int index) => const Padding(padding: EdgeInsets.symmetric(horizontal: 15), child: Divider(color: Colors.grey)),
       ));
 
   _formatDate(DateTime date) => DateFormat('MMM dd yyyy').format(date);
 
   _formatTime(TimeOfDay time) {
     final displayHour = time.hour < 10 ? '0${time.hour}' : time.hour.toString();
-    final displayMinute =
-        time.minute < 10 ? '0${time.minute}' : time.minute.toString();
+    final displayMinute = time.minute < 10 ? '0${time.minute}' : time.minute.toString();
     return '$displayHour:$displayMinute';
   }
 
@@ -324,9 +310,8 @@ class _SettingComponentState extends State<SettingComponent> {
         context: context,
         builder: (_, child) => Theme(
             data: ThemeData(
-              colorScheme: widget.isDarkMode
-                  ? const ColorScheme.dark()
-                  : const ColorScheme.light(),
+              fontFamily: 'Poppins',
+              colorScheme: widget.isDarkMode ? const ColorScheme.dark() : const ColorScheme.light(),
             ),
             child: child!),
         firstDate: DateTime(DateTime.now().year, 1, 1),
@@ -345,9 +330,7 @@ class _SettingComponentState extends State<SettingComponent> {
         builder: (_, child) => Theme(
             data: ThemeData(
               useMaterial3: false,
-              colorScheme: widget.isDarkMode
-                  ? const ColorScheme.dark()
-                  : const ColorScheme.light(),
+              colorScheme: widget.isDarkMode ? const ColorScheme.dark() : const ColorScheme.light(),
             ),
             child: child!));
 
