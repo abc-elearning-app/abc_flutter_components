@@ -29,13 +29,15 @@ class UserInformation extends StatelessWidget {
             username: username,
             crownIcon: crownIcon),
 
-        Padding(
-          padding: const EdgeInsets.only(left: 15),
-          child: Text(
-            email,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: Text(
+              email,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ),

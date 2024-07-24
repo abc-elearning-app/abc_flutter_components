@@ -5,13 +5,12 @@ import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/path_
 import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/start_image.dart';
 
 class LevelData {
-  String id;
+  int id;
   String title;
   double progress;
   bool isFreeToday;
   bool isLock;
   bool isCurrent;
-  bool isPreviousCurrent;
   String icon;
 
   LevelData({
@@ -20,7 +19,6 @@ class LevelData {
     required this.progress,
     required this.icon,
     this.isCurrent = false,
-    this.isPreviousCurrent = false,
     this.isLock = true,
     this.isFreeToday = false,
   });
@@ -50,13 +48,9 @@ class PathLevelComponent extends StatefulWidget {
   final String finalLevelImage;
   final String finalLevelAnimation;
 
-  final bool isFirstGroup;
-  final LevelGroupType levelGroupType;
-
   final bool isDarkMode;
-  final bool isLastGroup;
 
-  final void Function(String id) onClickLevel;
+  final void Function(int id) onClickLevel;
 
   const PathLevelComponent({
     super.key,
@@ -69,15 +63,12 @@ class PathLevelComponent extends StatefulWidget {
     required this.startImage,
     required this.startColor,
     required this.finalLevelImage,
-    required this.isFirstGroup,
     required this.mainColor,
     required this.passColor,
     required this.lockColor,
     required this.lineBackgroundColor,
     required this.onClickLevel,
     required this.isDarkMode,
-    required this.levelGroupType,
-    required this.isLastGroup,
     required this.finalLevelAnimation,
   });
 
@@ -106,11 +97,12 @@ class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticK
     final totalLength = widget.levelList.length;
     totalCycleCount = totalLength > groupCount ? totalLength ~/ groupCount - (totalLength % groupCount == 0 ? 1 : 0) : 0;
 
-    int currentLength = widget.levelGroupType == LevelGroupType.passed
-        ? totalLength
-        : widget.levelGroupType == LevelGroupType.upcoming
-            ? 0
-            : widget.levelList.indexWhere((level) => level.isCurrent) + 1;
+    int currentLength = widget.levelList.indexWhere((level) => level.isCurrent) + 1;
+    // int currentLength = widget.levelGroupType == LevelGroupType.passed
+    //     ? totalLength
+    //     : widget.levelGroupType == LevelGroupType.upcoming
+    //         ? 0
+    //         : widget.levelList.indexWhere((level) => level.isCurrent) + 1;
     // if (currentLength == 0) currentLength = widget.levelList.length;
     currentCycleCount = currentLength > groupCount ? currentLength ~/ groupCount - (currentLength % groupCount == 0 ? 1 : 0) : 0;
 
@@ -127,12 +119,12 @@ class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticK
       if (widget.levelList.where((level) => level.isCurrent).isNotEmpty) {
         currentLevelPosition = widget.levelList[0].isCurrent ? 1 : 2;
       }
-      if (widget.levelGroupType == LevelGroupType.passed) currentLevelPosition = 2;
+      // if (widget.levelGroupType == LevelGroupType.passed) currentLevelPosition = 2;
     }
 
     return Stack(children: [
       // Start image
-      if (widget.levelList.length != 2) PathStartImage(drawType: widget.drawType, imagePath: widget.startImage),
+      if (widget.levelList.length != 2 && widget.levelList.length != 1) PathStartImage(drawType: widget.drawType, imagePath: widget.startImage),
 
       if (widget.levelList.length != 2)
         PathAnimation(
@@ -145,7 +137,9 @@ class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticK
             lastCycleLevelCount: lastCycleTotalCount,
             lineColor: widget.lineBackgroundColor),
 
-      if (widget.levelList.length != 2 && widget.levelGroupType != LevelGroupType.upcoming)
+      if (widget.levelList.length != 2
+          // && widget.levelGroupType != LevelGroupType.upcoming
+      )
         FutureBuilder(
             future: Future.delayed(Duration(milliseconds: widget.drawType == DrawType.firstTimeOpen ? 500 : 0)),
             builder: (context, snapShot) => snapShot.connectionState == ConnectionState.done
@@ -172,21 +166,19 @@ class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticK
         ),
 
       LevelGrid(
-        isDarkMode: widget.isDarkMode,
+        levelDataList: widget.levelList,
         drawType: widget.drawType,
-        drawSpeed: widget.cycleSpeed,
         longRowCount: widget.upperRowCount,
         shortRowCount: widget.lowerRowCount,
-        levelDataList: widget.levelList,
+        isDarkMode: widget.isDarkMode,
+        drawSpeed: widget.cycleSpeed,
         finalLevelImage: widget.finalLevelImage,
         finalLevelAnimation: widget.finalLevelAnimation,
         startColor: widget.startColor,
-        isFirstGroup: widget.isFirstGroup,
         mainColor: widget.mainColor,
         passColor: widget.passColor,
         lockColor: widget.lockColor,
         onClickLevel: widget.onClickLevel,
-        isLastGroup: widget.isLastGroup,
       ),
     ]);
   }

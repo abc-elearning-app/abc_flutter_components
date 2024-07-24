@@ -11,16 +11,14 @@ class LevelWidget extends StatefulWidget {
   final Duration drawSpeed;
   final String finalLevelImage;
   final String finalLevelAnimation;
-  final bool isFirstGroup;
   final bool isDarkMode;
-  final bool isLastGroup;
 
   final Color startColor;
   final Color passColor;
   final Color mainColor;
   final Color lockColor;
 
-  final void Function(String id) onClickLevel;
+  final void Function(int id) onClickLevel;
 
   const LevelWidget({
     super.key,
@@ -32,13 +30,11 @@ class LevelWidget extends StatefulWidget {
     required this.index,
     required this.startColor,
     required this.finalLevelImage,
-    required this.isFirstGroup,
     required this.passColor,
     required this.mainColor,
     required this.lockColor,
     required this.onClickLevel,
     required this.isDarkMode,
-    required this.isLastGroup,
     required this.finalLevelAnimation,
   });
 
@@ -201,7 +197,7 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
       alignment: Alignment.center,
       children: [
         // Splash animation
-        if (widget.levelData.isCurrent && !widget.isLastGroup || (widget.isLastGroup && !widget.isFinal))
+        if ((widget.levelData.isCurrent && !widget.isFinal) || (widget.isFinal && widget.levelData.progress < 100))
           CustomPaint(
               size: const Size(20, 20),
               painter: SplashCirclePainter(
@@ -251,7 +247,7 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
   }
 
   Widget _getLevelWidget() {
-    if (widget.isFinal && widget.isLastGroup) return _finalLevel();
+    // if (widget.isFinal && widget.isLastGroup) return _finalLevel();
     if (widget.levelData.isLock) return _lockLevel();
     return _defaultLevel();
   }
@@ -316,17 +312,17 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
         ],
       );
 
-  Widget _finalLevel() => Padding(
-      padding: const EdgeInsets.only(bottom: 5),
-      child: Opacity(
-        opacity: widget.levelData.isCurrent ? 1 : 0.6,
-        child: widget.levelData.progress == 100
-            ? Transform.translate(
-                offset: const Offset(0, -10),
-                child: Transform.scale(scale: 1.4, child: Lottie.asset(widget.finalLevelAnimation, height: 65, width: 65)),
-              )
-            : Image.asset(widget.finalLevelImage, scale: 0.8, width: 65),
-      ));
+  // Widget _finalLevel() => Padding(
+  //     padding: const EdgeInsets.only(bottom: 5),
+  //     child: Opacity(
+  //       opacity: widget.levelData.isCurrent ? 1 : 0.6,
+  //       child: widget.levelData.progress == 100
+  //           ? Transform.translate(
+  //               offset: const Offset(0, -10),
+  //               child: Transform.scale(scale: 1.4, child: Lottie.asset(widget.finalLevelAnimation, height: 65, width: 65)),
+  //             )
+  //           : Image.asset(widget.finalLevelImage, scale: 0.8, width: 65),
+  //     ));
 
   // Widget _tooltip() => AnimatedBuilder(
   //       animation: _tooltipAnimation,
@@ -392,7 +388,7 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
       return widget.startColor;
     }
 
-    if (widget.levelData.isCurrent) return widget.mainColor;
+    if (widget.levelData.isCurrent && widget.levelData.progress < 100) return widget.mainColor;
 
     return widget.passColor;
   }
