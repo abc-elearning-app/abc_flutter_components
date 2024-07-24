@@ -11,16 +11,17 @@ class OtpPage extends StatelessWidget {
   final void Function() onReenterEmail;
   final void Function() onEnterOtp;
 
-  const OtpPage(
-      {super.key,
-      required this.image,
-      required this.detail,
-      required this.otpController,
-      required this.onReenterEmail,
-      required this.onEnterOtp,
-      required this.mainColor,
-      required this.secondaryColor,
-      required this.isDarkMode});
+  const OtpPage({
+    super.key,
+    required this.image,
+    required this.detail,
+    required this.otpController,
+    required this.onReenterEmail,
+    required this.onEnterOtp,
+    required this.mainColor,
+    required this.secondaryColor,
+    required this.isDarkMode,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,6 @@ class OtpPage extends StatelessWidget {
 
     return Column(
       children: [
-        const SizedBox(height: 30),
         Expanded(
             flex: 2,
             child: Padding(
@@ -52,11 +52,7 @@ class OtpPage extends StatelessWidget {
             child: SingleChildScrollView(
               child: Text(
                 detail,
-                style: TextStyle(
-                    fontSize: 16,
-                    color: isDarkMode
-                        ? Colors.white.withOpacity(0.6)
-                        : Colors.black),
+                style: TextStyle(fontSize: 16, color: isDarkMode ? Colors.white.withOpacity(0.6) : Colors.black),
                 textAlign: TextAlign.center,
               ),
             ),

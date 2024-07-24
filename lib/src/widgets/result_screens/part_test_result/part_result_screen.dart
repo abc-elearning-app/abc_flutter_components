@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/animations/sprinkle_effect.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/animations/confetti_effect.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/part_test_result/widgets/circular_progress_box.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/part_test_result/widgets/linear_progress_box.dart';
 import 'package:lottie/lottie.dart';
@@ -23,6 +23,7 @@ class PartResultComponent extends StatefulWidget {
   final Color boxBackgroundColor;
 
   final String passImage;
+  final List<String> congratulationTexts;
 
   final bool isDarkMode;
 
@@ -46,20 +47,14 @@ class PartResultComponent extends StatefulWidget {
     required this.onTryAgain,
     required this.onContinue,
     required this.isDarkMode,
+    required this.congratulationTexts,
   });
 
   @override
   State<PartResultComponent> createState() => _PartResultComponentState();
 }
 
-class _PartResultComponentState extends State<PartResultComponent>
-    with SingleTickerProviderStateMixin {
-  final congratulationTexts = <String>[
-    "Now go forth and conquer your to-do list! Remember, procrastination is the enemy of progress.",
-    "You've earned yourself a... virtual pat on the back! (Please note: Virtual pats may not be redeemable for actual pizza.)",
-    "Time for a dance break! (Disclaimer: App is not responsible for any injuries sustained during spontaneous dance celebrations.)"
-  ];
-
+class _PartResultComponentState extends State<PartResultComponent> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     int textIndex = Random().nextInt(2);
@@ -77,12 +72,7 @@ class _PartResultComponentState extends State<PartResultComponent>
                     // Title
                     Text('Part ${widget.partIndex} Completed!',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
-                            color: widget.isDarkMode
-                                ? Colors.white
-                                : Colors.black)),
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: widget.isDarkMode ? Colors.white : Colors.black)),
 
                     // Detail
                     Padding(
@@ -92,19 +82,14 @@ class _PartResultComponentState extends State<PartResultComponent>
                         top: 15,
                       ),
                       child: Text(
-                        congratulationTexts[textIndex],
+                        widget.congratulationTexts[textIndex],
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: widget.isDarkMode
-                                ? Colors.white
-                                : Colors.black),
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: widget.isDarkMode ? Colors.white : Colors.black),
                       ),
                     ),
 
                     // Image
-                    Lottie.asset(widget.passImage, height: 280),
+                    Lottie.asset(widget.passImage, height: 250),
 
                     CircularProgressBox(
                         isDarkMode: widget.isDarkMode,
@@ -159,14 +144,11 @@ class _PartResultComponentState extends State<PartResultComponent>
         ],
       );
 
-  Widget _button(bool isSelected, String title, void Function() action) =>
-      Container(
+  Widget _button(bool isSelected, String title, void Function() action) => Container(
         margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
         child: MainButton(
           title: title,
-          backgroundColor: isSelected
-              ? widget.mainColor
-              : Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1),
+          backgroundColor: isSelected ? widget.mainColor : Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1),
           borderSize: BorderSide(width: 1, color: widget.mainColor),
           textColor: isSelected ? Colors.white : widget.mainColor,
           padding: const EdgeInsets.symmetric(vertical: 15),

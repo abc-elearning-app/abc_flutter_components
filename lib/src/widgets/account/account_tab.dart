@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/account/user_information.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/premium_button.dart';
 
 enum PackageType { weekly, monthly, yearly }

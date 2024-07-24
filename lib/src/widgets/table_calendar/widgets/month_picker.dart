@@ -121,7 +121,6 @@ class __MonthPickerState extends State<MonthPicker> {
             widget.lastDate.year < date.year) return;
         setState(() => _selectedDate = DateTime(date.year, date.month));
         widget.setSelectedYear(_selectedDate);
-        print("Hello");
       },
       style: TextButton.styleFrom(
         backgroundColor: isSelected ? primaryColor : null,

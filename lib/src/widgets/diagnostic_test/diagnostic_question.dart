@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/diagnostic_test/widgets/main_question_page.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/bottom_sheets/report_tab.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/animations/page_animation.dart';
 
 class QuestionData {

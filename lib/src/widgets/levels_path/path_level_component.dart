@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/level_grid.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/path_animation.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/path_animation_2.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/levels_path/widgets/start_image.dart';
 
 class LevelData {
@@ -48,6 +48,7 @@ class PathLevelComponent extends StatefulWidget {
   // Images
   final String startImage;
   final String finalLevelImage;
+  final String finalLevelAnimation;
 
   final bool isFirstGroup;
   final LevelGroupType levelGroupType;
@@ -77,14 +78,14 @@ class PathLevelComponent extends StatefulWidget {
     required this.isDarkMode,
     required this.levelGroupType,
     required this.isLastGroup,
+    required this.finalLevelAnimation,
   });
 
   @override
   State<PathLevelComponent> createState() => _PathLevelComponentState();
 }
 
-class _PathLevelComponentState extends State<PathLevelComponent>
-    with AutomaticKeepAliveClientMixin {
+class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticKeepAliveClientMixin {
   late int totalCycleCount;
   late int currentCycleCount;
   late int lastCycleTotalCount;
@@ -103,9 +104,7 @@ class _PathLevelComponentState extends State<PathLevelComponent>
     final groupCount = widget.upperRowCount + widget.lowerRowCount;
 
     final totalLength = widget.levelList.length;
-    totalCycleCount = totalLength > groupCount
-        ? totalLength ~/ groupCount - (totalLength % groupCount == 0 ? 1 : 0)
-        : 0;
+    totalCycleCount = totalLength > groupCount ? totalLength ~/ groupCount - (totalLength % groupCount == 0 ? 1 : 0) : 0;
 
     int currentLength = widget.levelGroupType == LevelGroupType.passed
         ? totalLength
@@ -113,10 +112,7 @@ class _PathLevelComponentState extends State<PathLevelComponent>
             ? 0
             : widget.levelList.indexWhere((level) => level.isCurrent) + 1;
     // if (currentLength == 0) currentLength = widget.levelList.length;
-    currentCycleCount = currentLength > groupCount
-        ? currentLength ~/ groupCount -
-            (currentLength % groupCount == 0 ? 1 : 0)
-        : 0;
+    currentCycleCount = currentLength > groupCount ? currentLength ~/ groupCount - (currentLength % groupCount == 0 ? 1 : 0) : 0;
 
     lastCycleTotalCount = totalLength - totalCycleCount * groupCount;
     lastCycleCurrentCount = currentLength - currentCycleCount * groupCount;
@@ -126,39 +122,54 @@ class _PathLevelComponentState extends State<PathLevelComponent>
   Widget build(BuildContext context) {
     super.build(context);
 
+    int currentLevelPosition = 0;
+    if (widget.levelList.length == 2) {
+      if (widget.levelList.where((level) => level.isCurrent).isNotEmpty) {
+        currentLevelPosition = widget.levelList[0].isCurrent ? 1 : 2;
+      }
+      if (widget.levelGroupType == LevelGroupType.passed) currentLevelPosition = 2;
+    }
+
     return Stack(children: [
       // Start image
-      PathStartImage(drawType: widget.drawType, imagePath: widget.startImage),
+      if (widget.levelList.length != 2) PathStartImage(drawType: widget.drawType, imagePath: widget.startImage),
 
-      PathAnimation(
-          drawType: widget.drawType == DrawType.nextLevel
-              ? DrawType.noAnimation
-              : widget.drawType,
-          cycleDrawSpeed: widget.cycleSpeed,
-          lastCycleDrawSpeed: widget.lastCycleSpeed,
-          upperRowCount: widget.upperRowCount,
-          lowerRoundCount: widget.lowerRowCount,
-          cycles: totalCycleCount,
-          lastCycleLevelCount: lastCycleTotalCount,
-          lineColor: widget.lineBackgroundColor),
+      if (widget.levelList.length != 2)
+        PathAnimation(
+            drawType: widget.drawType == DrawType.nextLevel ? DrawType.noAnimation : widget.drawType,
+            cycleDrawSpeed: widget.cycleSpeed,
+            lastCycleDrawSpeed: widget.lastCycleSpeed,
+            upperRowCount: widget.upperRowCount,
+            lowerRoundCount: widget.lowerRowCount,
+            cycles: totalCycleCount,
+            lastCycleLevelCount: lastCycleTotalCount,
+            lineColor: widget.lineBackgroundColor),
 
-      if (widget.levelGroupType != LevelGroupType.upcoming)
+      if (widget.levelList.length != 2 && widget.levelGroupType != LevelGroupType.upcoming)
         FutureBuilder(
-            future: Future.delayed(Duration(
-                milliseconds:
-                    widget.drawType == DrawType.firstTimeOpen ? 500 : 0)),
-            builder: (context, snapShot) =>
-                snapShot.connectionState == ConnectionState.done
-                    ? PathAnimation(
-                        drawType: widget.drawType,
-                        cycleDrawSpeed: widget.cycleSpeed,
-                        lastCycleDrawSpeed: widget.lastCycleSpeed,
-                        upperRowCount: widget.upperRowCount,
-                        lowerRoundCount: widget.lowerRowCount,
-                        cycles: currentCycleCount,
-                        lastCycleLevelCount: lastCycleCurrentCount,
-                        lineColor: widget.mainColor)
-                    : const SizedBox()),
+            future: Future.delayed(Duration(milliseconds: widget.drawType == DrawType.firstTimeOpen ? 500 : 0)),
+            builder: (context, snapShot) => snapShot.connectionState == ConnectionState.done
+                ? PathAnimation(
+                    drawType: widget.drawType,
+                    cycleDrawSpeed: widget.cycleSpeed,
+                    lastCycleDrawSpeed: widget.lastCycleSpeed,
+                    upperRowCount: widget.upperRowCount,
+                    lowerRoundCount: widget.lowerRowCount,
+                    cycles: currentCycleCount,
+                    lastCycleLevelCount: lastCycleCurrentCount,
+                    lineColor: widget.mainColor)
+                : const SizedBox()),
+
+      if (widget.levelList.length == 2)
+        Transform.translate(
+          offset: const Offset(0, 55),
+          child: PathAnimation2(
+            drawType: widget.drawType,
+            currentLevelPosition: currentLevelPosition,
+            lineBackgroundColor: widget.lineBackgroundColor,
+            mainColor: widget.mainColor,
+          ),
+        ),
 
       LevelGrid(
         isDarkMode: widget.isDarkMode,
@@ -168,6 +179,7 @@ class _PathLevelComponentState extends State<PathLevelComponent>
         shortRowCount: widget.lowerRowCount,
         levelDataList: widget.levelList,
         finalLevelImage: widget.finalLevelImage,
+        finalLevelAnimation: widget.finalLevelAnimation,
         startColor: widget.startColor,
         isFirstGroup: widget.isFirstGroup,
         mainColor: widget.mainColor,

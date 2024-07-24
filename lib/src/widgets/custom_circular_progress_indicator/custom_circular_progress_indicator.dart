@@ -10,32 +10,30 @@ class CustomCircularProgressIndicator extends StatelessWidget {
   final int correctQuestions;
   final int totalQuestions;
 
-  const CustomCircularProgressIndicator(
-      {super.key,
-      required this.backgroundColor,
-      required this.correctColor,
-      required this.incorrectColor,
-      required this.correctQuestions,
-      required this.totalQuestions,
-      required this.textColor});
+  const CustomCircularProgressIndicator({
+    super.key,
+    required this.backgroundColor,
+    required this.correctColor,
+    required this.incorrectColor,
+    required this.correctQuestions,
+    required this.totalQuestions,
+    required this.textColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Stack(alignment: Alignment.center, children: [
+      CircularPercentIndicator(radius: 52, lineWidth: 12, backgroundColor: backgroundColor),
       CircularPercentIndicator(
-          radius: 54, lineWidth: 12, backgroundColor: backgroundColor),
-      CircularPercentIndicator(
-          radius: 50,
+          radius: 48,
           circularStrokeCap: CircularStrokeCap.round,
           startAngle: 9,
           lineWidth: 6,
           progressColor: incorrectColor,
           backgroundColor: Colors.transparent,
-          percent: correctQuestions != totalQuestions
-              ? 1 - (correctQuestions / totalQuestions) - 0.05
-              : 0),
+          percent: correctQuestions != totalQuestions ? 1 - (correctQuestions / totalQuestions) - 0.05 : 0),
       CircularPercentIndicator(
-        radius: 50,
+        radius: 48,
         percent: correctQuestions / totalQuestions,
         reverse: true,
         progressColor: correctColor,
@@ -47,16 +45,11 @@ class CustomCircularProgressIndicator extends StatelessWidget {
           children: [
             Text(
               '$correctQuestions/$totalQuestions',
-              style: TextStyle(
-                  color: textColor, fontSize: 20, fontWeight: FontWeight.w600),
+              style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.w600),
             ),
             Text(
               'questions',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                color: textColor
-              ),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: textColor),
             )
           ],
         ),

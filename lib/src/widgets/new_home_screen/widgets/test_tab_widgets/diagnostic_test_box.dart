@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../../../../../flutter_abc_jsc_components.dart';
@@ -17,22 +15,23 @@ class DiagnosticTestBox extends StatelessWidget {
 
   final void Function() onClick;
 
-  const DiagnosticTestBox(
-      {super.key,
-      required this.icon,
-      required this.background,
-      required this.color,
-      required this.onClick,
-      required this.progress,
-      required this.isDarkMode,
-      required this.gradientColors});
+  const DiagnosticTestBox({
+    super.key,
+    required this.icon,
+    required this.background,
+    required this.color,
+    required this.onClick,
+    required this.progress,
+    required this.isDarkMode,
+    required this.gradientColors,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onClick,
       child: Container(
-        margin: const EdgeInsets.all(15),
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             image: DecorationImage(
@@ -42,37 +41,30 @@ class DiagnosticTestBox extends StatelessWidget {
             boxShadow: !isDarkMode
                 ? [
                     BoxShadow(
-                        color: Colors.grey.shade300,
-                        blurRadius: 2,
-                        spreadRadius: 2,
-                        offset: const Offset(0, 1))
+                      color: Colors.grey.shade300,
+                      blurRadius: 2,
+                      spreadRadius: 2,
+                      offset: const Offset(0, 1),
+                    )
                   ]
                 : null),
         child: Stack(children: [
           Positioned.fill(
               child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: _gradientColors()),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), gradient: _gradientColors()),
           )),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
             child: Column(
               children: [
                 Row(
                   children: [
-                    Padding(
-                        padding: const EdgeInsets.only(left: 5, right: 20),
-                        child: IconWidget(icon: icon, height: 70)),
+                    Padding(padding: const EdgeInsets.only(left: 5, right: 20), child: IconWidget(icon: icon, height: 80)),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Diagnostic Test',
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white)),
+                          const Text('Diagnostic Test', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white)),
                           RichText(
                               text: const TextSpan(
                                   style: TextStyle(
@@ -82,13 +74,9 @@ class DiagnosticTestBox extends StatelessWidget {
                                   ),
                                   children: [
                                 TextSpan(
-                                  text:
-                                      'Take our diagnostic test to assess your current level and get a ',
+                                  text: 'Take our diagnostic test to assess your current level and get a ',
                                 ),
-                                TextSpan(
-                                    text: 'personalized study plan.',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w600)),
+                                TextSpan(text: 'personalized study plan.', style: TextStyle(fontWeight: FontWeight.w600)),
                               ]))
                         ],
                       ),
@@ -119,7 +107,7 @@ class DiagnosticTestBox extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(right: 10, bottom: 5),
+                      padding: EdgeInsets.only(right: 10),
                       child: Icon(
                         Icons.arrow_forward,
                         color: Colors.white,

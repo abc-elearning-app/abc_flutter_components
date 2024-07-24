@@ -22,7 +22,7 @@ class TestList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 175,
+      height: 150,
       width: double.infinity,
       child: ListView.builder(
           padding: const EdgeInsets.only(left: 10, bottom: 10),
@@ -36,8 +36,8 @@ class TestList extends StatelessWidget {
   Widget _testBox(TestData data) => GestureDetector(
         onTap: () => onSelect(data.id),
         child: Container(
-          width: 200,
-          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+          width: 185,
+          margin: const EdgeInsets.symmetric(horizontal: 5),
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage(data.background),

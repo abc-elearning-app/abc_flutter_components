@@ -65,8 +65,6 @@ class _NewPathLevelScreenState extends State<NewPathLevelScreen> {
             ? endLineLevelLength ~/ (longRowCount + shortRowCount) - 1
             : endLineLevelLength ~/ (longRowCount + shortRowCount);
 
-    print('$endDashLevelLength - $endLineLevelLength');
-
     lastRoundDashLevelCount =
         endDashLevelLength - dashRoundCount * (longRowCount + shortRowCount);
     lastRoundLineCount =

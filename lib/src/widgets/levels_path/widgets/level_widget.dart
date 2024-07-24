@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 
 class LevelWidget extends StatefulWidget {
@@ -11,6 +10,7 @@ class LevelWidget extends StatefulWidget {
   final DrawType drawType;
   final Duration drawSpeed;
   final String finalLevelImage;
+  final String finalLevelAnimation;
   final bool isFirstGroup;
   final bool isDarkMode;
   final bool isLastGroup;
@@ -39,14 +39,14 @@ class LevelWidget extends StatefulWidget {
     required this.onClickLevel,
     required this.isDarkMode,
     required this.isLastGroup,
+    required this.finalLevelAnimation,
   });
 
   @override
   State<LevelWidget> createState() => _LevelWidgetState();
 }
 
-class _LevelWidgetState extends State<LevelWidget>
-    with TickerProviderStateMixin {
+class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin {
   // Controllers
   late AnimationController _appearanceController;
 
@@ -92,13 +92,7 @@ class _LevelWidgetState extends State<LevelWidget>
       ),
     );
 
-    _scalingAnimation = Tween<double>(
-            begin: 1,
-            end: widget.drawType == DrawType.nextLevel &&
-                    widget.levelData.isCurrent
-                ? 1.15
-                : 1)
-        .animate(
+    _scalingAnimation = Tween<double>(begin: 1, end: widget.drawType == DrawType.nextLevel && widget.levelData.isCurrent ? 1.15 : 1).animate(
       CurvedAnimation(
         parent: _appearanceController,
         curve: Curves.easeInOut,
@@ -159,9 +153,7 @@ class _LevelWidgetState extends State<LevelWidget>
         break;
       case DrawType.nextLevel:
         if (widget.levelData.isCurrent) {
-          Future.delayed(
-              Duration(milliseconds: widget.drawSpeed.inMilliseconds + 1200),
-              () {
+          Future.delayed(Duration(milliseconds: widget.drawSpeed.inMilliseconds + 1200), () {
             if (mounted) {
               _appearanceController.forward();
             }
@@ -174,11 +166,7 @@ class _LevelWidgetState extends State<LevelWidget>
 
     /// Start current level animation
     if (widget.levelData.isCurrent) {
-      Future.delayed(
-          Duration(
-              milliseconds: widget.drawType != DrawType.noAnimation
-                  ? delayTime + 1000
-                  : 0), () {
+      Future.delayed(Duration(milliseconds: widget.drawType != DrawType.noAnimation ? delayTime + 1000 : 0), () {
         if (mounted) {
           _splashController.forward();
         }
@@ -213,9 +201,7 @@ class _LevelWidgetState extends State<LevelWidget>
       alignment: Alignment.center,
       children: [
         // Splash animation
-        if (widget.levelData.isCurrent && !widget.isFinal
-            // && (widget.index != 0 || widget.levelData.progress != 0)
-            )
+        if (widget.levelData.isCurrent && !widget.isLastGroup || (widget.isLastGroup && !widget.isFinal))
           CustomPaint(
               size: const Size(20, 20),
               painter: SplashCirclePainter(
@@ -232,16 +218,12 @@ class _LevelWidgetState extends State<LevelWidget>
                     Transform.translate(
                         offset: Offset(0, _getTranslateValue()),
                         child: GestureDetector(
-                          onTap: () => !widget.levelData.isLock
-                              ? widget.onClickLevel(widget.levelData.id)
-                              : null,
+                          onTap: () => !widget.levelData.isLock ? widget.onClickLevel(widget.levelData.id) : null,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               // Regular level or final cup
-                              Transform.scale(
-                                  scale: _scalingAnimation.value,
-                                  child: _getLevelWidget()),
+                              Transform.scale(scale: _scalingAnimation.value, child: _getLevelWidget()),
 
                               // Title
                               SizedBox(
@@ -249,10 +231,7 @@ class _LevelWidgetState extends State<LevelWidget>
                                 child: Text(widget.levelData.title,
                                     textAlign: TextAlign.center,
                                     maxLines: 3,
-                                    style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500)),
+                                    style: const TextStyle(color: Colors.grey, fontSize: 14, fontWeight: FontWeight.w500)),
                               )
                             ],
                           ),
@@ -280,14 +259,7 @@ class _LevelWidgetState extends State<LevelWidget>
   Widget _defaultLevel() => Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(100),
-            boxShadow: !widget.isDarkMode
-                ? [
-                    BoxShadow(
-                        color: Colors.grey.shade300,
-                        blurRadius: 1,
-                        spreadRadius: 1)
-                  ]
-                : null),
+            boxShadow: !widget.isDarkMode ? [BoxShadow(color: Colors.grey.shade300, blurRadius: 1, spreadRadius: 1)] : null),
         child: CircleAvatar(
           radius: outerRadius,
           backgroundColor: Color.lerp(_getMainColor(), Colors.white, 0.4),
@@ -323,23 +295,13 @@ class _LevelWidgetState extends State<LevelWidget>
           Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
-                boxShadow: !widget.isDarkMode
-                    ? [
-                        BoxShadow(
-                            color: Colors.grey.shade300,
-                            blurRadius: 1,
-                            spreadRadius: 1)
-                      ]
-                    : null),
+                boxShadow: !widget.isDarkMode ? [BoxShadow(color: Colors.grey.shade300, blurRadius: 1, spreadRadius: 1)] : null),
             child: CircleAvatar(
               radius: outerRadius,
-              backgroundColor:
-                  widget.isDarkMode ? Colors.grey.shade700 : Colors.white,
+              backgroundColor: widget.isDarkMode ? Colors.grey.shade700 : Colors.white,
               child: CircleAvatar(
                 radius: outerRadius - circleWidth - 2,
-                backgroundColor: widget.isDarkMode
-                    ? Colors.grey.shade600
-                    : Colors.grey.shade100,
+                backgroundColor: widget.isDarkMode ? Colors.grey.shade600 : Colors.grey.shade100,
                 child: IconWidget(
                   icon: widget.levelData.icon,
                   height: outerRadius,
@@ -350,9 +312,7 @@ class _LevelWidgetState extends State<LevelWidget>
           ),
 
           // Lock icon
-          Transform.translate(
-              offset: const Offset(3, -3),
-              child: const Icon(Icons.lock, color: Color(0xFFDADADA)))
+          Transform.translate(offset: const Offset(3, -3), child: const Icon(Icons.lock, color: Color(0xFFDADADA)))
         ],
       );
 
@@ -360,11 +320,12 @@ class _LevelWidgetState extends State<LevelWidget>
       padding: const EdgeInsets.only(bottom: 5),
       child: Opacity(
         opacity: widget.levelData.isCurrent ? 1 : 0.6,
-        child: Image.asset(
-          widget.finalLevelImage,
-          scale: 0.8,
-          width: 65,
-        ),
+        child: widget.levelData.progress == 100
+            ? Transform.translate(
+                offset: const Offset(0, -10),
+                child: Transform.scale(scale: 1.4, child: Lottie.asset(widget.finalLevelAnimation, height: 65, width: 65)),
+              )
+            : Image.asset(widget.finalLevelImage, scale: 0.8, width: 65),
       ));
 
   // Widget _tooltip() => AnimatedBuilder(
@@ -420,13 +381,9 @@ class _LevelWidgetState extends State<LevelWidget>
   //       ),
   //     );
 
-  _getOpacityValue() => widget.drawType == DrawType.firstTimeOpen
-      ? _fadingInAnimation.value
-      : 1.0;
+  _getOpacityValue() => widget.drawType == DrawType.firstTimeOpen ? _fadingInAnimation.value : 1.0;
 
-  _getTranslateValue() => widget.drawType == DrawType.firstTimeOpen
-      ? _landingAnimation.value
-      : 25.0;
+  _getTranslateValue() => widget.drawType == DrawType.firstTimeOpen ? _landingAnimation.value : 25.0;
 
   _getMainColor() {
     if (widget.levelData.isLock) return widget.lockColor;
@@ -520,10 +477,8 @@ class DownwardTrianglePainter extends CustomPainter {
       ..strokeWidth = borderWidth;
 
     // Draw the border lines manually, excluding the top edge
-    canvas.drawLine(Offset(size.width / 2, size.height / 3), Offset(0, 0),
-        borderPaint); // Left edge
-    canvas.drawLine(Offset(size.width / 2, size.height / 3),
-        Offset(size.width, 0), borderPaint); // Right edge
+    canvas.drawLine(Offset(size.width / 2, size.height / 3), const Offset(0, 0), borderPaint); // Left edge
+    canvas.drawLine(Offset(size.width / 2, size.height / 3), Offset(size.width, 0), borderPaint); // Right edge
   }
 
   @override

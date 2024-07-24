@@ -161,7 +161,8 @@ class _MainLoginPageState extends State<MainLoginPage> {
             visible: value != 0,
             child: IconButton(
               icon: Icon(
-                Icons.arrow_back,
+                Icons.chevron_left_rounded,
+                size: 30,
                 color: widget.isDarkMode ? Colors.white : Colors.black,
               ),
               onPressed: () {
@@ -177,11 +178,8 @@ class _MainLoginPageState extends State<MainLoginPage> {
   Widget _buildPageTitle() => ValueListenableBuilder(
       valueListenable: _pageIndex,
       builder: (_, value, __) => Text(
-            value == 0 ? 'Log in' : 'Check your email',
-            style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 24,
-                color: widget.isDarkMode ? Colors.white : Colors.black),
+            value == 0 ? 'Log In' : 'Check Your Email',
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 24, color: widget.isDarkMode ? Colors.white : Colors.black),
           ));
 
   Widget _buildSkipButton() => ValueListenableBuilder(
@@ -191,11 +189,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
             child: Padding(
               padding: const EdgeInsets.only(right: 8),
               child: IconButton(
-                icon: Text('Skip',
-                    style: TextStyle(
-                        fontSize: 16,
-                        color:
-                            widget.isDarkMode ? Colors.white : Colors.black)),
+                icon: Text('Skip', style: TextStyle(fontSize: 16, color: widget.isDarkMode ? Colors.white : Colors.black)),
                 onPressed: widget.onSkip,
               ),
             ),
@@ -209,9 +203,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
             builder: (_, value, __) => ElevatedButton(
               onPressed: value ? _handleButtonClick : null,
               style: ElevatedButton.styleFrom(
-                  disabledBackgroundColor: widget.isDarkMode
-                      ? Colors.grey.shade700
-                      : Colors.grey.shade300,
+                  disabledBackgroundColor: widget.isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300,
                   backgroundColor: widget.mainColor,
                   foregroundColor: widget.buttonTextColor,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -231,8 +223,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
         ),
       );
 
-  _getBackgroundColor() =>
-      widget.isDarkMode ? Colors.black : widget.upperBackgroundColor;
+  _getBackgroundColor() => widget.isDarkMode ? Colors.black : widget.upperBackgroundColor;
 
   _handleReenterEmail() {
     // Clear all text controllers

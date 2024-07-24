@@ -30,18 +30,19 @@ class ProgressSection extends StatelessWidget {
 
   final void Function(int index) onImprove;
 
-  const ProgressSection(
-      {super.key,
-      required this.isDarkMode,
-      required this.progressList,
-      required this.beginnerColor,
-      required this.intermediateColor,
-      required this.advancedColor,
-      required this.mainColor,
-      required this.onImprove,
-      required this.beginnerBackgroundColor,
-      required this.intermediateBackgroundColor,
-      required this.advancedBackgroundColor});
+  const ProgressSection({
+    super.key,
+    required this.isDarkMode,
+    required this.progressList,
+    required this.beginnerColor,
+    required this.intermediateColor,
+    required this.advancedColor,
+    required this.mainColor,
+    required this.onImprove,
+    required this.beginnerBackgroundColor,
+    required this.intermediateBackgroundColor,
+    required this.advancedBackgroundColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +52,7 @@ class ProgressSection extends StatelessWidget {
         shrinkWrap: true,
         padding: EdgeInsets.zero,
         itemCount: progressList.length,
-        itemBuilder: (context, index) =>
-            _buildTile(context, progressList[index], index));
+        itemBuilder: (context, index) => _buildTile(context, progressList[index], index));
   }
 
   Widget _buildTile(BuildContext context, ProgressTileData data, int index) {
@@ -63,10 +63,11 @@ class ProgressSection extends StatelessWidget {
           boxShadow: !isDarkMode
               ? [
                   BoxShadow(
-                      color: Colors.grey.shade300,
-                      spreadRadius: 1,
-                      blurRadius: 1,
-                      offset: const Offset(0, 1))
+                    color: Colors.grey.shade200,
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 1),
+                  )
                 ]
               : null),
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
@@ -83,11 +84,7 @@ class ProgressSection extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    IconBox(
-                        iconColor: _getColor(data.progress),
-                        backgroundColor: _getBackgroundColor(data.progress),
-                        icon: data.icon,
-                        size: 35),
+                    IconBox(iconColor: _getColor(data.progress), backgroundColor: _getBackgroundColor(data.progress), icon: data.icon, size: 35),
 
                     // Title
                     Expanded(
@@ -96,10 +93,7 @@ class ProgressSection extends StatelessWidget {
                         child: Text(
                           data.title,
                           style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: isDarkMode ? Colors.white : Colors.black,
-                              overflow: TextOverflow.ellipsis),
+                              fontSize: 14, fontWeight: FontWeight.w500, color: isDarkMode ? Colors.white : Colors.black, overflow: TextOverflow.ellipsis),
                         ),
                       ),
                     ),
@@ -119,9 +113,7 @@ class ProgressSection extends StatelessWidget {
                   minHeight: 8,
                   borderRadius: BorderRadius.circular(10),
                   color: _getColor(data.progress),
-                  backgroundColor: isDarkMode
-                      ? Colors.white.withOpacity(0.12)
-                      : Colors.grey.shade200,
+                  backgroundColor: isDarkMode ? Colors.white.withOpacity(0.12) : Colors.grey.shade200,
                 )
               ],
             ),

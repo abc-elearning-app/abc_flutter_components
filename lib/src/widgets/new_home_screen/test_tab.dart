@@ -69,7 +69,7 @@ class TestTabComponent extends StatelessWidget {
 
           // Title and See All button
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.only(left: 20, right: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -110,7 +110,7 @@ class TestTabComponent extends StatelessWidget {
                   color: secondaryColor),
 
           Padding(
-            padding: const EdgeInsets.only(left: 15, top: 10),
+            padding: const EdgeInsets.only(left: 20, top: 5),
             child: Text(
               'Exam Mode',
               style: TextStyle(

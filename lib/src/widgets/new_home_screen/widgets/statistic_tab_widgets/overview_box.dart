@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/result_screens/final_test_result/widgets/half_circle_progress.dart';
 
 class OverviewBoxComponent extends StatelessWidget {
@@ -33,13 +30,13 @@ class OverviewBoxComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(left: 5, right: 5, top: 25, bottom: 20),
+      margin: const EdgeInsets.only(left: 5, right: 5, top: 15),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           boxShadow: !isDarkMode
               ? [
                   BoxShadow(
-                      color: Colors.grey.shade200,
+                      color: Colors.grey.shade300,
                       blurRadius: 5,
                       spreadRadius: 2)
                 ]

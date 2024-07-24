@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class FloatingTextData {
