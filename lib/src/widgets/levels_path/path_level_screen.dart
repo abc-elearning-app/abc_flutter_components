@@ -8,6 +8,7 @@ class LevelGroup {
   final String startImage;
   final Color startColor;
   final List<LevelData> levels;
+  bool isFocused;
   DrawType drawType;
 
   LevelGroup({
@@ -16,6 +17,7 @@ class LevelGroup {
     required this.startColor,
     required this.levels,
     this.drawType = DrawType.firstTimeOpen,
+    this.isFocused = false,
   });
 }
 
@@ -87,52 +89,41 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
   }
 
   _initialCalculate() {
-    // Calculation for linear progress bar
+    double currentPosition = 0;
     for (var group in widget.levelGroupList) {
+      // Calculation for linear progress bar
       passedLevels += group.levels.where((level) => level.progress == 100).length;
       totalLevels += group.levels.length;
+
+      if (group.isFocused) {
+        int levelsTillCurrent = group.levels.indexWhere((level) => level.isCurrent) + 1;
+        int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
+        int remainLevels = levelsTillCurrent - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
+        currentPosition += completeCycleCount * 240 + remainLevels > widget.upperRowCount ? 240 : 120;
+        break;
+      }
+
+      if (group.levels.length == 2) {
+        currentPosition += 120;
+        continue;
+      }
+
+      int completeCycleCount = group.levels.length ~/ (widget.upperRowCount + widget.lowerRowCount);
+      int remainLevels = group.levels.length - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
+      currentPosition += completeCycleCount * 240 + remainLevels > widget.upperRowCount ? 240 : 120;
     }
+
     percent = passedLevels / totalLevels * 100;
 
-    // TODO: recalculate autoscroll position
-    // Calculation for auto scroll
-    // double currentPosition = 0;
-    // for (LevelGroup group in widget.levelGroupList) {
-    //   double groupHeight = 0;
-    //
-    //   if (group.levelGroupType == LevelGroupType.current) {
-    //     int levelsTillCurrent = group.levels.indexWhere((level) => level.isCurrent) + 1;
-    //     int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
-    //     groupHeight += completeCycleCount * 240;
-    //     int remainLevels = levelsTillCurrent - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
-    //     groupHeight += remainLevels > widget.upperRowCount ? 240 : 120;
-    //
-    //     currentPosition += groupHeight;
-    //     break;
-    //   }
-    //
-    //   if (group.levels.length == 2) {
-    //     currentPosition += 120;
-    //     continue;
-    //   }
-    //
-    //   int completeCycleCount = group.levels.length ~/ (widget.upperRowCount + widget.lowerRowCount);
-    //   groupHeight += completeCycleCount * 240;
-    //   int remainLevels = group.levels.length - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
-    //   groupHeight += remainLevels > widget.upperRowCount ? 240 : 120;
-    //
-    //   currentPosition += groupHeight;
-    // }
-    //
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   double screenHeight = MediaQuery.of(context).size.height;
-    //
-    //   if (currentPosition > screenHeight * 0.5) {
-    //     if (_scrollController.hasClients) {
-    //       _scrollController.animateTo(currentPosition, duration: const Duration(milliseconds: 500), curve: Curves.linear);
-    //     }
-    //   }
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      double screenHeight = MediaQuery.of(context).size.height;
+
+      if (currentPosition > screenHeight * 0.5) {
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(currentPosition, duration: const Duration(milliseconds: 500), curve: Curves.linear);
+        }
+      }
+    });
   }
 
   void _scrollListener() {
@@ -246,6 +237,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
           levelList: currentGroup.levels,
           drawType: currentGroup.drawType,
           isDarkMode: widget.isDarkMode,
+          isFocused: currentGroup.isFocused,
           finalLevelImage: widget.finalLevelImage,
           finalLevelAnimation: widget.finalLevelAnimation,
           cycleSpeed: widget.drawSpeed,

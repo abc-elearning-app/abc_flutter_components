@@ -48,6 +48,7 @@ class PathLevelComponent extends StatefulWidget {
   final String finalLevelImage;
   final String finalLevelAnimation;
 
+  final bool isFocused;
   final bool isDarkMode;
 
   final void Function(int id) onClickLevel;
@@ -70,6 +71,7 @@ class PathLevelComponent extends StatefulWidget {
     required this.onClickLevel,
     required this.isDarkMode,
     required this.finalLevelAnimation,
+    required this.isFocused,
   });
 
   @override
@@ -139,7 +141,7 @@ class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticK
 
       if (widget.levelList.length != 2
           // && widget.levelGroupType != LevelGroupType.upcoming
-      )
+          )
         FutureBuilder(
             future: Future.delayed(Duration(milliseconds: widget.drawType == DrawType.firstTimeOpen ? 500 : 0)),
             builder: (context, snapShot) => snapShot.connectionState == ConnectionState.done
@@ -170,6 +172,7 @@ class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticK
         drawType: widget.drawType,
         longRowCount: widget.upperRowCount,
         shortRowCount: widget.lowerRowCount,
+        isFocused: widget.isFocused,
         isDarkMode: widget.isDarkMode,
         drawSpeed: widget.cycleSpeed,
         finalLevelImage: widget.finalLevelImage,

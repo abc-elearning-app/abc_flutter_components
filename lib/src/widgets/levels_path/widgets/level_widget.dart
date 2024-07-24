@@ -12,6 +12,7 @@ class LevelWidget extends StatefulWidget {
   final String finalLevelImage;
   final String finalLevelAnimation;
   final bool isDarkMode;
+  final bool isFocused;
 
   final Color startColor;
   final Color passColor;
@@ -36,6 +37,7 @@ class LevelWidget extends StatefulWidget {
     required this.onClickLevel,
     required this.isDarkMode,
     required this.finalLevelAnimation,
+    required this.isFocused,
   });
 
   @override
@@ -197,7 +199,7 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
       alignment: Alignment.center,
       children: [
         // Splash animation
-        if ((widget.levelData.isCurrent && !widget.isFinal) || (widget.isFinal && widget.levelData.progress < 100))
+        if (widget.isFocused && ((widget.levelData.isCurrent && !widget.isFinal) || (widget.isFinal && widget.levelData.progress < 100)))
           CustomPaint(
               size: const Size(20, 20),
               painter: SplashCirclePainter(

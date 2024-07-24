@@ -13,6 +13,7 @@ class LevelGrid extends StatelessWidget {
   final String finalLevelImage;
   final String finalLevelAnimation;
   final bool isDarkMode;
+  final bool isFocused;
 
   final Color mainColor;
   final Color passColor;
@@ -36,6 +37,7 @@ class LevelGrid extends StatelessWidget {
     required this.onClickLevel,
     required this.isDarkMode,
     required this.finalLevelAnimation,
+    required this.isFocused,
   });
 
   @override
@@ -58,6 +60,7 @@ class LevelGrid extends StatelessWidget {
                     finalLevelImage: finalLevelImage,
                     finalLevelAnimation: finalLevelAnimation,
                     isFinal: i == levelDataList.length - 1,
+                    isFocused: isFocused,
                     drawType: drawType,
                     drawSpeed: drawSpeed,
                     startColor: startColor,
@@ -82,6 +85,7 @@ class LevelGrid extends StatelessWidget {
                 index: i,
                 isDarkMode: isDarkMode,
                 levelData: levelDataList[i],
+                isFocused: isFocused,
                 finalLevelImage: finalLevelImage,
                 finalLevelAnimation: finalLevelAnimation,
                 isFinal: i == levelDataList.length - 1,
