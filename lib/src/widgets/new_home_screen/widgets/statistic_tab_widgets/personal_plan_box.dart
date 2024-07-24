@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../../../flutter_abc_jsc_components.dart';
 import '../../../icons/icon_box.dart';
 
-class PersonalPlanBoxComponent extends StatefulWidget {
+class StudyPlanBoxComponent extends StatefulWidget {
   final bool isDarkMode;
   final Color mainColor;
   final Color secondaryColor;
@@ -19,7 +19,7 @@ class PersonalPlanBoxComponent extends StatefulWidget {
 
   final int expectedQuestions;
 
-  const PersonalPlanBoxComponent({
+  const StudyPlanBoxComponent({
     super.key,
     required this.isDarkMode,
     required this.backgroundColor,
@@ -34,10 +34,10 @@ class PersonalPlanBoxComponent extends StatefulWidget {
   });
 
   @override
-  State<PersonalPlanBoxComponent> createState() => _PersonalPlanBoxComponentState();
+  State<StudyPlanBoxComponent> createState() => _StudyPlanBoxComponentState();
 }
 
-class _PersonalPlanBoxComponentState extends State<PersonalPlanBoxComponent>
+class _StudyPlanBoxComponentState extends State<StudyPlanBoxComponent>
     with SingleTickerProviderStateMixin {
   late ValueNotifier<bool> _isExpanded;
   late AnimationController _animationController;
