@@ -36,8 +36,7 @@ class StudyPlanSetupComponent extends StatefulWidget {
   });
 
   @override
-  State<StudyPlanSetupComponent> createState() =>
-      _StudyPlanSetupComponentState();
+  State<StudyPlanSetupComponent> createState() => _StudyPlanSetupComponentState();
 }
 
 class _StudyPlanSetupComponentState extends State<StudyPlanSetupComponent> {
@@ -73,9 +72,7 @@ class _StudyPlanSetupComponentState extends State<StudyPlanSetupComponent> {
           } else {
             // Delay for smoother animation
             Future.delayed(const Duration(milliseconds: 200), () {
-              _pageController.animateToPage(2,
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeInOut);
+              _pageController.animateToPage(2, duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
             });
           }
         },
@@ -90,8 +87,7 @@ class _StudyPlanSetupComponentState extends State<StudyPlanSetupComponent> {
         isDarkMode: widget.isDarkMode,
         image: widget.pageImages[2],
         title: 'Diagnostic Test',
-        subTitle:
-            'Take our diagnostic test to assess your current level and get a personalized study plan.',
+        subTitle: 'Take our diagnostic test to assess your current level and get a personalized study plan.',
       )
     ];
 
@@ -122,17 +118,11 @@ class _StudyPlanSetupComponentState extends State<StudyPlanSetupComponent> {
           Expanded(
             flex: 4,
             child: Stack(alignment: Alignment.center, children: [
-              Container(
-                  color: widget.isDarkMode
-                      ? Colors.grey.shade800
-                      : widget.lowerBackgroundColor),
+              Container(color: widget.isDarkMode ? Colors.grey.shade800 : widget.lowerBackgroundColor),
               Container(
                 decoration: BoxDecoration(
-                    color: widget.isDarkMode
-                        ? Colors.black
-                        : widget.upperBackgroundColor,
-                    borderRadius: const BorderRadius.only(
-                        bottomRight: Radius.circular(50))),
+                    color: widget.isDarkMode ? Colors.black : widget.upperBackgroundColor,
+                    borderRadius: const BorderRadius.only(bottomRight: Radius.circular(50))),
               ),
 
               // Main content
@@ -148,23 +138,15 @@ class _StudyPlanSetupComponentState extends State<StudyPlanSetupComponent> {
           ValueListenableBuilder(
               valueListenable: _pageIndex,
               builder: (_, value, __) => AnimatedContainer(
-                    height: value == -1
-                        ? 0
-                        : MediaQuery.of(context).size.height * 0.2,
+                    height: value == -1 ? 0 : MediaQuery.of(context).size.height * 0.2,
                     duration: const Duration(milliseconds: 200),
                     child: Stack(children: [
                       // Background
-                      Container(
-                          color: widget.isDarkMode
-                              ? Colors.black
-                              : widget.upperBackgroundColor),
+                      Container(color: widget.isDarkMode ? Colors.black : widget.upperBackgroundColor),
                       Container(
                         decoration: BoxDecoration(
-                            color: widget.isDarkMode
-                                ? Colors.grey.shade800
-                                : widget.lowerBackgroundColor,
-                            borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(50))),
+                            color: widget.isDarkMode ? Colors.grey.shade800 : widget.lowerBackgroundColor,
+                            borderRadius: const BorderRadius.only(topLeft: Radius.circular(50))),
                       ),
 
                       // Buttons
@@ -195,8 +177,7 @@ class _StudyPlanSetupComponentState extends State<StudyPlanSetupComponent> {
           style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 15),
               backgroundColor: widget.mainColor,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15))),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
           child: Text(
             _getButtonText(pageIndexValue),
             style: const TextStyle(
@@ -223,10 +204,7 @@ class _StudyPlanSetupComponentState extends State<StudyPlanSetupComponent> {
             ),
             child: Text(
               'Not Now',
-              style: TextStyle(
-                  color: widget.isDarkMode ? Colors.white : Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w300),
+              style: TextStyle(color: widget.isDarkMode ? Colors.white : Colors.black, fontSize: 16, fontWeight: FontWeight.w300),
             )),
       );
 

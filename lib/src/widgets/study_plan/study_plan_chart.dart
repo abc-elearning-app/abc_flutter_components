@@ -248,53 +248,56 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
     return Column(
       children: [
         // Axis title
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                widget.leftYAxisTitle,
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: widget.isDarkMode ? Colors.white : Colors.black),
-              ),
-              Text(
-                widget.rightYAxisTitle,
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: widget.isDarkMode ? Colors.white : Colors.black),
-              ),
-            ],
+        Transform.translate(
+          offset: const Offset(0, 20),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  widget.leftYAxisTitle,
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: widget.isDarkMode ? Colors.white : Colors.black),
+                ),
+                Text(
+                  widget.rightYAxisTitle,
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: widget.isDarkMode ? Colors.white : Colors.black),
+                ),
+              ],
+            ),
           ),
         ),
 
         // Line chart
-        SizedBox(
-          height: widget.lineSectionHeight,
-          child: SfCartesianChart(
-            onMarkerRender: (args) => _drawLineMarker(args),
-            axes: _buildPlaceHolderYAxis(
-                contain3Digits: widget.expectedBarValue > 90),
-            primaryXAxis: _buildCustomXAxis(ChartType.line),
-            primaryYAxis: _buildCustomYAxis(ChartType.line),
-            tooltipBehavior: _buildTooltip(ChartType.line, 'Pass percent'),
-            series: _personalPlanLineSeries(),
+        Transform.translate(
+          offset: const Offset(0, 20),
+          child: SizedBox(
+            height: widget.lineSectionHeight,
+            child: SfCartesianChart(
+              onMarkerRender: (args) => _drawLineMarker(args),
+              axes: _buildPlaceHolderYAxis(
+                  contain3Digits: widget.expectedBarValue > 90),
+              primaryXAxis: _buildCustomXAxis(ChartType.line),
+              primaryYAxis: _buildCustomYAxis(ChartType.line),
+              tooltipBehavior: _buildTooltip(ChartType.line, 'Pass percent'),
+              series: _personalPlanLineSeries(),
+            ),
           ),
         ),
 
         // Questions progress bar charts
-        Transform.translate(
-          offset: const Offset(0, -20),
-          child: SizedBox(
-            height: widget.barSectionHeight,
-            child: Stack(children: [
-              _barChart('Expected Questions', ChartType.expected),
-              _barChart('Actual Questions', ChartType.actual),
-            ]),
-          ),
+        SizedBox(
+          height: widget.barSectionHeight,
+          child: Stack(children: [
+            _barChart('Expected Questions', ChartType.expected),
+            _barChart('Actual Questions', ChartType.actual),
+          ]),
         ),
       ],
     );
