@@ -17,80 +17,60 @@ class QuestionGroupData {
   });
 }
 
-class PracticeTabComponent extends StatelessWidget {
-  final List<QuestionGroupData> groupList;
+class PracticeTabItemComponent extends StatelessWidget {
+  final QuestionGroupData questionGroupData;
   final bool isDarkMode;
   final void Function(String id) onSelect;
 
-  const PracticeTabComponent({
+  const PracticeTabItemComponent({
     super.key,
-    required this.groupList,
+    required this.questionGroupData,
     required this.isDarkMode,
     required this.onSelect,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: List.generate(
-          groupList.length,
-          (index) => _questionGroup(groupList[index]),
+    return GestureDetector(
+      onTap: () => onSelect(questionGroupData.id),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: isDarkMode ? Colors.grey.shade800 : Colors.white,
+            boxShadow: !isDarkMode ? [BoxShadow(color: Colors.grey.shade200, blurRadius: 5, spreadRadius: 2)] : null),
+        child: Row(
+          children: [
+            Container(
+                height: 60,
+                width: 60,
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.only(right: 15),
+                decoration: BoxDecoration(
+                  color: questionGroupData.iconBackgroundColor,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: IconWidget(icon: questionGroupData.icon)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    questionGroupData.title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      color: isDarkMode ? Colors.white : Colors.black,
+                    ),
+                  ),
+                  Text(questionGroupData.subtitle, style: const TextStyle(fontSize: 12)),
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );
   }
-
-  Widget _questionGroup(QuestionGroupData questionGroupData) => GestureDetector(
-        onTap: () => onSelect(questionGroupData.id),
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          padding: const EdgeInsets.all(15),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              color: isDarkMode ? Colors.grey.shade800 : Colors.white,
-              boxShadow: !isDarkMode
-                  ? [
-                      BoxShadow(
-                        color: Colors.grey.shade200,
-                        blurRadius: 5,
-                        spreadRadius: 2,
-                      )
-                    ]
-                  : null),
-          child: Row(
-            children: [
-              Container(
-                  height: 60,
-                  width: 60,
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: questionGroupData.iconBackgroundColor,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: IconWidget(icon: questionGroupData.icon)),
-              const SizedBox(width: 15),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      questionGroupData.title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                        color: isDarkMode ? Colors.white : Colors.black,
-                      ),
-                    ),
-                    Text(
-                      questionGroupData.subtitle,
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      );
 }
