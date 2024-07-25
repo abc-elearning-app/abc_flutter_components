@@ -3,21 +3,21 @@ import 'package:flutter_abc_jsc_components/src/widgets/progress/custom_linear_pr
 
 import '../../../flutter_abc_jsc_components.dart';
 
-enum LevelGroupType { passed, current, upcoming }
-
 class LevelGroup {
   final String title;
   final String startImage;
   final Color startColor;
   final List<LevelData> levels;
-  LevelGroupType levelGroupType;
+  bool isFocused;
+  DrawType drawType;
 
   LevelGroup({
     required this.title,
     required this.startImage,
     required this.startColor,
     required this.levels,
-    this.levelGroupType = LevelGroupType.upcoming,
+    this.drawType = DrawType.firstTimeOpen,
+    this.isFocused = false,
   });
 }
 
@@ -42,9 +42,7 @@ class PathLevelScreen extends StatefulWidget {
   final Duration drawSpeed;
   final bool isDarkMode;
 
-  final bool? openType;
-
-  final void Function(String id) onClickLevel;
+  final void Function(int id, int groupIndex) onClickLevel;
 
   const PathLevelScreen({
     super.key,
@@ -64,7 +62,6 @@ class PathLevelScreen extends StatefulWidget {
     this.upperRowCount = 1,
     this.lowerRowCount = 2,
     this.drawSpeed = const Duration(milliseconds: 250),
-    this.openType,
   });
 
   @override
@@ -92,26 +89,17 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
   }
 
   _initialCalculate() {
-    // Calculation for linear progress bar
-    for (var group in widget.levelGroupList) {
-      passedLevels += group.levels.where((level) => level.progress == 1).length;
-      totalLevels += group.levels.length;
-    }
-    percent = passedLevels / totalLevels * 100;
-
-    // Calculation for auto scroll
     double currentPosition = 0;
-    for (LevelGroup group in widget.levelGroupList) {
-      double groupHeight = 0;
+    for (var group in widget.levelGroupList) {
+      // Calculation for linear progress bar
+      passedLevels += group.levels.where((level) => level.progress == 100).length;
+      totalLevels += group.levels.length;
 
-      if (group.levelGroupType == LevelGroupType.current) {
+      if (group.isFocused) {
         int levelsTillCurrent = group.levels.indexWhere((level) => level.isCurrent) + 1;
         int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
-        groupHeight += completeCycleCount * 240;
         int remainLevels = levelsTillCurrent - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
-        groupHeight += remainLevels > widget.upperRowCount ? 240 : 120;
-
-        currentPosition += groupHeight;
+        currentPosition += completeCycleCount * 240 + remainLevels > widget.upperRowCount ? 240 : 120;
         break;
       }
 
@@ -121,12 +109,11 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
       }
 
       int completeCycleCount = group.levels.length ~/ (widget.upperRowCount + widget.lowerRowCount);
-      groupHeight += completeCycleCount * 240;
       int remainLevels = group.levels.length - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
-      groupHeight += remainLevels > widget.upperRowCount ? 240 : 120;
-
-      currentPosition += groupHeight;
+      currentPosition += completeCycleCount * 240 + remainLevels > widget.upperRowCount ? 240 : 120;
     }
+
+    percent = passedLevels / totalLevels * 100;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       double screenHeight = MediaQuery.of(context).size.height;
@@ -228,34 +215,31 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
       valueListenable: _backgroundOffset,
       builder: (_, value, __) => Transform.translate(
           offset: Offset(0, 30 - value / 3),
-          child: Container(height: 450, decoration: BoxDecoration(image: DecorationImage(image: AssetImage(widget.backgroundImage), fit: BoxFit.fitWidth)))));
+          child: Container(
+              height: 450,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                image: AssetImage(widget.backgroundImage),
+                fit: BoxFit.fitWidth,
+              )))));
 
-  Widget _buildGroup(int index) {
-    final currentGroup = widget.levelGroupList[index];
+  Widget _buildGroup(int groupIndex) {
+    final currentGroup = widget.levelGroupList[groupIndex];
 
     final lastCycleDrawSpeed = widget.drawSpeed;
     // Duration(
     //     milliseconds: (widget.drawSpeed.inMilliseconds - 20).clamp(100, 1000));
 
-    late DrawType drawType = widget.openType == null
-        ? DrawType.firstTimeOpen
-        : widget.openType == true
-            ? currentGroup.levelGroupType == LevelGroupType.current
-                ? DrawType.nextLevel
-                : DrawType.noAnimation
-            : DrawType.noAnimation;
-
     return Column(
       children: [
-        _buildDivider(currentGroup.title, index == 0),
+        _buildDivider(currentGroup.title),
         PathLevelComponent(
-          levelGroupType: currentGroup.levelGroupType,
+          levelList: currentGroup.levels,
+          drawType: currentGroup.drawType,
           isDarkMode: widget.isDarkMode,
+          isFocused: currentGroup.isFocused,
           finalLevelImage: widget.finalLevelImage,
           finalLevelAnimation: widget.finalLevelAnimation,
-          levelList: currentGroup.levels,
-          drawType: drawType,
-          isFirstGroup: index == 0,
           cycleSpeed: widget.drawSpeed,
           lastCycleSpeed: lastCycleDrawSpeed,
           startColor: currentGroup.startColor,
@@ -266,14 +250,13 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
           lineBackgroundColor: widget.isDarkMode ? Colors.grey.shade900 : widget.lineBackgroundColor,
           upperRowCount: widget.upperRowCount,
           lowerRowCount: widget.lowerRowCount,
-          onClickLevel: widget.onClickLevel,
-          isLastGroup: index == widget.levelGroupList.length - 1,
+          onClickLevel: (id) => widget.onClickLevel(id, groupIndex),
         ),
       ],
     );
   }
 
-  Widget _buildDivider(String title, bool isFirstDivider) => Padding(
+  Widget _buildDivider(String title) => Padding(
         padding: const EdgeInsets.all(20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

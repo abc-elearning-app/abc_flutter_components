@@ -12,16 +12,15 @@ class LevelGrid extends StatelessWidget {
   final List<LevelData> levelDataList;
   final String finalLevelImage;
   final String finalLevelAnimation;
-  final bool isFirstGroup;
   final bool isDarkMode;
-  final bool isLastGroup;
+  final bool isFocused;
 
   final Color mainColor;
   final Color passColor;
   final Color lockColor;
   final Color startColor;
 
-  final void Function(String id) onClickLevel;
+  final void Function(int id) onClickLevel;
 
   const LevelGrid({
     super.key,
@@ -32,14 +31,13 @@ class LevelGrid extends StatelessWidget {
     required this.drawSpeed,
     required this.startColor,
     required this.finalLevelImage,
-    required this.isFirstGroup,
     required this.mainColor,
     required this.passColor,
     required this.lockColor,
     required this.onClickLevel,
     required this.isDarkMode,
-    required this.isLastGroup,
     required this.finalLevelAnimation,
+    required this.isFocused,
   });
 
   @override
@@ -62,15 +60,14 @@ class LevelGrid extends StatelessWidget {
                     finalLevelImage: finalLevelImage,
                     finalLevelAnimation: finalLevelAnimation,
                     isFinal: i == levelDataList.length - 1,
+                    isFocused: isFocused,
                     drawType: drawType,
                     drawSpeed: drawSpeed,
                     startColor: startColor,
-                    isFirstGroup: isFirstGroup,
                     lockColor: lockColor,
                     passColor: passColor,
                     mainColor: mainColor,
                     onClickLevel: onClickLevel,
-                    isLastGroup: isLastGroup,
                   )),
         ),
       );
@@ -88,18 +85,17 @@ class LevelGrid extends StatelessWidget {
                 index: i,
                 isDarkMode: isDarkMode,
                 levelData: levelDataList[i],
+                isFocused: isFocused,
                 finalLevelImage: finalLevelImage,
                 finalLevelAnimation: finalLevelAnimation,
                 isFinal: i == levelDataList.length - 1,
                 drawType: drawType,
                 drawSpeed: drawSpeed,
                 startColor: startColor,
-                isFirstGroup: isFirstGroup,
                 lockColor: lockColor,
                 passColor: passColor,
                 mainColor: mainColor,
                 onClickLevel: onClickLevel,
-                isLastGroup: isLastGroup,
               )
             : const PlaceholderLevel();
         levelsInARow.add(level);

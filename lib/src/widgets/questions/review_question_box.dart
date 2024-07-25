@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class ReviewQuestionBox extends StatefulWidget {
   final int index;
@@ -168,7 +167,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
       ));
 
   Widget _buildAnswer(String content, {bool? isCorrect}) {
-    IconData icon = Icons.check;
+    late IconData icon;
     switch (isCorrect) {
       case null:
         icon = Icons.horizontal_rule_rounded;
@@ -241,7 +240,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Transform.flip(
                     flipY: isShowExplanation,
-                    child: SvgPicture.asset('assets/static/images/chevron_down.svg')),
+                    child: const IconWidget(icon: 'assets/static/images/chevron_down.svg')),
               ),
 
               // Pro icon
