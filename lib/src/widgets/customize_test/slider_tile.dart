@@ -1,26 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/customize_test/provider/customize_test_provider.dart';
-import 'package:provider/provider.dart';
 
 enum SliderType { question, duration, passingScore }
 
-class SliderTile extends StatelessWidget {
+class SliderTile extends StatefulWidget {
   final Color mainColor;
   final Color secondaryColor;
   final bool isDarkMode;
 
   final int maxValue;
+  final int defaultValue;
   final int minValue;
   final SliderType type;
 
-  const SliderTile(
-      {super.key,
-      required this.maxValue,
-      required this.minValue,
-      required this.mainColor,
-      required this.type,
-      required this.isDarkMode,
-      required this.secondaryColor});
+  const SliderTile({
+    super.key,
+    required this.maxValue,
+    required this.minValue,
+    required this.defaultValue,
+    required this.mainColor,
+    required this.type,
+    required this.isDarkMode,
+    required this.secondaryColor,
+  });
+
+  @override
+  State<SliderTile> createState() => _SliderTileState();
+}
+
+class _SliderTileState extends State<SliderTile> {
+  late double selectedValue;
+
+  @override
+  void initState() {
+    selectedValue = widget.defaultValue.toDouble();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +42,10 @@ class SliderTile extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-          border: Border.all(width: 1, color: mainColor),
-          color: Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
-          borderRadius: BorderRadius.circular(20)),
+        border: Border.all(width: 1, color: widget.mainColor),
+        color: Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1),
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Center(
           child: Column(
         children: [
@@ -39,32 +54,22 @@ class SliderTile extends StatelessWidget {
               showValueIndicator: ShowValueIndicator.never,
               activeTickMarkColor: Colors.transparent,
               inactiveTickMarkColor: Colors.transparent,
-              activeTrackColor: mainColor,
+              activeTrackColor: widget.mainColor,
               thumbColor: Colors.white,
               thumbShape: ThumbShape(
                   thumbColor: Colors.white,
-                  tooltipColor:
-                      isDarkMode ? const Color(0xFF858686) : secondaryColor,
-                  maxValue: maxValue,
-                  minValue: minValue),
-              inactiveTrackColor: isDarkMode
-                  ? Colors.white.withOpacity(0.12)
-                  : Colors.grey.shade300,
+                  tooltipColor: widget.isDarkMode ? const Color(0xFF858686) : widget.secondaryColor,
+                  maxValue: widget.maxValue,
+                  minValue: widget.minValue),
+              inactiveTrackColor: widget.isDarkMode ? Colors.white.withOpacity(0.12) : Colors.grey.shade300,
             ),
-            child: Selector<CustomizeTestProvider, int>(
-              selector: (_, provider) => _getSelector(provider, type),
-              builder: (_, value, __) => Slider(
-                value: value.toDouble(),
-                onChanged: (newValue) {
-                  context
-                      .read<CustomizeTestProvider>()
-                      .updateSlider(type, newValue.toInt());
-                },
-                min: minValue.toDouble(),
-                max: maxValue.toDouble(),
-                divisions: ((maxValue - minValue) * 10).toInt(),
-                label: value.floor().toString(),
-              ),
+            child: Slider(
+              value: selectedValue,
+              onChanged: (newValue) => setState(() => selectedValue = newValue),
+              min: widget.minValue.toDouble(),
+              max: widget.maxValue.toDouble(),
+              divisions: ((widget.maxValue - widget.minValue) * 10).toInt(),
+              label: selectedValue.floor().toString(),
             ),
           ),
           Padding(
@@ -72,33 +77,14 @@ class SliderTile extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('$minValue',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 15,
-                        color: isDarkMode ? Colors.white : Colors.black)),
-                Text('$maxValue',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 15,
-                        color: isDarkMode ? Colors.white : Colors.black)),
+                Text('${widget.minValue}', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: widget.isDarkMode ? Colors.white : Colors.black)),
+                Text('${widget.maxValue}', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: widget.isDarkMode ? Colors.white : Colors.black)),
               ],
             ),
           )
         ],
       )),
     );
-  }
-
-  _getSelector(CustomizeTestProvider provider, SliderType type) {
-    switch (type) {
-      case SliderType.question:
-        return provider.selectedQuestions;
-      case SliderType.duration:
-        return provider.selectedDuration;
-      case SliderType.passingScore:
-        return provider.selectedPassingScore;
-    }
   }
 }
 
@@ -174,10 +160,8 @@ class ThumbShape extends SliderComponentShape {
 
     // Draw triangle
     final double triangleHalfWidth = triangleWidth;
-    path.moveTo(center.dx - triangleHalfWidth,
-        center.dy + thumbHeight / 2 - triangleWidth / 3 + yOffset);
-    path.lineTo(center.dx + triangleHalfWidth,
-        center.dy + thumbHeight / 2 - triangleWidth / 3 + yOffset);
+    path.moveTo(center.dx - triangleHalfWidth, center.dy + thumbHeight / 2 - triangleWidth / 3 + yOffset);
+    path.lineTo(center.dx + triangleHalfWidth, center.dy + thumbHeight / 2 - triangleWidth / 3 + yOffset);
     path.lineTo(center.dx, center.dy + thumbHeight / 2 + yOffset / 1.2);
     path.close();
 
@@ -198,7 +182,6 @@ class ThumbShape extends SliderComponentShape {
       textDirection: TextDirection.ltr,
     );
     tp.layout();
-    tp.paint(context.canvas,
-        Offset(center.dx - tp.width / 2, center.dy - tp.height / 2 + yOffset));
+    tp.paint(context.canvas, Offset(center.dx - tp.width / 2, center.dy - tp.height / 2 + yOffset));
   }
 }
