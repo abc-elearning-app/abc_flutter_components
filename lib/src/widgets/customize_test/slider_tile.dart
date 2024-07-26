@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-enum SliderType { question, duration, passingScore }
-
 class SliderTile extends StatefulWidget {
   final Color mainColor;
   final Color secondaryColor;
@@ -10,7 +8,8 @@ class SliderTile extends StatefulWidget {
   final int maxValue;
   final int defaultValue;
   final int minValue;
-  final SliderType type;
+
+  final void Function(double value) onSelect;
 
   const SliderTile({
     super.key,
@@ -18,9 +17,9 @@ class SliderTile extends StatefulWidget {
     required this.minValue,
     required this.defaultValue,
     required this.mainColor,
-    required this.type,
     required this.isDarkMode,
     required this.secondaryColor,
+    required this.onSelect,
   });
 
   @override
@@ -65,7 +64,10 @@ class _SliderTileState extends State<SliderTile> {
             ),
             child: Slider(
               value: selectedValue,
-              onChanged: (newValue) => setState(() => selectedValue = newValue),
+              onChanged: (newValue) {
+                setState(() => selectedValue = newValue);
+                widget.onSelect(selectedValue);
+              },
               min: widget.minValue.toDouble(),
               max: widget.maxValue.toDouble(),
               divisions: ((widget.maxValue - widget.minValue) * 10).toInt(),

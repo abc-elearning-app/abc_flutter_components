@@ -13,7 +13,10 @@ class ModeOptions extends StatefulWidget {
   final List<ModeData> modes;
   final Color mainColor;
   final bool isDarkMode;
+
   final String infoIcon;
+
+  final void Function(int id) onSelect;
 
   const ModeOptions({
     super.key,
@@ -21,6 +24,7 @@ class ModeOptions extends StatefulWidget {
     required this.mainColor,
     required this.isDarkMode,
     required this.infoIcon,
+    required this.onSelect,
   });
 
   @override
@@ -48,7 +52,10 @@ class _ModeOptionsState extends State<ModeOptions> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GestureDetector(
-          onTap: () => setState(() => selectedModeIndex = index),
+          onTap: () {
+            setState(() => selectedModeIndex = index);
+            widget.onSelect(selectedIndex);
+          },
           child: Container(
               margin: const EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(

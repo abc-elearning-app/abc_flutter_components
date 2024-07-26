@@ -1,22 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
-class SubjectsValue {
-  final int testSettingId;
-  final int totalQuestion;
-  final int duration;
-  final int passingScore;
-  final List<int> topicIds;
-
-  SubjectsValue({
-    required this.duration,
-    required this.passingScore,
-    required this.testSettingId,
-    required this.topicIds,
-    required this.totalQuestion,
-  });
-}
-
 class CustomizeSubjectData {
   final int id;
   final String title;
@@ -37,12 +21,15 @@ class SubjectsBox extends StatefulWidget {
   final Color secondaryColor;
   final bool isDarkMode;
 
+  final void Function(List<int> selectedIds) onSelect;
+
   const SubjectsBox({
     super.key,
     required this.subjects,
     required this.mainColor,
     required this.secondaryColor,
     required this.isDarkMode,
+    required this.onSelect,
   });
 
   @override
@@ -51,38 +38,57 @@ class SubjectsBox extends StatefulWidget {
 
 class _SubjectsBoxState extends State<SubjectsBox> {
   late List<bool> selectedOptions;
+  late List<int> selectedIds;
+  late ValueNotifier<bool> allSelected;
 
   @override
   void initState() {
+    selectedOptions = List.generate(widget.subjects.length, (_) => true);
+    selectedIds = widget.subjects.map((subject) => subject.id).toList();
+    allSelected = ValueNotifier(true);
     super.initState();
-    selectedOptions = List.generate(widget.subjects.length, (_) => false);
+  }
+
+  @override
+  void dispose() {
+    allSelected.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(
-          border: Border.all(width: 1, color: widget.mainColor),
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Subjects', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: widget.isDarkMode ? Colors.white : Colors.black)),
+              _selectAllButton(context)
+            ],
+          ),
         ),
-        child: ListView.builder(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: widget.subjects.length,
-            itemBuilder: (_, index) => _subjectTile(index, widget.subjects[index])));
+        Container(
+            decoration: BoxDecoration(
+              border: Border.all(width: 1, color: widget.mainColor),
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1),
+            ),
+            child: ListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: widget.subjects.length,
+                itemBuilder: (_, index) => _subjectTile(index, widget.subjects[index]))),
+      ],
+    );
   }
 
   Widget _subjectTile(int index, CustomizeSubjectData subjectData) {
     return StatefulBuilder(
       builder: (_, setState) => GestureDetector(
-        onTap: () {
-          _toggle(subjectData.id);
-          setState(() {
-            selectedOptions[index] = !selectedOptions[index];
-          });
-        },
+        onTap: () => _onToggle(setState, index, subjectData.id),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
           child: Row(
@@ -115,7 +121,7 @@ class _SubjectsBoxState extends State<SubjectsBox> {
                   borderColor: widget.isDarkMode ? Colors.white.withOpacity(0.16) : widget.mainColor,
                   iconColor: Colors.white,
                   value: selectedOptions[index],
-                  onChanged: (_) => _toggle(subjectData.id))
+                  onChanged: (_) => _onToggle(setState, index, subjectData.id)),
             ],
           ),
         ),
@@ -123,5 +129,44 @@ class _SubjectsBoxState extends State<SubjectsBox> {
     );
   }
 
-  _toggle(int value) {}
+  Widget _selectAllButton(BuildContext context) => Row(
+        children: [
+          Text('Select All', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: _textColor())),
+          Padding(
+            padding: const EdgeInsets.only(right: 3, left: 10),
+            child: ValueListenableBuilder(
+              valueListenable: allSelected,
+              builder: (_, value, __) => MyCheckBox(
+                activeColor: widget.mainColor,
+                borderColor: widget.mainColor,
+                value: value,
+                onChanged: (value) {
+                  setState(() => selectedOptions = List.generate(widget.subjects.length, (_) => value));
+                  allSelected.value = value;
+                },
+              ),
+            ),
+          ),
+        ],
+      );
+
+  _onToggle(void Function(void Function() action) setState, int index, subjectId) {
+    // setState only the current row
+    setState(() {
+      selectedOptions[index] = !selectedOptions[index];
+      if (selectedOptions[index]) {
+        selectedIds.add(subjectId);
+      } else {
+        selectedIds.remove(subjectId);
+      }
+    });
+
+    // Update select all checkbox
+    allSelected.value = !selectedOptions.contains(false);
+
+    // Callback
+    widget.onSelect(selectedIds);
+  }
+
+  _textColor() => widget.isDarkMode ? Colors.white : Colors.black;
 }
