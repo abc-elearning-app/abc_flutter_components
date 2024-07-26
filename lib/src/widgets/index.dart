@@ -91,3 +91,5 @@ export 'account/account_tab.dart';
 export 'account/user_information.dart';
 export 'account/user_avatar.dart';
 export 'rating/rating_dialog.dart';
+export 'settings/widgets/premium_button.dart';
+export 'settings/widgets/setting_tile.dart';
