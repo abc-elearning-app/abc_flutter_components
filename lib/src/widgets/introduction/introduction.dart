@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
-class IntroPersonalPlanData {
+class IntroductionData {
   final int index;
   final String image;
   final String title;
   final String subtitle;
 
-  IntroPersonalPlanData({
+  IntroductionData({
     required this.index,
     required this.image,
     required this.title,
@@ -15,15 +15,15 @@ class IntroPersonalPlanData {
   });
 }
 
-class IntroPersonalPlanPages extends StatefulWidget {
+class IntroductionComponent extends StatefulWidget {
   final Color upperBackgroundColor;
   final Color lowerBackgroundColor;
   final Color mainColor;
 
-  final List<IntroPersonalPlanData> tabList;
+  final List<IntroductionData> tabList;
   final void Function() onFinish;
 
-  const IntroPersonalPlanPages({
+  const IntroductionComponent({
     super.key,
     this.upperBackgroundColor = const Color(0xFFF5F4EE),
     this.lowerBackgroundColor = Colors.white,
@@ -33,10 +33,10 @@ class IntroPersonalPlanPages extends StatefulWidget {
   });
 
   @override
-  State<IntroPersonalPlanPages> createState() => _IntroPersonalPlanPagesState();
+  State<IntroductionComponent> createState() => _IntroductionComponentState();
 }
 
-class _IntroPersonalPlanPagesState extends State<IntroPersonalPlanPages> {
+class _IntroductionComponentState extends State<IntroductionComponent> {
   late PageController _pageController;
   late ValueNotifier _pageIndex;
 
