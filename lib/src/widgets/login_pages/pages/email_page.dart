@@ -104,22 +104,21 @@ class EmailPage extends StatelessWidget {
   Widget _buildSocialMediaButton({required IconData iconData, required String title, required VoidCallback onPressed}) {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-      child: InkWell(
-        onTap: onPressed,
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: isDarkMode ? Colors.grey.shade900 : Colors.white,
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: isDarkMode ? mainColor : secondaryColor),
-          ),
-          child: Row(
-            children: [
-              FaIcon(iconData, color: isDarkMode ? mainColor : secondaryColor),
-              const SizedBox(width: 16),
-              Expanded(child: Text(title, style: TextStyle(color: isDarkMode ? mainColor : secondaryColor, fontSize: 18))),
-            ],
-          ),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isDarkMode ? Colors.grey.shade900 : Colors.white,
+          side: BorderSide(width: 0.8, color: isDarkMode ? mainColor : secondaryColor),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15)
+        ),
+        child: Row(
+          children: [
+            FaIcon(iconData, color: isDarkMode ? mainColor : secondaryColor),
+            const SizedBox(width: 16),
+            Expanded(child: Text(title, style: TextStyle(color: isDarkMode ? mainColor : secondaryColor, fontSize: 16))),
+          ],
         ),
       ),
     );
