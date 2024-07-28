@@ -181,7 +181,7 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
           child: Center(
               child: Text(
             title,
-            style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w500),
+            style: const TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w500),
           )),
         ),
         selectedOption == index ? IconWidget(icon: widget.proOptionIcon, height: 25) : const SizedBox.shrink()
