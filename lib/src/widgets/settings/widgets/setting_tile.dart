@@ -20,7 +20,6 @@ class SettingTile extends StatelessWidget {
   final Color? activeTrackColor;
 
   final void Function() onClick;
-  final void Function()? onProPurchase;
 
   const SettingTile({
     super.key,
@@ -34,13 +33,12 @@ class SettingTile extends StatelessWidget {
     required this.title,
     required this.type,
     required this.onClick,
-    this.onProPurchase,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () => showPro ? onProPurchase!() : onClick(),
+      onTap: onClick,
       leading: IconWidget(icon: icon, color: isDarkMode ? Colors.white : Colors.black),
       title: Text(title, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: isDarkMode ? Colors.white : Colors.black)),
       trailing: _buildTrailing(),
@@ -67,7 +65,7 @@ class SettingTile extends StatelessWidget {
                 thumbIcon: const MaterialStatePropertyAll(Icon(Icons.abc, color: Colors.transparent)),
                 trackOutlineColor: MaterialStatePropertyAll(isDarkMode ? Colors.white : activeThumbColor),
                 trackOutlineWidth: const MaterialStatePropertyAll(1),
-                onChanged: (_) => showPro ? onProPurchase!() : onClick(),
+                onChanged: (_) => onClick(),
               ),
             ),
           ],

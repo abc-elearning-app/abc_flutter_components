@@ -240,29 +240,6 @@ class _SettingComponentState extends State<SettingComponent> {
     );
   }
 
-  _toggleNotification() {
-    _notificationOn.value = !_notificationOn.value;
-    widget.onToggleNotification(_notificationOn.value);
-  }
-
-  _changeDate(BuildContext context) async {
-    final date = await showDatePicker(
-        context: context,
-        builder: (_, child) => Theme(
-            data: ThemeData(
-              fontFamily: 'Poppins',
-              colorScheme: widget.isDarkMode ? const ColorScheme.dark() : const ColorScheme.light(),
-            ),
-            child: child!),
-        firstDate: DateTime(DateTime.now().year, 1, 1),
-        lastDate: DateTime(DateTime.now().year, 12, 31));
-
-    if (date != null) {
-      _examDate.value = date;
-      widget.onChangeExamDate(date);
-    }
-  }
-
   _changeTime(BuildContext context) async {
     final time = await showTimePicker(
         context: context,
