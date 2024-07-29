@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/icons/get_pro_icon.dart';
-
-import '../../../utils/image_utils.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 enum SettingTileType { chevronTile, switchTile, informationTile }
 
 class SettingTile extends StatelessWidget {
   final SettingTileType type;
 
-  final String iconString;
+  final String icon;
   final String title;
   final bool showPro;
 
@@ -18,32 +16,30 @@ class SettingTile extends StatelessWidget {
 
   // Colors
   final bool isDarkMode;
-  final Color? mainColor;
+  final Color? activeThumbColor;
   final Color? activeTrackColor;
 
   final void Function() onClick;
-  final void Function()? onProPurchase;
 
   const SettingTile({
     super.key,
     this.value,
     this.information,
     this.showPro = false,
-    this.mainColor,
-    this.activeTrackColor,
+    this.activeThumbColor = const Color(0xFF6C5F4B),
+    this.activeTrackColor = const Color(0xFFF4E8D6),
     required this.isDarkMode,
-    required this.iconString,
+    required this.icon,
     required this.title,
-    required this.onClick,
     required this.type,
-    this.onProPurchase,
+    required this.onClick,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () => showPro ? onProPurchase!() : onClick(),
-      leading: ResponsiveIcon(content: iconString, color: isDarkMode ? 'white' : ' black'),
+      onTap: onClick,
+      leading: IconWidget(icon: icon, color: isDarkMode ? Colors.white : Colors.black),
       title: Text(title, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: isDarkMode ? Colors.white : Colors.black)),
       trailing: _buildTrailing(),
     );
@@ -52,11 +48,7 @@ class SettingTile extends StatelessWidget {
   Widget _buildTrailing() {
     switch (type) {
       case SettingTileType.chevronTile:
-        return const Icon(
-          Icons.chevron_right_rounded,
-          size: 35,
-          color: Colors.grey,
-        );
+        return const Icon(Icons.chevron_right_rounded, size: 35, color: Colors.grey);
       case SettingTileType.switchTile:
         return Row(
           mainAxisSize: MainAxisSize.min,
@@ -65,15 +57,15 @@ class SettingTile extends StatelessWidget {
             const SizedBox(width: 10),
             StatefulBuilder(
               builder: (_, setState) => Switch(
-                activeColor: mainColor,
+                value: value!,
+                activeColor: activeThumbColor,
                 inactiveTrackColor: Colors.black.withOpacity(0.08),
                 inactiveThumbColor: isDarkMode ? Colors.white : Colors.black,
                 activeTrackColor: activeTrackColor,
                 thumbIcon: const MaterialStatePropertyAll(Icon(Icons.abc, color: Colors.transparent)),
-                trackOutlineColor: MaterialStatePropertyAll(isDarkMode ? Colors.white : mainColor),
+                trackOutlineColor: MaterialStatePropertyAll(isDarkMode ? Colors.white : activeThumbColor),
                 trackOutlineWidth: const MaterialStatePropertyAll(1),
-                value: value!,
-                onChanged: (_) => showPro ? onProPurchase!() : onClick(),
+                onChanged: (_) => onClick(),
               ),
             ),
           ],
@@ -82,8 +74,12 @@ class SettingTile extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.only(right: 10),
           child: Text(information!,
-              style:
-                  TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black, decoration: TextDecoration.underline)),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                color: isDarkMode ? Colors.white : Colors.black,
+                decoration: TextDecoration.underline,
+              )),
         );
     }
   }

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
-import 'package:flutter_abc_jsc_components/src/constants/app_svg_icons.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/premium_button.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/setting_tile.dart';
 import 'package:intl/intl.dart';
 
 class SettingComponent extends StatefulWidget {
@@ -109,218 +106,138 @@ class _SettingComponentState extends State<SettingComponent> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: widget.isDarkMode ? Colors.black : widget.backgroundColor,
-      appBar: _customAppBar(),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (!widget.isPro)
-                PremiumButton(
-                  isDarkMode: widget.isDarkMode,
-                  margin: const EdgeInsets.only(left: 10, right: 10, top: 20),
-                  onClick: widget.onProPurchase,
-                  buttonHeight: _buttonHeight,
-                  circleIcon: widget.circleIcon,
-                  dnaIcon: widget.dnaIcon,
-                  starIcon: widget.starIcon,
-                  triangleIcon: widget.triangleIcon,
-                  premiumIcon: widget.premiumIcon,
-                ),
-              _title('Settings Exam'),
-              _tileGroup([
-                ValueListenableBuilder(
-                  valueListenable: _examDate,
-                  builder: (_, value, __) => SettingTile(
-                      type: SettingTileType.informationTile,
-                      title: 'Exam Date',
-                      information: _formatDate(value),
-                      iconString: AppSvgIcons.settingIcons.examDate,
-                      isDarkMode: widget.isDarkMode,
-                      onClick: () => _changeDate(context),
-                      mainColor: widget.mainColor,
-                      activeTrackColor: widget.switchActiveTrackColor),
-                )
-              ]),
-              _title('General Settings'),
-              _tileGroup([
-                ValueListenableBuilder(
-                  valueListenable: _notificationOn,
-                  builder: (_, value, __) => SettingTile(
-                      type: SettingTileType.switchTile,
-                      value: value,
-                      title: 'Notification',
-                      iconString: AppSvgIcons.settingIcons.notification,
-                      isDarkMode: widget.isDarkMode,
-                      onClick: _toggleNotification,
-                      mainColor: widget.mainColor,
-                      activeTrackColor: widget.switchActiveTrackColor),
-                ),
-                ValueListenableBuilder(
-                  valueListenable: _remindTime,
-                  builder: (_, value, __) => SettingTile(
-                      type: SettingTileType.informationTile,
-                      title: 'Remind Me At',
-                      information: _formatTime(value),
-                      iconString: AppSvgIcons.settingIcons.remindAt,
-                      isDarkMode: widget.isDarkMode,
-                      onClick: () => _changeTime(context)),
-                ),
-                SettingTile(
-                    type: SettingTileType.chevronTile,
-                    title: 'Disable Calendar Reminder',
-                    iconString: AppSvgIcons.settingIcons.disableCalendar,
-                    isDarkMode: widget.isDarkMode,
-                    onClick: widget.onDisableReminder,
-                    mainColor: widget.mainColor,
-                    activeTrackColor: widget.switchActiveTrackColor),
-                SettingTile(
-                    type: SettingTileType.chevronTile,
-                    title: 'Reset Progress',
-                    iconString: AppSvgIcons.settingIcons.reset,
-                    isDarkMode: widget.isDarkMode,
-                    onClick: widget.onClickReset,
-                    mainColor: widget.mainColor,
-                    activeTrackColor: widget.switchActiveTrackColor),
-                SettingTile(
-                  type: SettingTileType.switchTile,
-                  value: widget.isDarkMode,
-                  title: 'Dark Mode',
-                  iconString: AppSvgIcons.settingIcons.darkMode,
-                  isDarkMode: widget.isDarkMode,
-                  showPro: !widget.isPro,
-                  mainColor: widget.mainColor,
-                  activeTrackColor: widget.switchActiveTrackColor,
-                  onClick: widget.onToggleDarkMode,
-                  onProPurchase: widget.onProPurchase,
-                ),
-              ]),
-              _title('App Information'),
-              _tileGroup([
-                SettingTile(
-                    type: SettingTileType.chevronTile,
-                    title: 'Privacy Policy',
-                    iconString: AppSvgIcons.settingIcons.privacyPolicy,
-                    isDarkMode: widget.isDarkMode,
-                    onClick: widget.onClickPolicy,
-                    mainColor: widget.mainColor,
-                    activeTrackColor: widget.switchActiveTrackColor),
-                SettingTile(
-                    type: SettingTileType.informationTile,
-                    title: 'App Version',
-                    information: widget.appVersion,
-                    iconString: AppSvgIcons.settingIcons.appVersion,
-                    isDarkMode: widget.isDarkMode,
-                    onClick: widget.onClickAppVersion,
-                    mainColor: widget.mainColor,
-                    activeTrackColor: widget.switchActiveTrackColor),
-              ]),
-              _title('Feedback And Sharing'),
-              _tileGroup([
-                SettingTile(
-                    type: SettingTileType.chevronTile,
-                    title: 'Contact Us',
-                    iconString: AppSvgIcons.settingIcons.contact,
-                    isDarkMode: widget.isDarkMode,
-                    onClick: widget.onClickContact,
-                    mainColor: widget.mainColor),
-                SettingTile(
-                    isDarkMode: widget.isDarkMode,
-                    iconString: AppSvgIcons.settingIcons.rate,
-                    title: 'Rate Our App',
-                    onClick: widget.onClickRate,
-                    type: SettingTileType.chevronTile),
-                SettingTile(
-                    isDarkMode: widget.isDarkMode,
-                    iconString: AppSvgIcons.settingIcons.share,
-                    title: 'Share App With Friends',
-                    onClick: widget.onShare,
-                    type: SettingTileType.chevronTile)
-              ]),
-            ],
-          ),
-        ),
-      ),
+      // body: SafeArea(
+      //   child: SingleChildScrollView(
+      //     child: Column(
+      //       crossAxisAlignment: CrossAxisAlignment.start,
+      //       children: [
+      //         if (!widget.isPro)
+      //           PremiumButton(
+      //             isDarkMode: widget.isDarkMode,
+      //             margin: const EdgeInsets.only(left: 10, right: 10, top: 20),
+      //             onClick: widget.onProPurchase,
+      //             buttonHeight: _buttonHeight,
+      //             circleIcon: widget.circleIcon,
+      //             dnaIcon: widget.dnaIcon,
+      //             starIcon: widget.starIcon,
+      //             triangleIcon: widget.triangleIcon,
+      //             premiumIcon: widget.premiumIcon,
+      //           ),
+      //         _title('Settings Exam'),
+      //         _tileGroup([
+      //           ValueListenableBuilder(
+      //             valueListenable: _examDate,
+      //             builder: (_, value, __) => SettingTile(
+      //                 type: SettingTileType.informationTile,
+      //                 title: 'Exam Date',
+      //                 information: _formatDate(value),
+      //                 icon: AppSvgIcons.settingIcons.examDate,
+      //                 isDarkMode: widget.isDarkMode,
+      //                 onClick: () => _changeDate(context),
+      //                 activeThumbColor: widget.mainColor,
+      //                 activeTrackColor: widget.switchActiveTrackColor),
+      //           )
+      //         ]),
+      //         _title('General Settings'),
+      //         _tileGroup([
+      //           ValueListenableBuilder(
+      //             valueListenable: _notificationOn,
+      //             builder: (_, value, __) => SettingTile(
+      //                 type: SettingTileType.switchTile,
+      //                 value: value,
+      //                 title: 'Notification',
+      //                 icon: AppSvgIcons.settingIcons.notification,
+      //                 isDarkMode: widget.isDarkMode,
+      //                 onClick: _toggleNotification,
+      //                 activeThumbColor: widget.mainColor,
+      //                 activeTrackColor: widget.switchActiveTrackColor),
+      //           ),
+      //           ValueListenableBuilder(
+      //             valueListenable: _remindTime,
+      //             builder: (_, value, __) => SettingTile(
+      //                 type: SettingTileType.informationTile,
+      //                 title: 'Remind Me At',
+      //                 information: _formatTime(value),
+      //                 icon: AppSvgIcons.settingIcons.remindAt,
+      //                 isDarkMode: widget.isDarkMode,
+      //                 onClick: () => _changeTime(context)),
+      //           ),
+      //           SettingTile(
+      //               type: SettingTileType.chevronTile,
+      //               title: 'Disable Calendar Reminder',
+      //               icon: AppSvgIcons.settingIcons.disableCalendar,
+      //               isDarkMode: widget.isDarkMode,
+      //               onClick: widget.onDisableReminder,
+      //               activeThumbColor: widget.mainColor,
+      //               activeTrackColor: widget.switchActiveTrackColor),
+      //           SettingTile(
+      //               type: SettingTileType.chevronTile,
+      //               title: 'Reset Progress',
+      //               icon: AppSvgIcons.settingIcons.reset,
+      //               isDarkMode: widget.isDarkMode,
+      //               onClick: widget.onClickReset,
+      //               activeThumbColor: widget.mainColor,
+      //               activeTrackColor: widget.switchActiveTrackColor),
+      //           SettingTile(
+      //             type: SettingTileType.switchTile,
+      //             value: widget.isDarkMode,
+      //             title: 'Dark Mode',
+      //             icon: AppSvgIcons.settingIcons.darkMode,
+      //             isDarkMode: widget.isDarkMode,
+      //             showPro: !widget.isPro,
+      //             activeThumbColor: widget.mainColor,
+      //             activeTrackColor: widget.switchActiveTrackColor,
+      //             onClick: widget.onToggleDarkMode,
+      //             onProPurchase: widget.onProPurchase,
+      //           ),
+      //         ]),
+      //         _title('App Information'),
+      //         _tileGroup([
+      //           SettingTile(
+      //               type: SettingTileType.chevronTile,
+      //               title: 'Privacy Policy',
+      //               icon: AppSvgIcons.settingIcons.privacyPolicy,
+      //               isDarkMode: widget.isDarkMode,
+      //               onClick: widget.onClickPolicy,
+      //               activeThumbColor: widget.mainColor,
+      //               activeTrackColor: widget.switchActiveTrackColor),
+      //           SettingTile(
+      //               type: SettingTileType.informationTile,
+      //               title: 'App Version',
+      //               information: widget.appVersion,
+      //               icon: AppSvgIcons.settingIcons.appVersion,
+      //               isDarkMode: widget.isDarkMode,
+      //               onClick: widget.onClickAppVersion,
+      //               activeThumbColor: widget.mainColor,
+      //               activeTrackColor: widget.switchActiveTrackColor),
+      //         ]),
+      //         _title('Feedback And Sharing'),
+      //         _tileGroup([
+      //           SettingTile(
+      //               type: SettingTileType.chevronTile,
+      //               title: 'Contact Us',
+      //               icon: AppSvgIcons.settingIcons.contact,
+      //               isDarkMode: widget.isDarkMode,
+      //               onClick: widget.onClickContact,
+      //               activeThumbColor: widget.mainColor),
+      //           SettingTile(
+      //               isDarkMode: widget.isDarkMode,
+      //               icon: AppSvgIcons.settingIcons.rate,
+      //               title: 'Rate Our App',
+      //               onClick: widget.onClickRate,
+      //               type: SettingTileType.chevronTile),
+      //           SettingTile(
+      //               isDarkMode: widget.isDarkMode,
+      //               icon: AppSvgIcons.settingIcons.share,
+      //               title: 'Share App With Friends',
+      //               onClick: widget.onShare,
+      //               type: SettingTileType.chevronTile)
+      //         ]),
+      //       ],
+      //     ),
+      //   ),
+      // ),
     );
-  }
-
-  PreferredSizeWidget _customAppBar() => AppBar(
-        backgroundColor: widget.isDarkMode ? Colors.black : widget.backgroundColor,
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: widget.isDarkMode ? Colors.white : Colors.black,
-            ),
-            onPressed: () => Navigator.of(context).pop()),
-        title: Text(
-          'Settings',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: widget.isDarkMode ? Colors.white : Colors.black),
-        ),
-        actions: [
-          Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: IconButton(
-                icon: widget.isLoggedIn
-                    ? UserAvatar(isPro: widget.isPro, avatar: widget.avatar, username: widget.username, crownIcon: widget.crownIcon)
-                    : IconWidget(
-                        icon: widget.avatar,
-                        height: 40,
-                      ),
-                onPressed: widget.onAvatarClick,
-              ))
-        ],
-      );
-
-  Widget _title(String title) => Padding(
-      padding: const EdgeInsets.only(left: 15, top: 20, bottom: 10),
-      child: Text(title,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
-          )));
-
-  Widget _tileGroup(List<Widget> tiles) => Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      margin: const EdgeInsets.symmetric(horizontal: 15),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1)),
-      child: ListView.separated(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: tiles.length,
-        itemBuilder: (_, index) => tiles[index],
-        separatorBuilder: (BuildContext context, int index) => const Padding(padding: EdgeInsets.symmetric(horizontal: 15), child: Divider(color: Colors.grey)),
-      ));
-
-  _formatDate(DateTime date) => DateFormat('MMM dd yyyy').format(date);
-
-  _formatTime(TimeOfDay time) {
-    final displayHour = time.hour < 10 ? '0${time.hour}' : time.hour.toString();
-    final displayMinute = time.minute < 10 ? '0${time.minute}' : time.minute.toString();
-    return '$displayHour:$displayMinute';
-  }
-
-  _toggleNotification() {
-    _notificationOn.value = !_notificationOn.value;
-    widget.onToggleNotification(_notificationOn.value);
-  }
-
-  _changeDate(BuildContext context) async {
-    final date = await showDatePicker(
-        context: context,
-        builder: (_, child) => Theme(
-            data: ThemeData(
-              fontFamily: 'Poppins',
-              colorScheme: widget.isDarkMode ? const ColorScheme.dark() : const ColorScheme.light(),
-            ),
-            child: child!),
-        firstDate: DateTime(DateTime.now().year, 1, 1),
-        lastDate: DateTime(DateTime.now().year, 12, 31));
-
-    if (date != null) {
-      _examDate.value = date;
-      widget.onChangeExamDate(date);
-    }
   }
 
   _changeTime(BuildContext context) async {
