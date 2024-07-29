@@ -34,14 +34,14 @@ class ProgressSection extends StatelessWidget {
     super.key,
     required this.isDarkMode,
     required this.progressList,
-    required this.beginnerColor,
-    required this.intermediateColor,
-    required this.advancedColor,
     required this.mainColor,
+    this.beginnerColor = const Color(0xFFFC5656),
+    this.intermediateColor = const Color(0xFFFF9669),
+    this.advancedColor = const Color(0xFF2C9CB5),
+    this.beginnerBackgroundColor = const Color(0xFFFDD7D7),
+    this.intermediateBackgroundColor = const Color(0xFFFFEEE7),
+    this.advancedBackgroundColor = const Color(0xFFD3F7FF),
     required this.onImprove,
-    required this.beginnerBackgroundColor,
-    required this.intermediateBackgroundColor,
-    required this.advancedBackgroundColor,
   });
 
   @override

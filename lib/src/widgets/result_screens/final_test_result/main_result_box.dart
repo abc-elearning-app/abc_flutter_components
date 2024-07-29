@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-import 'half_circle_progress.dart';
-
 class MainResultBox extends StatefulWidget {
   final bool isFirstTime;
-  final bool isPro;
   final bool isDarkMode;
 
   final Color mainColor;
@@ -23,10 +20,9 @@ class MainResultBox extends StatefulWidget {
 
   const MainResultBox({
     super.key,
-    required this.isPro,
     required this.isDarkMode,
-    required this.correctColor,
-    required this.incorrectColor,
+    this.correctColor = const Color(0xFF0BE5B1),
+    this.incorrectColor = const Color(0xFFF14A4A),
     required this.progress,
     required this.averageProgress,
     required this.correctQuestions,
@@ -74,16 +70,11 @@ class _MainResultBoxState extends State<MainResultBox> {
                 child: RichText(
                   text: TextSpan(
                       style: DefaultTextStyle.of(context).style.copyWith(
-                          color: widget.progress < 0.8
-                              ? widget.incorrectColor
-                              : widget.correctColor,
-                          fontWeight: FontWeight.bold),
+                            color: widget.progress < 0.8 ? widget.incorrectColor : widget.correctColor,
+                            fontWeight: FontWeight.bold),
                       children: [
-                        TextSpan(
-                            text: '${widget.progress.round()}',
-                            style: const TextStyle(fontSize: 70)),
-                        const TextSpan(
-                            text: '%', style: TextStyle(fontSize: 40))
+                        TextSpan(text: '${widget.progress.round()}', style: const TextStyle(fontSize: 70)),
+                        const TextSpan(text: '%', style: TextStyle(fontSize: 40))
                       ]),
                 ),
               ),
@@ -99,10 +90,7 @@ class _MainResultBoxState extends State<MainResultBox> {
             if (widget.isFirstTime)
               Text(
                 'Community Score: ${widget.averageProgress.toInt()}% ',
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: widget.isDarkMode ? Colors.white : Colors.black),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: widget.isDarkMode ? Colors.white : Colors.black),
               )
           ],
         ),
@@ -121,12 +109,7 @@ class _MainResultBoxState extends State<MainResultBox> {
               : "That was a tough one, but every wrong answer is a stepping stone to the right one. Keep at it, and you'll be a knowledge ninja soon!",
           style: TextStyle(
               fontWeight: FontWeight.w400,
-              color: Color.lerp(
-                  widget.progress >= widget.passPercent
-                      ? widget.correctColor
-                      : widget.incorrectColor,
-                  Colors.black,
-                  widget.isDarkMode ? 0 : 0.2),
+              color: Color.lerp(widget.progress >= widget.passPercent ? widget.correctColor : widget.incorrectColor, Colors.black, widget.isDarkMode ? 0 : 0.2),
               fontSize: 14),
           textAlign: TextAlign.center,
         ),
@@ -137,10 +120,8 @@ class _MainResultBoxState extends State<MainResultBox> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _colorExplanation(
-                widget.correctColor, 'Correct', widget.correctQuestions),
-            _colorExplanation(
-                widget.incorrectColor, 'Incorrect', widget.incorrectQuestions),
+            _colorExplanation(widget.correctColor, 'Correct', widget.correctQuestions),
+            _colorExplanation(widget.incorrectColor, 'Incorrect', widget.incorrectQuestions),
           ],
         ),
       );
@@ -153,8 +134,7 @@ class _MainResultBoxState extends State<MainResultBox> {
             width: 25,
             height: 6,
             margin: const EdgeInsets.only(top: 8),
-            decoration: BoxDecoration(
-                color: color, borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(8)),
           ),
           const SizedBox(width: 15),
           Column(
@@ -168,10 +148,7 @@ class _MainResultBoxState extends State<MainResultBox> {
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Text(
                   '$questionNum ${'Questions'}',
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: widget.isDarkMode ? Colors.white : Colors.black),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: widget.isDarkMode ? Colors.white : Colors.black),
                 ),
               )
             ],
@@ -179,14 +156,12 @@ class _MainResultBoxState extends State<MainResultBox> {
         ],
       );
 
-  Widget _buildLinearProgress(BuildContext context) =>
-      Stack(alignment: Alignment.center, children: [
+  Widget _buildLinearProgress(BuildContext context) => Stack(alignment: Alignment.center, children: [
         const SizedBox(height: 50),
 
         // Background
         LinearPercentIndicator(
-          backgroundColor:
-              widget.isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200,
+          backgroundColor: widget.isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200,
           lineHeight: 9,
           barRadius: const Radius.circular(8),
         ),
@@ -203,9 +178,7 @@ class _MainResultBoxState extends State<MainResultBox> {
 
         // Average point
         Positioned(
-            left: MediaQuery.of(context).size.width *
-                0.0075 *
-                widget.averageProgress,
+            left: MediaQuery.of(context).size.width * 0.0075 * widget.averageProgress,
             child: CircleAvatar(
               radius: 9,
               backgroundColor: Colors.grey.withOpacity(0.3),
@@ -222,20 +195,14 @@ class _MainResultBoxState extends State<MainResultBox> {
           IconWidget(
             icon: widget.bannerShapeImage,
             height: 50,
-            color: widget.progress >= widget.passPercent
-                ? widget.correctColor
-                : Color.lerp(widget.incorrectColor, Colors.white, 0.8)!,
+            color: widget.progress >= widget.passPercent ? widget.correctColor : Color.lerp(widget.incorrectColor, Colors.white, 0.8)!,
           ),
           Text(
-            widget.progress >= widget.passPercent
-                ? 'Excellent Performance!'
-                : 'Not Enough To Pass!',
+            widget.progress >= widget.passPercent ? 'Excellent Performance!' : 'Not Enough To Pass!',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
-              color: widget.progress >= widget.passPercent
-                  ? Colors.white
-                  : widget.incorrectColor,
+              color: widget.progress >= widget.passPercent ? Colors.white : widget.incorrectColor,
             ),
           ),
         ]),

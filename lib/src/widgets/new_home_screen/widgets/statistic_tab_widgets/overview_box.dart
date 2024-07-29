@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/result_screens/final_test_result/widgets/half_circle_progress.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/result_screens/final_test_result/half_circle_progress.dart';
 
 class OverviewBoxComponent extends StatelessWidget {
   final int answeredQuestions;
