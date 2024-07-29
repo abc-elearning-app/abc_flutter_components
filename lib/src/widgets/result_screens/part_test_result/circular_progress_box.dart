@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../custom_circular_progress_indicator/custom_circular_progress_indicator.dart';
+import '../../custom_circular_progress_indicator/custom_circular_progress_indicator.dart';
 
 class CircularProgressBox extends StatelessWidget {
   final int correctQuestions;
@@ -15,11 +15,11 @@ class CircularProgressBox extends StatelessWidget {
 
   const CircularProgressBox({
     super.key,
-    required this.backgroundColor,
     required this.correctQuestions,
     required this.totalQuestions,
-    required this.correctColor,
-    required this.incorrectColor,
+    this.backgroundColor = const Color(0xFFF3F1E5),
+    this.correctColor = const Color(0xFF38EFAE),
+    this.incorrectColor = const Color(0xFFF14A4A),
     required this.progressTextColor,
     required this.isDarkMode,
   });
