@@ -32,14 +32,15 @@ class ProOptions extends StatefulWidget {
 
   final void Function(int index) onSelect;
 
-  const ProOptions(
-      {super.key,
-      required this.proOptions,
-      required this.mainColor,
-      required this.secondaryColor,
-      required this.onSelect,
-      required this.isDarkMode,
-      required this.proOptionIcon});
+  const ProOptions({
+    super.key,
+    required this.proOptions,
+    required this.mainColor,
+    required this.secondaryColor,
+    required this.onSelect,
+    required this.isDarkMode,
+    required this.proOptionIcon,
+  });
 
   @override
   State<ProOptions> createState() => _ProOptionsState();
@@ -59,12 +60,10 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
               duration: const Duration(milliseconds: 200),
             ));
     for (AnimationController animationController in _animationControllers) {
-      _animations
-          .add(Tween<double>(begin: 1, end: 1.05).animate(animationController));
+      _animations.add(Tween<double>(begin: 1, end: 1.05).animate(animationController));
     }
 
-    Future.delayed(const Duration(milliseconds: 200),
-        () => _animationControllers[1].forward());
+    Future.delayed(const Duration(milliseconds: 200), () => _animationControllers[1].forward());
     super.initState();
   }
 
@@ -93,9 +92,7 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
             decoration: BoxDecoration(
                 color: Colors.white.withOpacity(widget.isDarkMode ? 0.24 : 1),
                 borderRadius: BorderRadius.circular(15),
-                border: Border.all(
-                    width: selectedOption == index ? 2 : 1,
-                    color: _borderColor(index))),
+                border: Border.all(width: selectedOption == index ? 2 : 1, color: _borderColor(index))),
             child: Stack(children: [
               // Main content
               Column(
@@ -124,11 +121,9 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
 
               if (data.title.isNotEmpty) _buildTitleBox(data.title, index),
 
-              if (data.freeTrialDays > 0)
-                _buildFreeDayTrials(data.freeTrialDays),
+              if (data.freeTrialDays > 0) _buildFreeDayTrials(data.freeTrialDays),
 
-              if(data.percentSaved > 0) 
-                _buildSavedPercentBox(data.percentSaved, index)
+              if (data.percentSaved > 0) _buildSavedPercentBox(data.percentSaved, index)
             ]),
           ),
         ),
@@ -138,11 +133,7 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Price
-          Text('\$$price',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: widget.isDarkMode ? Colors.white : Colors.black)),
+          Text('\$$price', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: widget.isDarkMode ? Colors.white : Colors.black)),
 
           // Original price
           if (originalPrice > 0)
@@ -174,10 +165,7 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     )),
-                TextSpan(
-                    text: _getPricePerDay(price, timeType)
-                        .toStringAsFixed(2)
-                        .replaceAll('0.', ''))
+                TextSpan(text: _getPricePerDay(price, timeType).toStringAsFixed(2).replaceAll('0.', ''))
               ])),
           const Text(
             'Per Day',
@@ -186,25 +174,17 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
         ],
       );
 
-  Widget _buildTitleBox(String title, int index) =>
-      Stack(alignment: Alignment.centerRight, children: [
+  Widget _buildTitleBox(String title, int index) => Stack(alignment: Alignment.centerRight, children: [
         Container(
           height: 24,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: selectedOption == index
-                  ? widget.mainColor
-                  : widget.secondaryColor),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: selectedOption == index ? widget.mainColor : widget.secondaryColor),
           child: Center(
               child: Text(
             title,
-            style: const TextStyle(
-                fontSize: 12, color: Colors.white, fontWeight: FontWeight.w500),
+            style: const TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w500),
           )),
         ),
-        selectedOption == index
-            ? IconWidget(icon: widget.proOptionIcon, height: 25)
-            : const SizedBox.shrink()
+        selectedOption == index ? IconWidget(icon: widget.proOptionIcon, height: 25) : const SizedBox.shrink()
       ]);
 
   Widget _buildFreeDayTrials(int freeTrialDays) => Align(
@@ -212,15 +192,11 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
         child: Transform.translate(
           offset: const Offset(0, -15),
           child: RichText(
-              text: TextSpan(
-                  style: TextStyle(color: widget.mainColor, fontSize: 12),
-                  children: [
-                TextSpan(text: '$freeTrialDays-Day '),
-                const TextSpan(
-                    text: 'FREE',
-                    style: TextStyle(fontWeight: FontWeight.w800)),
-                const TextSpan(text: ' Trial')
-              ])),
+              text: TextSpan(style: TextStyle(color: widget.mainColor, fontSize: 12), children: [
+            TextSpan(text: '$freeTrialDays-Day '),
+            const TextSpan(text: 'FREE', style: TextStyle(fontWeight: FontWeight.w800)),
+            const TextSpan(text: ' Trial')
+          ])),
         ),
       );
 
@@ -233,11 +209,7 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
               horizontal: 10,
               vertical: 4,
             ),
-            decoration: BoxDecoration(
-                color: selectedOption == index
-                    ? widget.mainColor
-                    : widget.secondaryColor,
-                borderRadius: BorderRadius.circular(5)),
+            decoration: BoxDecoration(color: selectedOption == index ? widget.mainColor : widget.secondaryColor, borderRadius: BorderRadius.circular(5)),
             child: Text(
               'save ${percent.toInt()}%',
               style: const TextStyle(
