@@ -6,8 +6,14 @@ class FilterData {
   final int id;
   final String icon;
   final String title;
+  final bool isSelected;
 
-  FilterData({required this.id, required this.icon, required this.title});
+  FilterData({
+    required this.id,
+    required this.icon,
+    required this.title,
+    required this.isSelected,
+  });
 }
 
 class FilterBottomsheetComponent extends StatefulWidget {
@@ -40,8 +46,8 @@ class _FilterBottomsheetComponentState extends State<FilterBottomsheetComponent>
 
   @override
   void initState() {
-    selectedOptions = List.generate(widget.list.length, (_) => true);
-    allSelected = ValueNotifier(true);
+    selectedOptions = widget.list.map((option) => option.isSelected).toList();
+    allSelected = ValueNotifier(widget.list.where((option) => !option.isSelected).isEmpty);
     super.initState();
   }
 
