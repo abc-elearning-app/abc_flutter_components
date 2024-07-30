@@ -81,6 +81,7 @@ export 'study_plan/study_plan_chart.dart';
 export 'settings/settings_component.dart';
 export 'streak/streak_screen.dart';
 export 'bottom_sheets/report_bottomsheet.dart';
+export 'bottom_sheets/filter_bottomsheet.dart';
 export 'new_home_screen/widgets/statistic_tab_widgets/subject_analysis_box.dart';
 export 'icons/icon_widget.dart';
 export 'questions/action_icon.dart';
