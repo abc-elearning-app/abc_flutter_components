@@ -50,8 +50,10 @@ class PathLevelComponent extends StatefulWidget {
 
   final bool isFocused;
   final bool isDarkMode;
+  final bool hasSubTopic;
 
   final void Function(int id) onClickLevel;
+  final void Function() onClickLockLevel;
 
   const PathLevelComponent({
     super.key,
@@ -72,6 +74,8 @@ class PathLevelComponent extends StatefulWidget {
     required this.isDarkMode,
     required this.finalLevelAnimation,
     required this.isFocused,
+    required this.onClickLockLevel,
+    required this.hasSubTopic,
   });
 
   @override
@@ -182,6 +186,8 @@ class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticK
         passColor: widget.passColor,
         lockColor: widget.lockColor,
         onClickLevel: widget.onClickLevel,
+        onClickLockLevel: widget.onClickLockLevel,
+        hasSubTopic: widget.hasSubTopic,
       ),
     ]);
   }

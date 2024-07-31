@@ -41,27 +41,31 @@ class PathLevelScreen extends StatefulWidget {
 
   final Duration drawSpeed;
   final bool isDarkMode;
+  final bool hasSubTopic;
 
   final void Function(int id, int groupIndex) onClickLevel;
+  final void Function() onClickLockLevel;
 
   const PathLevelScreen({
     super.key,
     required this.levelGroupList,
     required this.title,
-    required this.onClickLevel,
     required this.backgroundImage,
     required this.finalLevelImage,
     required this.isDarkMode,
     required this.finalLevelAnimation,
-    this.backgroundColor = const Color(0xFFF5F4EE),
-    this.passColor = const Color(0xFF15CB9F),
     this.mainColor = const Color(0xFFE3A651),
+    this.passColor = const Color(0xFF15CB9F),
     this.lockColor = const Color(0xFFF3F2F2),
-    this.lineBackgroundColor = const Color(0xFFF3EADA),
+    this.backgroundColor = const Color(0xFFF5F4EE),
     this.dividerColor = const Color(0xFF7C6F5B),
+    this.lineBackgroundColor = const Color(0xFFF3EADA),
     this.upperRowCount = 1,
     this.lowerRowCount = 2,
     this.drawSpeed = const Duration(milliseconds: 250),
+    required this.onClickLevel,
+    required this.onClickLockLevel,
+    required this.hasSubTopic,
   });
 
   @override
@@ -89,41 +93,49 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
   }
 
   _initialCalculate() {
-    // Calculation for linear progress bar
+    /// Calculation for linear progress bar
 
     // This loop loops through all groups
     for (var group in widget.levelGroupList) {
       passedLevels += group.levels.where((level) => level.progress == 100).length;
       totalLevels += group.levels.length;
     }
+    percent = passedLevels / totalLevels * 100;
 
+    /// Calculate auto scroll position
     double currentPosition = 0;
-    // This loop may not loop through all groups since it stops at the current group
-    for (var group in widget.levelGroupList) {
-      if (group.isFocused) {
-        int levelsTillCurrent = group.levels.indexWhere((level) => level.isCurrent) + 1;
-        int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
-        int remainLevels = levelsTillCurrent - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
+    if (widget.hasSubTopic) {
+      // This loop may not loop through all groups since it stops at the current group
+      for (var group in widget.levelGroupList) {
+        if (group.isFocused) {
+          int levelsTillCurrent = group.levels.indexWhere((level) => level.isCurrent) + 1;
+          int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
+          int remainLevels = levelsTillCurrent - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
+          currentPosition += completeCycleCount * 240 + remainLevels > widget.upperRowCount ? 240 : 120;
+          break;
+        }
+
+        if (group.levels.length == 2) {
+          currentPosition += 120;
+          continue;
+        }
+
+        int completeCycleCount = group.levels.length ~/ (widget.upperRowCount + widget.lowerRowCount);
+        int remainLevels = group.levels.length - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
         currentPosition += completeCycleCount * 240 + remainLevels > widget.upperRowCount ? 240 : 120;
-        break;
       }
-
-      if (group.levels.length == 2) {
-        currentPosition += 120;
-        continue;
-      }
-
-      int completeCycleCount = group.levels.length ~/ (widget.upperRowCount + widget.lowerRowCount);
-      int remainLevels = group.levels.length - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
+    } else {
+      final levelList = widget.levelGroupList.last.levels;
+      int levelsTillCurrent = levelList.indexWhere((level) => level.isCurrent) + 1;
+      int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
+      int remainLevels = levelsTillCurrent - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
       currentPosition += completeCycleCount * 240 + remainLevels > widget.upperRowCount ? 240 : 120;
     }
-
-    percent = passedLevels / totalLevels * 100;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       double screenHeight = MediaQuery.of(context).size.height;
 
-      if (currentPosition > screenHeight * 0.5) {
+      if (currentPosition > screenHeight * 0.25) {
         if (_scrollController.hasClients) {
           _scrollController.animateTo(currentPosition, duration: const Duration(milliseconds: 500), curve: Curves.linear);
         }
@@ -230,15 +242,11 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
 
   Widget _buildGroup(int groupIndex) {
     final currentGroup = widget.levelGroupList[groupIndex];
-
-    final lastCycleDrawSpeed = widget.drawSpeed;
-    // Duration(
-    //     milliseconds: (widget.drawSpeed.inMilliseconds - 20).clamp(100, 1000));
-
     return Column(
       children: [
-        _buildDivider(currentGroup.title),
+        if (widget.hasSubTopic) _buildDivider(currentGroup.title),
         PathLevelComponent(
+          hasSubTopic: widget.hasSubTopic,
           levelList: currentGroup.levels,
           drawType: currentGroup.drawType,
           isDarkMode: widget.isDarkMode,
@@ -246,7 +254,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
           finalLevelImage: widget.finalLevelImage,
           finalLevelAnimation: widget.finalLevelAnimation,
           cycleSpeed: widget.drawSpeed,
-          lastCycleSpeed: lastCycleDrawSpeed,
+          lastCycleSpeed: widget.drawSpeed,
           startColor: currentGroup.startColor,
           startImage: currentGroup.startImage,
           mainColor: widget.mainColor,
@@ -256,6 +264,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
           upperRowCount: widget.upperRowCount,
           lowerRowCount: widget.lowerRowCount,
           onClickLevel: (id) => widget.onClickLevel(id, groupIndex),
+          onClickLockLevel: widget.onClickLockLevel,
         ),
       ],
     );

@@ -12,8 +12,10 @@ class LevelGrid extends StatelessWidget {
   final List<LevelData> levelDataList;
   final String finalLevelImage;
   final String finalLevelAnimation;
+
   final bool isDarkMode;
   final bool isFocused;
+  final bool hasSubTopic;
 
   final Color mainColor;
   final Color passColor;
@@ -21,6 +23,7 @@ class LevelGrid extends StatelessWidget {
   final Color startColor;
 
   final void Function(int id) onClickLevel;
+  final void Function() onClickLockLevel;
 
   const LevelGrid({
     super.key,
@@ -34,10 +37,12 @@ class LevelGrid extends StatelessWidget {
     required this.mainColor,
     required this.passColor,
     required this.lockColor,
-    required this.onClickLevel,
     required this.isDarkMode,
     required this.finalLevelAnimation,
     required this.isFocused,
+    required this.onClickLevel,
+    required this.onClickLockLevel,
+    required this.hasSubTopic,
   });
 
   @override
@@ -68,6 +73,8 @@ class LevelGrid extends StatelessWidget {
                     passColor: passColor,
                     mainColor: mainColor,
                     onClickLevel: onClickLevel,
+                    onClickLockLevel: onClickLockLevel,
+                    hasSubTopic: hasSubTopic,
                   )),
         ),
       );
@@ -96,6 +103,8 @@ class LevelGrid extends StatelessWidget {
                 passColor: passColor,
                 mainColor: mainColor,
                 onClickLevel: onClickLevel,
+                onClickLockLevel: onClickLockLevel,
+                hasSubTopic: hasSubTopic,
               )
             : const PlaceholderLevel();
         levelsInARow.add(level);
