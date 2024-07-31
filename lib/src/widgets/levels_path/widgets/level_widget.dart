@@ -5,14 +5,16 @@ import 'package:lottie/lottie.dart';
 class LevelWidget extends StatefulWidget {
   final int index;
   final LevelData levelData;
-  final bool isPlaceholder;
-  final bool isFinal;
   final DrawType drawType;
   final Duration drawSpeed;
   final String finalLevelImage;
   final String finalLevelAnimation;
+
+  final bool isPlaceholder;
+  final bool isFinal;
   final bool isDarkMode;
   final bool isFocused;
+  final bool hasSubTopic;
 
   final Color startColor;
   final Color passColor;
@@ -40,6 +42,7 @@ class LevelWidget extends StatefulWidget {
     required this.isFocused,
     required this.onClickLevel,
     required this.onClickLockLevel,
+    required this.hasSubTopic,
   });
 
   @override
@@ -252,7 +255,7 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
   }
 
   Widget _getLevelWidget() {
-    // if (widget.isFinal && widget.isLastGroup) return _finalLevel();
+    if (widget.isFinal && !widget.hasSubTopic) return _finalLevel();
     if (widget.levelData.isLock) return _lockLevel();
     return _defaultLevel();
   }
@@ -317,17 +320,17 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
         ],
       );
 
-  // Widget _finalLevel() => Padding(
-  //     padding: const EdgeInsets.only(bottom: 5),
-  //     child: Opacity(
-  //       opacity: widget.levelData.isCurrent ? 1 : 0.6,
-  //       child: widget.levelData.progress == 100
-  //           ? Transform.translate(
-  //               offset: const Offset(0, -10),
-  //               child: Transform.scale(scale: 1.4, child: Lottie.asset(widget.finalLevelAnimation, height: 65, width: 65)),
-  //             )
-  //           : Image.asset(widget.finalLevelImage, scale: 0.8, width: 65),
-  //     ));
+  Widget _finalLevel() => Padding(
+      padding: const EdgeInsets.only(bottom: 5),
+      child: Opacity(
+        opacity: widget.levelData.isCurrent ? 1 : 0.6,
+        child: widget.levelData.progress == 100
+            ? Transform.translate(
+                offset: const Offset(0, -10),
+                child: Transform.scale(scale: 1.4, child: Lottie.asset(widget.finalLevelAnimation, height: 65, width: 65)),
+              )
+            : Image.asset(widget.finalLevelImage, scale: 0.8, width: 65),
+      ));
 
   // Widget _tooltip() => AnimatedBuilder(
   //       animation: _tooltipAnimation,

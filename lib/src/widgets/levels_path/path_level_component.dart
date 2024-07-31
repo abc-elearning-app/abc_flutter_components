@@ -187,6 +187,7 @@ class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticK
         lockColor: widget.lockColor,
         onClickLevel: widget.onClickLevel,
         onClickLockLevel: widget.onClickLockLevel,
+        hasSubTopic: widget.hasSubTopic,
       ),
     ]);
   }
