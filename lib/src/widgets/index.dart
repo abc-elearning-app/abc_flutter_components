@@ -47,6 +47,7 @@ export 'animations/move_animation.dart';
 export 'animations/button_pro_animation.dart';
 export 'animations/border_animation.dart';
 export 'study_plan_setup/study_plan_setup_pages.dart';
+export 'study_plan_setup/simple_study_plan_setup.dart';
 export 'introduction/introduction.dart';
 export 'login_pages/main_login.dart';
 export 'study_plan/study_plan_analyzing.dart';
