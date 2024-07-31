@@ -50,6 +50,7 @@ class PathLevelComponent extends StatefulWidget {
 
   final bool isFocused;
   final bool isDarkMode;
+  final bool hasSubTopic;
 
   final void Function(int id) onClickLevel;
   final void Function() onClickLockLevel;
@@ -74,6 +75,7 @@ class PathLevelComponent extends StatefulWidget {
     required this.finalLevelAnimation,
     required this.isFocused,
     required this.onClickLockLevel,
+    required this.hasSubTopic,
   });
 
   @override

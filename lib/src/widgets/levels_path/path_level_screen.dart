@@ -93,41 +93,49 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
   }
 
   _initialCalculate() {
-    // Calculation for linear progress bar
+    /// Calculation for linear progress bar
 
     // This loop loops through all groups
     for (var group in widget.levelGroupList) {
       passedLevels += group.levels.where((level) => level.progress == 100).length;
       totalLevels += group.levels.length;
     }
+    percent = passedLevels / totalLevels * 100;
 
+    /// Calculate auto scroll position
     double currentPosition = 0;
-    // This loop may not loop through all groups since it stops at the current group
-    for (var group in widget.levelGroupList) {
-      if (group.isFocused) {
-        int levelsTillCurrent = group.levels.indexWhere((level) => level.isCurrent) + 1;
-        int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
-        int remainLevels = levelsTillCurrent - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
+    if (widget.hasSubTopic) {
+      // This loop may not loop through all groups since it stops at the current group
+      for (var group in widget.levelGroupList) {
+        if (group.isFocused) {
+          int levelsTillCurrent = group.levels.indexWhere((level) => level.isCurrent) + 1;
+          int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
+          int remainLevels = levelsTillCurrent - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
+          currentPosition += completeCycleCount * 240 + remainLevels > widget.upperRowCount ? 240 : 120;
+          break;
+        }
+
+        if (group.levels.length == 2) {
+          currentPosition += 120;
+          continue;
+        }
+
+        int completeCycleCount = group.levels.length ~/ (widget.upperRowCount + widget.lowerRowCount);
+        int remainLevels = group.levels.length - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
         currentPosition += completeCycleCount * 240 + remainLevels > widget.upperRowCount ? 240 : 120;
-        break;
       }
-
-      if (group.levels.length == 2) {
-        currentPosition += 120;
-        continue;
-      }
-
-      int completeCycleCount = group.levels.length ~/ (widget.upperRowCount + widget.lowerRowCount);
-      int remainLevels = group.levels.length - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
+    } else {
+      final levelList = widget.levelGroupList.last.levels;
+      int levelsTillCurrent = levelList.indexWhere((level) => level.isCurrent) + 1;
+      int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
+      int remainLevels = levelsTillCurrent - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
       currentPosition += completeCycleCount * 240 + remainLevels > widget.upperRowCount ? 240 : 120;
     }
-
-    percent = passedLevels / totalLevels * 100;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       double screenHeight = MediaQuery.of(context).size.height;
 
-      if (currentPosition > screenHeight * 0.5) {
+      if (currentPosition > screenHeight * 0.25) {
         if (_scrollController.hasClients) {
           _scrollController.animateTo(currentPosition, duration: const Duration(milliseconds: 500), curve: Curves.linear);
         }
@@ -234,15 +242,11 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
 
   Widget _buildGroup(int groupIndex) {
     final currentGroup = widget.levelGroupList[groupIndex];
-
-    final lastCycleDrawSpeed = widget.drawSpeed;
-    // Duration(
-    //     milliseconds: (widget.drawSpeed.inMilliseconds - 20).clamp(100, 1000));
-
     return Column(
       children: [
         if (widget.hasSubTopic) _buildDivider(currentGroup.title),
         PathLevelComponent(
+          hasSubTopic: widget.hasSubTopic,
           levelList: currentGroup.levels,
           drawType: currentGroup.drawType,
           isDarkMode: widget.isDarkMode,
@@ -250,7 +254,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
           finalLevelImage: widget.finalLevelImage,
           finalLevelAnimation: widget.finalLevelAnimation,
           cycleSpeed: widget.drawSpeed,
-          lastCycleSpeed: lastCycleDrawSpeed,
+          lastCycleSpeed: widget.drawSpeed,
           startColor: currentGroup.startColor,
           startImage: currentGroup.startImage,
           mainColor: widget.mainColor,

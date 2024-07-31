@@ -230,7 +230,8 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
                                 width: 120,
                                 child: Text(widget.levelData.title,
                                     textAlign: TextAlign.center,
-                                    maxLines: 3,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(color: Colors.grey, fontSize: 14, fontWeight: FontWeight.w500)),
                               )
                             ],
