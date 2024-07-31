@@ -9,7 +9,9 @@ class ReviewQuestionBox extends StatefulWidget {
   final bool isDarkMode;
 
   final Color mainColor;
+  final String mainColorHex;
   final Color secondaryColor;
+  final String secondaryColorHex;
   final Color explanationColor;
 
   final Widget Function(BuildContext context, String text, TextStyle textStyle)? renderTextBuilder;
@@ -31,10 +33,12 @@ class ReviewQuestionBox extends StatefulWidget {
     required this.isPro,
     required this.isDarkMode,
     required this.topicName,
+    required this.mainColor,
+    required this.mainColorHex,
+    required this.secondaryColor,
+    required this.secondaryColorHex,
     this.renderTextBuilder,
     this.explanationColor = const Color(0xFF5497FF),
-    this.mainColor = const Color(0xFFE3A651),
-    this.secondaryColor = const Color(0xFF7C6F5B),
   });
 
   @override
@@ -71,7 +75,11 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
               children: [
                 Row(
                   children: [
-                    Expanded(child: Text(widget.topicName, overflow: TextOverflow.ellipsis,)),
+                    Expanded(
+                        child: Text(
+                      widget.topicName,
+                      overflow: TextOverflow.ellipsis,
+                    )),
                     _buildButtons(),
                   ],
                 ),
@@ -83,7 +91,10 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('${widget.index + 1}. ', style: textStyle,),
+                      Text(
+                        '${widget.index + 1}. ',
+                        style: textStyle,
+                      ),
                       Expanded(child: widget.renderTextBuilder!.call(context, widget.questionData.question, textStyle))
                     ],
                   )
@@ -147,7 +158,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
               bookmarked: isBookmarked,
               liked: isLiked,
               disliked: isDisliked,
-              color: 'orange',
+              color: widget.isDarkMode ? widget.mainColorHex : widget.secondaryColorHex,
               onBookmark: widget.onBookmark,
               onLike: widget.onLike,
               onDislike: widget.onDislike),
