@@ -20,6 +20,7 @@ class LevelWidget extends StatefulWidget {
   final Color lockColor;
 
   final void Function(int id) onClickLevel;
+  final void Function() onClickLockLevel;
 
   const LevelWidget({
     super.key,
@@ -34,10 +35,11 @@ class LevelWidget extends StatefulWidget {
     required this.passColor,
     required this.mainColor,
     required this.lockColor,
-    required this.onClickLevel,
     required this.isDarkMode,
     required this.finalLevelAnimation,
     required this.isFocused,
+    required this.onClickLevel,
+    required this.onClickLockLevel,
   });
 
   @override
@@ -216,7 +218,7 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
                     Transform.translate(
                         offset: Offset(0, _getTranslateValue()),
                         child: GestureDetector(
-                          onTap: () => !widget.levelData.isLock ? widget.onClickLevel(widget.levelData.id) : null,
+                          onTap: () => !widget.levelData.isLock ? widget.onClickLevel(widget.levelData.id) : widget.onClickLockLevel(),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
