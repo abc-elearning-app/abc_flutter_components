@@ -93,12 +93,17 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
   }
 
   _initialCalculate() {
-    double currentPosition = 0;
+    // Calculation for linear progress bar
+
+    // This loop loops through all groups
     for (var group in widget.levelGroupList) {
-      // Calculation for linear progress bar
       passedLevels += group.levels.where((level) => level.progress == 100).length;
       totalLevels += group.levels.length;
+    }
 
+    double currentPosition = 0;
+    // This loop may not loop through all groups since it stops at the current group
+    for (var group in widget.levelGroupList) {
       if (group.isFocused) {
         int levelsTillCurrent = group.levels.indexWhere((level) => level.isCurrent) + 1;
         int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);

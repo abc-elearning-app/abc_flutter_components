@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-import 'half_circle_progress.dart';
-
 class MainResultBox extends StatefulWidget {
   final bool isFirstTime;
   final bool isDarkMode;

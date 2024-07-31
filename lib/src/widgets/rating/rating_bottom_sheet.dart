@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/rating/star_line.dart';
 
-class RatingDialogComponent extends StatefulWidget {
+class RatingBottomSheetComponent extends StatefulWidget {
   final Color mainColor;
   final Color backgroundColor;
   final bool isDarkMode;
@@ -14,7 +14,7 @@ class RatingDialogComponent extends StatefulWidget {
 
   final void Function(int starCount) onRate;
 
-  const RatingDialogComponent({
+  const RatingBottomSheetComponent({
     super.key,
     required this.mainColor,
     required this.backgroundColor,
@@ -27,10 +27,10 @@ class RatingDialogComponent extends StatefulWidget {
   });
 
   @override
-  State<RatingDialogComponent> createState() => _RatingDialogComponentState();
+  State<RatingBottomSheetComponent> createState() => _RatingBottomSheetComponentState();
 }
 
-class _RatingDialogComponentState extends State<RatingDialogComponent> {
+class _RatingBottomSheetComponentState extends State<RatingBottomSheetComponent> {
   late ValueNotifier<int> _starRated;
   bool isSelected = false;
 
@@ -48,15 +48,14 @@ class _RatingDialogComponentState extends State<RatingDialogComponent> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 25),
-        decoration: BoxDecoration(
-          color: widget.isDarkMode ? Colors.black : widget.backgroundColor,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Wrap(children: [
-          Stack(children: [
+    return Container(
+      decoration: BoxDecoration(
+        color: widget.isDarkMode ? Colors.black : widget.backgroundColor,
+        borderRadius: BorderRadius.circular(36),
+      ),
+      child: Wrap(children: [
+        SafeArea(
+          child: Stack(children: [
             // Background image
             Image.asset(widget.backgroundImage),
 
@@ -95,10 +94,7 @@ class _RatingDialogComponentState extends State<RatingDialogComponent> {
                   child: Text(
                     "We're Like The FOMO Of Apps:",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: widget.isDarkMode ? Colors.white : Colors.black),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: widget.isDarkMode ? Colors.white : Colors.black),
                   ),
                 ),
                 Padding(
@@ -106,10 +102,7 @@ class _RatingDialogComponentState extends State<RatingDialogComponent> {
                   child: Text(
                     "You'll Miss Out If You Don't Leave Us A Positive Rating.",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: widget.isDarkMode ? Colors.white : Colors.black),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: widget.isDarkMode ? Colors.white : Colors.black),
                   ),
                 ),
                 Padding(
@@ -130,15 +123,11 @@ class _RatingDialogComponentState extends State<RatingDialogComponent> {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: MainButton(
                       borderRadius: 36,
-                      title: star > 3 || star == 0
-                          ? 'Rate us on the Playstore'
-                          : 'Feedback',
+                      title: star > 3 || star == 0 ? 'Rate us on the Playstore' : 'Feedback',
                       backgroundColor: widget.mainColor,
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       disabled: !isSelected,
-                      disabledColor: widget.isDarkMode
-                          ? Colors.grey
-                          : Colors.black.withOpacity(0.08),
+                      disabledColor: widget.isDarkMode ? Colors.grey : Colors.black.withOpacity(0.08),
                       textColor: widget.isDarkMode
                           ? Colors.white
                           : !isSelected
@@ -154,17 +143,11 @@ class _RatingDialogComponentState extends State<RatingDialogComponent> {
                 ),
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.only(
-                    left: 20,
-                    right: 20,
-                    bottom: 5,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: MainButton(
                     backgroundColor: Colors.transparent,
                     borderRadius: 36,
-                    textColor: widget.isDarkMode
-                        ? Colors.white.withOpacity(0.5)
-                        : Colors.black.withOpacity(0.5),
+                    textColor: widget.isDarkMode ? Colors.white.withOpacity(0.5) : Colors.black.withOpacity(0.5),
                     title: 'Not now',
                     textStyle: const TextStyle(
                       fontWeight: FontWeight.w500,
@@ -176,8 +159,8 @@ class _RatingDialogComponentState extends State<RatingDialogComponent> {
               ],
             ),
           ]),
-        ]),
-      ),
+        ),
+      ]),
     );
   }
 
