@@ -65,7 +65,7 @@ class PassingProbabilityComponent extends StatelessWidget {
       );
 
   Widget _passingProbabilityBox() => Container(
-        margin: const EdgeInsets.only(top: 10, left: 5, right: 5),
+        margin: const EdgeInsets.only(top: 10),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         width: double.infinity,
         decoration: BoxDecoration(

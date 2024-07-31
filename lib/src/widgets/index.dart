@@ -93,7 +93,7 @@ export 'new_home_screen/widgets/study_tab_widgets/study_tab_subject_tile.dart';
 export 'account/account_tab.dart';
 export 'account/user_information.dart';
 export 'account/user_avatar.dart';
-export 'rating/rating_dialog.dart';
+export 'rating/rating_bottom_sheet.dart';
 export 'animations/confetti_effect.dart';
 export 'animations/sad_effect.dart';
 export 'settings/widgets/premium_button.dart';
