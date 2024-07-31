@@ -107,7 +107,7 @@ class ActionButton extends StatelessWidget {
         onToggle(!isSelected);
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 5),
         child: SvgPicture.string(icon),
       ),
     );
