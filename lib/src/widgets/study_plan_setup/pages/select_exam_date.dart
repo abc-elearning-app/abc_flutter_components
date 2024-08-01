@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/custom_datetime_picker/custom_unrestrict_date_picker.dart';
 
+import '../../custom_datetime_picker/custom_date_picker.dart';
+
 class SelectExamDatePage extends StatefulWidget {
   final String title;
   final String image;
@@ -45,33 +47,22 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
             // Title
             Padding(
                 padding: const EdgeInsets.all(20),
-                child: Text(widget.title,
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color:
-                            widget.isDarkMode ? Colors.white : Colors.black))),
+                child: Text(widget.title, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: widget.isDarkMode ? Colors.white : Colors.black))),
 
             // Image
-            Padding(
-                padding: const EdgeInsets.only(bottom: 40),
-                child: Image.asset(widget.image, height: 280)),
+            Padding(padding: const EdgeInsets.only(bottom: 40), child: Image.asset(widget.image, height: 280)),
 
             // Option tile & Exam time picker
             Expanded(
               child: ValueListenableBuilder(
                 valueListenable: _selectedIndex,
                 builder: (_, selectedIndex, __) => AnimatedCrossFade(
-                    crossFadeState: selectedIndex != 0
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
+                    crossFadeState: selectedIndex != 0 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                     duration: const Duration(milliseconds: 200),
                     firstChild: _buildOptions(selectedIndex),
                     secondChild: Container(
                       constraints: const BoxConstraints(maxHeight: 200),
-                      child: CustomUnrestrictedDatePicker(
-                        onSelectDate: widget.onSelectDate,
-                      ),
+                      child: CustomDatePicker(onSelectDate: widget.onSelectDate),
                     )),
               ),
             ),
@@ -92,10 +83,7 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
                 children: [
                   Text(
                     'Choose A Date',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16),
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 16),
                   ),
                   Text('Pick A Date From Calendar',
                       style: TextStyle(
@@ -113,10 +101,7 @@ class _SelectExamDatePageState extends State<SelectExamDatePage> {
                 padding: EdgeInsets.symmetric(vertical: 8),
                 child: Text(
                   "I Don't Know My Exam Date Yet",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16),
+                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 16),
                 ),
               )),
         ],

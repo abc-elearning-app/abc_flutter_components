@@ -29,10 +29,7 @@ class SelectReminderTimePage extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             child: Text(
               title,
-              style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: isDarkMode ? Colors.white : Colors.black),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black),
               textAlign: TextAlign.center,
             ),
           ),
