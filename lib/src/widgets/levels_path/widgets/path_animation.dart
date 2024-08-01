@@ -213,6 +213,7 @@ class _PathAnimationState extends State<PathAnimation> with TickerProviderStateM
     }
     nextLevelController.dispose();
     lastCycleCurveController.dispose();
+    additionalNextLevelController.dispose();
     for (var item in lastRoundLineControllers) {
       item.dispose();
     }
