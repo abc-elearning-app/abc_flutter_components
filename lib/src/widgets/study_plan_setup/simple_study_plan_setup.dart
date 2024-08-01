@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/custom_datetime_picker/custom_time_picker.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/custom_datetime_picker/custom_unrestrict_date_picker.dart';
+
+import '../custom_datetime_picker/custom_date_picker.dart';
 
 class SimpleStudyPlanSetupComponent extends StatefulWidget {
   final bool isDarkMode;
+  final bool showSetupReminder;
 
   final Color mainColor;
   final Color backgroundColor;
 
   final String dateImage;
   final String timeImage;
+
+  final void Function(DateTime date) onSetExamDate;
+  final void Function(TimeOfDay? date) onSetReminder;
 
   const SimpleStudyPlanSetupComponent({
     super.key,
@@ -19,6 +24,9 @@ class SimpleStudyPlanSetupComponent extends StatefulWidget {
     required this.isDarkMode,
     required this.dateImage,
     required this.timeImage,
+    required this.onSetExamDate,
+    required this.onSetReminder,
+    required this.showSetupReminder,
   });
 
   @override
@@ -30,11 +38,18 @@ class _SimpleStudyPlanSetupComponentState extends State<SimpleStudyPlanSetupComp
   late AnimationController buttonController;
   late Animation buttonAnimation;
 
+  late DateTime selectedDate;
+  late TimeOfDay selectedTime;
+
   @override
   void initState() {
     pageController = PageController();
     buttonController = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
     buttonAnimation = Tween<double>(begin: 0, end: 50).animate(buttonController);
+
+    selectedDate = DateTime.now();
+    selectedTime = TimeOfDay.now();
+
     super.initState();
   }
 
@@ -67,6 +82,7 @@ class _SimpleStudyPlanSetupComponentState extends State<SimpleStudyPlanSetupComp
                     itemCount: 2,
                     itemBuilder: (_, index) => Column(
                       children: [
+                        // Title
                         Padding(
                           padding: const EdgeInsets.all(20),
                           child: Text(
@@ -75,61 +91,31 @@ class _SimpleStudyPlanSetupComponentState extends State<SimpleStudyPlanSetupComp
                             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
                           ),
                         ),
-                        Image.asset(index == 0 ? widget.dateImage : widget.timeImage, height: 250),
+
+                        // Image
+                        Image.asset(index == 0 ? widget.dateImage : widget.timeImage, height: MediaQuery.of(context).size.height * 0.3),
+
+                        // Date and time picker
                         Expanded(
-                            child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: index == 0 ? 80 : 0),
-                          child: index == 0 ? CustomUnrestrictedDatePicker(onSelectDate: (date) {}) : CustomTimePicker(onSelectTime: (time) {}),
-                        ))
+                          child: Column(
+                            children: [
+                              const Expanded(child: SizedBox()),
+                              SizedBox(
+                                height: 160,
+                                child: index == 0
+                                    ? CustomDatePicker(onSelectDate: (date) => selectedDate = date)
+                                    : CustomTimePicker(onSelectTime: (time) => selectedTime = time),
+                              ),
+                              const Expanded(child: SizedBox()),
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   )),
-                  SizedBox(
-                    height: 120,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                              width: double.infinity,
-                              child: MainButton(
-                                title: 'Next',
-                                backgroundColor: widget.mainColor,
-                                textColor: Colors.white,
-                                textStyle: const TextStyle(fontSize: 18),
-                                padding: const EdgeInsets.symmetric(vertical: 15),
-                                onPressed: () {
-                                  if (pageController.page == 0) {
-                                    pageController.nextPage(duration: const Duration(milliseconds: 200), curve: Curves.linear);
-                                    buttonController.forward();
-                                  } else {
-                                    Navigator.of(context).pop();
-                                  }
-                                },
-                              )),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: AnimatedBuilder(
-                                animation: buttonAnimation,
-                                builder: (_, __) => SizedBox(
-                                    height: buttonAnimation.value,
-                                    width: double.infinity,
-                                    child: MainButton(
-                                      title: 'Not Now',
-                                      backgroundColor: Colors.transparent,
-                                      textColor: widget.isDarkMode ? Colors.white : Colors.black,
-                                      textStyle: const TextStyle(fontSize: 16),
-                                      onPressed: () => Navigator.of(context).pop(),
-                                    )),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
+
+                  // Next and skip button
+                  _buildButtons(),
                 ],
               )
             ],
@@ -176,4 +162,57 @@ class _SimpleStudyPlanSetupComponentState extends State<SimpleStudyPlanSetupComp
           )
         ],
       );
+
+  Widget _buildButtons() => SizedBox(
+    height: 130,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+              width: double.infinity,
+              child: MainButton(
+                title: 'Next',
+                backgroundColor: widget.mainColor,
+                textColor: Colors.white,
+                textStyle: const TextStyle(fontSize: 18),
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                onPressed: _onSelect,
+              )),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: AnimatedBuilder(
+              animation: buttonAnimation,
+              builder: (_, __) => SizedBox(
+                  height: buttonAnimation.value,
+                  width: double.infinity,
+                  child: MainButton(
+                    title: 'Not Now',
+                    backgroundColor: Colors.transparent,
+                    textColor: widget.isDarkMode ? Colors.white : Colors.black,
+                    textStyle: const TextStyle(fontSize: 16),
+                    onPressed: () => widget.onSetReminder(null),
+                  )),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+
+  _onSelect() {
+    if (pageController.page == 0) {
+      widget.onSetExamDate(selectedDate);
+
+      if (widget.showSetupReminder) {
+        pageController.nextPage(duration: const Duration(milliseconds: 200), curve: Curves.linear);
+        buttonController.forward();
+      } else {
+        widget.onSetReminder(null);
+      }
+    } else {
+      widget.onSetReminder(TimeOfDay(hour: selectedTime.hour, minute: selectedTime.minute + 1));
+    }
+  }
 }
