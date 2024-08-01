@@ -15,8 +15,7 @@ class PathStartImage extends StatefulWidget {
   State<PathStartImage> createState() => _PathStartImageState();
 }
 
-class _PathStartImageState extends State<PathStartImage>
-    with SingleTickerProviderStateMixin {
+class _PathStartImageState extends State<PathStartImage> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation _animation;
 
@@ -24,13 +23,13 @@ class _PathStartImageState extends State<PathStartImage>
   void initState() {
     // Only show animation on 1st time open
     if (widget.drawType == DrawType.firstTimeOpen) {
-      _controller = AnimationController(
-          vsync: this, duration: const Duration(milliseconds: 300));
+      _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
 
       _animation = Tween<double>(begin: 100, end: 0).animate(_controller);
 
-      Future.delayed(
-          const Duration(milliseconds: 200), () => _controller.forward());
+      Future.delayed(const Duration(milliseconds: 200), () {
+        if (mounted) _controller.forward();
+      });
     }
     super.initState();
   }
@@ -51,9 +50,7 @@ class _PathStartImageState extends State<PathStartImage>
       child: widget.drawType == DrawType.firstTimeOpen
           ? AnimatedBuilder(
               animation: _animation,
-              builder: (_, __) => Transform.translate(
-                  offset: Offset(_animation.value, 0),
-                  child: Image.asset(widget.imagePath, width: 100)),
+              builder: (_, __) => Transform.translate(offset: Offset(_animation.value, 0), child: Image.asset(widget.imagePath, width: 100)),
             )
           : Image.asset(widget.imagePath, width: 100),
     );
