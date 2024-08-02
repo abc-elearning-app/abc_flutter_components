@@ -255,6 +255,7 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
   }
 
   Widget _getLevelWidget() {
+    print(widget.levelData.isLock);
     if (widget.isFinal && !widget.hasSubTopic) return _finalLevel();
     if (widget.levelData.isLock) return _lockLevel();
     return _defaultLevel();

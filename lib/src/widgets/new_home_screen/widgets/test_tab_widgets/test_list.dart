@@ -29,11 +29,11 @@ class TestList extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           shrinkWrap: true,
           itemCount: practiceTests.length,
-          itemBuilder: (_, index) => _testBox(practiceTests[index])),
+          itemBuilder: (_, index) => _testBox(practiceTests[index], index)),
     );
   }
 
-  Widget _testBox(TestData data) => GestureDetector(
+  Widget _testBox(TestData data, int index) => GestureDetector(
         onTap: () => onSelect(data.id),
         child: Container(
           width: 185,
@@ -70,7 +70,7 @@ class TestList extends StatelessWidget {
                 children: [
                   // Title
                   Text(
-                    data.title,
+                    "Practice Test ${index + 1}",
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,

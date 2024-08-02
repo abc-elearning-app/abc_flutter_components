@@ -78,6 +78,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
 
   double percent = 0;
   int passedLevels = 0;
+  double totalPercent = 0;
   int totalLevels = 0;
 
   @override
@@ -98,9 +99,10 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
     // This loop loops through all groups
     for (var group in widget.levelGroupList) {
       passedLevels += group.levels.where((level) => level.progress == 100).length;
+      totalPercent += group.levels.fold(0, (previousValue, element) => previousValue + element.progress);
       totalLevels += group.levels.length;
     }
-    percent = passedLevels / totalLevels * 100;
+    percent = totalPercent / totalLevels;
 
     /// Calculate auto scroll position
     double currentPosition = 0;
