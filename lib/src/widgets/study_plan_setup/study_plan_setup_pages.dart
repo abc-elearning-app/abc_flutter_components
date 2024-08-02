@@ -116,7 +116,6 @@ class _StudyPlanSetupComponentState extends State<StudyPlanSetupComponent> {
         children: [
           // Upper background
           Expanded(
-            flex: 4,
             child: Stack(alignment: Alignment.center, children: [
               Container(color: widget.isDarkMode ? Colors.grey.shade800 : widget.lowerBackgroundColor),
               Container(

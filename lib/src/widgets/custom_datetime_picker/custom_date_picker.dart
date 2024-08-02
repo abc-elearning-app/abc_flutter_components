@@ -36,8 +36,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     'November',
     'December',
   ];
-  final List<String> yearStrings =
-      List.generate(30, (index) => (DateTime.now().year + index).toString());
+  final List<String> yearStrings = List.generate(30, (index) => (DateTime.now().year + index).toString());
 
   @override
   void initState() {
@@ -53,12 +52,10 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     // Scroll to minimum day and month
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_dayController.selectedItem < startDayIndex) {
-        _dayController.animateToItem(startDayIndex,
-            duration: const Duration(milliseconds: 200), curve: Curves.linear);
+        _dayController.animateToItem(startDayIndex, duration: const Duration(milliseconds: 200), curve: Curves.linear);
       }
       if (_monthController.selectedItem < startMonthIndex) {
-        _monthController.animateToItem(startMonthIndex,
-            duration: const Duration(milliseconds: 200), curve: Curves.linear);
+        _monthController.animateToItem(startMonthIndex, duration: const Duration(milliseconds: 200), curve: Curves.linear);
       }
     });
 
@@ -71,15 +68,9 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-              width: 100,
-              child: _customCupertinoPicker(
-                  PickerType.day, List.generate(31, (index) => index + 1))),
-          Expanded(
-              child: _customCupertinoPicker(PickerType.month, monthStrings)),
-          SizedBox(
-              width: 110,
-              child: _customCupertinoPicker(PickerType.year, yearStrings)),
+          SizedBox(width: 100, child: _customCupertinoPicker(PickerType.day, List.generate(31, (index) => index + 1))),
+          Expanded(child: _customCupertinoPicker(PickerType.month, monthStrings)),
+          SizedBox(width: 110, child: _customCupertinoPicker(PickerType.year, yearStrings)),
         ],
       ),
 
@@ -90,20 +81,16 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
             height: 50,
-            decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(color: Colors.grey.withOpacity(0.2), borderRadius: BorderRadius.circular(8)),
           ),
         ),
       )
     ]);
   }
 
-  Widget _customCupertinoPicker(PickerType type, List<dynamic> items) =>
-      CupertinoPicker(
+  Widget _customCupertinoPicker(PickerType type, List<dynamic> items) => CupertinoPicker(
         scrollController: _getScrollController(type),
-        selectionOverlay: const CupertinoPickerDefaultSelectionOverlay(
-            background: Colors.transparent),
+        selectionOverlay: const CupertinoPickerDefaultSelectionOverlay(background: Colors.transparent),
         offAxisFraction: _getOffAxisFraction(type),
         itemExtent: 35,
         magnification: 1.2,
@@ -113,20 +100,12 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
         children: List.generate(
             items.length,
             (index) => Align(
-                  alignment: type != PickerType.day
-                      ? Alignment.centerLeft
-                      : Alignment.centerRight,
+                  alignment: type != PickerType.day ? Alignment.centerLeft : Alignment.centerRight,
                   child: Padding(
-                    padding: EdgeInsets.only(
-                        left: type != PickerType.day ? 15 : 0,
-                        right: type == PickerType.day ? 20 : 0),
+                    padding: EdgeInsets.only(left: type != PickerType.day ? 15 : 0, right: type == PickerType.day ? 20 : 0),
                     child: Text(
                       items[index].toString(),
-                      style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20,
-                          color: _getItemColor(type, index)),
+                      style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w500, fontSize: 20, color: _getItemColor(type, index)),
                     ),
                   ),
                 )),
@@ -138,13 +117,9 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
         {
           // Block past days and invalid days
           if (_dayController.selectedItem < startDayIndex) {
-            _dayController.animateToItem(startDayIndex,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.linear);
+            _dayController.animateToItem(startDayIndex, duration: const Duration(milliseconds: 200), curve: Curves.linear);
           } else if (_dayController.selectedItem >= maxDayIndex) {
-            _dayController.animateToItem(maxDayIndex - 1,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.linear);
+            _dayController.animateToItem(maxDayIndex - 1, duration: const Duration(milliseconds: 200), curve: Curves.linear);
           }
 
           // Update day
@@ -155,16 +130,13 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
         {
           setState(() {
             // If at current month and year, block scrolling to past days
-            if (_monthController.selectedItem == startMonthIndex &&
-                _yearController.selectedItem == 0) {
+            if (_monthController.selectedItem == startMonthIndex && _yearController.selectedItem == 0) {
               // Calculate start valid day
               startDayIndex = DateTime.now().day - 1;
 
               // If current day is past, scroll to minimum valid day
               if (_dayController.selectedItem < startDayIndex) {
-                _dayController.animateToItem(startDayIndex,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.linear);
+                _dayController.animateToItem(startDayIndex, duration: const Duration(milliseconds: 200), curve: Curves.linear);
               }
             } else {
               // If month and year are in the future, set startDay
@@ -176,16 +148,12 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
 
             // After calculation, if current day is invalid, move to the maximum valid day
             if (_dayController.selectedItem >= maxDayIndex) {
-              _dayController.animateToItem(maxDayIndex - 1,
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.linear);
+              _dayController.animateToItem(maxDayIndex - 1, duration: const Duration(milliseconds: 200), curve: Curves.linear);
             }
 
             // Block if scroll to past months
             if (_monthController.selectedItem < startMonthIndex) {
-              _monthController.animateToItem(startMonthIndex,
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.linear);
+              _monthController.animateToItem(startMonthIndex, duration: const Duration(milliseconds: 200), curve: Curves.linear);
             }
           });
 
@@ -202,9 +170,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
 
               // If at past month, scroll to minimum valid month
               if (_monthController.selectedItem < startMonthIndex) {
-                _monthController.animateToItem(startMonthIndex,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.linear);
+                _monthController.animateToItem(startMonthIndex, duration: const Duration(milliseconds: 200), curve: Curves.linear);
               }
 
               // If at current month, calculate start day
@@ -226,10 +192,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
   }
 
   _update() {
-    widget.onSelectDate(DateTime(
-        DateTime.now().year + _yearController.selectedItem,
-        _monthController.selectedItem + 1,
-        _dayController.selectedItem + 1));
+    widget.onSelectDate(DateTime(DateTime.now().year + _yearController.selectedItem, _monthController.selectedItem + 1, _dayController.selectedItem + 1));
   }
 
   _getScrollController(PickerType type) {
@@ -256,33 +219,17 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
 
   _getDaysInMonth(int year, int month) {
     if (month == DateTime.february) {
-      final bool isLeapYear =
-          (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0);
+      final bool isLeapYear = (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0);
       return isLeapYear ? 29 : 28;
     }
-    const List<int> daysInMonth = <int>[
-      31,
-      -1,
-      31,
-      30,
-      31,
-      30,
-      31,
-      31,
-      30,
-      31,
-      30,
-      31
-    ];
+    const List<int> daysInMonth = <int>[31, -1, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     return daysInMonth[month - 1];
   }
 
   _getItemColor(PickerType type, int index) {
     switch (type) {
       case PickerType.day:
-        return index < startDayIndex || index >= maxDayIndex
-            ? Colors.grey
-            : null;
+        return index < startDayIndex || index >= maxDayIndex ? Colors.grey : null;
       case PickerType.month:
         return index < startMonthIndex ? Colors.grey : null;
       case PickerType.year:

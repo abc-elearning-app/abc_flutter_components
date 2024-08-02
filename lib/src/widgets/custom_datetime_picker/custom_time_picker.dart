@@ -22,10 +22,8 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       int currentHour = TimeOfDay.now().hour;
       int currentMinute = TimeOfDay.now().minute;
-      _hourController.animateToItem(currentHour,
-          duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
-      _minuteController.animateToItem(currentMinute,
-          duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+      _hourController.animateToItem(currentHour, duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+      _minuteController.animateToItem(currentMinute, duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
     });
     super.initState();
   }
@@ -53,8 +51,7 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
               ),
             ),
-            SizedBox(
-                width: 90, child: _customCupertinoPicker(PickerType.minute)),
+            SizedBox(width: 90, child: _customCupertinoPicker(PickerType.minute)),
           ],
         ),
       ),
@@ -66,9 +63,7 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
             height: 40,
-            decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(color: Colors.grey.withOpacity(0.2), borderRadius: BorderRadius.circular(8)),
           ),
         ),
       )
@@ -77,8 +72,7 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
 
   Widget _customCupertinoPicker(PickerType type) => CupertinoPicker(
         scrollController: _getScrollController(type),
-        selectionOverlay: const CupertinoPickerDefaultSelectionOverlay(
-            background: Colors.transparent),
+        selectionOverlay: const CupertinoPickerDefaultSelectionOverlay(background: Colors.transparent),
         offAxisFraction: _getOffAxisFraction(type),
         itemExtent: 35,
         magnification: 1.2,
@@ -88,14 +82,9 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
         children: List.generate(
             type == PickerType.hour ? 24 : 60,
             (index) => Align(
-                  alignment: type != PickerType.hour
-                      ? Alignment.centerLeft
-                      : Alignment.centerRight,
+                  alignment: type != PickerType.hour ? Alignment.centerLeft : Alignment.centerRight,
                   child: Text(
-                    (type == PickerType.hour
-                            ? _getDisplayTime(index)
-                            : _getDisplayTime(index))
-                        .toString(),
+                    (type == PickerType.hour ? _getDisplayTime(index) : _getDisplayTime(index)).toString(),
                     style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w500,
@@ -107,12 +96,9 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
 
   _getDisplayTime(int value) => value < 10 ? '0$value' : value.toString();
 
-  _handleSelectDate() => widget.onSelectTime(TimeOfDay(
-      hour: _hourController.selectedItem,
-      minute: _minuteController.selectedItem - 1));
+  _handleSelectDate() => widget.onSelectTime(TimeOfDay(hour: _hourController.selectedItem, minute: _minuteController.selectedItem));
 
-  _getScrollController(PickerType type) =>
-      type == PickerType.hour ? _hourController : _minuteController;
+  _getScrollController(PickerType type) => type == PickerType.hour ? _hourController : _minuteController;
 
   _getOffAxisFraction(PickerType type) => type == PickerType.hour ? -0.5 : 0.5;
 }
