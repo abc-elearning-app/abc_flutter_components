@@ -100,3 +100,5 @@ export 'animations/confetti_effect.dart';
 export 'animations/sad_effect.dart';
 export 'settings/widgets/premium_button.dart';
 export 'settings/widgets/setting_tile.dart';
+export 'setup/select_state_tab.dart';
+export 'setup/select_endorsement_tab.dart';
