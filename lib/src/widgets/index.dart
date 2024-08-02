@@ -19,6 +19,7 @@ export 'dialogs/unlocked_part_dialog.dart';
 export 'dialogs/custom_dialog.dart';
 export 'dialogs/my_custom_dialog.dart';
 export 'dialogs/questions_count_dialog.dart';
+export 'dialogs/slide_dialog.dart';
 export 'logins/login.dart';
 export 'logins/sign_in_button.dart';
 export 'logins/choose_login_option.dart';
