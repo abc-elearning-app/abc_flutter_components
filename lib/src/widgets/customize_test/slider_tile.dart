@@ -58,8 +58,8 @@ class _SliderTileState extends State<SliderTile> {
               thumbShape: ThumbShape(
                   thumbColor: Colors.white,
                   tooltipColor: widget.isDarkMode ? const Color(0xFF858686) : widget.secondaryColor,
-                  maxValue: widget.maxValue,
-                  minValue: widget.minValue),
+                  maxValue: widget.maxValue.toDouble(),
+                  minValue: widget.minValue.toDouble()),
               inactiveTrackColor: widget.isDarkMode ? Colors.white.withOpacity(0.12) : Colors.grey.shade300,
             ),
             child: Slider(
@@ -91,13 +91,15 @@ class _SliderTileState extends State<SliderTile> {
 }
 
 class ThumbShape extends SliderComponentShape {
+  final bool showDecimal;
+
   final double thumbWidth;
   final double thumbHeight;
   final double borderRadius;
   final double triangleWidth;
   final double yOffset;
-  final int maxValue;
-  final int minValue;
+  final double maxValue;
+  final double minValue;
   final Color thumbColor;
   final Color tooltipColor;
 
@@ -107,6 +109,7 @@ class ThumbShape extends SliderComponentShape {
     this.borderRadius = 8,
     this.triangleWidth = 15,
     this.yOffset = -30,
+    this.showDecimal = false,
     required this.tooltipColor,
     required this.thumbColor,
     required this.maxValue,
@@ -176,7 +179,7 @@ class ThumbShape extends SliderComponentShape {
         fontWeight: FontWeight.w500,
         fontSize: 14,
       ),
-      text: (minValue + (maxValue - minValue) * value).toInt().toString(),
+      text: showDecimal ? (minValue + (maxValue - minValue) * value).toStringAsFixed(1) : (minValue + (maxValue - minValue) * value).toInt().toString(),
     );
     final TextPainter tp = TextPainter(
       text: span,
