@@ -75,6 +75,7 @@ class _SelectEndorsementTabState extends State<SelectEndorsementTab> {
                 builder: (_, value, __) => MyCheckBox(
                   activeColor: widget.mainColor,
                   borderColor: widget.mainColor,
+                  iconColor: Colors.white,
                   value: value,
                   onChanged: (value) {
                     setState(() {
@@ -99,7 +100,13 @@ class _SelectEndorsementTabState extends State<SelectEndorsementTab> {
             padding: const EdgeInsets.symmetric(vertical: 15),
             textStyle: const TextStyle(fontSize: 16),
             backgroundColor: widget.mainColor,
-            onPressed: () => widget.onNext(selectedIds),
+            onPressed: () {
+              if (selectedIds.isEmpty) {
+                showToastError('Please select an endorsement');
+              } else {
+                widget.onNext(selectedIds);
+              }
+            },
           ),
         )
       ],
@@ -112,12 +119,12 @@ class _SelectEndorsementTabState extends State<SelectEndorsementTab> {
       builder: (_, setState) => GestureDetector(
         onTap: () => _onToggle(index, currentId, setState),
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 15),
           decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: selectedIds.contains(currentId) ? widget.mainColor : Colors.transparent, width: 2),
+              color: widget.isDarkMode ? Colors.grey.shade900 : Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: selectedIds.contains(currentId) ? widget.mainColor : Colors.transparent, width: 1),
               boxShadow: !widget.isDarkMode
                   ? [
                       BoxShadow(
@@ -134,7 +141,7 @@ class _SelectEndorsementTabState extends State<SelectEndorsementTab> {
                 iconColor: Colors.white,
                 backgroundColor: widget.secondaryColor,
                 icon: widget.endorsementList[index].icon,
-                size: 40,
+                size: 35,
               ),
               const SizedBox(width: 15),
               Expanded(child: Text(widget.endorsementList[index].name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600))),
@@ -142,6 +149,7 @@ class _SelectEndorsementTabState extends State<SelectEndorsementTab> {
                 value: selectedIds.contains(widget.endorsementList[index].id),
                 activeColor: widget.mainColor,
                 borderColor: widget.mainColor,
+                iconColor: Colors.white,
                 onChanged: (_) => _onToggle(index, currentId, setState),
               )
             ],

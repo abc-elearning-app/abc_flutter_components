@@ -104,7 +104,7 @@ class _SelectStateTabState extends State<SelectStateTab> {
       margin: const EdgeInsets.symmetric(horizontal: 5),
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: widget.isDarkMode ? Colors.grey.shade800 : Colors.white,
           borderRadius: BorderRadius.circular(12),
           boxShadow: !widget.isDarkMode ? [BoxShadow(color: Colors.grey.shade300, blurRadius: 5, spreadRadius: 2, offset: const Offset(0, 2))] : null),
       child: TextField(
@@ -129,7 +129,7 @@ class _SelectStateTabState extends State<SelectStateTab> {
         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            color: Colors.white,
+            color: widget.isDarkMode ? Colors.grey.shade900 : Colors.white,
             border: Border.all(color: currentStateId == id ? widget.mainColor : Colors.transparent, width: 2),
             boxShadow: !widget.isDarkMode
                 ? [
@@ -148,6 +148,7 @@ class _SelectStateTabState extends State<SelectStateTab> {
               width: 34,
               margin: const EdgeInsets.only(right: 10),
               decoration: BoxDecoration(
+                  border: Border.all(width: 0.5, color: widget.mainColor),
                   borderRadius: BorderRadius.circular(8),
                   image: DecorationImage(
                     image: AssetImage(icon),
@@ -160,7 +161,7 @@ class _SelectStateTabState extends State<SelectStateTab> {
               backgroundColor: widget.mainColor,
               child: CircleAvatar(
                 radius: 12,
-                backgroundColor: Colors.white,
+                backgroundColor: widget.isDarkMode ? Colors.grey.shade900 : Colors.white,
                 child: currentStateId == id
                     ? CircleAvatar(
                         radius: 9,
