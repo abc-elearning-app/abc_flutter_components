@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../../../../flutter_abc_jsc_components.dart';
-import '../../../icons/icon_box.dart';
+import '../../icons/icon_box.dart';
 
 class StudyPlanBoxComponent extends StatefulWidget {
   final bool isDarkMode;

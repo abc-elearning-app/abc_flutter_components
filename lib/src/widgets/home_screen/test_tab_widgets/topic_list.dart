@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../icons/icon_box.dart';
+import '../../icons/icon_box.dart';
 
 class TopicData {
   final int id;

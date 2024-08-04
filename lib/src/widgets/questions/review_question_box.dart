@@ -1,6 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
+class QuestionData {
+  final String longId;
+  final int questionId;
+  final String question;
+  final List<AnswerData> answers;
+  final String explanation;
+  bool? isCorrectlyChosen;
+  bool bookmarked;
+  bool liked;
+  bool disliked;
+
+  QuestionData({
+    required this.longId,
+    required this.questionId,
+    required this.question,
+    required this.answers,
+    required this.explanation,
+    this.bookmarked = false,
+    this.liked = false,
+    this.disliked = false,
+    this.isCorrectlyChosen,
+  });
+}
+
+class AnswerData {
+  final String content;
+  final bool? isCorrect;
+
+  AnswerData(this.content, {this.isCorrect});
+}
+
 class ReviewQuestionBox extends StatefulWidget {
   final int index;
   final String topicName;

@@ -1,6 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
+class SubjectResultData {
+  final String title;
+  final double progress;
+  final String icon;
+
+  SubjectResultData({
+    required this.title,
+    required this.progress,
+    required this.icon,
+  });
+}
+
 class ResultSubjectTile extends StatelessWidget {
   final String title;
   final String icon;

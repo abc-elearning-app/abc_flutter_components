@@ -15,16 +15,18 @@ class DiagnosticTestBox extends StatelessWidget {
 
   final void Function() onClick;
 
-  const DiagnosticTestBox({
-    super.key,
-    required this.icon,
-    required this.background,
-    required this.color,
-    required this.onClick,
-    required this.progress,
-    required this.isDarkMode,
-    required this.gradientColors,
-  });
+  const DiagnosticTestBox(
+      {super.key,
+      required this.icon,
+      required this.background,
+      required this.color,
+      required this.onClick,
+      required this.progress,
+      required this.isDarkMode,
+      this.gradientColors = const [
+        Color(0xFFC0A67C),
+        Color(0xFF958366),
+      ]});
 
   @override
   Widget build(BuildContext context) {

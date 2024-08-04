@@ -30,7 +30,10 @@ class FinalTestBox extends StatelessWidget {
     required this.isDarkMode,
     required this.secondaryColor,
     required this.onClickFinal,
-    required this.gradientColors,
+    this.gradientColors = const [
+      Color(0xFFC0A67C),
+      Color(0xFF958366),
+    ],
   });
 
   @override

@@ -7,6 +7,8 @@ enum LevelType { beginner, intermediate, advanced }
 class GeneralResultBox extends StatelessWidget {
   final DateTime testDate;
   final double mainProgress;
+  final double minIntermediateValue;
+  final double minAdvancedValue;
   final bool isDarkMode;
 
   // Colors
@@ -25,19 +27,21 @@ class GeneralResultBox extends StatelessWidget {
 
   const GeneralResultBox({
     super.key,
-    required this.beginnerColor,
-    required this.intermediateColor,
-    required this.advancedColor,
+    this.beginnerColor = const Color(0xFFFC5656),
+    this.intermediateColor = const Color(0xFFFF8754),
+    this.advancedColor = const Color(0xFF2C9CB5),
+    this.beginnerBackgroundColor = const Color(0xFFFF9B9B),
+    this.intermediateBackgroundColor = const Color(0xFFFFA57E),
+    this.advancedBackgroundColor = const Color(0xFF51DFFF),
     required this.circleProgressImage,
     required this.beginnerImage,
     required this.intermediateImage,
     required this.advancedImage,
     required this.testDate,
     required this.mainProgress,
-    required this.beginnerBackgroundColor,
-    required this.intermediateBackgroundColor,
-    required this.advancedBackgroundColor,
     required this.isDarkMode,
+    required this.minIntermediateValue,
+    required this.minAdvancedValue,
   });
 
   @override
@@ -49,14 +53,7 @@ class GeneralResultBox extends StatelessWidget {
       padding: const EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 50),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        boxShadow: !isDarkMode
-            ? [
-                BoxShadow(
-                    color: Colors.grey.shade300,
-                    blurRadius: 1,
-                    offset: const Offset(0, 1))
-              ]
-            : null,
+        boxShadow: !isDarkMode ? [BoxShadow(color: Colors.grey.shade300, blurRadius: 1, offset: const Offset(0, 1))] : null,
         color: Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
       ),
       child: Column(
@@ -68,27 +65,15 @@ class GeneralResultBox extends StatelessWidget {
               children: [
                 Text(
                   'Date Of Test :',
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: isDarkMode ? Colors.white : Colors.black),
+                  style: TextStyle(fontSize: 16, color: isDarkMode ? Colors.white : Colors.black),
                 ),
                 Text(
                   _getDisplayDate(testDate),
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: isDarkMode ? Colors.white : Colors.black),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: isDarkMode ? Colors.white : Colors.black),
                 ),
                 const SizedBox(height: 10),
-                Text('Your Level :',
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: isDarkMode ? Colors.white : Colors.black)),
-                Text(_getLevelTitle(levelType),
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: _getLevelColor(levelType),
-                        fontWeight: FontWeight.bold)),
+                Text('Your Level :', style: TextStyle(fontSize: 14, color: isDarkMode ? Colors.white : Colors.black)),
+                Text(_getLevelTitle(levelType), style: TextStyle(fontSize: 16, color: _getLevelColor(levelType), fontWeight: FontWeight.bold)),
               ],
             ),
           ),
@@ -149,10 +134,7 @@ class GeneralResultBox extends StatelessWidget {
                   ),
                   Text(
                     '${mainProgress.toInt()}%',
-                    style: TextStyle(
-                        color: _getLevelColor(levelType),
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold),
+                    style: TextStyle(color: _getLevelColor(levelType), fontSize: 32, fontWeight: FontWeight.bold),
                   )
                 ],
               ),
@@ -163,8 +145,7 @@ class GeneralResultBox extends StatelessWidget {
     ]);
   }
 
-  Widget _buildLevelRow(LevelType levelType) =>
-      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+  Widget _buildLevelRow(LevelType levelType) => Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         _buildLevel(
           LevelType.beginner,
           beginnerImage,
@@ -192,28 +173,21 @@ class GeneralResultBox extends StatelessWidget {
           ),
           Opacity(
             opacity: isUnlocked ? 1 : 0.5,
-            child: CircleAvatar(
-                radius: 35,
-                backgroundColor: _getLevelBackgroundColor(type),
-                child: IconWidget(icon: image, height: 50)),
+            child: CircleAvatar(radius: 35, backgroundColor: _getLevelBackgroundColor(type), child: IconWidget(icon: image, height: 50)),
           ),
           Opacity(
             opacity: isUnlocked ? 1 : 0.8,
             child: Transform.translate(
                 offset: const Offset(0, 50),
-                child: Text(_getLevelTitle(type),
-                    style: TextStyle(
-                        color: _getLevelColor(type),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500))),
+                child: Text(_getLevelTitle(type), style: TextStyle(color: _getLevelColor(type), fontSize: 14, fontWeight: FontWeight.w500))),
           )
         ],
       );
 
   _getLevelType() {
-    if (mainProgress < 20) {
+    if (mainProgress < minIntermediateValue) {
       return LevelType.beginner;
-    } else if (mainProgress < 80) {
+    } else if (mainProgress < minAdvancedValue) {
       return LevelType.intermediate;
     } else {
       return LevelType.advanced;
