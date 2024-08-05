@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/new_home_screen/widgets/study_tab_widgets/home_icon.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+
+import 'home_icon.dart';
 
 class SubjectData {
   final String id;

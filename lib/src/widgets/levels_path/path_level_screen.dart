@@ -252,7 +252,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
           levelList: currentGroup.levels,
           drawType: currentGroup.drawType,
           isDarkMode: widget.isDarkMode,
-          isFocused: currentGroup.isFocused,
+          isGroupFocused: currentGroup.isFocused,
           finalLevelImage: widget.finalLevelImage,
           finalLevelAnimation: widget.finalLevelAnimation,
           cycleSpeed: widget.drawSpeed,

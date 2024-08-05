@@ -11,6 +11,7 @@ class LevelData {
   bool isFreeToday;
   bool isLock;
   bool isCurrent;
+  bool passed;
   String icon;
 
   LevelData({
@@ -21,6 +22,7 @@ class LevelData {
     this.isCurrent = false,
     this.isLock = true,
     this.isFreeToday = false,
+    this.passed = false,
   });
 }
 
@@ -48,7 +50,7 @@ class PathLevelComponent extends StatefulWidget {
   final String finalLevelImage;
   final String finalLevelAnimation;
 
-  final bool isFocused;
+  final bool isGroupFocused;
   final bool isDarkMode;
   final bool hasSubTopic;
 
@@ -73,7 +75,7 @@ class PathLevelComponent extends StatefulWidget {
     required this.onClickLevel,
     required this.isDarkMode,
     required this.finalLevelAnimation,
-    required this.isFocused,
+    required this.isGroupFocused,
     required this.onClickLockLevel,
     required this.hasSubTopic,
   });
@@ -176,7 +178,7 @@ class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticK
         drawType: widget.drawType,
         longRowCount: widget.upperRowCount,
         shortRowCount: widget.lowerRowCount,
-        isFocused: widget.isFocused,
+        isGroupFocused: widget.isGroupFocused,
         isDarkMode: widget.isDarkMode,
         drawSpeed: widget.cycleSpeed,
         finalLevelImage: widget.finalLevelImage,

@@ -15,16 +15,18 @@ class DiagnosticTestBox extends StatelessWidget {
 
   final void Function() onClick;
 
-  const DiagnosticTestBox({
-    super.key,
-    required this.icon,
-    required this.background,
-    required this.color,
-    required this.onClick,
-    required this.progress,
-    required this.isDarkMode,
-    required this.gradientColors,
-  });
+  const DiagnosticTestBox(
+      {super.key,
+      required this.icon,
+      required this.background,
+      required this.color,
+      required this.onClick,
+      required this.progress,
+      required this.isDarkMode,
+      this.gradientColors = const [
+        Color(0xFFC0A67C),
+        Color(0xFF958366),
+      ]});
 
   @override
   Widget build(BuildContext context) {
@@ -95,23 +97,16 @@ class DiagnosticTestBox extends StatelessWidget {
                     backgroundColor: Colors.grey.shade200.withOpacity(0.3),
                   ),
                 ),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Try Again',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                      ),
+                      progress == 0 ? 'Start' : 'Try Again',
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(right: 10),
-                      child: Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white,
-                      ),
+                    const Padding(
+                      padding: EdgeInsets.only(right: 5),
+                      child: Icon(Icons.arrow_forward, color: Colors.white),
                     )
                   ],
                 )
