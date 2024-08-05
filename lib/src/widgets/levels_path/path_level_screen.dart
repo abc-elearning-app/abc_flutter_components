@@ -109,11 +109,19 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
     if (widget.hasSubTopic) {
       // This loop may not loop through all groups since it stops at the current group
       for (var group in widget.levelGroupList) {
+        // Divider's height
+        currentPosition += 50;
+
         if (group.isFocused) {
           int levelsTillCurrent = group.levels.indexWhere((level) => level.isCurrent) + 1;
           int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
           int remainLevels = levelsTillCurrent - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
-          currentPosition += completeCycleCount * 240 + remainLevels > widget.upperRowCount ? 240 : 120;
+          currentPosition += completeCycleCount * 240 +
+              (remainLevels == 0
+                  ? 0
+                  : remainLevels > widget.upperRowCount
+                      ? 240
+                      : 120);
           break;
         }
 
@@ -124,20 +132,32 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
 
         int completeCycleCount = group.levels.length ~/ (widget.upperRowCount + widget.lowerRowCount);
         int remainLevels = group.levels.length - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
-        currentPosition += completeCycleCount * 240 + remainLevels > widget.upperRowCount ? 240 : 120;
+        currentPosition += completeCycleCount * 240 +
+            (remainLevels == 0
+                ? 0
+                : remainLevels > widget.upperRowCount
+                    ? 240
+                    : 120);
       }
     } else {
       final levelList = widget.levelGroupList.last.levels;
       int levelsTillCurrent = levelList.indexWhere((level) => level.isCurrent) + 1;
       int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
       int remainLevels = levelsTillCurrent - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
-      currentPosition += completeCycleCount * 240 + remainLevels > widget.upperRowCount ? 240 : 120;
+      currentPosition += completeCycleCount * 240 +
+          (remainLevels == 0
+              ? 0
+              : remainLevels > widget.upperRowCount
+                  ? 240
+                  : 120);
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      double screenHeight = MediaQuery.of(context).size.height;
+    currentPosition -= 120;
 
-      if (currentPosition > screenHeight * 0.25) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // double screenHeight = MediaQuery.of(context).size.height;
+
+      if (currentPosition >= 240) {
         if (_scrollController.hasClients) {
           _scrollController.animateTo(currentPosition, duration: const Duration(milliseconds: 500), curve: Curves.linear);
         }

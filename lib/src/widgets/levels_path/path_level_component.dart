@@ -12,6 +12,8 @@ class LevelData {
   bool isLock;
   bool isCurrent;
   bool passed;
+  bool isPlaying;
+  int lastUpdate;
   String icon;
 
   LevelData({
@@ -23,6 +25,8 @@ class LevelData {
     this.isLock = true,
     this.isFreeToday = false,
     this.passed = false,
+    this.isPlaying = false,
+    this.lastUpdate = -1,
   });
 }
 
