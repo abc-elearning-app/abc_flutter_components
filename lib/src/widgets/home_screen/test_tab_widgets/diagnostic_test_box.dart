@@ -3,6 +3,8 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../../../../../flutter_abc_jsc_components.dart';
 
+enum DiagnosticTestBoxStatus { notStarted, inProgress, done }
+
 class DiagnosticTestBox extends StatelessWidget {
   final String icon;
   final String background;
@@ -13,20 +15,24 @@ class DiagnosticTestBox extends StatelessWidget {
   final double progress;
   final bool isDarkMode;
 
+  final DiagnosticTestBoxStatus status;
+
   final void Function() onClick;
 
-  const DiagnosticTestBox(
-      {super.key,
-      required this.icon,
-      required this.background,
-      required this.color,
-      required this.onClick,
-      required this.progress,
-      required this.isDarkMode,
-      this.gradientColors = const [
-        Color(0xFFC0A67C),
-        Color(0xFF958366),
-      ]});
+  const DiagnosticTestBox({
+    super.key,
+    required this.icon,
+    required this.background,
+    required this.color,
+    required this.onClick,
+    required this.progress,
+    required this.isDarkMode,
+    required this.status,
+    this.gradientColors = const [
+      Color(0xFFC0A67C),
+      Color(0xFF958366),
+    ],
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -68,42 +74,41 @@ class DiagnosticTestBox extends StatelessWidget {
                         children: [
                           const Text('Diagnostic Test', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white)),
                           RichText(
-                              text: const TextSpan(
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: 'Poppins',
-                                  ),
-                                  children: [
-                                TextSpan(
-                                  text: 'Take our diagnostic test to assess your current level and get a ',
-                                ),
+                            text: const TextSpan(
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'Poppins',
+                              ),
+                              children: [
+                                TextSpan(text: 'Take our diagnostic test to assess your current level and get a '),
                                 TextSpan(text: 'personalized study plan.', style: TextStyle(fontWeight: FontWeight.w600)),
-                              ]))
+                              ],
+                            ),
+                          )
                         ],
                       ),
                     )
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: LinearPercentIndicator(
-                    padding: EdgeInsets.zero,
-                    percent: progress / 100,
-                    animation: true,
-                    barRadius: const Radius.circular(20),
-                    lineHeight: 8,
-                    progressColor: Colors.white,
-                    backgroundColor: Colors.grey.shade200.withOpacity(0.3),
+                if (status != DiagnosticTestBoxStatus.notStarted)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: LinearPercentIndicator(
+                      padding: EdgeInsets.zero,
+                      percent: progress / 100,
+                      animation: true,
+                      barRadius: const Radius.circular(20),
+                      lineHeight: 8,
+                      progressColor: Colors.white,
+                      backgroundColor: Colors.grey.shade200.withOpacity(0.3),
+                    ),
                   ),
-                ),
+                if (status == DiagnosticTestBoxStatus.notStarted) const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      progress == 0 ? 'Start' : 'Try Again',
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
-                    ),
+                    Text(_getLabel(), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white)),
                     const Padding(
                       padding: EdgeInsets.only(right: 5),
                       child: Icon(Icons.arrow_forward, color: Colors.white),
@@ -119,13 +124,25 @@ class DiagnosticTestBox extends StatelessWidget {
   }
 
   _gradientColors() => LinearGradient(
-      colors: isDarkMode
-          ? [
-              const Color(0xFF292929).withOpacity(0.55),
-              const Color(0xFF292929),
-            ]
-          : [
-              gradientColors[0].withOpacity(0.8),
-              gradientColors[1],
-            ]);
+        colors: isDarkMode
+            ? [
+                const Color(0xFF292929).withOpacity(0.55),
+                const Color(0xFF292929),
+              ]
+            : [
+                gradientColors[0].withOpacity(0.8),
+                gradientColors[1],
+              ],
+      );
+
+  _getLabel() {
+    switch (status) {
+      case DiagnosticTestBoxStatus.notStarted:
+        return 'Start diagnostic test';
+      case DiagnosticTestBoxStatus.inProgress:
+        return 'Continue your test';
+      case DiagnosticTestBoxStatus.done:
+        return 'See your latest result';
+    }
+  }
 }
