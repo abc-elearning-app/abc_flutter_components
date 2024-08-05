@@ -13,7 +13,7 @@ class LevelWidget extends StatefulWidget {
   final bool isPlaceholder;
   final bool isFinal;
   final bool isDarkMode;
-  final bool isFocused;
+  final bool isGroupFocused;
   final bool hasSubTopic;
 
   final Color startColor;
@@ -39,7 +39,7 @@ class LevelWidget extends StatefulWidget {
     required this.lockColor,
     required this.isDarkMode,
     required this.finalLevelAnimation,
-    required this.isFocused,
+    required this.isGroupFocused,
     required this.onClickLevel,
     required this.onClickLockLevel,
     required this.hasSubTopic,
@@ -204,7 +204,8 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
       alignment: Alignment.center,
       children: [
         // Splash animation
-        if (widget.isFocused && ((widget.levelData.isCurrent && !widget.isFinal) || (widget.isFinal && widget.levelData.progress < 100)))
+        if (widget.isGroupFocused &&
+            ((widget.levelData.isCurrent && !widget.isFinal) || (widget.isFinal && widget.levelData.progress < 100 && widget.hasSubTopic)))
           CustomPaint(
               size: const Size(20, 20),
               painter: SplashCirclePainter(
@@ -255,7 +256,6 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
   }
 
   Widget _getLevelWidget() {
-    print(widget.levelData.isLock);
     if (widget.isFinal && !widget.hasSubTopic) return _finalLevel();
     if (widget.levelData.isLock) return _lockLevel();
     return _defaultLevel();
@@ -272,24 +272,10 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
             radius: outerRadius - circleWidth,
             backgroundColor: Colors.white,
             child: CircleAvatar(
-                radius: outerRadius - circleWidth - 4,
-                backgroundColor: _getMainColor(),
-                child: widget.levelData.progress == 100
-                    ? const Icon(
-                        Icons.check,
-                        color: Colors.white,
-                        size: 30,
-                      )
-                    : widget.levelData.progress == 0
-                        ? IconWidget(
-                            icon: widget.levelData.icon,
-                            height: outerRadius,
-                            color: Colors.white,
-                          )
-                        : Text(
-                            '${widget.levelData.progress.toInt()}%',
-                            style: const TextStyle(color: Colors.white),
-                          )),
+              radius: outerRadius - circleWidth - 4,
+              backgroundColor: _getMainColor(),
+              child: _getContent(),
+            ),
           ),
         ),
       );
@@ -393,13 +379,19 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
   _getMainColor() {
     if (widget.levelData.isLock) return widget.lockColor;
 
-    if (widget.index == 0 && widget.levelData.progress == 0) {
-      return widget.startColor;
-    }
+    // if (widget.index == 0 && widget.levelData.progress == 0) {
+    //   return widget.startColor;
+    // }
 
-    if (widget.levelData.isCurrent && widget.levelData.progress < 100) return widget.mainColor;
+    if (widget.levelData.isCurrent || widget.levelData.progress < 100) return widget.mainColor;
 
     return widget.passColor;
+  }
+
+  _getContent() {
+    if (widget.levelData.progress == 100) return const Icon(Icons.check, color: Colors.white, size: 30);
+    if (widget.levelData.progress == 0) return IconWidget(icon: widget.levelData.icon, height: outerRadius, color: Colors.white);
+    return Text('${widget.levelData.progress.toInt()}%', style: const TextStyle(color: Colors.white));
   }
 }
 

@@ -8,13 +8,15 @@ class FinalTestBox extends StatelessWidget {
 
   final Color mainColor;
   final Color secondaryColor;
+  final Color correctColor;
+  final Color incorrectColor;
+  final List<Color> gradientColors;
+
+  final bool isDarkMode;
 
   final double progress;
-  final int answeredQuestions;
-  final int totalQuestions;
   final double correctPercent;
-  final bool isDarkMode;
-  final List<Color> gradientColors;
+  final double minPassValue;
 
   final void Function() onClickFinal;
 
@@ -23,13 +25,14 @@ class FinalTestBox extends StatelessWidget {
     required this.icon,
     required this.background,
     required this.mainColor,
-    required this.answeredQuestions,
-    required this.totalQuestions,
     required this.correctPercent,
     required this.progress,
     required this.isDarkMode,
     required this.secondaryColor,
     required this.onClickFinal,
+    required this.minPassValue,
+    this.correctColor = const Color(0xFF15CB9F),
+    this.incorrectColor = const Color(0xFFFC5656),
     this.gradientColors = const [
       Color(0xFFC0A67C),
       Color(0xFF958366),
@@ -78,28 +81,23 @@ class FinalTestBox extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 15),
-                  child: LinearPercentIndicator(
-                    padding: EdgeInsets.zero,
-                    percent: progress / 100,
-                    animation: true,
-                    barRadius: const Radius.circular(20),
-                    lineHeight: 10,
-                    progressColor: mainColor,
-                    backgroundColor: Colors.grey.shade200.withOpacity(0.3),
-                  ),
+                  child: _buildLinearProgress(),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    RichText(
-                        text: TextSpan(style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400), children: [
-                      TextSpan(text: answeredQuestions.toString()),
-                      TextSpan(text: '/$totalQuestions Answered', style: TextStyle(fontSize: 12, color: Colors.white.withOpacity(0.7)))
-                    ])),
-                    Text(
-                      '${correctPercent.toInt()}% Correct',
-                      style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.white),
-                    )
+                    Text(_getText(), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white)),
+                    progress == 0
+                        ? const Padding(
+                            padding: EdgeInsets.only(right: 5),
+                            child: Icon(Icons.arrow_forward, color: Colors.white),
+                          )
+                        : RichText(
+                            text: TextSpan(style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white), children: [
+                            TextSpan(
+                                text: (progress < 100 ? progress : correctPercent).toInt().toString(), style: const TextStyle(fontWeight: FontWeight.w500)),
+                            TextSpan(text: '% ${progress < 100 ? 'Answered' : 'Correct'}', style: TextStyle(fontSize: 12, color: Colors.white.withOpacity(0.7)))
+                          ]))
                   ],
                 )
               ],
@@ -108,6 +106,47 @@ class FinalTestBox extends StatelessWidget {
         ]),
       ),
     );
+  }
+
+  Widget _buildLinearProgress() => progress < 100
+      ? LinearPercentIndicator(
+          padding: EdgeInsets.zero,
+          percent: progress / 100,
+          animation: true,
+          barRadius: const Radius.circular(20),
+          lineHeight: 10,
+          progressColor: mainColor,
+          backgroundColor: Colors.grey.shade200.withOpacity(0.3),
+        )
+      : Stack(
+          children: [
+            LinearPercentIndicator(
+              padding: EdgeInsets.zero,
+              percent: 1,
+              animation: true,
+              barRadius: const Radius.circular(20),
+              lineHeight: 10,
+              progressColor: incorrectColor,
+              backgroundColor: Colors.transparent,
+            ),
+            LinearPercentIndicator(
+              padding: EdgeInsets.zero,
+              percent: correctPercent / 100,
+              animation: true,
+              barRadius: const Radius.circular(20),
+              lineHeight: 10,
+              progressColor: correctColor,
+              backgroundColor: Colors.transparent,
+            ),
+          ],
+        );
+
+  _getText() {
+    if (progress == 0) return 'Start';
+    if (progress < 100) return 'Continue';
+
+    if (correctPercent >= minPassValue) return 'Passed';
+    return 'Failed';
   }
 
   _gradientColors() => LinearGradient(

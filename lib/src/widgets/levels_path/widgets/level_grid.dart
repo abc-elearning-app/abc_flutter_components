@@ -14,7 +14,7 @@ class LevelGrid extends StatelessWidget {
   final String finalLevelAnimation;
 
   final bool isDarkMode;
-  final bool isFocused;
+  final bool isGroupFocused;
   final bool hasSubTopic;
 
   final Color mainColor;
@@ -39,7 +39,7 @@ class LevelGrid extends StatelessWidget {
     required this.lockColor,
     required this.isDarkMode,
     required this.finalLevelAnimation,
-    required this.isFocused,
+    required this.isGroupFocused,
     required this.onClickLevel,
     required this.onClickLockLevel,
     required this.hasSubTopic,
@@ -65,7 +65,7 @@ class LevelGrid extends StatelessWidget {
                     finalLevelImage: finalLevelImage,
                     finalLevelAnimation: finalLevelAnimation,
                     isFinal: i == levelDataList.length - 1,
-                    isFocused: isFocused,
+                    isGroupFocused: isGroupFocused,
                     drawType: drawType,
                     drawSpeed: drawSpeed,
                     startColor: startColor,
@@ -92,7 +92,7 @@ class LevelGrid extends StatelessWidget {
                 index: i,
                 isDarkMode: isDarkMode,
                 levelData: levelDataList[i],
-                isFocused: isFocused,
+                isGroupFocused: isGroupFocused,
                 finalLevelImage: finalLevelImage,
                 finalLevelAnimation: finalLevelAnimation,
                 isFinal: i == levelDataList.length - 1,

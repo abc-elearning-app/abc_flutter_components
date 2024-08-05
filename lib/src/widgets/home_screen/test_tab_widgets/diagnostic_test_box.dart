@@ -97,23 +97,16 @@ class DiagnosticTestBox extends StatelessWidget {
                     backgroundColor: Colors.grey.shade200.withOpacity(0.3),
                   ),
                 ),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Try Again',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                      ),
+                      progress == 0 ? 'Start' : 'Try Again',
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(right: 10),
-                      child: Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white,
-                      ),
+                    const Padding(
+                      padding: EdgeInsets.only(right: 5),
+                      child: Icon(Icons.arrow_forward, color: Colors.white),
                     )
                   ],
                 )
