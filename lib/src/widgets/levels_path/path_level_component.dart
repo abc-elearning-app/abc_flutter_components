@@ -46,7 +46,6 @@ class PathLevelComponent extends StatefulWidget {
   final Color mainColor;
   final Color passColor;
   final Color lockColor;
-  final Color startColor;
   final Color lineBackgroundColor;
 
   // Images
@@ -71,7 +70,6 @@ class PathLevelComponent extends StatefulWidget {
     required this.cycleSpeed,
     required this.lastCycleSpeed,
     required this.startImage,
-    required this.startColor,
     required this.finalLevelImage,
     required this.mainColor,
     required this.passColor,
@@ -111,13 +109,11 @@ class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticK
     final totalLength = widget.levelList.length;
     totalCycleCount = totalLength > groupCount ? totalLength ~/ groupCount - (totalLength % groupCount == 0 ? 1 : 0) : 0;
 
-    int currentLength = widget.levelList.indexWhere((level) => level.isCurrent) + 1;
-    // int currentLength = widget.levelGroupType == LevelGroupType.passed
-    //     ? totalLength
-    //     : widget.levelGroupType == LevelGroupType.upcoming
-    //         ? 0
-    //         : widget.levelList.indexWhere((level) => level.isCurrent) + 1;
-    // if (currentLength == 0) currentLength = widget.levelList.length;
+    int currentLength = widget.levelList.indexWhere((level) => level.isLock);
+    if (currentLength == -1) {
+      currentLength = widget.levelList.length;
+    }
+
     currentCycleCount = currentLength > groupCount ? currentLength ~/ groupCount - (currentLength % groupCount == 0 ? 1 : 0) : 0;
 
     lastCycleTotalCount = totalLength - totalCycleCount * groupCount;
@@ -132,6 +128,8 @@ class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticK
     if (widget.levelList.length == 2) {
       if (widget.levelList.where((level) => level.isCurrent).isNotEmpty) {
         currentLevelPosition = widget.levelList[0].isCurrent ? 1 : 2;
+      } else {
+        currentLevelPosition = 2;
       }
       // if (widget.levelGroupType == LevelGroupType.passed) currentLevelPosition = 2;
     }
@@ -151,9 +149,7 @@ class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticK
             lastCycleLevelCount: lastCycleTotalCount,
             lineColor: widget.lineBackgroundColor),
 
-      if (widget.levelList.length != 2
-          // && widget.levelGroupType != LevelGroupType.upcoming
-          )
+      if (widget.levelList.length != 2)
         FutureBuilder(
             future: Future.delayed(Duration(milliseconds: widget.drawType == DrawType.firstTimeOpen ? 500 : 0)),
             builder: (context, snapShot) => snapShot.connectionState == ConnectionState.done
@@ -189,7 +185,6 @@ class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticK
         drawSpeed: widget.cycleSpeed,
         finalLevelImage: widget.finalLevelImage,
         finalLevelAnimation: widget.finalLevelAnimation,
-        startColor: widget.startColor,
         mainColor: widget.mainColor,
         passColor: widget.passColor,
         lockColor: widget.lockColor,

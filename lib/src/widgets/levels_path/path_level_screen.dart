@@ -6,7 +6,6 @@ import '../../../flutter_abc_jsc_components.dart';
 class LevelGroup {
   final String title;
   final String startImage;
-  final Color startColor;
   final List<LevelData> levels;
   bool isFocused;
   DrawType drawType;
@@ -14,7 +13,6 @@ class LevelGroup {
   LevelGroup({
     required this.title,
     required this.startImage,
-    required this.startColor,
     required this.levels,
     this.drawType = DrawType.firstTimeOpen,
     this.isFocused = false,
@@ -111,8 +109,6 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
     if (widget.hasSubTopic) {
       // This loop may not loop through all groups since it stops at the current group
       for (var group in widget.levelGroupList) {
-        // Divider's height
-        currentPosition += 50;
 
         if (group.isFocused) {
           int levelsTillCurrent = group.levels.indexWhere((level) => level.isCurrent) + 1;
@@ -279,7 +275,6 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
             finalLevelAnimation: widget.finalLevelAnimation,
             cycleSpeed: widget.drawSpeed,
             lastCycleSpeed: widget.drawSpeed,
-            startColor: currentGroup.startColor,
             startImage: currentGroup.startImage,
             mainColor: widget.mainColor,
             lockColor: widget.lockColor,

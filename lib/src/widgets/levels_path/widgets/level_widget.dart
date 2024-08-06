@@ -16,7 +16,6 @@ class LevelWidget extends StatefulWidget {
   final bool isGroupFocused;
   final bool hasSubTopic;
 
-  final Color startColor;
   final Color passColor;
   final Color mainColor;
   final Color lockColor;
@@ -33,7 +32,6 @@ class LevelWidget extends StatefulWidget {
     required this.drawType,
     required this.drawSpeed,
     required this.index,
-    required this.startColor,
     required this.finalLevelImage,
     required this.passColor,
     required this.mainColor,

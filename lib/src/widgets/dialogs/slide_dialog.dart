@@ -29,13 +29,34 @@ class SlideDialogComponent extends StatefulWidget {
   State<SlideDialogComponent> createState() => _SlideDialogComponentState();
 }
 
-class _SlideDialogComponentState extends State<SlideDialogComponent> {
+class _SlideDialogComponentState extends State<SlideDialogComponent> with TickerProviderStateMixin {
+  late AnimationController leftAController;
+  late AnimationController rightAController;
+  late Animation leftAAnimation;
+  late Animation rightAAnimation;
+
   late double value;
 
   @override
   void initState() {
     value = widget.initialValue;
+    leftAController = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
+    rightAController = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
+    leftAAnimation = Tween<double>(begin: 0, end: -32).animate(leftAController);
+    rightAAnimation = Tween<double>(begin: 0, end: 32).animate(rightAController);
+    if (value < 0.9) {
+      leftAController.forward();
+    } else if (value > 2) {
+      rightAController.forward();
+    }
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    leftAController.dispose();
+    rightAController.dispose();
+    super.dispose();
   }
 
   @override
@@ -49,7 +70,7 @@ class _SlideDialogComponentState extends State<SlideDialogComponent> {
           color: Colors.transparent,
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 20),
-            padding: const EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.only(top: 20, bottom: 10),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: widget.isDarkMode ? Colors.grey.shade900 : widget.backgroundColor),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -60,10 +81,11 @@ class _SlideDialogComponentState extends State<SlideDialogComponent> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: Row(
+                  child: Stack(
+                    alignment: Alignment.center,
                     children: [
-                      Transform.translate(offset: const Offset(8, 0), child: const Text('a')),
-                      Expanded(
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: SliderTheme(
                           data: SliderThemeData(
                             trackHeight: 20,
@@ -87,6 +109,18 @@ class _SlideDialogComponentState extends State<SlideDialogComponent> {
                             divisions: 70,
                             onChanged: (newValue) {
                               setState(() => value = newValue);
+                              if (value > 0.9 && leftAController.status == AnimationStatus.completed) {
+                                leftAController.reverse();
+                              } else if (value <= 0.9 && leftAController.status == AnimationStatus.dismissed) {
+                                leftAController.forward();
+                              }
+
+                              if (value < 2 && rightAController.status == AnimationStatus.completed) {
+                                rightAController.reverse();
+                              } else if (value >= 2 && rightAController.status == AnimationStatus.dismissed) {
+                                rightAController.forward();
+                              }
+
                               widget.onChange(value);
                             },
                             label: value.toString(),
@@ -94,7 +128,34 @@ class _SlideDialogComponentState extends State<SlideDialogComponent> {
                           ),
                         ),
                       ),
-                      Transform.translate(offset: const Offset(-8, 0), child: const Text('A')),
+                      Positioned(
+                          left: 38,
+                          child: IgnorePointer(
+                            child: AnimatedBuilder(
+                                animation: leftAAnimation,
+                                builder: (_, __) => Transform.translate(
+                                      offset: Offset(leftAAnimation.value, 0),
+                                      child: Text('A',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: widget.isDarkMode ? value < 0.9 ? Colors.white : Colors.black : value < 0.9 ? Colors.black : Colors.white,
+                                          )),
+                                    )),
+                          )),
+                      Positioned(
+                          right: 38,
+                          child: IgnorePointer(
+                            child: AnimatedBuilder(
+                                animation: rightAAnimation,
+                                builder: (_, __) => Transform.translate(
+                                      offset: Offset(rightAAnimation.value, 0),
+                                      child: Text('A',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: widget.isDarkMode ? Colors.white : Colors.black,
+                                          )),
+                                    )),
+                          )),
                     ],
                   ),
                 ),

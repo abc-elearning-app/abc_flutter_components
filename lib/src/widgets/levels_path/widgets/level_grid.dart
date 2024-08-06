@@ -20,7 +20,6 @@ class LevelGrid extends StatelessWidget {
   final Color mainColor;
   final Color passColor;
   final Color lockColor;
-  final Color startColor;
 
   final void Function(int id) onClickLevel;
   final void Function() onClickLockLevel;
@@ -33,7 +32,6 @@ class LevelGrid extends StatelessWidget {
     required this.longRowCount,
     required this.shortRowCount,
     required this.drawSpeed,
-    required this.startColor,
     required this.finalLevelImage,
     required this.mainColor,
     required this.passColor,
@@ -70,7 +68,6 @@ class LevelGrid extends StatelessWidget {
                     isGroupFocused: isGroupFocused,
                     drawType: drawType,
                     drawSpeed: drawSpeed,
-                    startColor: startColor,
                     lockColor: lockColor,
                     passColor: passColor,
                     mainColor: mainColor,
@@ -101,7 +98,6 @@ class LevelGrid extends StatelessWidget {
                 isFinal: i == levelDataList.length - 1,
                 drawType: drawType,
                 drawSpeed: drawSpeed,
-                startColor: startColor,
                 lockColor: lockColor,
                 passColor: passColor,
                 mainColor: mainColor,
