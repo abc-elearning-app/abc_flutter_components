@@ -24,6 +24,7 @@ class LevelGrid extends StatelessWidget {
 
   final void Function(int id) onClickLevel;
   final void Function() onClickLockLevel;
+  final void Function(int id) onClickFinishedLevel;
 
   const LevelGrid({
     super.key,
@@ -42,6 +43,7 @@ class LevelGrid extends StatelessWidget {
     required this.isGroupFocused,
     required this.onClickLevel,
     required this.onClickLockLevel,
+    required this.onClickFinishedLevel,
     required this.hasSubTopic,
   });
 
@@ -75,6 +77,7 @@ class LevelGrid extends StatelessWidget {
                     onClickLevel: onClickLevel,
                     onClickLockLevel: onClickLockLevel,
                     hasSubTopic: hasSubTopic,
+                    onClickFinishedLevel: onClickFinishedLevel,
                   )),
         ),
       );
@@ -104,6 +107,7 @@ class LevelGrid extends StatelessWidget {
                 mainColor: mainColor,
                 onClickLevel: onClickLevel,
                 onClickLockLevel: onClickLockLevel,
+                onClickFinishedLevel: onClickFinishedLevel,
                 hasSubTopic: hasSubTopic,
               )
             : const PlaceholderLevel();

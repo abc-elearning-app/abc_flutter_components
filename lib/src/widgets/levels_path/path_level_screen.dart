@@ -45,6 +45,7 @@ class PathLevelScreen extends StatefulWidget {
 
   final void Function(int id, int groupIndex) onClickLevel;
   final void Function() onClickLockLevel;
+  final void Function(int id) onClickFinishedLevel;
 
   const PathLevelScreen({
     super.key,
@@ -65,6 +66,7 @@ class PathLevelScreen extends StatefulWidget {
     this.drawSpeed = const Duration(milliseconds: 250),
     required this.onClickLevel,
     required this.onClickLockLevel,
+    required this.onClickFinishedLevel,
     required this.hasSubTopic,
   });
 
@@ -268,26 +270,26 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
       children: [
         if (widget.hasSubTopic) _buildDivider(currentGroup.title),
         PathLevelComponent(
-          hasSubTopic: widget.hasSubTopic,
-          levelList: currentGroup.levels,
-          drawType: currentGroup.drawType,
-          isDarkMode: widget.isDarkMode,
-          isGroupFocused: currentGroup.isFocused,
-          finalLevelImage: widget.finalLevelImage,
-          finalLevelAnimation: widget.finalLevelAnimation,
-          cycleSpeed: widget.drawSpeed,
-          lastCycleSpeed: widget.drawSpeed,
-          startColor: currentGroup.startColor,
-          startImage: currentGroup.startImage,
-          mainColor: widget.mainColor,
-          lockColor: widget.lockColor,
-          passColor: widget.passColor,
-          lineBackgroundColor: widget.isDarkMode ? Colors.grey.shade900 : widget.lineBackgroundColor,
-          upperRowCount: widget.upperRowCount,
-          lowerRowCount: widget.lowerRowCount,
-          onClickLevel: (id) => widget.onClickLevel(id, groupIndex),
-          onClickLockLevel: widget.onClickLockLevel,
-        ),
+            hasSubTopic: widget.hasSubTopic,
+            levelList: currentGroup.levels,
+            drawType: currentGroup.drawType,
+            isDarkMode: widget.isDarkMode,
+            isGroupFocused: currentGroup.isFocused,
+            finalLevelImage: widget.finalLevelImage,
+            finalLevelAnimation: widget.finalLevelAnimation,
+            cycleSpeed: widget.drawSpeed,
+            lastCycleSpeed: widget.drawSpeed,
+            startColor: currentGroup.startColor,
+            startImage: currentGroup.startImage,
+            mainColor: widget.mainColor,
+            lockColor: widget.lockColor,
+            passColor: widget.passColor,
+            lineBackgroundColor: widget.isDarkMode ? Colors.grey.shade900 : widget.lineBackgroundColor,
+            upperRowCount: widget.upperRowCount,
+            lowerRowCount: widget.lowerRowCount,
+            onClickLevel: (id) => widget.onClickLevel(id, groupIndex),
+            onClickLockLevel: widget.onClickLockLevel,
+            onClickFinishedLevel: widget.onClickFinishedLevel),
       ],
     );
   }

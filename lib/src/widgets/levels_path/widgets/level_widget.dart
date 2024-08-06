@@ -23,6 +23,7 @@ class LevelWidget extends StatefulWidget {
 
   final void Function(int id) onClickLevel;
   final void Function() onClickLockLevel;
+  final void Function(int id) onClickFinishedLevel;
 
   const LevelWidget({
     super.key,
@@ -43,6 +44,7 @@ class LevelWidget extends StatefulWidget {
     required this.onClickLevel,
     required this.onClickLockLevel,
     required this.hasSubTopic,
+    required this.onClickFinishedLevel,
   });
 
   @override
@@ -58,7 +60,7 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
   // late AnimationController _tooltipController;
 
   // Animations
-  late Animation<double> _tooltipAnimation;
+  // late Animation<double> _tooltipAnimation;
   late Animation<double> _fadingInAnimation;
   late Animation<double> _landingAnimation;
   late Animation<double> _scalingAnimation;
@@ -222,7 +224,11 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
                     Transform.translate(
                         offset: Offset(0, _getTranslateValue()),
                         child: GestureDetector(
-                          onTap: () => !widget.levelData.isLock ? widget.onClickLevel(widget.levelData.id) : widget.onClickLockLevel(),
+                          onTap: () => widget.levelData.isLock
+                              ? widget.onClickLockLevel()
+                              : widget.levelData.progress == 100
+                                  ? widget.onClickFinishedLevel(widget.levelData.id)
+                                  : widget.onClickLevel(widget.levelData.id),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
