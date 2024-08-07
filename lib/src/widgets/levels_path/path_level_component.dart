@@ -125,14 +125,7 @@ class _PathLevelComponentState extends State<PathLevelComponent> with AutomaticK
     super.build(context);
 
     int currentLevelPosition = 0;
-    if (widget.levelList.length == 2) {
-      if (widget.levelList.where((level) => level.isCurrent).isNotEmpty) {
-        currentLevelPosition = widget.levelList[0].isCurrent ? 1 : 2;
-      } else {
-        currentLevelPosition = 2;
-      }
-      // if (widget.levelGroupType == LevelGroupType.passed) currentLevelPosition = 2;
-    }
+    if (widget.levelList.length == 2) currentLevelPosition = widget.levelList.lastIndexWhere((level) => !level.isLock) + 1;
 
     return Stack(children: [
       // Start image

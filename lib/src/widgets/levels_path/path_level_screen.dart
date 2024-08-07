@@ -41,7 +41,7 @@ class PathLevelScreen extends StatefulWidget {
   final bool isDarkMode;
   final bool hasSubTopic;
 
-  final void Function(int id, int groupIndex) onClickLevel;
+  final void Function(int id) onClickLevel;
   final void Function() onClickLockLevel;
   final void Function(int id) onClickFinishedLevel;
 
@@ -86,8 +86,6 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
     _scrollController = ScrollController();
     _backgroundOffset = ValueNotifier<double>(0);
 
-    _scrollController.addListener(_scrollListener);
-
     _initialCalculate();
 
     super.initState();
@@ -109,6 +107,8 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
     if (widget.hasSubTopic) {
       // This loop may not loop through all groups since it stops at the current group
       for (var group in widget.levelGroupList) {
+        currentPosition += 30;
+
         if (group.isFocused) {
           int levelsTillCurrent = group.levels.indexWhere((level) => level.isCurrent) + 1;
           int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
@@ -166,15 +166,6 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
     });
   }
 
-  _scrollListener() {
-    _backgroundOffset.value = _scrollController.offset / 15;
-
-    // Avoid overscroll
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent) {
-      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-    }
-  }
-
   @override
   void dispose() {
     _scrollController.dispose();
@@ -220,6 +211,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                 child: ListView.builder(
                     padding: const EdgeInsets.only(bottom: 20),
                     controller: _scrollController,
+                    physics: const ClampingScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: widget.levelGroupList.length,
                     itemBuilder: (_, index) => _buildGroup(index)),
@@ -265,7 +257,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
             lineBackgroundColor: widget.isDarkMode ? Colors.grey.shade900 : widget.lineBackgroundColor,
             upperRowCount: widget.upperRowCount,
             lowerRowCount: widget.lowerRowCount,
-            onClickLevel: (id) => widget.onClickLevel(id, groupIndex),
+            onClickLevel: widget.onClickLevel,
             onClickLockLevel: widget.onClickLockLevel,
             onClickFinishedLevel: widget.onClickFinishedLevel),
       ],
