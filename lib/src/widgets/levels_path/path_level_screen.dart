@@ -109,7 +109,6 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
     if (widget.hasSubTopic) {
       // This loop may not loop through all groups since it stops at the current group
       for (var group in widget.levelGroupList) {
-
         if (group.isFocused) {
           int levelsTillCurrent = group.levels.indexWhere((level) => level.isCurrent) + 1;
           int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
@@ -157,13 +156,17 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
 
       if (currentPosition >= 240) {
         if (_scrollController.hasClients) {
-          _scrollController.animateTo(currentPosition, duration: const Duration(milliseconds: 500), curve: Curves.linear);
+          Future.delayed(Duration(seconds: widget.hasSubTopic ? 0 : 1), () {
+            if (mounted) {
+              _scrollController.animateTo(currentPosition, duration: const Duration(milliseconds: 300), curve: Curves.linear);
+            }
+          });
         }
       }
     });
   }
 
-  void _scrollListener() {
+  _scrollListener() {
     _backgroundOffset.value = _scrollController.offset / 15;
 
     // Avoid overscroll
@@ -184,65 +187,45 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
     return Container(
       decoration: BoxDecoration(color: widget.isDarkMode ? Colors.black : widget.backgroundColor),
       child: Stack(
+        alignment: Alignment.topCenter,
         children: [
           // Background image
           _backgroundImage(),
 
-          Scaffold(
-              backgroundColor: Colors.transparent,
-              appBar: AppBar(
-                  leading: IconButton(
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: widget.isDarkMode ? Colors.white : Colors.black,
-                    ),
-                    onPressed: () => Navigator.of(context).pop(),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('${percent.toInt()}%', style: const TextStyle(fontWeight: FontWeight.w500)),
+                    Text('$passedLevels/$totalLevels Lessons', style: const TextStyle(fontWeight: FontWeight.w500)),
+                  ],
+                ),
+              ),
+              Padding(
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    bottom: 15,
+                    top: 5,
                   ),
-                  title: Text(
-                    widget.title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
-                      color: widget.isDarkMode ? Colors.white : Colors.black,
-                    ),
-                  ),
-                  backgroundColor: widget.isDarkMode ? Colors.black : widget.backgroundColor,
-                  scrolledUnderElevation: 0),
-              body: SafeArea(
-                  child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('${percent.toInt()}%', style: const TextStyle(fontWeight: FontWeight.w500)),
-                        Text('$passedLevels/$totalLevels Lessons', style: const TextStyle(fontWeight: FontWeight.w500)),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.only(
-                        left: 20,
-                        right: 20,
-                        bottom: 15,
-                        top: 5,
-                      ),
-                      child: CustomLinearProgress(
-                          mainColor: widget.mainColor,
-                          percent: percent < 0 ? 0 : percent,
-                          backgroundColor: widget.isDarkMode ? Colors.grey.shade900 : widget.lineBackgroundColor,
-                          indicatorColor: Colors.white)),
-                  Expanded(
-                    child: ListView.builder(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        controller: _scrollController,
-                        shrinkWrap: true,
-                        itemCount: widget.levelGroupList.length,
-                        itemBuilder: (_, index) => _buildGroup(index)),
-                  ),
-                ],
-              ))),
+                  child: CustomLinearProgress(
+                      mainColor: widget.mainColor,
+                      percent: percent < 0 ? 0 : percent,
+                      backgroundColor: widget.isDarkMode ? Colors.grey.shade900 : widget.lineBackgroundColor,
+                      indicatorColor: Colors.white)),
+              Expanded(
+                child: ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    controller: _scrollController,
+                    shrinkWrap: true,
+                    itemCount: widget.levelGroupList.length,
+                    itemBuilder: (_, index) => _buildGroup(index)),
+              ),
+            ],
+          )
         ],
       ),
     );
@@ -251,7 +234,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
   Widget _backgroundImage() => ValueListenableBuilder(
       valueListenable: _backgroundOffset,
       builder: (_, value, __) => Transform.translate(
-          offset: Offset(0, 30 - value / 3),
+          offset: Offset(0, -value / 3 - 100),
           child: Container(
               height: 450,
               decoration: BoxDecoration(

@@ -314,7 +314,7 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
   Widget _finalLevel() => Padding(
       padding: const EdgeInsets.only(bottom: 5),
       child: Opacity(
-        opacity: widget.levelData.isCurrent ? 1 : 0.6,
+        opacity: !widget.levelData.isLock ? 1 : 0.6,
         child: widget.levelData.progress == 100
             ? Transform.translate(
                 offset: const Offset(0, -10),
@@ -382,10 +382,6 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
 
   _getMainColor() {
     if (widget.levelData.isLock) return widget.lockColor;
-
-    // if (widget.index == 0 && widget.levelData.progress == 0) {
-    //   return widget.startColor;
-    // }
 
     if (widget.levelData.isCurrent || widget.levelData.progress < 100) return widget.mainColor;
 
