@@ -6,7 +6,6 @@ import '../../../flutter_abc_jsc_components.dart';
 class LevelGroup {
   final String title;
   final String startImage;
-  final Color startColor;
   final List<LevelData> levels;
   bool isFocused;
   DrawType drawType;
@@ -14,7 +13,6 @@ class LevelGroup {
   LevelGroup({
     required this.title,
     required this.startImage,
-    required this.startColor,
     required this.levels,
     this.drawType = DrawType.firstTimeOpen,
     this.isFocused = false,
@@ -23,14 +21,14 @@ class LevelGroup {
 
 class PathLevelScreen extends StatefulWidget {
   final List<LevelGroup> levelGroupList;
-  final String backgroundImage;
-  final String finalLevelImage;
-  final String finalLevelAnimation;
 
+  final String title;
   final int upperRowCount;
   final int lowerRowCount;
 
-  final String title;
+  final String backgroundImage;
+  final String finalLevelImage;
+  final String finalLevelAnimation;
 
   final Color backgroundColor;
   final Color lineBackgroundColor;
@@ -45,6 +43,7 @@ class PathLevelScreen extends StatefulWidget {
 
   final void Function(int id, int groupIndex) onClickLevel;
   final void Function() onClickLockLevel;
+  final void Function(int id) onClickFinishedLevel;
 
   const PathLevelScreen({
     super.key,
@@ -65,6 +64,7 @@ class PathLevelScreen extends StatefulWidget {
     this.drawSpeed = const Duration(milliseconds: 250),
     required this.onClickLevel,
     required this.onClickLockLevel,
+    required this.onClickFinishedLevel,
     required this.hasSubTopic,
   });
 
@@ -113,7 +113,12 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
           int levelsTillCurrent = group.levels.indexWhere((level) => level.isCurrent) + 1;
           int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
           int remainLevels = levelsTillCurrent - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
-          currentPosition += completeCycleCount * 240 + remainLevels > widget.upperRowCount ? 240 : 120;
+          currentPosition += completeCycleCount * 240 +
+              (remainLevels == 0
+                  ? 0
+                  : remainLevels > widget.upperRowCount
+                      ? 240
+                      : 120);
           break;
         }
 
@@ -124,28 +129,44 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
 
         int completeCycleCount = group.levels.length ~/ (widget.upperRowCount + widget.lowerRowCount);
         int remainLevels = group.levels.length - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
-        currentPosition += completeCycleCount * 240 + remainLevels > widget.upperRowCount ? 240 : 120;
+        currentPosition += completeCycleCount * 240 +
+            (remainLevels == 0
+                ? 0
+                : remainLevels > widget.upperRowCount
+                    ? 240
+                    : 120);
       }
     } else {
       final levelList = widget.levelGroupList.last.levels;
       int levelsTillCurrent = levelList.indexWhere((level) => level.isCurrent) + 1;
       int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
       int remainLevels = levelsTillCurrent - completeCycleCount * (widget.upperRowCount + widget.lowerRowCount);
-      currentPosition += completeCycleCount * 240 + remainLevels > widget.upperRowCount ? 240 : 120;
+      currentPosition += completeCycleCount * 240 +
+          (remainLevels == 0
+              ? 0
+              : remainLevels > widget.upperRowCount
+                  ? 240
+                  : 120);
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      double screenHeight = MediaQuery.of(context).size.height;
+    currentPosition -= 120;
 
-      if (currentPosition > screenHeight * 0.25) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // double screenHeight = MediaQuery.of(context).size.height;
+
+      if (currentPosition >= 240) {
         if (_scrollController.hasClients) {
-          _scrollController.animateTo(currentPosition, duration: const Duration(milliseconds: 500), curve: Curves.linear);
+          Future.delayed(Duration(seconds: widget.hasSubTopic ? 0 : 1), () {
+            if (mounted) {
+              _scrollController.animateTo(currentPosition, duration: const Duration(milliseconds: 300), curve: Curves.linear);
+            }
+          });
         }
       }
     });
   }
 
-  void _scrollListener() {
+  _scrollListener() {
     _backgroundOffset.value = _scrollController.offset / 15;
 
     // Avoid overscroll
@@ -166,65 +187,45 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
     return Container(
       decoration: BoxDecoration(color: widget.isDarkMode ? Colors.black : widget.backgroundColor),
       child: Stack(
+        alignment: Alignment.topCenter,
         children: [
           // Background image
           _backgroundImage(),
 
-          Scaffold(
-              backgroundColor: Colors.transparent,
-              appBar: AppBar(
-                  leading: IconButton(
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: widget.isDarkMode ? Colors.white : Colors.black,
-                    ),
-                    onPressed: () => Navigator.of(context).pop(),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('${percent.toInt()}%', style: const TextStyle(fontWeight: FontWeight.w500)),
+                    Text('$passedLevels/$totalLevels Lessons', style: const TextStyle(fontWeight: FontWeight.w500)),
+                  ],
+                ),
+              ),
+              Padding(
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    bottom: 15,
+                    top: 5,
                   ),
-                  title: Text(
-                    widget.title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
-                      color: widget.isDarkMode ? Colors.white : Colors.black,
-                    ),
-                  ),
-                  backgroundColor: widget.isDarkMode ? Colors.black : widget.backgroundColor,
-                  scrolledUnderElevation: 0),
-              body: SafeArea(
-                  child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('${percent.toInt()}%', style: const TextStyle(fontWeight: FontWeight.w500)),
-                        Text('$passedLevels/$totalLevels Lessons', style: const TextStyle(fontWeight: FontWeight.w500)),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.only(
-                        left: 20,
-                        right: 20,
-                        bottom: 15,
-                        top: 5,
-                      ),
-                      child: CustomLinearProgress(
-                          mainColor: widget.mainColor,
-                          percent: percent < 0 ? 0 : percent,
-                          backgroundColor: widget.isDarkMode ? Colors.grey.shade900 : widget.lineBackgroundColor,
-                          indicatorColor: Colors.white)),
-                  Expanded(
-                    child: ListView.builder(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        controller: _scrollController,
-                        shrinkWrap: true,
-                        itemCount: widget.levelGroupList.length,
-                        itemBuilder: (_, index) => _buildGroup(index)),
-                  ),
-                ],
-              ))),
+                  child: CustomLinearProgress(
+                      mainColor: widget.mainColor,
+                      percent: percent < 0 ? 0 : percent,
+                      backgroundColor: widget.isDarkMode ? Colors.grey.shade900 : widget.lineBackgroundColor,
+                      indicatorColor: Colors.white)),
+              Expanded(
+                child: ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    controller: _scrollController,
+                    shrinkWrap: true,
+                    itemCount: widget.levelGroupList.length,
+                    itemBuilder: (_, index) => _buildGroup(index)),
+              ),
+            ],
+          )
         ],
       ),
     );
@@ -233,7 +234,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
   Widget _backgroundImage() => ValueListenableBuilder(
       valueListenable: _backgroundOffset,
       builder: (_, value, __) => Transform.translate(
-          offset: Offset(0, 30 - value / 3),
+          offset: Offset(0, -value / 3 - 100),
           child: Container(
               height: 450,
               decoration: BoxDecoration(
@@ -248,26 +249,25 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
       children: [
         if (widget.hasSubTopic) _buildDivider(currentGroup.title),
         PathLevelComponent(
-          hasSubTopic: widget.hasSubTopic,
-          levelList: currentGroup.levels,
-          drawType: currentGroup.drawType,
-          isDarkMode: widget.isDarkMode,
-          isGroupFocused: currentGroup.isFocused,
-          finalLevelImage: widget.finalLevelImage,
-          finalLevelAnimation: widget.finalLevelAnimation,
-          cycleSpeed: widget.drawSpeed,
-          lastCycleSpeed: widget.drawSpeed,
-          startColor: currentGroup.startColor,
-          startImage: currentGroup.startImage,
-          mainColor: widget.mainColor,
-          lockColor: widget.lockColor,
-          passColor: widget.passColor,
-          lineBackgroundColor: widget.isDarkMode ? Colors.grey.shade900 : widget.lineBackgroundColor,
-          upperRowCount: widget.upperRowCount,
-          lowerRowCount: widget.lowerRowCount,
-          onClickLevel: (id) => widget.onClickLevel(id, groupIndex),
-          onClickLockLevel: widget.onClickLockLevel,
-        ),
+            hasSubTopic: widget.hasSubTopic,
+            levelList: currentGroup.levels,
+            drawType: currentGroup.drawType,
+            isDarkMode: widget.isDarkMode,
+            isGroupFocused: currentGroup.isFocused,
+            finalLevelImage: widget.finalLevelImage,
+            finalLevelAnimation: widget.finalLevelAnimation,
+            cycleSpeed: widget.drawSpeed,
+            lastCycleSpeed: widget.drawSpeed,
+            startImage: currentGroup.startImage,
+            mainColor: widget.mainColor,
+            lockColor: widget.lockColor,
+            passColor: widget.passColor,
+            lineBackgroundColor: widget.isDarkMode ? Colors.grey.shade900 : widget.lineBackgroundColor,
+            upperRowCount: widget.upperRowCount,
+            lowerRowCount: widget.lowerRowCount,
+            onClickLevel: (id) => widget.onClickLevel(id, groupIndex),
+            onClickLockLevel: widget.onClickLockLevel,
+            onClickFinishedLevel: widget.onClickFinishedLevel),
       ],
     );
   }
