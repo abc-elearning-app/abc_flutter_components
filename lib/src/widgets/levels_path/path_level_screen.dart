@@ -21,14 +21,14 @@ class LevelGroup {
 
 class PathLevelScreen extends StatefulWidget {
   final List<LevelGroup> levelGroupList;
-  final String backgroundImage;
-  final String finalLevelImage;
-  final String finalLevelAnimation;
 
+  final String title;
   final int upperRowCount;
   final int lowerRowCount;
 
-  final String title;
+  final String backgroundImage;
+  final String finalLevelImage;
+  final String finalLevelAnimation;
 
   final Color backgroundColor;
   final Color lineBackgroundColor;
