@@ -37,8 +37,7 @@ class StudyPlanBoxComponent extends StatefulWidget {
   State<StudyPlanBoxComponent> createState() => _StudyPlanBoxComponentState();
 }
 
-class _StudyPlanBoxComponentState extends State<StudyPlanBoxComponent>
-    with SingleTickerProviderStateMixin {
+class _StudyPlanBoxComponentState extends State<StudyPlanBoxComponent> with SingleTickerProviderStateMixin {
   late ValueNotifier<bool> _isExpanded;
   late AnimationController _animationController;
   late Animation _animation;
@@ -48,16 +47,11 @@ class _StudyPlanBoxComponentState extends State<StudyPlanBoxComponent>
   @override
   void initState() {
     _isExpanded = ValueNotifier(true);
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 200),
-    );
-    _animation = Tween<double>(begin: 1.5 * pi, end: pi / 2)
-        .animate(_animationController);
+    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
+    _animation = Tween<double>(begin: 1.5 * pi, end: pi / 2).animate(_animationController);
 
     _animationController.forward();
 
-    // _displayOption = ValueNotifier(0);
     super.initState();
   }
 
@@ -66,7 +60,6 @@ class _StudyPlanBoxComponentState extends State<StudyPlanBoxComponent>
     _isExpanded.dispose();
     _animationController.dispose();
 
-    // _displayOption.dispose();
     super.dispose();
   }
 
@@ -76,18 +69,8 @@ class _StudyPlanBoxComponentState extends State<StudyPlanBoxComponent>
       margin: const EdgeInsets.only(left: 5, right: 5, bottom: 15, top: 15),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: widget.isDarkMode
-              ? Colors.white.withOpacity(0.3)
-              : widget.backgroundColor,
-          boxShadow: !widget.isDarkMode
-              ? [
-                  BoxShadow(
-                    color: Colors.grey.shade300,
-                    blurRadius: 5,
-                    spreadRadius: 2,
-                  )
-                ]
-              : null),
+          color: widget.isDarkMode ? Colors.white.withOpacity(0.3) : widget.backgroundColor,
+          boxShadow: !widget.isDarkMode ? [BoxShadow(color: Colors.grey.shade300, blurRadius: 5, spreadRadius: 2)] : null),
       child: Column(
         children: [
           GestureDetector(
@@ -111,12 +94,8 @@ class _StudyPlanBoxComponentState extends State<StudyPlanBoxComponent>
                     // Title
                     Expanded(
                         child: Text(
-                      'Personal Plan',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color:
-                              widget.isDarkMode ? Colors.white : Colors.black),
+                      'Study Plan',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: widget.isDarkMode ? Colors.white : Colors.black),
                     )),
 
                     // Dropdown button
@@ -142,21 +121,13 @@ class _StudyPlanBoxComponentState extends State<StudyPlanBoxComponent>
               duration: const Duration(milliseconds: 300),
               height: value ? 290 : 0,
               decoration: BoxDecoration(
-                  color:
-                      widget.isDarkMode ? Colors.grey.shade900 : Colors.white,
-                  borderRadius: const BorderRadius.only(
-                      bottomRight: Radius.circular(16),
-                      bottomLeft: Radius.circular(16))),
+                  color: widget.isDarkMode ? Colors.grey.shade900 : Colors.white,
+                  borderRadius: const BorderRadius.only(bottomRight: Radius.circular(16), bottomLeft: Radius.circular(16))),
               child: SingleChildScrollView(
                 physics: const NeverScrollableScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                    top: 20,
-                    left: 5,
-                    right: 5,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: StudyPlanChart(
-                    key: GlobalKey(),
                     isDarkMode: widget.isDarkMode,
                     lineSectionHeight: 120,
                     barSectionHeight: 150,
@@ -173,38 +144,6 @@ class _StudyPlanBoxComponentState extends State<StudyPlanBoxComponent>
       ),
     );
   }
-
-  // Widget _buildSegmentController() => Padding(
-  //       padding: const EdgeInsets.symmetric(vertical: 15),
-  //       child: ValueListenableBuilder(
-  //         valueListenable: _displayOption,
-  //         builder: (_, value, __) => SlidingSegmentedControl<int>(
-  //             padding: const EdgeInsets.all(5),
-  //             backgroundColor: widget.segmentBackgroundColor,
-  //             children: <int, Widget>{
-  //               0: _buildSegmentButton(0, '7 Days'),
-  //               1: _buildSegmentButton(1, '30 Days'),
-  //               2: _buildSegmentButton(2, '90 Days'),
-  //             },
-  //             groupValue: value,
-  //             onValueChanged: _handleSelectOptions),
-  //       ),
-  //     );
-  //
-  // Widget _buildSegmentButton(int index, String title) => Padding(
-  //       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-  //       child: Text(title,
-  //           style: TextStyle(
-  //               fontSize: 14,
-  //               fontWeight: FontWeight.w400,
-  //               color: _displayOption.value == index
-  //                   ? widget.secondaryColor
-  //                   : Colors.black)),
-  //     );
-  //
-  // _handleSelectOptions(int? index) {
-  //   _displayOption.value = index!;
-  // }
 
   _handleToggleExpand() {
     if (!_isExpanded.value) {

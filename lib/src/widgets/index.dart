@@ -91,7 +91,7 @@ export 'questions/action_icon.dart';
 export 'icons/get_pro_icon.dart';
 export 'home_screen/common/passing_probability_section.dart';
 export 'home_screen/statistic_tab_widgets/overview_box.dart';
-export 'home_screen/statistic_tab_widgets/personal_plan_box.dart';
+export 'home_screen/statistic_tab_widgets/study_plan_box.dart';
 export 'home_screen/study_tab_widgets/study_plan_button.dart';
 export 'home_screen/study_tab_widgets/study_tab_subject_tile.dart';
 export 'account/account_tab.dart';

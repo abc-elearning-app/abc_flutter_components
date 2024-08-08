@@ -29,7 +29,6 @@ class StudyPlanChart extends StatefulWidget {
 
   // Value range
   final double minBarValue;
-  final double barValueInterval;
 
   final double minLineValue;
   final double maxLineValue;
@@ -66,7 +65,6 @@ class StudyPlanChart extends StatefulWidget {
     this.correctColor = const Color(0xFF00CA9F),
     this.expectedColor = const Color(0xFFF1D6A9),
     this.minBarValue = 0,
-    this.barValueInterval = 25,
     this.lineSectionHeight = 150,
     this.barSectionHeight = 150,
     this.minLineValue = 0,
@@ -107,22 +105,31 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
   // Index of the column that contains the current day
   int currentColumnIndex = 0;
 
-  int get daysTillExam =>
-      widget.examDate.difference(widget.startDate).inDays + 2;
+  int get daysTillExam => widget.examDate.difference(widget.startDate).inDays + 2;
 
   bool get isLessColumnThanDefault => daysTillExam < widget.displayColumns;
 
-  int get columns =>
-      isLessColumnThanDefault ? daysTillExam : widget.displayColumns;
+  int get columns => isLessColumnThanDefault ? daysTillExam : widget.displayColumns;
 
   @override
   void initState() {
     // Initial calculations
+    _clear();
     _calculateAverageValues();
     _createDateGroups();
     _calculateExpectedLineValues();
     _calculateLinePercentValues();
     super.initState();
+  }
+
+  _clear() {
+    dataList.clear();
+    expectedLineValues.clear();
+    percentValues.clear();
+    averageValues.clear();
+    dateGroups.clear();
+    daysInGroup.clear();
+    currentColumnIndex = 0;
   }
 
   /// Initial calculations
@@ -178,18 +185,14 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
     averageValues = [];
     int startGroupIndex = 0;
     for (int i = 0; i < currentColumnIndex; i++) {
-      int sum = widget.valueList
-          .sublist(startGroupIndex, startGroupIndex + daysInGroup[i])
-          .reduce((a, b) => a + b);
+      int sum = widget.valueList.sublist(startGroupIndex, startGroupIndex + daysInGroup[i]).reduce((a, b) => a + b);
       averageValues.add(sum / daysInGroup[i]);
 
       startGroupIndex += daysInGroup[i];
     }
 
     // Calculate current day group's average
-    int sum = widget.valueList
-        .sublist(startGroupIndex, widget.valueList.length)
-        .reduce((a, b) => a + b);
+    int sum = widget.valueList.sublist(startGroupIndex, widget.valueList.length).reduce((a, b) => a + b);
     averageValues.add(sum / (widget.valueList.length - startGroupIndex));
 
     // The rest are all 0
@@ -239,9 +242,7 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
   /// p is the average of previous actual values
   _calculatePrediction(int index) =>
       percentValues[index - 1] +
-      (percentValues.reduce((a, b) => a + b) / percentValues.length) *
-          (widget.expectedBarValue * (1 - percentValues[index - 1])) /
-          widget.expectedBarValue;
+      (percentValues.reduce((a, b) => a + b) / percentValues.length) * (widget.expectedBarValue * (1 - percentValues[index - 1])) / widget.expectedBarValue;
 
   @override
   Widget build(BuildContext context) {
@@ -257,17 +258,11 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
               children: [
                 Text(
                   widget.leftYAxisTitle,
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: widget.isDarkMode ? Colors.white : Colors.black),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: widget.isDarkMode ? Colors.white : Colors.black),
                 ),
                 Text(
                   widget.rightYAxisTitle,
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: widget.isDarkMode ? Colors.white : Colors.black),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: widget.isDarkMode ? Colors.white : Colors.black),
                 ),
               ],
             ),
@@ -281,8 +276,7 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
             height: widget.lineSectionHeight,
             child: SfCartesianChart(
               onMarkerRender: (args) => _drawLineMarker(args),
-              axes: _buildPlaceHolderYAxis(
-                  contain3Digits: widget.expectedBarValue > 90),
+              axes: _buildPlaceHolderYAxis(contain3Digits: widget.expectedBarValue > 90),
               primaryXAxis: _buildCustomXAxis(ChartType.line),
               primaryYAxis: _buildCustomYAxis(ChartType.line),
               tooltipBehavior: _buildTooltip(ChartType.line, 'Pass percent'),
@@ -327,9 +321,7 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
             animationDuration: widget.duration,
             splineType: SplineType.cardinal,
             cardinalSplineTension: widget.curveTension,
-            pointColorMapper: (_, index) => index >= currentColumnIndex
-                ? widget.correctColor
-                : widget.mainColor,
+            pointColorMapper: (_, index) => index >= currentColumnIndex ? widget.correctColor : widget.mainColor,
             markerSettings: MarkerSettings(
                 isVisible: true,
                 borderWidth: 2,
@@ -354,12 +346,9 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
               dataSource: averageValues,
               width: widget.barRatio,
               xValueMapper: (_, index) => index.toString(),
-              yValueMapper: (value, _) => chartType == ChartType.expected
-                  ? widget.expectedBarValue
-                  : value,
+              yValueMapper: (value, _) => chartType == ChartType.expected ? widget.expectedBarValue : value,
               animationDuration: widget.duration,
-              pointColorMapper: (data, index) => _getBarColor(index)
-                  .withOpacity(chartType == ChartType.expected ? 0.2 : 1),
+              pointColorMapper: (data, index) => _getBarColor(index).withOpacity(chartType == ChartType.expected ? 0.2 : 1),
               borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(50),
                 topLeft: Radius.circular(50),
@@ -377,19 +366,15 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
         final endDateString = '${endDate.day}/${endDate.month}';
 
         double value = 0;
-        if (!(widget.valueList.length == 1 &&
-            widget.valueList[0] == 0 &&
-            pointIndex == 0)) {
-          value = chartType == ChartType.line
-              ? (percentValues[pointIndex] * 100)
-              : ((averageValues[pointIndex] / widget.expectedBarValue) * 100);
+        if (!(widget.valueList.length == 1 && widget.valueList[0] == 0 && pointIndex == 0)) {
+          value = chartType == ChartType.line ? (percentValues[pointIndex] * 100) : ((averageValues[pointIndex] / widget.expectedBarValue) * 100);
         }
 
         return Container(
           padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: widget.isDarkMode ? Colors.black : Colors.grey,
+            color: Colors.black,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -428,14 +413,13 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
   _buildCustomYAxis(ChartType type) => NumericAxis(
         plotOffset: type == ChartType.line ? 10 : 0,
         opposedPosition: type == ChartType.line,
-        minimum:
-            type == ChartType.line ? widget.minLineValue : widget.minBarValue,
-        maximum: (type == ChartType.line
-                ? widget.maxLineValue
-                : (widget.expectedBarValue ~/ 10 + 1) * 10) + 5,
+        minimum: type == ChartType.line ? widget.minLineValue : widget.minBarValue,
+        maximum: (type == ChartType.line ? widget.maxLineValue : (widget.expectedBarValue ~/ 10 + 1) * 10) + 5,
         interval: type == ChartType.line
             ? widget.lineValueInterval
-            : widget.barValueInterval,
+            : widget.expectedBarValue <= 50
+                ? 20
+                : 25,
         axisLine: const AxisLine(color: Colors.grey),
         majorGridLines: const MajorGridLines(color: Colors.transparent),
         majorTickLines: const MajorTickLines(color: Colors.grey),
@@ -479,5 +463,15 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
       args.color = Colors.transparent;
       args.borderColor = Colors.transparent;
     }
+  }
+
+  @override
+  void didUpdateWidget(covariant StudyPlanChart oldWidget) {
+    _clear();
+    _calculateAverageValues();
+    _createDateGroups();
+    _calculateExpectedLineValues();
+    _calculateLinePercentValues();
+    super.didUpdateWidget(oldWidget);
   }
 }
