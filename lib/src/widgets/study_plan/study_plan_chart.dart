@@ -89,7 +89,6 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
   // late TooltipBehavior _tooltip;
 
   // Input data list
-  List<ChartData> dataList = [];
   List<double> expectedLineValues = [];
   final List<double> percentValues = [];
 
@@ -113,17 +112,26 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
 
   @override
   void initState() {
-    // Initial calculations
+    _calculate();
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant StudyPlanChart oldWidget) {
+    _calculate();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  /// Initial calculations
+  _calculate() {
     _clear();
     _calculateAverageValues();
     _createDateGroups();
     _calculateExpectedLineValues();
     _calculateLinePercentValues();
-    super.initState();
   }
 
   _clear() {
-    dataList.clear();
     expectedLineValues.clear();
     percentValues.clear();
     averageValues.clear();
@@ -132,7 +140,6 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
     currentColumnIndex = 0;
   }
 
-  /// Initial calculations
   _calculateAverageValues() {
     // If the days from start to exam date is less than default display columns
     if (isLessColumnThanDefault) {
@@ -463,15 +470,5 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
       args.color = Colors.transparent;
       args.borderColor = Colors.transparent;
     }
-  }
-
-  @override
-  void didUpdateWidget(covariant StudyPlanChart oldWidget) {
-    _clear();
-    _calculateAverageValues();
-    _createDateGroups();
-    _calculateExpectedLineValues();
-    _calculateLinePercentValues();
-    super.didUpdateWidget(oldWidget);
   }
 }
