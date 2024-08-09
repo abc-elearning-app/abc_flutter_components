@@ -112,18 +112,18 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
 
   @override
   void initState() {
-    _calculate();
+    _recalculate();
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant StudyPlanChart oldWidget) {
-    _calculate();
+    _recalculate();
     super.didUpdateWidget(oldWidget);
   }
 
   /// Initial calculations
-  _calculate() {
+  _recalculate() {
     _clear();
     _calculateAverageValues();
     _createDateGroups();
@@ -147,10 +147,7 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
       final remainDays = daysTillExam - averageValues.length;
       averageValues.addAll(List.generate(remainDays, (_) => 0));
 
-      daysInGroup = List.generate(
-        columns,
-        (_) => 1,
-      );
+      daysInGroup = List.generate(columns, (_) => 1);
 
       return;
     }

@@ -107,7 +107,6 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
     if (widget.hasSubTopic) {
       // This loop may not loop through all groups since it stops at the current group
       for (var group in widget.levelGroupList) {
-        currentPosition += 30;
 
         if (group.isFocused) {
           int levelsTillCurrent = group.levels.indexWhere((level) => level.isCurrent) + 1;
