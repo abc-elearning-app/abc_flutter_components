@@ -7,7 +7,7 @@ class QuestionData {
   final String question;
   final List<AnswerData> answers;
   final String explanation;
-  bool? isCorrectlyChosen;
+  final bool isSelected;
   bool bookmarked;
   bool liked;
   bool disliked;
@@ -18,10 +18,10 @@ class QuestionData {
     required this.question,
     required this.answers,
     required this.explanation,
+    required this.isSelected,
     this.bookmarked = false,
     this.liked = false,
     this.disliked = false,
-    this.isCorrectlyChosen,
   });
 }
 
@@ -34,7 +34,6 @@ class AnswerData {
 
 class ReviewQuestionBox extends StatefulWidget {
   final int index;
-  final String topicName;
   final QuestionData questionData;
   final bool isPro;
   final bool isDarkMode;
@@ -42,6 +41,8 @@ class ReviewQuestionBox extends StatefulWidget {
   final Color mainColor;
   final String mainColorHex;
   final Color secondaryColor;
+  final Color correctColor;
+  final Color incorrectColor;
   final String secondaryColorHex;
   final Color explanationColor;
 
@@ -63,13 +64,14 @@ class ReviewQuestionBox extends StatefulWidget {
     required this.onProClick,
     required this.isPro,
     required this.isDarkMode,
-    required this.topicName,
     required this.mainColor,
     required this.mainColorHex,
     required this.secondaryColor,
     required this.secondaryColorHex,
     this.renderTextBuilder,
     this.explanationColor = const Color(0xFF5497FF),
+    required this.correctColor,
+    required this.incorrectColor,
   });
 
   @override
@@ -106,11 +108,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
               children: [
                 Row(
                   children: [
-                    Expanded(
-                        child: Text(
-                      widget.topicName,
-                      overflow: TextOverflow.ellipsis,
-                    )),
+                    Expanded(child: _buildStatus()),
                     _buildButtons(),
                   ],
                 ),
@@ -142,6 +140,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
             ),
           ),
 
+          // Show explanation
           StatefulBuilder(
               builder: (_, setState) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,10 +172,58 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                       _explanationSection(setState)
                     ],
                   )),
-
-          // Show explanation
         ],
       ),
+    );
+  }
+
+  Widget _buildStatus() {
+    final answers = widget.questionData.answers;
+    bool? correctlyChosen;
+    if (widget.questionData.isSelected) {
+      if (answers.where((answer) => answer.isCorrect == false).isNotEmpty) {
+        correctlyChosen = false;
+      } else if (answers.where((answer) => answer.isCorrect == true).isNotEmpty) {
+        correctlyChosen = true;
+      }
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        CircleAvatar(
+            radius: 7,
+            backgroundColor: correctlyChosen == true
+                ? widget.correctColor
+                : correctlyChosen == false
+                    ? widget.incorrectColor
+                    : const Color(0xFFBFBFBF),
+            child: Icon(
+              correctlyChosen == true
+                  ? Icons.check
+                  : correctlyChosen == false
+                      ? Icons.close
+                      : Icons.horizontal_rule_rounded,
+              size: 12,
+              color: Colors.white,
+            )),
+        const SizedBox(width: 6),
+        Text(
+          correctlyChosen == true
+              ? 'CORRECT'
+              : correctlyChosen == false
+                  ? 'INCORRECT'
+                  : 'UNANSWERED',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: correctlyChosen == true
+                ? widget.correctColor
+                : correctlyChosen == false
+                    ? widget.incorrectColor
+                    : const Color(0xFFBFBFBF),
+          ),
+        )
+      ],
     );
   }
 
@@ -212,13 +259,14 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
 
     Color? iconColor;
     if (isCorrect == true) {
-      iconColor = Colors.green;
+      iconColor = widget.correctColor;
     } else if (isCorrect == false) {
-      iconColor = Colors.red;
+      iconColor = widget.incorrectColor;
     }
     TextStyle textStyle = TextStyle(
       fontSize: 14,
       color: widget.isDarkMode ? Colors.white : Colors.black,
+      decoration: widget.questionData.isSelected && isCorrect == null ? TextDecoration.lineThrough : null,
     );
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -233,6 +281,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
               )),
           const SizedBox(width: 15),
           if (widget.renderTextBuilder != null)
+            // TODO: linethrough for math formula
             Expanded(child: widget.renderTextBuilder!.call(context, content, textStyle))
           else
             Text(
@@ -254,9 +303,12 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                'Show Explanation',
-                style: TextStyle(fontSize: 16, color: widget.explanationColor, fontWeight: FontWeight.w500),
+              Opacity(
+                opacity: widget.isPro ? 1 : 0.7,
+                child: Text(
+                  'Show Explanation',
+                  style: TextStyle(fontSize: 16, color: widget.explanationColor, fontWeight: FontWeight.w500),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),

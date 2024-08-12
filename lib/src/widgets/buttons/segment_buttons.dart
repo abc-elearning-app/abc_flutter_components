@@ -40,17 +40,28 @@ class _SegmentButtonsState extends State<SegmentButtons> {
 
   Widget _buildSegmentButton(int index, String title) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
-        child: Text(title,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: widget.isDarkMode
-                  ? statusIndex == index
-                      ? Colors.black
-                      : Colors.white
-                  : statusIndex == index
-                      ? widget.selectedTextColor
-                      : Colors.black,
-            )),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(title,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: widget.isDarkMode
+                      ? statusIndex == index
+                          ? Colors.black
+                          : Colors.white
+                      : statusIndex == index
+                          ? widget.selectedTextColor
+                          : Colors.black,
+                )),
+            const SizedBox(width: 5),
+            const CircleAvatar(
+              radius: 8,
+              backgroundColor: Color(0xFFE9E6D7),
+              child: Text('10', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w500),),
+            )
+          ],
+        ),
       );
 }
