@@ -199,14 +199,14 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
               backgroundColor: correctlyChosen == true
                   ? widget.correctColor
                   : correctlyChosen == false
-                      ? widget.incorrectColor
-                      : const Color(0xFFBFBFBF),
+                  ? widget.incorrectColor
+                  : const Color(0xFFBFBFBF),
               child: Icon(
                 correctlyChosen == true
                     ? Icons.check
                     : correctlyChosen == false
-                        ? Icons.close
-                        : Icons.horizontal_rule_rounded,
+                    ? Icons.close
+                    : Icons.horizontal_rule_rounded,
                 size: 12,
                 color: Colors.white,
               )),
@@ -215,16 +215,16 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
             correctlyChosen == true
                 ? 'CORRECT'
                 : correctlyChosen == false
-                    ? 'INCORRECT'
-                    : 'UNANSWERED',
+                ? 'INCORRECT'
+                : 'UNANSWERED',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
               color: correctlyChosen == true
                   ? widget.correctColor
                   : correctlyChosen == false
-                      ? widget.incorrectColor
-                      : const Color(0xFFBFBFBF),
+                  ? widget.incorrectColor
+                  : const Color(0xFFBFBFBF),
             ),
           )
         ],
@@ -316,17 +316,17 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                 child: Transform.flip(flipY: isShowExplanation, child: const IconWidget(icon: 'assets/static/images/chevron_down.svg')),
               ),
 
-              // Pro icon
-              if (!widget.isPro)
-                Expanded(
-                    child: Align(
+          // Pro icon
+          if (!widget.isPro)
+            Expanded(
+                child: Align(
                   alignment: Alignment.centerRight,
                   child: GetProIcon(darkMode: widget.isDarkMode, proIcon: widget.proIcon),
                 ))
-            ],
-          ),
-        ),
-      );
+        ],
+      ),
+    ),
+  );
 
   _handleToggleExplanation(void Function(void Function() action) setState) {
     if (widget.isPro) {
