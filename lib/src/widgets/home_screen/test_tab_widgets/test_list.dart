@@ -22,21 +22,21 @@ class TestList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 150,
+      height: 140,
       width: double.infinity,
       child: ListView.builder(
           padding: const EdgeInsets.only(left: 10, bottom: 10),
           scrollDirection: Axis.horizontal,
           shrinkWrap: true,
           itemCount: practiceTests.length,
-          itemBuilder: (_, index) => _testBox(practiceTests[index], index)),
+          itemBuilder: (_, index) => _testBox(context, practiceTests[index], index)),
     );
   }
 
-  Widget _testBox(TestData data, int index) => GestureDetector(
+  Widget _testBox(BuildContext context, TestData data, int index) => GestureDetector(
         onTap: () => onSelect(data.id),
         child: Container(
-          width: 185,
+          width: MediaQuery.of(context).size.width / 2 - 20,
           margin: const EdgeInsets.symmetric(horizontal: 5),
           decoration: BoxDecoration(
             image: DecorationImage(

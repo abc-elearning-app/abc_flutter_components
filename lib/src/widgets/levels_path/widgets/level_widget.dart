@@ -16,13 +16,13 @@ class LevelWidget extends StatefulWidget {
   final bool isGroupFocused;
   final bool hasSubTopic;
 
-  final Color startColor;
   final Color passColor;
   final Color mainColor;
   final Color lockColor;
 
   final void Function(int id) onClickLevel;
   final void Function() onClickLockLevel;
+  final void Function(int id) onClickFinishedLevel;
 
   const LevelWidget({
     super.key,
@@ -32,7 +32,6 @@ class LevelWidget extends StatefulWidget {
     required this.drawType,
     required this.drawSpeed,
     required this.index,
-    required this.startColor,
     required this.finalLevelImage,
     required this.passColor,
     required this.mainColor,
@@ -43,6 +42,7 @@ class LevelWidget extends StatefulWidget {
     required this.onClickLevel,
     required this.onClickLockLevel,
     required this.hasSubTopic,
+    required this.onClickFinishedLevel,
   });
 
   @override
@@ -58,7 +58,7 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
   // late AnimationController _tooltipController;
 
   // Animations
-  late Animation<double> _tooltipAnimation;
+  // late Animation<double> _tooltipAnimation;
   late Animation<double> _fadingInAnimation;
   late Animation<double> _landingAnimation;
   late Animation<double> _scalingAnimation;
@@ -222,7 +222,11 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
                     Transform.translate(
                         offset: Offset(0, _getTranslateValue()),
                         child: GestureDetector(
-                          onTap: () => !widget.levelData.isLock ? widget.onClickLevel(widget.levelData.id) : widget.onClickLockLevel(),
+                          onTap: () => widget.levelData.isLock
+                              ? widget.onClickLockLevel()
+                              : widget.levelData.progress == 100
+                                  ? widget.onClickFinishedLevel(widget.levelData.id)
+                                  : widget.onClickLevel(widget.levelData.id),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -310,7 +314,7 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
   Widget _finalLevel() => Padding(
       padding: const EdgeInsets.only(bottom: 5),
       child: Opacity(
-        opacity: widget.levelData.isCurrent ? 1 : 0.6,
+        opacity: !widget.levelData.isLock ? 1 : 0.6,
         child: widget.levelData.progress == 100
             ? Transform.translate(
                 offset: const Offset(0, -10),
@@ -378,10 +382,6 @@ class _LevelWidgetState extends State<LevelWidget> with TickerProviderStateMixin
 
   _getMainColor() {
     if (widget.levelData.isLock) return widget.lockColor;
-
-    // if (widget.index == 0 && widget.levelData.progress == 0) {
-    //   return widget.startColor;
-    // }
 
     if (widget.levelData.isCurrent || widget.levelData.progress < 100) return widget.mainColor;
 
