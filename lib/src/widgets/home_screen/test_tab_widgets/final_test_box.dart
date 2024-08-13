@@ -18,6 +18,8 @@ class FinalTestBox extends StatelessWidget {
   final double correctPercent;
   final double minPassValue;
 
+  final bool isDone;
+
   final void Function() onClickFinal;
 
   const FinalTestBox({
@@ -31,6 +33,7 @@ class FinalTestBox extends StatelessWidget {
     required this.secondaryColor,
     required this.onClickFinal,
     required this.minPassValue,
+    required this.isDone,
     this.correctColor = const Color(0xFF15CB9F),
     this.incorrectColor = const Color(0xFFFC5656),
     this.gradientColors = const [
@@ -108,7 +111,7 @@ class FinalTestBox extends StatelessWidget {
     );
   }
 
-  Widget _buildLinearProgress() => progress < 100
+  Widget _buildLinearProgress() => !isDone
       ? LinearPercentIndicator(
           padding: EdgeInsets.zero,
           percent: progress / 100,

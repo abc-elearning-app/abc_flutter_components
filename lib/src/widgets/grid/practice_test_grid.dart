@@ -6,7 +6,10 @@ class TestData {
   final String title;
   final int answeredQuestions;
   final int totalQuestions;
+  final int correctQuestions;
   final double progress;
+  final double correct;
+  final bool isDone;
   final String background;
 
   TestData({
@@ -14,8 +17,11 @@ class TestData {
     required this.title,
     required this.answeredQuestions,
     required this.totalQuestions,
+    required this.correctQuestions,
     required this.progress,
     required this.background,
+    required this.correct,
+    required this.isDone,
   });
 }
 
@@ -25,6 +31,8 @@ class TestGrid extends StatelessWidget {
   final bool isDarkMode;
 
   final Color mainColor;
+  final Color correctColor;
+  final Color incorrectColor;
   final Color secondaryColor;
   final Color backgroundColor;
 
@@ -33,6 +41,8 @@ class TestGrid extends StatelessWidget {
   const TestGrid({
     super.key,
     this.mainColor = const Color(0xFFE3A651),
+    this.correctColor = const Color(0xFF15CB9F),
+    this.incorrectColor = const Color(0xFFFC5656),
     this.secondaryColor = const Color(0xFF7C6F5B),
     this.backgroundColor = const Color(0xFFF5F4EE),
     required this.title,
@@ -70,12 +80,12 @@ class TestGrid extends StatelessWidget {
               childAspectRatio: 1.3,
             ),
             itemCount: practiceTests.length,
-            itemBuilder: (_, index) => _testBox(practiceTests[index])),
+            itemBuilder: (_, index) => _testBox(practiceTests[index], index)),
       ),
     );
   }
 
-  Widget _testBox(TestData data) => GestureDetector(
+  Widget _testBox(TestData data, int index) => GestureDetector(
         onTap: () => onSelected(data.id),
         child: Container(
           margin: const EdgeInsets.all(8),
@@ -85,23 +95,14 @@ class TestGrid extends StatelessWidget {
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(20),
-            boxShadow: !isDarkMode
-                ? [
-                    BoxShadow(
-                        color: Colors.grey.shade200,
-                        blurRadius: 1,
-                        spreadRadius: 1,
-                        offset: const Offset(0, 1))
-                  ]
-                : null,
+            boxShadow: !isDarkMode ? [BoxShadow(color: Colors.grey.shade200, blurRadius: 1, spreadRadius: 1, offset: const Offset(0, 1))] : null,
           ),
           child: Stack(children: [
             Positioned.fill(
                 child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: (isDarkMode ? const Color(0xFF292929) : secondaryColor)
-                    .withOpacity(0.92),
+                color: (isDarkMode ? const Color(0xFF292929) : secondaryColor).withOpacity(0.92),
               ),
             )),
             Padding(
@@ -111,7 +112,7 @@ class TestGrid extends StatelessWidget {
                 children: [
                   // Title
                   Text(
-                    data.title,
+                    "Practice Test ${index + 1}",
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -124,7 +125,9 @@ class TestGrid extends StatelessWidget {
                     child: Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: Text(
-                          '• ${data.answeredQuestions}/${data.totalQuestions} Answered',
+                          data.isDone
+                              ? '• ${data.correctQuestions}/${data.totalQuestions} Correct'
+                              : '• ${data.answeredQuestions}/${data.totalQuestions} Answered',
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.8),
                             fontSize: 14,
@@ -138,28 +141,26 @@ class TestGrid extends StatelessWidget {
                     LinearPercentIndicator(
                       barRadius: const Radius.circular(15),
                       padding: EdgeInsets.zero,
-                      percent: data.progress,
-                      progressColor: mainColor,
+                      percent: (data.isDone ? data.correct : data.progress) / 100,
+                      progressColor: data.isDone ? correctColor : mainColor,
                       lineHeight: 25,
-                      backgroundColor: Colors.white.withOpacity(0.5),
+                      backgroundColor: data.isDone ? incorrectColor : Colors.white.withOpacity(0.5),
                     ),
                     Padding(
                         padding: const EdgeInsets.only(right: 10),
                         child: RichText(
                           text: TextSpan(
                               style: const TextStyle(
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.bold,
                                 fontSize: 16,
-                                color: Colors.white,
                               ),
                               children: [
-                                TextSpan(
-                                    text: '${(data.progress * 100).toInt()}'),
+                                TextSpan(text: (data.isDone ? data.correct : data.progress).toInt().toString()),
                                 const TextSpan(
                                     text: '%',
                                     style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400))
+                                      fontSize: 12,
+                                    ))
                               ]),
                         ))
                   ])
