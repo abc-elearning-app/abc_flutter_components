@@ -69,7 +69,7 @@ class OtpPage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 10, bottom: 20),
           child: TextButton(
-              style: TextButton.styleFrom(overlayColor: secondaryColor),
+              style: TextButton.styleFrom(foregroundColor: secondaryColor),
               onPressed: onReenterEmail,
               child: Text(
                 'Enter Another Email',

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
-import 'package:flutter_abc_jsc_components/src/widgets/settings/widgets/premium_button.dart';
 
 enum PackageType { weekly, monthly, yearly }
 
@@ -228,7 +227,7 @@ class AccountTabComponent extends StatelessWidget {
             onPressed: onClick,
             style: ElevatedButton.styleFrom(
                 elevation: 0,
-                overlayColor: secondaryColor,
+                foregroundColor: secondaryColor,
                 backgroundColor: isDarkMode ? Colors.grey.shade900 : Colors.grey.shade300.withOpacity(0.4),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
             child: Padding(

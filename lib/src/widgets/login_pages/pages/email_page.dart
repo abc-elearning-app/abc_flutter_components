@@ -104,7 +104,7 @@ class EmailPage extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          overlayColor: secondaryColor,
+          foregroundColor: secondaryColor,
           backgroundColor: isDarkMode ? Colors.grey.shade900 : Colors.white,
           side: BorderSide(width: 0.8, color: isDarkMode ? mainColor : secondaryColor),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
