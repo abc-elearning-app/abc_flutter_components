@@ -28,6 +28,7 @@ class AccountTabComponent extends StatelessWidget {
   final String username;
   final String email;
 
+  final Color secondaryColor;
   final Color backgroundColor;
 
   final void Function() onUpgrade;
@@ -61,6 +62,7 @@ class AccountTabComponent extends StatelessWidget {
     required this.packageType,
     required this.expireDate,
     required this.crownIcon,
+    required this.secondaryColor,
   });
 
   @override
@@ -72,9 +74,7 @@ class AccountTabComponent extends StatelessWidget {
           width: 80,
           height: 5,
           margin: const EdgeInsets.only(bottom: 15),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-              color: isDarkMode ? Colors.grey : Colors.white),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(100), color: isDarkMode ? Colors.grey : Colors.white),
         ),
         Container(
           width: MediaQuery.of(context).size.width,
@@ -111,12 +111,7 @@ class AccountTabComponent extends StatelessWidget {
                 // User information (avatar, email, name)
                 Padding(
                   padding: EdgeInsets.only(top: isPro ? 15 : 0),
-                  child: UserInformation(
-                      isPro: isPro,
-                      avatar: avatar,
-                      email: email,
-                      username: username,
-                      crownIcon: crownIcon),
+                  child: UserInformation(isPro: isPro, avatar: avatar, email: email, username: username, crownIcon: crownIcon),
                 ),
 
                 if (isPro)
@@ -170,9 +165,7 @@ class AccountTabComponent extends StatelessWidget {
                             fontSize: 16,
                             fontWeight: FontWeight.w300,
                             fontStyle: FontStyle.italic,
-                            color: isDarkMode
-                                ? Colors.white
-                                : Colors.black.withOpacity(0.5)),
+                            color: isDarkMode ? Colors.white : Colors.black.withOpacity(0.5)),
                       ),
                     ],
                   ),
@@ -216,10 +209,7 @@ class AccountTabComponent extends StatelessWidget {
                 ),
                 Text(
                   _getDateTime(expireDate),
-                  style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      decoration: TextDecoration.underline),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, decoration: TextDecoration.underline),
                 ),
               ],
             ),
@@ -232,38 +222,25 @@ class AccountTabComponent extends StatelessWidget {
         ],
       );
 
-  Widget _buildButton(String title, String icon, void Function() onClick,
-          {Color? color}) =>
-      Padding(
+  Widget _buildButton(String title, String icon, void Function() onClick, {Color? color}) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: ElevatedButton(
             onPressed: onClick,
             style: ElevatedButton.styleFrom(
                 elevation: 0,
-                backgroundColor: isDarkMode
-                    ? Colors.grey.shade900
-                    : Colors.grey.shade300.withOpacity(0.4),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12))),
+                overlayColor: secondaryColor,
+                backgroundColor: isDarkMode ? Colors.grey.shade900 : Colors.grey.shade300.withOpacity(0.4),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Transform.translate(
-                      offset: const Offset(-10, 0),
-                      child: IconWidget(
-                          icon: icon,
-                          color: color ??
-                              (isDarkMode ? Colors.white : Colors.black))),
+                  Transform.translate(offset: const Offset(-10, 0), child: IconWidget(icon: icon, color: color ?? (isDarkMode ? Colors.white : Colors.black))),
                   const SizedBox(width: 5),
                   Text(
                     title,
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: color ??
-                            (isDarkMode ? Colors.white : Colors.black)),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: color ?? (isDarkMode ? Colors.white : Colors.black)),
                   )
                 ],
               ),

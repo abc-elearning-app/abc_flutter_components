@@ -35,19 +35,22 @@ class _FilterSegmentState extends State<FilterSegment> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomSlidingSegmentedControl(
-      decoration: BoxDecoration(color: widget.isDarkMode ? Colors.grey.shade900 : widget.backgroundColor, borderRadius: BorderRadius.circular(8)),
-      initialValue: widget.initialValue,
-      children: <int, Widget>{
-        0: _buildSegmentButton(0, 'All', widget.allValue),
-        1: _buildSegmentButton(1, 'Correct', widget.correctValue),
-        2: _buildSegmentButton(2, 'Incorrect', widget.incorrectValue),
-      },
-      thumbDecoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
-      onValueChanged: (id) {
-        setState(() => statusIndex = id);
-        widget.onChange(statusIndex);
-      },
+    return Transform.scale(
+      scaleX: MediaQuery.of(context).size.width < 380 ? 0.95 : 1,
+      child: CustomSlidingSegmentedControl(
+        decoration: BoxDecoration(color: widget.isDarkMode ? Colors.grey.shade900 : widget.backgroundColor, borderRadius: BorderRadius.circular(8)),
+        initialValue: widget.initialValue,
+        children: <int, Widget>{
+          0: _buildSegmentButton(0, 'All', widget.allValue),
+          1: _buildSegmentButton(1, 'Correct', widget.correctValue),
+          2: _buildSegmentButton(2, 'Incorrect', widget.incorrectValue),
+        },
+        thumbDecoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+        onValueChanged: (id) {
+          setState(() => statusIndex = id);
+          widget.onChange(statusIndex);
+        },
+      ),
     );
   }
 

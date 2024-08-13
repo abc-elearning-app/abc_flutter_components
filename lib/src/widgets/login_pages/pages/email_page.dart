@@ -32,19 +32,16 @@ class EmailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(flex: 4, child: IconWidget(icon: image)),
+        Expanded(child: IconWidget(icon: image)),
         // Detail text
-        Expanded(
-          flex: 3,
-          child: Padding(
-            padding: const EdgeInsets.all(30),
-            // Scroll view for small screen
-            child: SingleChildScrollView(
-              child: Text(
-                detail,
-                style: TextStyle(fontSize: 16, color: isDarkMode ? Colors.white.withOpacity(0.6) : Colors.black),
-                textAlign: TextAlign.center,
-              ),
+        Padding(
+          padding: const EdgeInsets.all(20),
+          // Scroll view for small screen
+          child: SingleChildScrollView(
+            child: Text(
+              detail,
+              style: TextStyle(fontSize: 16, color: isDarkMode ? Colors.white.withOpacity(0.6) : Colors.black),
+              textAlign: TextAlign.center,
             ),
           ),
         ),
@@ -107,6 +104,7 @@ class EmailPage extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
+          overlayColor: secondaryColor,
           backgroundColor: isDarkMode ? Colors.grey.shade900 : Colors.white,
           side: BorderSide(width: 0.8, color: isDarkMode ? mainColor : secondaryColor),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

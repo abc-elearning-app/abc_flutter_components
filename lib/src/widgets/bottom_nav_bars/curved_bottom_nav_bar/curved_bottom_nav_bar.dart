@@ -8,6 +8,7 @@ class CurvedNavigationBar extends StatefulWidget {
   final Color color;
   final Color iconShadowColor;
   final Color? buttonBackgroundColor;
+  final Color backgroundColor;
   final ValueChanged<int> onTap;
   final Curve animationCurve;
   final Duration animationDuration;
@@ -28,6 +29,7 @@ class CurvedNavigationBar extends StatefulWidget {
     this.animationDuration = const Duration(milliseconds: 600),
     this.height = 75.0,
     required this.isDarkMode,
+    required this.backgroundColor,
   })  : assert(icons.isNotEmpty),
         assert(0 <= index && index < icons.length),
         assert(0 <= height && height <= 75.0);
@@ -36,8 +38,7 @@ class CurvedNavigationBar extends StatefulWidget {
   CurvedNavigationBarState createState() => CurvedNavigationBarState();
 }
 
-class CurvedNavigationBarState extends State<CurvedNavigationBar>
-    with SingleTickerProviderStateMixin {
+class CurvedNavigationBarState extends State<CurvedNavigationBar> with SingleTickerProviderStateMixin {
   late double _startingPos;
   int _endingIndex = 0;
   late double _pos;
@@ -75,8 +76,7 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
       final newPosition = widget.index / _length;
       _startingPos = _pos;
       _endingIndex = widget.index;
-      _animationController.animateTo(newPosition,
-          duration: widget.animationDuration, curve: widget.animationCurve);
+      _animationController.animateTo(newPosition, duration: widget.animationDuration, curve: widget.animationCurve);
     }
   }
 
@@ -90,12 +90,7 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      decoration: BoxDecoration(boxShadow: [
-        BoxShadow(
-            color: widget.isDarkMode ? Colors.black : Colors.white,
-            blurRadius: 10,
-            spreadRadius: 20)
-      ]),
+      decoration: BoxDecoration(boxShadow: [BoxShadow(color: widget.isDarkMode ? Colors.black : widget.backgroundColor, blurRadius: 20, spreadRadius: 15)]),
       height: widget.height + 42,
       child: Stack(
         fit: StackFit.expand,
@@ -104,12 +99,8 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
           // Current button
           Positioned(
             bottom: -35 - (75.0 - widget.height),
-            left: Directionality.of(context) == TextDirection.rtl
-                ? null
-                : _pos * size.width,
-            right: Directionality.of(context) == TextDirection.rtl
-                ? _pos * size.width
-                : null,
+            left: Directionality.of(context) == TextDirection.rtl ? null : _pos * size.width,
+            right: Directionality.of(context) == TextDirection.rtl ? _pos * size.width : null,
             width: size.width / _length,
             child: Center(
               child: Transform.translate(
@@ -118,19 +109,12 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
                   -10 - (1 - _buttonHide) * 80,
                 ),
                 child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: widget.buttonBackgroundColor ?? widget.color),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(100), color: widget.buttonBackgroundColor ?? widget.color),
                   padding: const EdgeInsets.all(18),
                   child: Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
-                          boxShadow: [
-                            BoxShadow(
-                                color: widget.iconShadowColor.withOpacity(0.5),
-                                spreadRadius: 1,
-                                blurRadius: 20)
-                          ]),
+                          boxShadow: [BoxShadow(color: widget.iconShadowColor.withOpacity(0.5), spreadRadius: 1, blurRadius: 20)]),
                       child: _icon),
                 ),
               ),
@@ -176,20 +160,22 @@ class CurvedNavigationBarState extends State<CurvedNavigationBar>
           Positioned(
             left: 0,
             right: 0,
-            bottom: 20,
+            bottom: MediaQuery.of(context).padding != EdgeInsets.zero ? 20 : 15,
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: widget.titles.asMap().entries.map((entry) {
-                  return SizedBox(
-                    width: size.width / widget.titles.length,
-                    child: Center(
-                      child: Text(
-                        entry.value,
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(
-                              entry.key == widget.index ? 1 : 0.5),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
+                  return GestureDetector(
+                    onTap: () => _buttonTap(entry.key),
+                    child: SizedBox(
+                      width: size.width / widget.titles.length,
+                      child: Center(
+                        child: Text(
+                          entry.value,
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(entry.key == widget.index ? 1 : 0.5),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
                     ),
@@ -255,9 +241,7 @@ class NavButton extends StatelessWidget {
                 0,
                 difference < 1.0 / length ? verticalAlignment * 40 : 0,
               ),
-              child: Opacity(
-                  opacity: difference < 1.0 / length * 0.99 ? opacity : 1.0,
-                  child: child),
+              child: Opacity(opacity: difference < 1.0 / length * 0.99 ? opacity : 1.0, child: child),
             )),
       ),
     );
@@ -278,11 +262,9 @@ class NavCustomPainter extends CustomPainter {
     this.color, // Color of the curved background
     this.textDirection, // Text direction (RTL or LTR)
   ) {
-    final span =
-        1.0 / itemsLength; // Calculate span size based on the number of items
+    final span = 1.0 / itemsLength; // Calculate span size based on the number of items
     s = 0.2; // Set the span size for the curve
-    double l = startingLoc +
-        (span - s) / 2; // Calculate the initial location of the curve
+    double l = startingLoc + (span - s) / 2; // Calculate the initial location of the curve
 
     // Adjust the location for RTL text direction
     loc = textDirection == TextDirection.rtl ? 0.8 - l : l;
@@ -298,8 +280,7 @@ class NavCustomPainter extends CustomPainter {
     // Create the path for the curved background
     final path = Path()
       ..moveTo(0, 0) // Move to the starting point
-      ..lineTo((loc - 0.1) * size.width,
-          0) // Draw a line to the starting point of the curve
+      ..lineTo((loc - 0.1) * size.width, 0) // Draw a line to the starting point of the curve
       ..cubicTo(
         (loc + s * 0.10) * size.width,
         // Adjusted control point 1 (x-coordinate) for less curve
@@ -321,8 +302,7 @@ class NavCustomPainter extends CustomPainter {
         0, // End point of the curve (y-coordinate)
       )
       ..lineTo(size.width, 0) // Draw a line to the top-right corner
-      ..lineTo(
-          size.width, size.height) // Draw a line to the bottom-right corner
+      ..lineTo(size.width, size.height) // Draw a line to the bottom-right corner
       ..lineTo(0, size.height) // Draw a line to the bottom-left corner
       ..close(); // Close the path
 

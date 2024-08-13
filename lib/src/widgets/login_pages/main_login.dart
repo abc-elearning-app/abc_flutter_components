@@ -52,25 +52,34 @@ class MainLoginPage extends StatefulWidget {
 }
 
 class _MainLoginPageState extends State<MainLoginPage> {
-  final _pageController = PageController();
-  final _pageIndex = ValueNotifier<int>(0);
-  final _buttonEnable = ValueNotifier<bool>(false);
+  late PageController _pageController;
+  late ValueNotifier<int> _pageIndex;
+  late ValueNotifier<bool> _buttonEnable;
 
-  final emailController = TextEditingController();
-  final otpController = TextEditingController();
+  late TextEditingController emailController;
+  late TextEditingController otpController;
 
   late List<Widget> tabs;
 
   @override
   void initState() {
+    _pageController = PageController();
+    _pageIndex = ValueNotifier(0);
+    _buttonEnable = ValueNotifier(false);
+
+    emailController = TextEditingController();
+    otpController = TextEditingController();
+
+    _pageController.addListener(_nextPageListener);
+
     tabs = [
       EmailPage(
         isDarkMode: widget.isDarkMode,
         emailController: emailController,
         image: widget.tabDataList[0].image,
-        secondaryColor: widget.secondaryColor,
         detail: widget.tabDataList[0].detail,
         mainColor: widget.mainColor,
+        secondaryColor: widget.secondaryColor,
         onEnterEmail: () => _buttonEnable.value = _isValidEmail(emailController.text),
         onGoogleSignIn: () => widget.onGoogleSignIn(),
         onAppleSignIn: () => widget.onAppleSignIn(),
@@ -86,8 +95,6 @@ class _MainLoginPageState extends State<MainLoginPage> {
         onEnterOtp: () => _buttonEnable.value = otpController.text.length == 6,
       )
     ];
-
-    _pageController.addListener(_nextPageListener);
 
     super.initState();
   }
@@ -138,7 +145,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
           ),
           Expanded(
             flex: 1,
-            child: Stack(children: [
+            child: Stack(alignment: Alignment.center, children: [
               // Lower background
               Container(color: widget.isDarkMode ? Colors.black : widget.upperBackgroundColor),
               Container(

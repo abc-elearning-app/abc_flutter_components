@@ -7,7 +7,7 @@ class QuestionData {
   final String question;
   final List<AnswerData> answers;
   final String explanation;
-  final bool isSelected;
+  final bool? isSelected;
   bool bookmarked;
   bool liked;
   bool disliked;
@@ -18,7 +18,7 @@ class QuestionData {
     required this.question,
     required this.answers,
     required this.explanation,
-    required this.isSelected,
+    this.isSelected,
     this.bookmarked = false,
     this.liked = false,
     this.disliked = false,
@@ -35,15 +35,17 @@ class AnswerData {
 class ReviewQuestionBox extends StatefulWidget {
   final int index;
   final QuestionData questionData;
+
   final bool isPro;
   final bool isDarkMode;
+  final String proIcon;
 
   final Color mainColor;
   final String mainColorHex;
   final Color secondaryColor;
+  final String secondaryColorHex;
   final Color correctColor;
   final Color incorrectColor;
-  final String secondaryColorHex;
   final Color explanationColor;
 
   final Widget Function(BuildContext context, String text, TextStyle textStyle)? renderTextBuilder;
@@ -72,6 +74,7 @@ class ReviewQuestionBox extends StatefulWidget {
     this.explanationColor = const Color(0xFF5497FF),
     required this.correctColor,
     required this.incorrectColor,
+    required this.proIcon,
   });
 
   @override
@@ -178,53 +181,56 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
   }
 
   Widget _buildStatus() {
-    final answers = widget.questionData.answers;
-    bool? correctlyChosen;
-    if (widget.questionData.isSelected) {
-      if (answers.where((answer) => answer.isCorrect == false).isNotEmpty) {
-        correctlyChosen = false;
-      } else if (answers.where((answer) => answer.isCorrect == true).isNotEmpty) {
-        correctlyChosen = true;
+    if (widget.questionData.isSelected != null) {
+      final answers = widget.questionData.answers;
+      bool? correctlyChosen;
+      if (widget.questionData.isSelected == true) {
+        if (answers.where((answer) => answer.isCorrect == false).isNotEmpty) {
+          correctlyChosen = false;
+        } else if (answers.where((answer) => answer.isCorrect == true).isNotEmpty) {
+          correctlyChosen = true;
+        }
       }
-    }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        CircleAvatar(
-            radius: 7,
-            backgroundColor: correctlyChosen == true
-                ? widget.correctColor
-                : correctlyChosen == false
-                    ? widget.incorrectColor
-                    : const Color(0xFFBFBFBF),
-            child: Icon(
-              correctlyChosen == true
-                  ? Icons.check
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CircleAvatar(
+              radius: 7,
+              backgroundColor: correctlyChosen == true
+                  ? widget.correctColor
                   : correctlyChosen == false
-                      ? Icons.close
-                      : Icons.horizontal_rule_rounded,
-              size: 12,
-              color: Colors.white,
-            )),
-        const SizedBox(width: 6),
-        Text(
-          correctlyChosen == true
-              ? 'CORRECT'
-              : correctlyChosen == false
-                  ? 'INCORRECT'
-                  : 'UNANSWERED',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: correctlyChosen == true
-                ? widget.correctColor
+                      ? widget.incorrectColor
+                      : const Color(0xFFBFBFBF),
+              child: Icon(
+                correctlyChosen == true
+                    ? Icons.check
+                    : correctlyChosen == false
+                        ? Icons.close
+                        : Icons.horizontal_rule_rounded,
+                size: 12,
+                color: Colors.white,
+              )),
+          const SizedBox(width: 6),
+          Text(
+            correctlyChosen == true
+                ? 'CORRECT'
                 : correctlyChosen == false
-                    ? widget.incorrectColor
-                    : const Color(0xFFBFBFBF),
-          ),
-        )
-      ],
-    );
+                    ? 'INCORRECT'
+                    : 'UNANSWERED',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: correctlyChosen == true
+                  ? widget.correctColor
+                  : correctlyChosen == false
+                      ? widget.incorrectColor
+                      : const Color(0xFFBFBFBF),
+            ),
+          )
+        ],
+      );
+    }
+    return const SizedBox();
   }
 
   Widget _buildButtons() => Padding(
@@ -266,7 +272,6 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
     TextStyle textStyle = TextStyle(
       fontSize: 14,
       color: widget.isDarkMode ? Colors.white : Colors.black,
-      decoration: widget.questionData.isSelected && isCorrect == null ? TextDecoration.lineThrough : null,
     );
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -281,13 +286,9 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
               )),
           const SizedBox(width: 15),
           if (widget.renderTextBuilder != null)
-            // TODO: linethrough for math formula
             Expanded(child: widget.renderTextBuilder!.call(context, content, textStyle))
           else
-            Text(
-              content,
-              style: textStyle,
-            ),
+            Text(content, style: textStyle),
         ],
       ),
     );
@@ -320,7 +321,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                 Expanded(
                     child: Align(
                   alignment: Alignment.centerRight,
-                  child: GetProIcon(darkMode: widget.isDarkMode),
+                  child: GetProIcon(darkMode: widget.isDarkMode, proIcon: widget.proIcon),
                 ))
             ],
           ),

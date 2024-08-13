@@ -9,6 +9,7 @@ class SettingTile extends StatelessWidget {
   final String icon;
   final String title;
   final bool showPro;
+  final String? proIcon;
 
   // Trailing
   final bool? value;
@@ -26,6 +27,7 @@ class SettingTile extends StatelessWidget {
     this.value,
     this.information,
     this.showPro = false,
+    this.proIcon,
     this.activeThumbColor = const Color(0xFF6C5F4B),
     this.activeTrackColor = const Color(0xFFF4E8D6),
     required this.isDarkMode,
@@ -53,7 +55,7 @@ class SettingTile extends StatelessWidget {
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (showPro) GetProIcon(padding: const EdgeInsets.all(5), margin: const EdgeInsets.only(right: 8), darkMode: isDarkMode),
+            if (showPro) GetProIcon(padding: const EdgeInsets.all(5), margin: const EdgeInsets.only(right: 8), darkMode: isDarkMode, proIcon: proIcon!),
             const SizedBox(width: 10),
             StatefulBuilder(
               builder: (_, setState) => Switch(
@@ -78,7 +80,7 @@ class SettingTile extends StatelessWidget {
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
                 color: isDarkMode ? Colors.white : Colors.black,
-                decoration: TextDecoration.underline,
+                decoration: information == '__/__' ? null : TextDecoration.underline,
               )),
         );
     }
