@@ -121,47 +121,25 @@ class FinalTestBox extends StatelessWidget {
           progressColor: mainColor,
           backgroundColor: Colors.grey.shade200.withOpacity(0.3),
         )
-      : Stack(
-          children: [
-            LinearPercentIndicator(
-              padding: EdgeInsets.zero,
-              percent: 1,
-              animation: true,
-              barRadius: const Radius.circular(20),
-              lineHeight: 10,
-              progressColor: incorrectColor,
-              backgroundColor: Colors.transparent,
-            ),
-            LinearPercentIndicator(
-              padding: EdgeInsets.zero,
-              percent: correctPercent / 100,
-              animation: true,
-              barRadius: const Radius.circular(20),
-              lineHeight: 10,
-              progressColor: correctColor,
-              backgroundColor: Colors.transparent,
-            ),
-          ],
+      : LinearPercentIndicator(
+          padding: EdgeInsets.zero,
+          percent: correctPercent / 100,
+          animation: true,
+          barRadius: const Radius.circular(20),
+          lineHeight: 10,
+          progressColor: correctColor,
+          backgroundColor: incorrectColor,
         );
 
   _getText() {
     if (progress == 0) return 'Start';
     if (progress < 100) return 'Continue';
-
     if (correctPercent >= minPassValue) return 'Passed';
     return 'Failed';
   }
 
   _gradientColors() => LinearGradient(
-      colors: isDarkMode
-          ? [
-              const Color(0xFF292929).withOpacity(0.8),
-              const Color(0xFF292929),
-            ]
-          : [
-              gradientColors[0].withOpacity(0.8),
-              gradientColors[1],
-            ],
+      colors: isDarkMode ? [const Color(0xFF292929).withOpacity(0.8), const Color(0xFF292929)] : [gradientColors[0].withOpacity(0.8), gradientColors[1]],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter);
 }
