@@ -7,7 +7,7 @@ class QuestionData {
   final String question;
   final List<AnswerData> answers;
   final String explanation;
-  final bool isSelected;
+  final bool? isSelected;
   bool bookmarked;
   bool liked;
   bool disliked;
@@ -18,7 +18,7 @@ class QuestionData {
     required this.question,
     required this.answers,
     required this.explanation,
-    required this.isSelected,
+    this.isSelected,
     this.bookmarked = false,
     this.liked = false,
     this.disliked = false,
