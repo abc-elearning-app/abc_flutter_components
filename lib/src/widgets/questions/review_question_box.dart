@@ -7,7 +7,7 @@ class QuestionData {
   final String question;
   final List<AnswerData> answers;
   final String explanation;
-  bool? isCorrectlyChosen;
+  final bool? isSelected;
   bool bookmarked;
   bool liked;
   bool disliked;
@@ -18,10 +18,10 @@ class QuestionData {
     required this.question,
     required this.answers,
     required this.explanation,
+    this.isSelected,
     this.bookmarked = false,
     this.liked = false,
     this.disliked = false,
-    this.isCorrectlyChosen,
   });
 }
 
@@ -34,8 +34,8 @@ class AnswerData {
 
 class ReviewQuestionBox extends StatefulWidget {
   final int index;
-  final String topicName;
   final QuestionData questionData;
+
   final bool isPro;
   final bool isDarkMode;
 
@@ -43,6 +43,8 @@ class ReviewQuestionBox extends StatefulWidget {
   final String mainColorHex;
   final Color secondaryColor;
   final String secondaryColorHex;
+  final Color correctColor;
+  final Color incorrectColor;
   final Color explanationColor;
 
   final Widget Function(BuildContext context, String text, TextStyle textStyle)? renderTextBuilder;
@@ -63,13 +65,14 @@ class ReviewQuestionBox extends StatefulWidget {
     required this.onProClick,
     required this.isPro,
     required this.isDarkMode,
-    required this.topicName,
     required this.mainColor,
     required this.mainColorHex,
     required this.secondaryColor,
     required this.secondaryColorHex,
     this.renderTextBuilder,
     this.explanationColor = const Color(0xFF5497FF),
+    required this.correctColor,
+    required this.incorrectColor,
   });
 
   @override
@@ -89,7 +92,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
   Widget build(BuildContext context) {
     TextStyle textStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: widget.isDarkMode ? Colors.white : Colors.black);
     TextStyle explanationTextStyle =
-        TextStyle(fontStyle: FontStyle.italic, fontWeight: FontWeight.w500, fontSize: 14, color: widget.isDarkMode ? Colors.white : Colors.grey.shade600);
+    TextStyle(fontStyle: FontStyle.italic, fontWeight: FontWeight.w500, fontSize: 14, color: widget.isDarkMode ? Colors.white : Colors.grey.shade600);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
@@ -106,11 +109,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
               children: [
                 Row(
                   children: [
-                    Expanded(
-                        child: Text(
-                      widget.topicName,
-                      overflow: TextOverflow.ellipsis,
-                    )),
+                    Expanded(child: _buildStatus()),
                     _buildButtons(),
                   ],
                 ),
@@ -136,48 +135,100 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                   ),
                 Column(
                   children: List.generate(widget.questionData.answers.length,
-                      (index) => _buildAnswer(widget.questionData.answers[index].content, isCorrect: widget.questionData.answers[index].isCorrect)),
+                          (index) => _buildAnswer(widget.questionData.answers[index].content, isCorrect: widget.questionData.answers[index].isCorrect)),
                 )
               ],
             ),
           ),
 
+          // Show explanation
           StatefulBuilder(
               builder: (_, setState) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AnimatedCrossFade(
-                        firstChild: Padding(
-                          padding: const EdgeInsets.only(left: 15, right: 15, bottom: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Explanation',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: widget.isDarkMode ? Colors.white : Colors.black),
-                              ),
-                              if (widget.renderTextBuilder != null)
-                                widget.renderTextBuilder!.call(context, widget.questionData.explanation, explanationTextStyle)
-                              else
-                                Text(
-                                  widget.questionData.explanation,
-                                  style: explanationTextStyle,
-                                )
-                            ],
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AnimatedCrossFade(
+                    firstChild: Padding(
+                      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Explanation',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: widget.isDarkMode ? Colors.white : Colors.black),
                           ),
-                        ),
-                        secondChild: const SizedBox(),
-                        crossFadeState: isShowExplanation ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                        duration: const Duration(milliseconds: 200),
+                          if (widget.renderTextBuilder != null)
+                            widget.renderTextBuilder!.call(context, widget.questionData.explanation, explanationTextStyle)
+                          else
+                            Text(
+                              widget.questionData.explanation,
+                              style: explanationTextStyle,
+                            )
+                        ],
                       ),
-                      _explanationSection(setState)
-                    ],
-                  )),
-
-          // Show explanation
+                    ),
+                    secondChild: const SizedBox(),
+                    crossFadeState: isShowExplanation ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                    duration: const Duration(milliseconds: 200),
+                  ),
+                  _explanationSection(setState)
+                ],
+              )),
         ],
       ),
     );
+  }
+
+  Widget _buildStatus() {
+    if (widget.questionData.isSelected != null) {
+      final answers = widget.questionData.answers;
+      bool? correctlyChosen;
+      if (widget.questionData.isSelected == true) {
+        if (answers.where((answer) => answer.isCorrect == false).isNotEmpty) {
+          correctlyChosen = false;
+        } else if (answers.where((answer) => answer.isCorrect == true).isNotEmpty) {
+          correctlyChosen = true;
+        }
+      }
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CircleAvatar(
+              radius: 7,
+              backgroundColor: correctlyChosen == true
+                  ? widget.correctColor
+                  : correctlyChosen == false
+                  ? widget.incorrectColor
+                  : const Color(0xFFBFBFBF),
+              child: Icon(
+                correctlyChosen == true
+                    ? Icons.check
+                    : correctlyChosen == false
+                    ? Icons.close
+                    : Icons.horizontal_rule_rounded,
+                size: 12,
+                color: Colors.white,
+              )),
+          const SizedBox(width: 6),
+          Text(
+            correctlyChosen == true
+                ? 'CORRECT'
+                : correctlyChosen == false
+                ? 'INCORRECT'
+                : 'UNANSWERED',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: correctlyChosen == true
+                  ? widget.correctColor
+                  : correctlyChosen == false
+                  ? widget.incorrectColor
+                  : const Color(0xFFBFBFBF),
+            ),
+          )
+        ],
+      );
+    }
+    return const SizedBox();
   }
 
   Widget _buildButtons() => Padding(
@@ -212,9 +263,9 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
 
     Color? iconColor;
     if (isCorrect == true) {
-      iconColor = Colors.green;
+      iconColor = widget.correctColor;
     } else if (isCorrect == false) {
-      iconColor = Colors.red;
+      iconColor = widget.incorrectColor;
     }
     TextStyle textStyle = TextStyle(
       fontSize: 14,
@@ -235,45 +286,45 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
           if (widget.renderTextBuilder != null)
             Expanded(child: widget.renderTextBuilder!.call(context, content, textStyle))
           else
-            Text(
-              content,
-              style: textStyle,
-            ),
+            Text(content, style: textStyle),
         ],
       ),
     );
   }
 
   Widget _explanationSection(void Function(void Function() action) setState) => GestureDetector(
-        onTap: () => _handleToggleExplanation(setState),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-              color: widget.isDarkMode ? Colors.white.withOpacity(0.08) : widget.explanationColor.withOpacity(0.2),
-              borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15))),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                'Show Explanation',
-                style: TextStyle(fontSize: 16, color: widget.explanationColor, fontWeight: FontWeight.w500),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Transform.flip(flipY: isShowExplanation, child: const IconWidget(icon: 'assets/static/images/chevron_down.svg')),
-              ),
-
-              // Pro icon
-              if (!widget.isPro)
-                Expanded(
-                    child: Align(
-                  alignment: Alignment.centerRight,
-                  child: GetProIcon(darkMode: widget.isDarkMode),
-                ))
-            ],
+    onTap: () => _handleToggleExplanation(setState),
+    child: Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+          color: widget.isDarkMode ? Colors.white.withOpacity(0.08) : widget.explanationColor.withOpacity(0.2),
+          borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15))),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Opacity(
+            opacity: widget.isPro ? 1 : 0.7,
+            child: Text(
+              'Show Explanation',
+              style: TextStyle(fontSize: 16, color: widget.explanationColor, fontWeight: FontWeight.w500),
+            ),
           ),
-        ),
-      );
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Transform.flip(flipY: isShowExplanation, child: const IconWidget(icon: 'assets/static/images/chevron_down.svg')),
+          ),
+
+          // Pro icon
+          if (!widget.isPro)
+            Expanded(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: GetProIcon(darkMode: widget.isDarkMode, ""),
+                ))
+        ],
+      ),
+    ),
+  );
 
   _handleToggleExplanation(void Function(void Function() action) setState) {
     if (widget.isPro) {
