@@ -8,6 +8,8 @@ class TestList extends StatelessWidget {
   final void Function(int index) onSelect;
   final bool isDarkMode;
   final Color mainColor;
+  final Color correctColor;
+  final Color incorrectColor;
   final Color secondaryColor;
 
   const TestList({
@@ -17,6 +19,8 @@ class TestList extends StatelessWidget {
     required this.isDarkMode,
     required this.secondaryColor,
     required this.mainColor,
+    this.correctColor = const Color(0xFF15CB9F),
+    this.incorrectColor = const Color(0xFFFC5656),
   });
 
   @override
@@ -44,23 +48,14 @@ class TestList extends StatelessWidget {
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(20),
-            boxShadow: !isDarkMode
-                ? [
-                    BoxShadow(
-                        color: Colors.grey.shade200,
-                        blurRadius: 1,
-                        spreadRadius: 1,
-                        offset: const Offset(0, 1))
-                  ]
-                : null,
+            boxShadow: !isDarkMode ? [BoxShadow(color: Colors.grey.shade200, blurRadius: 1, spreadRadius: 1, offset: const Offset(0, 1))] : null,
           ),
           child: Stack(children: [
             Positioned.fill(
                 child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: (isDarkMode ? const Color(0xFF292929) : secondaryColor)
-                    .withOpacity(0.92),
+                color: (isDarkMode ? const Color(0xFF292929) : secondaryColor).withOpacity(0.92),
               ),
             )),
             Padding(
@@ -82,15 +77,15 @@ class TestList extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(top: 10),
-                      child: RichText(
-                        text: TextSpan(children: [
-                          const TextSpan(
-                              text: '• ', style: TextStyle(fontSize: 20)),
-                          TextSpan(
-                              text: data.answeredQuestions.toString(),
-                              style: const TextStyle(fontSize: 16)),
-                          TextSpan(text: '/${data.totalQuestions} Answered')
-                        ]),
+                      child: Text(
+                        data.isDone
+                            ? '• ${data.correctQuestions}/${data.totalQuestions} Correct'
+                            : '• ${data.answeredQuestions}/${data.totalQuestions} Answered',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.8),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
                   ),
@@ -100,10 +95,10 @@ class TestList extends StatelessWidget {
                     LinearPercentIndicator(
                       barRadius: const Radius.circular(15),
                       padding: EdgeInsets.zero,
-                      percent: data.progress / 100,
-                      progressColor: mainColor,
+                      percent: (data.isDone ? data.correct : data.progress) / 100,
+                      progressColor: data.isDone ? correctColor : mainColor,
                       lineHeight: 25,
-                      backgroundColor: Colors.white.withOpacity(0.5),
+                      backgroundColor: data.isDone ? incorrectColor : Colors.white.withOpacity(0.5),
                     ),
                     Padding(
                         padding: const EdgeInsets.only(right: 10),
@@ -114,8 +109,7 @@ class TestList extends StatelessWidget {
                                 fontSize: 16,
                               ),
                               children: [
-                                TextSpan(
-                                    text: data.progress.toInt().toString()),
+                                TextSpan(text: (data.isDone ? data.correct : data.progress).toInt().toString()),
                                 const TextSpan(
                                     text: '%',
                                     style: TextStyle(
