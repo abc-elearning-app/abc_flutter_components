@@ -32,29 +32,25 @@ class OtpPage extends StatelessWidget {
         width: screenSize.width / 7.2,
         height: screenSize.width / 7.2,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(10),
             color: isDarkMode ? Colors.grey.shade900 : Colors.white,
             border: Border.all(width: 0.5, color: isDarkMode ? mainColor : secondaryColor)));
 
     return Column(
       children: [
         Expanded(
-            flex: 2,
             child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Image.asset(image),
-            )),
-        Expanded(
-          flex: 1,
-          child: Padding(
-            padding: const EdgeInsets.all(30),
-            // Scroll view for small screen to avoid overflow
-            child: SingleChildScrollView(
-              child: Text(
-                detail,
-                style: TextStyle(fontSize: 16, color: isDarkMode ? Colors.white.withOpacity(0.6) : Colors.black),
-                textAlign: TextAlign.center,
-              ),
+          padding: const EdgeInsets.all(20),
+          child: Image.asset(image),
+        )),
+        Padding(
+          padding: const EdgeInsets.all(30),
+          // Scroll view for small screen to avoid overflow
+          child: SingleChildScrollView(
+            child: Text(
+              detail,
+              style: TextStyle(fontSize: 16, color: isDarkMode ? Colors.white.withOpacity(0.6) : Colors.black),
+              textAlign: TextAlign.center,
             ),
           ),
         ),
@@ -70,18 +66,18 @@ class OtpPage extends StatelessWidget {
             keyboardType: TextInputType.number,
           ),
         ),
-        GestureDetector(
-          onTap: onReenterEmail,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 30, bottom: 50),
-            child: Text(
-              'Enter Another Email',
-              style: TextStyle(
-                fontSize: 14,
-                color: isDarkMode ? mainColor : secondaryColor,
-              ),
-            ),
-          ),
+        Padding(
+          padding: const EdgeInsets.only(top: 10, bottom: 20),
+          child: TextButton(
+              style: TextButton.styleFrom(foregroundColor: secondaryColor),
+              onPressed: onReenterEmail,
+              child: Text(
+                'Enter Another Email',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: isDarkMode ? mainColor : secondaryColor,
+                ),
+              )),
         ),
       ],
     );

@@ -18,6 +18,8 @@ class FinalTestBox extends StatelessWidget {
   final double correctPercent;
   final double minPassValue;
 
+  final bool isDone;
+
   final void Function() onClickFinal;
 
   const FinalTestBox({
@@ -31,6 +33,7 @@ class FinalTestBox extends StatelessWidget {
     required this.secondaryColor,
     required this.onClickFinal,
     required this.minPassValue,
+    required this.isDone,
     this.correctColor = const Color(0xFF15CB9F),
     this.incorrectColor = const Color(0xFFFC5656),
     this.gradientColors = const [
@@ -108,7 +111,7 @@ class FinalTestBox extends StatelessWidget {
     );
   }
 
-  Widget _buildLinearProgress() => progress < 100
+  Widget _buildLinearProgress() => !isDone
       ? LinearPercentIndicator(
           padding: EdgeInsets.zero,
           percent: progress / 100,
@@ -118,47 +121,25 @@ class FinalTestBox extends StatelessWidget {
           progressColor: mainColor,
           backgroundColor: Colors.grey.shade200.withOpacity(0.3),
         )
-      : Stack(
-          children: [
-            LinearPercentIndicator(
-              padding: EdgeInsets.zero,
-              percent: 1,
-              animation: true,
-              barRadius: const Radius.circular(20),
-              lineHeight: 10,
-              progressColor: incorrectColor,
-              backgroundColor: Colors.transparent,
-            ),
-            LinearPercentIndicator(
-              padding: EdgeInsets.zero,
-              percent: correctPercent / 100,
-              animation: true,
-              barRadius: const Radius.circular(20),
-              lineHeight: 10,
-              progressColor: correctColor,
-              backgroundColor: Colors.transparent,
-            ),
-          ],
+      : LinearPercentIndicator(
+          padding: EdgeInsets.zero,
+          percent: correctPercent / 100,
+          animation: true,
+          barRadius: const Radius.circular(20),
+          lineHeight: 10,
+          progressColor: correctColor,
+          backgroundColor: incorrectColor,
         );
 
   _getText() {
     if (progress == 0) return 'Start';
     if (progress < 100) return 'Continue';
-
     if (correctPercent >= minPassValue) return 'Passed';
     return 'Failed';
   }
 
   _gradientColors() => LinearGradient(
-      colors: isDarkMode
-          ? [
-              const Color(0xFF292929).withOpacity(0.8),
-              const Color(0xFF292929),
-            ]
-          : [
-              gradientColors[0].withOpacity(0.8),
-              gradientColors[1],
-            ],
+      colors: isDarkMode ? [const Color(0xFF292929).withOpacity(0.8), const Color(0xFF292929)] : [gradientColors[0].withOpacity(0.8), gradientColors[1]],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter);
 }

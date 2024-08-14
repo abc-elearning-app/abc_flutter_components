@@ -68,9 +68,9 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(width: 100, child: _customCupertinoPicker(PickerType.day, List.generate(31, (index) => index + 1))),
+          SizedBox(width: 90, child: _customCupertinoPicker(PickerType.day, List.generate(31, (index) => index + 1))),
           Expanded(child: _customCupertinoPicker(PickerType.month, monthStrings)),
-          SizedBox(width: 110, child: _customCupertinoPicker(PickerType.year, yearStrings)),
+          SizedBox(width: 100, child: _customCupertinoPicker(PickerType.year, yearStrings)),
         ],
       ),
 

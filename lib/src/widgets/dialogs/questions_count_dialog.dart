@@ -90,7 +90,7 @@ class _QuestionCountDialogState extends State<QuestionCountDialog> {
                             textColor: widget.mainColor,
                             textStyle: const TextStyle(fontSize: 16),
                             onPressed: () => Navigator.of(context).pop(),
-                            borderSize: BorderSide(
+                            borderSide: BorderSide(
                               width: 1,
                               color: widget.mainColor,
                             ),
