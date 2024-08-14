@@ -8,7 +8,7 @@ class MainButton extends StatelessWidget {
   final Color? loadingColor;
   final Color? disabledColor;
   final Color? disabledTextColor;
-  final BorderSide? borderSize;
+  final BorderSide? borderSide;
   final bool loading;
   final int delayPressedMilliseconds;
   final EdgeInsets? padding;
@@ -22,7 +22,7 @@ class MainButton extends StatelessWidget {
       this.delayPressedMilliseconds = 100,
       this.loading = false,
       required this.title,
-      this.borderSize,
+      this.borderSide,
       required this.onPressed,
       this.padding,
       this.backgroundColor,
@@ -46,10 +46,10 @@ class MainButton extends StatelessWidget {
       color: bgColor,
       hoverColor: Colors.white38,
       highlightColor: Colors.white38,
-      shape: borderSize != null
+      shape: borderSide != null
           ? RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(borderRadius),
-              side: borderSize!)
+              side: borderSide!)
           : RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(borderRadius),
             ),
