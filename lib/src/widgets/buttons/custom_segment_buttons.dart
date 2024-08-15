@@ -57,7 +57,7 @@ class _FilterSegmentState extends State<FilterSegment> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: widget.backgroundColor, borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(color: widget.isDarkMode ? Colors.grey.shade900 : widget.backgroundColor, borderRadius: BorderRadius.circular(8)),
       padding: const EdgeInsets.symmetric(horizontal: 3),
       height: 45,
       child: Row(

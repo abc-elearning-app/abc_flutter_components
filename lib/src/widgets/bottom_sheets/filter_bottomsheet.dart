@@ -24,6 +24,8 @@ class FilterBottomsheetComponent extends StatefulWidget {
   final Color secondaryColor;
   final Color backgroundColor;
 
+  final bool isDarkMode;
+
   final void Function(List<int> ids) onApply;
 
   const FilterBottomsheetComponent({
@@ -34,6 +36,7 @@ class FilterBottomsheetComponent extends StatefulWidget {
     required this.list,
     required this.secondaryColor,
     required this.onApply,
+    required this.isDarkMode,
   });
 
   @override
@@ -43,17 +46,20 @@ class FilterBottomsheetComponent extends StatefulWidget {
 class _FilterBottomsheetComponentState extends State<FilterBottomsheetComponent> {
   late List<bool> selectedOptions;
   late ValueNotifier<bool> allSelected;
+  late ValueNotifier<bool> enableButton;
 
   @override
   void initState() {
     selectedOptions = widget.list.map((option) => option.isSelected).toList();
     allSelected = ValueNotifier(widget.list.where((option) => !option.isSelected).isEmpty);
+    enableButton = ValueNotifier(true);
     super.initState();
   }
 
   @override
   void dispose() {
     allSelected.dispose();
+    enableButton.dispose();
     super.dispose();
   }
 
@@ -65,8 +71,12 @@ class _FilterBottomsheetComponentState extends State<FilterBottomsheetComponent>
         IconWidget(icon: widget.dropDownImage),
         Container(
           margin: const EdgeInsets.only(top: 5),
-          decoration:
-              BoxDecoration(color: widget.backgroundColor, borderRadius: const BorderRadius.only(topRight: Radius.circular(36), topLeft: Radius.circular(36))),
+          decoration: BoxDecoration(
+              color: widget.isDarkMode ? Colors.black : widget.backgroundColor,
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(36),
+                topLeft: Radius.circular(36),
+              )),
           child: SafeArea(
             child: Column(
               children: [
@@ -83,12 +93,14 @@ class _FilterBottomsheetComponentState extends State<FilterBottomsheetComponent>
                         valueListenable: allSelected,
                         builder: (_, value, __) => MyCheckBox(
                             value: value,
-                            borderColor: widget.mainColor,
-                            fillColor: Colors.white,
-                            activeColor: widget.mainColor,
+                            borderColor: widget.secondaryColor,
+                            fillColor: widget.isDarkMode ? Colors.grey.shade900 : Colors.white,
+                            activeColor: widget.secondaryColor,
                             borderWidth: 1.5,
+                            iconColor: Colors.white,
                             onChanged: (value) {
                               allSelected.value = value;
+                              enableButton.value = value;
                               setState(() => selectedOptions = List.generate(widget.list.length, (_) => value));
                             }),
                       ),
@@ -102,17 +114,21 @@ class _FilterBottomsheetComponentState extends State<FilterBottomsheetComponent>
                   itemCount: widget.list.length,
                   itemBuilder: (_, index) => _tile(index),
                 ),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 15),
-                  width: double.infinity,
-                  child: MainButton(
-                    title: 'Apply Filters',
-                    backgroundColor: widget.mainColor,
-                    borderRadius: 16,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    textColor: Colors.white,
-                    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                    onPressed: _onApply,
+                ValueListenableBuilder(
+                  valueListenable: enableButton,
+                  builder: (_, value, __) => Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 15),
+                    width: double.infinity,
+                    child: MainButton(
+                      title: 'Apply Filters',
+                      disabled: !value,
+                      backgroundColor: widget.mainColor,
+                      borderRadius: 16,
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      textColor: Colors.white,
+                      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                      onPressed: _onApply,
+                    ),
                   ),
                 )
               ],
@@ -139,10 +155,11 @@ class _FilterBottomsheetComponentState extends State<FilterBottomsheetComponent>
               StatefulBuilder(
                 builder: (_, setState) => MyCheckBox(
                   value: selectedOptions[index],
-                  borderColor: widget.mainColor,
-                  fillColor: Colors.white,
+                  borderColor: widget.secondaryColor,
+                  fillColor: widget.isDarkMode ? Colors.grey.shade900 : Colors.white,
                   borderWidth: 1.5,
-                  activeColor: widget.mainColor,
+                  activeColor: widget.secondaryColor,
+                  iconColor: Colors.white,
                   onChanged: (_) => _onToggle(index, setState),
                 ),
               ),
@@ -154,6 +171,7 @@ class _FilterBottomsheetComponentState extends State<FilterBottomsheetComponent>
   _onToggle(int index, void Function(void Function() action) setState) {
     setState(() => selectedOptions[index] = !selectedOptions[index]);
     allSelected.value = !selectedOptions.contains(false);
+    enableButton.value = selectedOptions.contains(true);
   }
 
   _onApply() {
