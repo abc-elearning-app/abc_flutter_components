@@ -56,7 +56,7 @@ class MainButton extends StatelessWidget {
       onPressed: disabled
           ? null
           : () {
-              if (DateTime.now().millisecondsSinceEpoch < previousClickTime + 200) {
+              if (DateTime.now().millisecondsSinceEpoch < previousClickTime + 300) {
                 return;
               } else {
                 previousClickTime = DateTime.now().millisecondsSinceEpoch;

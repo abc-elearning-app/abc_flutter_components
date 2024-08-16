@@ -62,8 +62,12 @@ class _ExperimentAnimsState extends State<ExperimentAnims> with TickerProviderSt
     oldQuestion.dispose();
     newQuestion.dispose();
 
-    for (var a in oldAnswers) a.dispose();
-    for (var a in newAnswers) a.dispose();
+    for (var controller in oldAnswers) {
+      controller.dispose();
+    }
+    for (var controller in newAnswers) {
+      controller.dispose();
+    }
 
     super.dispose();
   }
