@@ -20,7 +20,7 @@ class SubjectsBox extends StatefulWidget {
   final Color mainColor;
   final Color secondaryColor;
   final bool isDarkMode;
-
+  final List<int> selectedIds;
   final void Function(List<int> selectedIds) onSelect;
 
   const SubjectsBox({
@@ -30,6 +30,7 @@ class SubjectsBox extends StatefulWidget {
     required this.secondaryColor,
     required this.isDarkMode,
     required this.onSelect,
+    required this.selectedIds,
   });
 
   @override
@@ -37,22 +38,14 @@ class SubjectsBox extends StatefulWidget {
 }
 
 class _SubjectsBoxState extends State<SubjectsBox> {
-  late List<bool> selectedOptions;
   late List<int> selectedIds;
-  late ValueNotifier<bool> allSelected;
 
   @override
   void initState() {
-    selectedOptions = List.generate(widget.subjects.length, (_) => true);
-    selectedIds = widget.subjects.map((subject) => subject.id).toList();
-    allSelected = ValueNotifier(true);
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    allSelected.dispose();
-    super.dispose();
+    setState(() {
+      selectedIds = widget.selectedIds;
+    });
   }
 
   @override
@@ -88,7 +81,7 @@ class _SubjectsBoxState extends State<SubjectsBox> {
   Widget _subjectTile(int index, CustomizeSubjectData subjectData) {
     return StatefulBuilder(
       builder: (_, setState) => GestureDetector(
-        onTap: () => _onToggle(setState, index, subjectData.id),
+        onTap: () => _onToggle(subjectData.id),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
           child: Row(
@@ -116,12 +109,13 @@ class _SubjectsBoxState extends State<SubjectsBox> {
 
               // Checkbox
               MyCheckBox(
-                  activeColor: widget.mainColor,
-                  fillColor: Colors.white.withOpacity(0.08),
-                  borderColor: widget.isDarkMode ? Colors.white.withOpacity(0.16) : widget.mainColor,
-                  iconColor: Colors.white,
-                  value: selectedOptions[index],
-                  onChanged: (_) => _onToggle(setState, index, subjectData.id)),
+                activeColor: widget.mainColor,
+                fillColor: Colors.white.withOpacity(0.08),
+                borderColor: widget.isDarkMode ? Colors.white.withOpacity(0.16) : widget.mainColor,
+                iconColor: Colors.white,
+                value: selectedIds.contains(subjectData.id),
+                onChanged: (_) => _onToggle(subjectData.id)
+              ),
             ],
           ),
         ),
@@ -134,38 +128,34 @@ class _SubjectsBoxState extends State<SubjectsBox> {
           Text('Select All', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: _textColor())),
           Padding(
             padding: const EdgeInsets.only(right: 3, left: 10),
-            child: ValueListenableBuilder(
-              valueListenable: allSelected,
-              builder: (_, value, __) => MyCheckBox(
-                activeColor: widget.mainColor,
-                borderColor: widget.mainColor,
-                value: value,
-                onChanged: (value) {
-                  setState(() => selectedOptions = List.generate(widget.subjects.length, (_) => value));
-                  allSelected.value = value;
-                },
-              ),
+            child: MyCheckBox(
+              activeColor: widget.mainColor,
+              borderColor: widget.mainColor,
+              value: selectedIds.length == widget.subjects.length,
+              onChanged: (value) {
+                setState(() {
+                  if(value) {
+                    selectedIds = widget.subjects.map((e) => e.id).toList();
+                  } else {
+                    selectedIds = [];
+                  }
+                  widget.onSelect(selectedIds);
+                });
+              },
             ),
           ),
         ],
       );
 
-  _onToggle(void Function(void Function() action) setState, int index, subjectId) {
-    // setState only the current row
+  void _onToggle(int id) {
     setState(() {
-      selectedOptions[index] = !selectedOptions[index];
-      if (selectedOptions[index]) {
-        selectedIds.add(subjectId);
+      if(selectedIds.contains(id)) {
+        selectedIds.remove(id);
       } else {
-        selectedIds.remove(subjectId);
+        selectedIds.add(id);
       }
+      widget.onSelect(selectedIds);
     });
-
-    // Update select all checkbox
-    allSelected.value = !selectedOptions.contains(false);
-
-    // Callback
-    widget.onSelect(selectedIds);
   }
 
   _textColor() => widget.isDarkMode ? Colors.white : Colors.black;
