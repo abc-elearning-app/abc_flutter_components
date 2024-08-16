@@ -9,11 +9,11 @@ class ModeData {
   ModeData(this.id, this.title, this.detail);
 }
 
-class ModeOptions extends StatefulWidget {
+class ModeOptions extends StatelessWidget {
   final List<ModeData> modes;
+  final int value;
   final Color mainColor;
   final bool isDarkMode;
-
   final String infoIcon;
 
   final void Function(int id) onSelect;
@@ -21,6 +21,7 @@ class ModeOptions extends StatefulWidget {
   const ModeOptions({
     super.key,
     required this.modes,
+    required this.value,
     required this.mainColor,
     required this.isDarkMode,
     required this.infoIcon,
@@ -28,62 +29,47 @@ class ModeOptions extends StatefulWidget {
   });
 
   @override
-  State<ModeOptions> createState() => _ModeOptionsState();
-}
-
-class _ModeOptionsState extends State<ModeOptions> {
-  int selectedModeIndex = 0;
-
-  @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: widget.modes.length,
-        itemBuilder: (_, index) => _radioTile(widget.modes[index], index, selectedModeIndex));
+    return Column(
+      children: modes.map((e) => _radioTile(e)).toList(),
+    );
   }
 
-  Widget _radioTile(
-    ModeData modeData,
-    int index,
-    int selectedIndex,
-  ) {
+  Widget _radioTile(ModeData modeData) {
+    bool selected = modeData.id == value;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GestureDetector(
-          onTap: () {
-            setState(() => selectedModeIndex = index);
-            widget.onSelect(selectedIndex);
-          },
+          onTap: () => onSelect(modeData.id),
           child: Container(
               margin: const EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(
-                  border: Border.all(width: 1, color: widget.mainColor),
-                  color: selectedIndex == index ? widget.mainColor : Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1),
+                  border: Border.all(width: 1, color: mainColor),
+                  color: selected ? mainColor : Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
                   borderRadius: BorderRadius.circular(16)),
               child: ListTile(
                 // Info icon
-                leading: IconWidget(icon: widget.infoIcon, height: 20, color: selectedIndex == index ? Colors.white : Colors.grey),
+                leading: IconWidget(icon: infoIcon, height: 20, color: selected ? Colors.white : Colors.grey),
                 title: Text(modeData.title,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: selectedIndex == index || widget.isDarkMode ? Colors.white : Colors.black,
+                      color: selected || isDarkMode ? Colors.white : Colors.black,
                     )),
 
                 trailing: CircleAvatar(
                   radius: 12,
-                  backgroundColor: selectedIndex == index
+                  backgroundColor: selected
                       ? Colors.white
-                      : widget.isDarkMode
+                      : isDarkMode
                           ? Colors.grey.shade700
                           : Colors.grey.shade300,
                   child: CircleAvatar(
-                    radius: selectedIndex == index ? 5 : 10,
-                    backgroundColor: selectedIndex == index
-                        ? widget.mainColor
-                        : widget.isDarkMode
+                    radius: selected ? 5 : 10,
+                    backgroundColor: selected
+                        ? mainColor
+                        : isDarkMode
                             ? Colors.grey.shade800
                             : Colors.white,
                   ),
@@ -93,7 +79,7 @@ class _ModeOptionsState extends State<ModeOptions> {
 
         // Mode detail
         AnimatedContainer(
-            height: selectedIndex == index ? 50 : 0,
+            height: selected ? 50 : 0,
             duration: const Duration(milliseconds: 300),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),

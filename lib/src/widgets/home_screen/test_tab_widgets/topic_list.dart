@@ -18,7 +18,7 @@ class TopicData {
 
 class TopicList extends StatelessWidget {
   final List<TopicData> topics;
-  final void Function(int index) onSelect;
+  final void Function(int index, String title) onSelect;
   final bool isDarkMode;
   final Color color;
 
@@ -41,7 +41,7 @@ class TopicList extends StatelessWidget {
   }
 
   Widget _topicBox(TopicData data) => GestureDetector(
-    onTap: () => onSelect(data.id),
+    onTap: () => onSelect(data.id, data.title),
     child: Container(
       margin: const EdgeInsets.symmetric(horizontal: 6),
       width: 180,
