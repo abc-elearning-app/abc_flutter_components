@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-class SliderTile extends StatefulWidget {
+class SliderTile extends StatelessWidget {
   final Color mainColor;
   final Color secondaryColor;
   final bool isDarkMode;
 
   final int maxValue;
-  final int defaultValue;
   final int minValue;
+  final int value;
 
-  final void Function(double value) onSelect;
+  final void Function(int value) onSelect;
 
   const SliderTile({
     super.key,
     required this.maxValue,
     required this.minValue,
-    required this.defaultValue,
+    required this.value,
     required this.mainColor,
     required this.isDarkMode,
     required this.secondaryColor,
@@ -23,26 +23,13 @@ class SliderTile extends StatefulWidget {
   });
 
   @override
-  State<SliderTile> createState() => _SliderTileState();
-}
-
-class _SliderTileState extends State<SliderTile> {
-  late double selectedValue;
-
-  @override
-  void initState() {
-    selectedValue = widget.defaultValue.toDouble();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        border: Border.all(width: 1, color: widget.mainColor),
-        color: Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1),
+        border: Border.all(width: 1, color: mainColor),
+        color: Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Center(
@@ -53,25 +40,22 @@ class _SliderTileState extends State<SliderTile> {
               showValueIndicator: ShowValueIndicator.never,
               activeTickMarkColor: Colors.transparent,
               inactiveTickMarkColor: Colors.transparent,
-              activeTrackColor: widget.mainColor,
+              activeTrackColor: mainColor,
               thumbColor: Colors.white,
               thumbShape: ThumbShape(
                   thumbColor: Colors.white,
-                  tooltipColor: widget.isDarkMode ? const Color(0xFF858686) : widget.secondaryColor,
-                  maxValue: widget.maxValue.toDouble(),
-                  minValue: widget.minValue.toDouble()),
-              inactiveTrackColor: widget.isDarkMode ? Colors.white.withOpacity(0.12) : Colors.grey.shade300,
+                  tooltipColor: isDarkMode ? const Color(0xFF858686) : secondaryColor,
+                  maxValue: maxValue.toDouble(),
+                  minValue: minValue.toDouble()),
+              inactiveTrackColor: isDarkMode ? Colors.white.withOpacity(0.12) : Colors.grey.shade300,
             ),
             child: Slider(
-              value: selectedValue,
-              onChanged: (newValue) {
-                setState(() => selectedValue = newValue);
-                widget.onSelect(selectedValue);
-              },
-              min: widget.minValue.toDouble(),
-              max: widget.maxValue.toDouble(),
-              divisions: ((widget.maxValue - widget.minValue) * 10).toInt(),
-              label: selectedValue.floor().toString(),
+              value: value.toDouble(),
+              onChanged: (newValue) => onSelect(newValue.toInt()),
+              min: minValue.toDouble(),
+              max: maxValue.toDouble(),
+              divisions: ((maxValue - minValue) * 10).toInt(),
+              label: value.floor().toString(),
             ),
           ),
           Padding(
@@ -79,8 +63,8 @@ class _SliderTileState extends State<SliderTile> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('${widget.minValue}', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: widget.isDarkMode ? Colors.white : Colors.black)),
-                Text('${widget.maxValue}', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: widget.isDarkMode ? Colors.white : Colors.black)),
+                Text('$minValue', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: isDarkMode ? Colors.white : Colors.black)),
+                Text('$maxValue', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: isDarkMode ? Colors.white : Colors.black)),
               ],
             ),
           )
