@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -38,7 +40,35 @@ class MainResultBox extends StatefulWidget {
 }
 
 class _MainResultBoxState extends State<MainResultBox> {
-  bool isShowingDetail = false;
+  late ValueNotifier<int> percentValue;
+  late Timer timer;
+
+  @override
+  void initState() {
+    percentValue = ValueNotifier(0);
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(oldWidget) {
+    if (percentValue.value == 0) {
+      timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
+        percentValue.value = percentValue.value + 1;
+        if (percentValue.value >= widget.progress) {
+          timer.cancel();
+        }
+      });
+    }
+
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    percentValue.dispose();
+    timer.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,15 +97,18 @@ class _MainResultBoxState extends State<MainResultBox> {
               radius: 125,
               center: Container(
                 margin: const EdgeInsets.only(bottom: 30),
-                child: RichText(
-                  text: TextSpan(
-                      style: DefaultTextStyle.of(context).style.copyWith(
-                            color: widget.progress < 0.8 ? widget.incorrectColor : widget.correctColor,
-                            fontWeight: FontWeight.bold),
-                      children: [
-                        TextSpan(text: '${widget.progress.round()}', style: const TextStyle(fontSize: 70)),
-                        const TextSpan(text: '%', style: TextStyle(fontSize: 40))
-                      ]),
+                child: ValueListenableBuilder(
+                  valueListenable: percentValue,
+                  builder: (_, value, __) => RichText(
+                    text: TextSpan(
+                        style: DefaultTextStyle.of(context)
+                            .style
+                            .copyWith(color: widget.progress < 0.8 ? widget.incorrectColor : widget.correctColor, fontWeight: FontWeight.bold),
+                        children: [
+                          TextSpan(text: '${percentValue.value.round()}', style: const TextStyle(fontSize: 70)),
+                          const TextSpan(text: '%', style: TextStyle(fontSize: 40))
+                        ]),
+                  ),
                 ),
               ),
             ),

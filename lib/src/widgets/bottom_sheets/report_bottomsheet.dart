@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
@@ -81,51 +82,55 @@ class _ReportBottomsheetComponentState extends State<ReportBottomsheetComponent>
       mainAxisSize: MainAxisSize.min,
       children: [
         if (!widget.showHandle) IconWidget(icon: widget.dropdownIcon),
-        Container(
-          margin: const EdgeInsets.only(top: 10),
-          padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(36),
-              topRight: Radius.circular(36),
+        AnimatedPadding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          duration: const Duration(milliseconds: 100),
+          child: Container(
+            margin: const EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(36),
+                topRight: Radius.circular(36),
+              ),
+              color: widget.isDarkMode ? Colors.black : widget.backgroundColor,
             ),
-            color: widget.isDarkMode ? Colors.black : widget.backgroundColor,
-          ),
-          child: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (widget.showHandle)
-                  Container(
-                    width: 60,
-                    height: 4,
-                    margin: const EdgeInsets.only(bottom: 15),
-                    decoration: BoxDecoration(color: widget.isDarkMode ? Colors.white : Colors.black, borderRadius: BorderRadius.circular(100)),
-                  ),
+            child: SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  if (widget.showHandle)
+                    Container(
+                      width: 60,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 15),
+                      decoration: BoxDecoration(color: widget.isDarkMode ? Colors.white : Colors.black, borderRadius: BorderRadius.circular(100)),
+                    ),
 
-                if (widget.title != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 15),
-                    child: Text(widget.title!,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: widget.isDarkMode ? Colors.white : Colors.black,
-                        )),
-                  ),
+                  if (widget.title != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 15),
+                      child: Text(widget.title!,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: widget.isDarkMode ? Colors.white : Colors.black,
+                          )),
+                    ),
 
-                // List of options
-                ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: options.length,
-                    itemBuilder: (_, index) => _optionRow(options[index], index)),
+                  // List of options
+                  ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: options.length,
+                      itemBuilder: (_, index) => _optionRow(options[index], index)),
 
-                _reasonTextField(),
+                  _reasonTextField(),
 
-                _submitButton()
-              ],
+                  _submitButton()
+                ],
+              ),
             ),
           ),
         ),
