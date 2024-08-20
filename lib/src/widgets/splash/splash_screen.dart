@@ -120,7 +120,7 @@ class _SplashScreenComponentState extends State<SplashScreenComponent> with Tick
               children: [
                 // App name
                 AnimatedBuilder(
-                    animation: textAnimation,
+                    animation: Listenable.merge([textAnimation, ...characterAnimation]),
                     builder: (_, __) => Visibility(
                           visible: textAnimation.value != 0,
                           child: Transform.translate(
@@ -133,17 +133,14 @@ class _SplashScreenComponentState extends State<SplashScreenComponent> with Tick
                                       widget.appName.length,
                                       (index) => Opacity(
                                             opacity: textOpacityAnimation.value,
-                                            child: AnimatedBuilder(
-                                              animation: characterAnimation[index],
-                                              builder: (_, __) => Transform.translate(
-                                                offset: Offset(0, characterAnimation[index].value),
-                                                child: Text(widget.appName[index],
-                                                    style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 40,
-                                                      fontWeight: FontWeight.bold,
-                                                    )),
-                                              ),
+                                            child: Transform.translate(
+                                              offset: Offset(0, characterAnimation[index].value),
+                                              child: Text(widget.appName[index],
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 40,
+                                                    fontWeight: FontWeight.bold,
+                                                  )),
                                             ),
                                           )),
                                 )),
