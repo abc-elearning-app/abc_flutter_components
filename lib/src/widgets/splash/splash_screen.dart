@@ -39,40 +39,42 @@ class _SplashScreenComponentState extends State<SplashScreenComponent> with Sing
 
   @override
   void initState() {
-    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 2000));
+    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 2200));
     scaleBoxAnimation = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween<double>(begin: 0, end: 1).chain(CurveTween(curve: Curves.easeOut)), weight: 5 / 20),
-      TweenSequenceItem(tween: ConstantTween<double>(1), weight: 3 / 20),
-      TweenSequenceItem(tween: Tween<double>(begin: 1, end: 0.85).chain(CurveTween(curve: Curves.easeOut)), weight: 5 / 20),
-      TweenSequenceItem(tween: ConstantTween<double>(0.85), weight: 7 / 20),
+      TweenSequenceItem(tween: ConstantTween<double>(0), weight: 2 / 22),
+      TweenSequenceItem(tween: Tween<double>(begin: 0, end: 1).chain(CurveTween(curve: Curves.easeOut)), weight: 5 / 22),
+      TweenSequenceItem(tween: ConstantTween<double>(1), weight: 3 / 22),
+      TweenSequenceItem(tween: Tween<double>(begin: 1, end: 0.85).chain(CurveTween(curve: Curves.easeOut)), weight: 5 / 22),
+      TweenSequenceItem(tween: ConstantTween<double>(0.85), weight: 7 / 22),
     ]).animate(controller);
 
     scaleStarAnimation = TweenSequence<double>([
-      TweenSequenceItem(tween: ConstantTween<double>(0), weight: 2 / 18),
-      TweenSequenceItem(tween: Tween<double>(begin: 0, end: 1).chain(CurveTween(curve: Curves.easeOut)), weight: 4 / 20),
-      TweenSequenceItem(tween: ConstantTween<double>(1), weight: 1 / 20),
-      TweenSequenceItem(tween: Tween<double>(begin: 1, end: 0.85).chain(CurveTween(curve: Curves.easeIn)), weight: 5 / 20),
-      TweenSequenceItem(tween: ConstantTween<double>(0.85), weight: 8 / 20),
+      TweenSequenceItem(tween: ConstantTween<double>(0), weight: 4 / 22),
+      TweenSequenceItem(tween: Tween<double>(begin: 0, end: 1).chain(CurveTween(curve: Curves.easeOut)), weight: 4 / 22),
+      TweenSequenceItem(tween: ConstantTween<double>(1), weight: 1 / 22),
+      TweenSequenceItem(tween: Tween<double>(begin: 1, end: 0.85).chain(CurveTween(curve: Curves.easeIn)), weight: 5 / 22),
+      TweenSequenceItem(tween: ConstantTween<double>(0.85), weight: 8 / 22),
     ]).animate(controller);
 
     textAnimation = TweenSequence<double>([
-      TweenSequenceItem(tween: ConstantTween<double>(-50), weight: 9 / 20),
-      TweenSequenceItem(tween: Tween<double>(begin: -50, end: -10).chain(CurveTween(curve: Curves.easeOut)), weight: 6 / 20),
-      TweenSequenceItem(tween: ConstantTween<double>(-10), weight: 5 / 20),
+      TweenSequenceItem(tween: ConstantTween<double>(-50), weight: 11 / 22),
+      TweenSequenceItem(tween: Tween<double>(begin: -50, end: -10).chain(CurveTween(curve: Curves.easeOut)), weight: 6 / 22),
+      TweenSequenceItem(tween: ConstantTween<double>(-10), weight: 5 / 22),
     ]).animate(controller);
 
     rotateAnimation = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween<double>(begin: -pi / 4, end: 0).chain(CurveTween(curve: Curves.easeOut)), weight: 4 / 20),
-      TweenSequenceItem(tween: ConstantTween<double>(0), weight: 16 / 20),
+      TweenSequenceItem(tween: ConstantTween<double>(- pi / 4), weight: 2 / 22),
+      TweenSequenceItem(tween: Tween<double>(begin: -pi / 4, end: 0).chain(CurveTween(curve: Curves.easeOut)), weight: 4 / 22),
+      TweenSequenceItem(tween: ConstantTween<double>(0), weight: 16 / 22),
     ]).animate(controller);
 
     bgOpacityAnimation = TweenSequence([
-      TweenSequenceItem(tween: Tween<double>(begin: 0, end: 1).chain(CurveTween(curve: Curves.easeOut)), weight: 10 / 20),
-      TweenSequenceItem(tween: ConstantTween<double>(1), weight: 8 / 20),
-      TweenSequenceItem(tween: Tween<double>(begin: 1, end: 0).chain(CurveTween(curve: Curves.easeOut)), weight: 2 / 20),
+      TweenSequenceItem(tween: Tween<double>(begin: 0, end: 1).chain(CurveTween(curve: Curves.easeOut)), weight: 10 / 22),
+      TweenSequenceItem(tween: ConstantTween<double>(1), weight: 8 / 22),
+      TweenSequenceItem(tween: Tween<double>(begin: 1, end: 0).chain(CurveTween(curve: Curves.easeOut)), weight: 4 / 22),
     ]).animate(controller);
 
-    Future.delayed(const Duration(milliseconds: 1800), () {
+    Future.delayed(const Duration(seconds: 2), () {
       setState(() => isDismissing = true);
     });
 
@@ -137,7 +139,7 @@ class _SplashScreenComponentState extends State<SplashScreenComponent> with Sing
                   child: Text(widget.appName,
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 40,
+                        fontSize: 36,
                         fontWeight: FontWeight.w900,
                       )),
                 ))),

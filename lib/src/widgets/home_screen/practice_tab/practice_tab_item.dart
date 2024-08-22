@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 class QuestionGroupData {
-  final String id;
+  final int id;
   final String title;
   final String subtitle;
   final String icon;
@@ -20,7 +20,7 @@ class QuestionGroupData {
 class PracticeTabItemComponent extends StatelessWidget {
   final QuestionGroupData questionGroupData;
   final bool isDarkMode;
-  final void Function(String id) onSelect;
+  final void Function(int id) onSelect;
 
   const PracticeTabItemComponent({
     super.key,
