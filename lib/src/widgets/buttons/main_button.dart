@@ -17,26 +17,29 @@ class MainButton extends StatelessWidget {
   final double borderRadius;
   final Widget? icon;
 
-  const MainButton(
-      {super.key,
-      this.delayPressedMilliseconds = 100,
-      this.loading = false,
-      required this.title,
-      this.borderSide,
-      required this.onPressed,
-      this.padding,
-      this.backgroundColor,
-      this.textColor,
-      this.loadingColor,
-      this.disabled = false,
-      this.disabledTextColor,
-      this.disabledColor,
-      this.textStyle,
-      this.icon,
-      this.borderRadius = 12});
+  const MainButton({
+    super.key,
+    this.delayPressedMilliseconds = 100,
+    this.loading = false,
+    required this.title,
+    this.borderSide,
+    required this.onPressed,
+    this.padding,
+    this.backgroundColor,
+    this.textColor,
+    this.loadingColor,
+    this.disabled = false,
+    this.disabledTextColor,
+    this.disabledColor,
+    this.textStyle,
+    this.icon,
+    this.borderRadius = 12,
+  });
+
 
   @override
   Widget build(BuildContext context) {
+    int previousClickTime = 0;
     Color bgColor = backgroundColor ?? Theme.of(context).colorScheme.primary;
     bool temp = false;
     return MaterialButton(
@@ -47,41 +50,39 @@ class MainButton extends StatelessWidget {
       hoverColor: Colors.white38,
       highlightColor: Colors.white38,
       shape: borderSide != null
-          ? RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(borderRadius),
-              side: borderSide!)
-          : RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(borderRadius),
-            ),
+          ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius), side: borderSide!)
+          : RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius)),
       padding: padding ?? const EdgeInsets.all(12),
       onPressed: disabled
           ? null
           : () {
+              if (DateTime.now().millisecondsSinceEpoch < previousClickTime + 300) {
+                return;
+              } else {
+                previousClickTime = DateTime.now().millisecondsSinceEpoch;
+              }
+
               if (temp || loading == true) {
                 return;
               }
               temp = true;
-              Future.delayed(Duration(milliseconds: delayPressedMilliseconds),
-                  () {
+              Future.delayed(Duration(milliseconds: delayPressedMilliseconds), () {
                 temp = false;
               });
               onPressed.call();
             },
-      child: icon != null ? Stack(
-        children: [
-          icon!,
-          _text()
-        ],
-      ) : _text(),
+      child: icon != null
+          ? Stack(
+              children: [icon!, _text()],
+            )
+          : _text(),
     );
   }
 
   Widget _text() {
     return loading
-          ? _makeLoading(loadingColor ?? Colors.grey)
-          : Text(title,
-              style: (textStyle ?? const TextStyle())
-                  .copyWith(color: textColor ?? Colors.white));
+        ? _makeLoading(loadingColor ?? Colors.grey)
+        : Text(title, style: (textStyle ?? const TextStyle()).copyWith(color: textColor ?? Colors.white));
   }
 
   Widget _makeLoading(Color color) {

@@ -89,7 +89,7 @@ class FinalTestBox extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(_getText(), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white)),
+                    Text(_getResultText(), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white)),
                     progress == 0
                         ? const Padding(
                             padding: EdgeInsets.only(right: 5),
@@ -99,7 +99,7 @@ class FinalTestBox extends StatelessWidget {
                             text: TextSpan(style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white), children: [
                             TextSpan(
                                 text: (progress < 100 ? progress : correctPercent).toInt().toString(), style: const TextStyle(fontWeight: FontWeight.w500)),
-                            TextSpan(text: '% ${progress < 100 ? 'Answered' : 'Correct'}', style: TextStyle(fontSize: 12, color: Colors.white.withOpacity(0.7)))
+                            TextSpan(text: '% ${_getProgressText()}', style: TextStyle(fontSize: 12, color: Colors.white.withOpacity(0.7)))
                           ]))
                   ],
                 )
@@ -131,12 +131,16 @@ class FinalTestBox extends StatelessWidget {
           backgroundColor: incorrectColor,
         );
 
-  _getText() {
+  _getResultText() {
     if (progress == 0) return 'Start';
-    if (progress < 100) return 'Continue';
-    if (correctPercent >= minPassValue) return 'Passed';
-    return 'Failed';
+    if (isDone) {
+      if (correctPercent >= minPassValue) return 'Passed';
+      return 'Failed';
+    }
+    return 'Continue';
   }
+
+  _getProgressText() => isDone ? 'Correct' : 'Answered';
 
   _gradientColors() => LinearGradient(
       colors: isDarkMode ? [const Color(0xFF292929).withOpacity(0.8), const Color(0xFF292929)] : [gradientColors[0].withOpacity(0.8), gradientColors[1]],

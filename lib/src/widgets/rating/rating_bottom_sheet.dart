@@ -143,6 +143,7 @@ class _RatingBottomSheetComponentState extends State<RatingBottomSheetComponent>
                 ),
                 Container(
                   width: double.infinity,
+                  margin: const EdgeInsets.only(top: 10),
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: MainButton(
                     backgroundColor: Colors.transparent,

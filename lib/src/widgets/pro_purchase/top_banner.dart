@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 
 class TopBannerComponent extends StatelessWidget {
   final String background;
-  final void Function() onRestore;
   final bool isDarkMode;
+  final Color secondaryColor;
+  final void Function() onRestore;
 
   const TopBannerComponent({
     super.key,
     required this.background,
     required this.onRestore,
     required this.isDarkMode,
+    required this.secondaryColor,
   });
 
   @override
@@ -35,6 +37,7 @@ class TopBannerComponent extends StatelessWidget {
                 onPressed: () => Navigator.of(context).pop()),
             TextButton(
                 onPressed: onRestore,
+                style: TextButton.styleFrom(foregroundColor: secondaryColor),
                 child: Text('Restore',
                     style: TextStyle(
                       fontSize: 18,

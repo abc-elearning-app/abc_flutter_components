@@ -242,7 +242,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
               bookmarked: isBookmarked,
               liked: isLiked,
               disliked: isDisliked,
-              color: widget.isDarkMode ? widget.mainColorHex : widget.secondaryColorHex,
+              color: widget.mainColorHex,
               onBookmark: widget.onBookmark,
               onLike: widget.onLike,
               onDislike: widget.onDislike),

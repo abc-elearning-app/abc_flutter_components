@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/progress/custom_linear_progress.dart';
 
 class PassingProbabilityComponent extends StatelessWidget {
@@ -33,36 +32,36 @@ class PassingProbabilityComponent extends StatelessWidget {
     );
   }
 
-  Widget _streakCircle() => Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          Container(
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  border: Border.all(
-                    width: 4,
-                    color: isDarkMode ? darkModeMainColor : mainColor,
-                  )),
-              child: IconWidget(icon: streakIcon)),
-          Transform.translate(
-            offset: const Offset(0, 5),
-            child: Container(
-              width: 45,
-              padding: const EdgeInsets.symmetric(vertical: 1),
-              decoration: BoxDecoration(
-                color: isDarkMode ? darkModeMainColor : mainColor,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Center(
-                  child: Text(
-                dayStreak.toString(),
-                style: const TextStyle(color: Colors.white, fontSize: 12),
-              )),
-            ),
-          )
-        ],
-      );
+  // Widget _streakCircle() => Stack(
+  //       alignment: Alignment.bottomCenter,
+  //       children: [
+  //         Container(
+  //             padding: const EdgeInsets.all(15),
+  //             decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(100),
+  //                 border: Border.all(
+  //                   width: 4,
+  //                   color: isDarkMode ? darkModeMainColor : mainColor,
+  //                 )),
+  //             child: IconWidget(icon: streakIcon)),
+  //         Transform.translate(
+  //           offset: const Offset(0, 5),
+  //           child: Container(
+  //             width: 45,
+  //             padding: const EdgeInsets.symmetric(vertical: 1),
+  //             decoration: BoxDecoration(
+  //               color: isDarkMode ? darkModeMainColor : mainColor,
+  //               borderRadius: BorderRadius.circular(5),
+  //             ),
+  //             child: Center(
+  //                 child: Text(
+  //               dayStreak.toString(),
+  //               style: const TextStyle(color: Colors.white, fontSize: 12),
+  //             )),
+  //           ),
+  //         )
+  //       ],
+  //     );
 
   Widget _passingProbabilityBox() => Container(
         margin: const EdgeInsets.only(top: 10),
@@ -88,7 +87,7 @@ class PassingProbabilityComponent extends StatelessWidget {
                       color: isDarkMode ? Colors.white : Colors.black),
                 ),
                 Text(
-                  '${passingProbability.toInt()}%',
+                  '${(passingProbability * 100).toInt()}%',
                   style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -101,7 +100,7 @@ class PassingProbabilityComponent extends StatelessWidget {
               child: CustomLinearProgress(
                 mainColor: mainColor,
                 backgroundColor: Colors.white.withOpacity(isDarkMode ? 0.3 : 1),
-                percent: passingProbability,
+                percent: passingProbability * 100,
                 indicatorColor: Colors.white,
               ),
             ),

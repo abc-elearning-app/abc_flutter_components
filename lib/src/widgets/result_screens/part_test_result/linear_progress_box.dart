@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class LinearProgressBox extends StatelessWidget {
   final double passingProbability;
@@ -7,16 +8,15 @@ class LinearProgressBox extends StatelessWidget {
   final Color backgroundColor;
   final Color progressColor;
   final Color improveColor;
-  final Color textColor;
 
-  const LinearProgressBox(
-      {super.key,
-      required this.passingProbability,
-      required this.improvedPercent,
-      this.backgroundColor = const Color(0xFF7C6F5B),
-      this.progressColor = const Color(0xFFE3A651),
-      this.improveColor = const Color(0xFF38EFAE),
-      this.textColor = Colors.white});
+  const LinearProgressBox({
+    super.key,
+    required this.passingProbability,
+    required this.improvedPercent,
+    required this.backgroundColor,
+    required this.progressColor,
+    required this.improveColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,16 +32,8 @@ class LinearProgressBox extends StatelessWidget {
           // Passing probability
           Column(
             children: [
-              Text('Passing Probability',
-                  style: TextStyle(
-                      color: textColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400)),
-              Text('${passingProbability.toInt()}%',
-                  style: TextStyle(
-                      color: textColor,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w600))
+              const Text('Passing Probability', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w400)),
+              Text('${(passingProbability * 100).toInt()}%', style: const TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w600))
             ],
           ),
 
@@ -53,45 +45,36 @@ class LinearProgressBox extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.only(left: 20),
                 padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10), color: textColor),
-                child: Row(
-                  children: [
-                    Container(
-                      height: 30,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        color: progressColor,
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(5),
-                            bottomLeft: Radius.circular(5)),
-                      ),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: Stack(children: [
+                    LinearPercentIndicator(
+                      padding: EdgeInsets.zero,
+                      animation: true,
+                      lineHeight: 30,
+                      backgroundColor: Colors.transparent,
+                      progressColor: improveColor,
+                      percent: passingProbability,
                     ),
-                    Container(
-                      height: 30,
-                      width: 10,
-                      decoration: BoxDecoration(
-                        color: improveColor,
-                      ),
+                    LinearPercentIndicator(
+                      padding: EdgeInsets.zero,
+                      animation: true,
+                      lineHeight: 30,
+                      backgroundColor: Colors.transparent,
+                      progressColor: progressColor,
+                      percent: passingProbability - improvedPercent,
                     ),
-                  ],
+                  ]),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: RichText(
-                    text: TextSpan(
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500),
-                        children: [
-                      TextSpan(text: '+${improvedPercent.toInt()}'),
-                      const TextSpan(
-                          text: '%',
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w700))
-                    ])),
+                    text: TextSpan(style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500), children: [
+                  TextSpan(text: '+${(improvedPercent * 100).toInt()}'),
+                  const TextSpan(text: '%', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700))
+                ])),
               )
             ],
           ))

@@ -21,19 +21,24 @@ class _SadEffectState extends State<SadEffect> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 500));
+    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
     animation = Tween<double>(begin: 0, end: 1).animate(controller);
 
-    fadeController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 500));
+    fadeController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
     fadeAnimation = Tween<double>(begin: 0, end: 1).animate(fadeController);
 
-    controller.forward();
-    Future.delayed(const Duration(seconds: 1), (){
-      fadeController.forward();
+    if (mounted) controller.forward();
+    Future.delayed(const Duration(seconds: 1), () {
+      if (mounted) fadeController.forward();
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    fadeController.dispose();
+    super.dispose();
   }
 
   @override
@@ -56,10 +61,7 @@ class _SadEffectState extends State<SadEffect> with TickerProviderStateMixin {
                             height: _getBarHeight(index, widget.height, controller),
                             width: 3,
                             decoration: const BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(10),
-                                    bottomRight: Radius.circular(10)))),
+                                color: Colors.grey, borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)))),
                       )),
             ),
             Transform.translate(
