@@ -264,7 +264,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
   }
 
   Widget _buildDivider(String title) => Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

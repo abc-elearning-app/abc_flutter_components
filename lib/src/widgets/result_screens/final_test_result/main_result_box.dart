@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -24,8 +22,8 @@ class MainResultBox extends StatelessWidget {
   const MainResultBox({
     super.key,
     required this.isDarkMode,
-    this.correctColor = const Color(0xFF0BE5B1),
-    this.incorrectColor = const Color(0xFFF14A4A),
+    this.correctColor = const Color(0xFF15CB9F),
+    this.incorrectColor = const Color(0xFFEF4444),
     required this.progress,
     required this.averageProgress,
     required this.correctQuestions,
@@ -103,11 +101,11 @@ class MainResultBox extends StatelessWidget {
           progress >= passPercent
               ? "Do not rest on your laurels, friend. Time to leaf through the rest of these tests and make them tremble with your intellect!"
               : "That was a tough one, but every wrong answer is a stepping stone to the right one. Keep at it, and you'll be a knowledge ninja soon!",
+          textAlign: TextAlign.center,
           style: TextStyle(
               fontWeight: FontWeight.w400,
               color: Color.lerp(progress >= passPercent ? correctColor : incorrectColor, Colors.black, isDarkMode ? 0 : 0.2),
               fontSize: 14),
-          textAlign: TextAlign.center,
         ),
       );
 

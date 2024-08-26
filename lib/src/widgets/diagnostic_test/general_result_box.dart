@@ -133,7 +133,7 @@ class GeneralResultBox extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${mainProgress.toInt()}%',
+                    '${mainProgress.clamp(0, 96).toInt()}%',
                     style: TextStyle(color: _getLevelColor(levelType), fontSize: 32, fontWeight: FontWeight.bold),
                   )
                 ],
