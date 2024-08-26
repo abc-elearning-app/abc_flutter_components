@@ -44,22 +44,22 @@ class _SplashScreenComponentState extends State<SplashScreenComponent> with Sing
       TweenSequenceItem(tween: ConstantTween<double>(0), weight: 2 / 22),
       TweenSequenceItem(tween: Tween<double>(begin: 0, end: 1).chain(CurveTween(curve: Curves.easeOut)), weight: 5 / 22),
       TweenSequenceItem(tween: ConstantTween<double>(1), weight: 3 / 22),
-      TweenSequenceItem(tween: Tween<double>(begin: 1, end: 0.85).chain(CurveTween(curve: Curves.easeOut)), weight: 5 / 22),
-      TweenSequenceItem(tween: ConstantTween<double>(0.85), weight: 7 / 22),
+      TweenSequenceItem(tween: Tween<double>(begin: 1, end: 0.85).chain(CurveTween(curve: Curves.easeOut)), weight: 3 / 22),
+      TweenSequenceItem(tween: ConstantTween<double>(0.85), weight: 9 / 22),
     ]).animate(controller);
 
     scaleStarAnimation = TweenSequence<double>([
       TweenSequenceItem(tween: ConstantTween<double>(0), weight: 4 / 22),
       TweenSequenceItem(tween: Tween<double>(begin: 0, end: 1).chain(CurveTween(curve: Curves.easeOut)), weight: 4 / 22),
       TweenSequenceItem(tween: ConstantTween<double>(1), weight: 1 / 22),
-      TweenSequenceItem(tween: Tween<double>(begin: 1, end: 0.85).chain(CurveTween(curve: Curves.easeIn)), weight: 5 / 22),
-      TweenSequenceItem(tween: ConstantTween<double>(0.85), weight: 8 / 22),
+      TweenSequenceItem(tween: Tween<double>(begin: 1, end: 0.85), weight: 3 / 22),
+      TweenSequenceItem(tween: ConstantTween<double>(0.85), weight: 10 / 22),
     ]).animate(controller);
 
     textAnimation = TweenSequence<double>([
       TweenSequenceItem(tween: ConstantTween<double>(-50), weight: 11 / 22),
-      TweenSequenceItem(tween: Tween<double>(begin: -50, end: -10).chain(CurveTween(curve: Curves.easeOut)), weight: 6 / 22),
-      TweenSequenceItem(tween: ConstantTween<double>(-10), weight: 5 / 22),
+      TweenSequenceItem(tween: Tween<double>(begin: -50, end: -10).chain(CurveTween(curve: Curves.easeOut)), weight: 4 / 22),
+      TweenSequenceItem(tween: ConstantTween<double>(-10), weight: 7 / 22),
     ]).animate(controller);
 
     rotateAnimation = TweenSequence<double>([

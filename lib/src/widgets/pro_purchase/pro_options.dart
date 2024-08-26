@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
@@ -87,7 +88,8 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
         scale: _animations[index],
         child: GestureDetector(
           onTap: () => _handleSelectOption(index),
-          child: Container(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 100),
             height: 180,
             margin: const EdgeInsets.symmetric(horizontal: 5),
             padding: const EdgeInsets.all(3),
@@ -185,9 +187,13 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
   }
 
   Widget _buildTitleBox(String title, int index) => Stack(alignment: Alignment.centerRight, children: [
-        Container(
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 100),
           height: 24,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: selectedOption == index ? widget.mainColor : widget.secondaryColor),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: selectedOption == index ? widget.mainColor : widget.secondaryColor,
+          ),
           child: Center(
               child: Text(
             title,
@@ -214,7 +220,8 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
         alignment: Alignment.bottomCenter,
         child: Transform.translate(
           offset: const Offset(0, 15),
-          child: Container(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 100),
             padding: const EdgeInsets.symmetric(
               horizontal: 10,
               vertical: 4,
