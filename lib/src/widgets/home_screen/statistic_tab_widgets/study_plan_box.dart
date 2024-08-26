@@ -128,6 +128,7 @@ class _StudyPlanBoxComponentState extends State<StudyPlanBoxComponent> with Sing
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: StudyPlanChart(
+                    leftYAxisTitle: 'Learnt Questions',
                     isDarkMode: widget.isDarkMode,
                     lineSectionHeight: 120,
                     barSectionHeight: 150,

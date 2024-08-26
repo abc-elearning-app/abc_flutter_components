@@ -60,7 +60,7 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
 
   @override
   void initState() {
-    _isExpanded = ValueNotifier(false);
+    _isExpanded = ValueNotifier(true);
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),

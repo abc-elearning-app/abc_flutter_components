@@ -20,8 +20,8 @@ class MainLoginPage extends StatefulWidget {
   final Color lowerBackgroundColor;
   final Color mainColor;
   final Color secondaryColor;
-  final Color buttonTextColor;
   final bool isDarkMode;
+  final bool isOnboarding;
   final List<LoginItem> tabDataList;
 
   final void Function(String email) onRequestCodeClick;
@@ -37,7 +37,7 @@ class MainLoginPage extends StatefulWidget {
     this.secondaryColor = const Color(0xFF7C6F5B),
     this.upperBackgroundColor = const Color(0xFFF5F4EE),
     this.lowerBackgroundColor = Colors.white,
-    this.buttonTextColor = Colors.white,
+    this.isOnboarding = false,
     required this.isDarkMode,
     required this.onRequestCodeClick,
     required this.onGoogleSignIn,
@@ -165,34 +165,30 @@ class _MainLoginPageState extends State<MainLoginPage> {
   Widget _buildLeadingButton() => ValueListenableBuilder(
       valueListenable: _pageIndex,
       builder: (_, value, __) => Visibility(
-            visible: value != 0,
+            visible: !widget.isOnboarding || value != 0,
             child: IconButton(
               icon: Icon(
-                Icons.chevron_left_rounded,
-                size: 30,
+                value == 0 ? Icons.close : Icons.chevron_left_rounded,
+                size: 25,
                 color: widget.isDarkMode ? Colors.white : Colors.black,
               ),
-              onPressed: () {
-                // Check button enable when go back to email page
-                _buttonEnable.value = _isValidEmail(emailController.text);
-
-                // Go back to email page
-                _pageController.previousPage(duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
-              },
+              onPressed: () => _onBack(value == 0),
             ),
           ));
 
   Widget _buildPageTitle() => ValueListenableBuilder(
       valueListenable: _pageIndex,
-      builder: (_, value, __) => Text(
-            value == 0 ? 'Log In' : 'Check Your Email',
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 24, color: widget.isDarkMode ? Colors.white : Colors.black),
-          ));
+      builder: (_, value, __) => Text(value == 0 ? 'Log In' : 'Check Your Email',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 24,
+            color: widget.isDarkMode ? Colors.white : Colors.black,
+          )));
 
   Widget _buildSkipButton() => ValueListenableBuilder(
       valueListenable: _pageIndex,
       builder: (_, value, __) => Visibility(
-            visible: value == 0,
+            visible: value == 0 && widget.isOnboarding,
             child: Padding(
               padding: const EdgeInsets.only(right: 8),
               child: IconButton(
@@ -212,7 +208,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
               style: ElevatedButton.styleFrom(
                   disabledBackgroundColor: widget.isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300,
                   backgroundColor: widget.mainColor,
-                  foregroundColor: widget.buttonTextColor,
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 50,
@@ -231,6 +227,15 @@ class _MainLoginPageState extends State<MainLoginPage> {
       );
 
   _getBackgroundColor() => widget.isDarkMode ? Colors.black : widget.upperBackgroundColor;
+
+  _onBack(bool isFirstPage) {
+    if (isFirstPage) {
+      Navigator.of(context).pop();
+    } else {
+      _buttonEnable.value = _isValidEmail(emailController.text);
+      _pageController.previousPage(duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+    }
+  }
 
   _handleReenterEmail() {
     // Clear all text controllers

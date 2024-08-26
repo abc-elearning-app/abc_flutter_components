@@ -83,13 +83,28 @@ class _SimpleStudyPlanSetupComponentState extends State<SimpleStudyPlanSetupComp
                     itemBuilder: (_, index) => Column(
                       children: [
                         // Title
-                        Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Text(
-                            index == 0 ? 'When Is Your Exam?' : 'Would You Like To Set Study Reminders?',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-                          ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: Stack(alignment: Alignment.center, children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                              child: Text(
+                                index == 0 ? 'When Is Your Exam?' : 'Would You Like To Set Study Reminders?',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            Positioned(
+                              left: 0,
+                              child: IconButton(
+                                  onPressed: _onBack,
+                                  icon: Icon(
+                                    Icons.chevron_left_rounded,
+                                    size: 36,
+                                    color: widget.isDarkMode ? Colors.white : Colors.black,
+                                  )),
+                            ),
+                          ]),
                         ),
 
                         // Image
@@ -164,42 +179,50 @@ class _SimpleStudyPlanSetupComponentState extends State<SimpleStudyPlanSetupComp
       );
 
   Widget _buildButtons() => SizedBox(
-    height: 130,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-              width: double.infinity,
-              child: MainButton(
-                title: 'Next',
-                backgroundColor: widget.mainColor,
-                textColor: Colors.white,
-                textStyle: const TextStyle(fontSize: 18),
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                onPressed: _onSelect,
-              )),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: AnimatedBuilder(
-              animation: buttonAnimation,
-              builder: (_, __) => SizedBox(
-                  height: buttonAnimation.value,
+        height: 130,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
                   width: double.infinity,
                   child: MainButton(
-                    title: 'Not Now',
-                    backgroundColor: Colors.transparent,
-                    textColor: widget.isDarkMode ? Colors.white : Colors.black,
-                    textStyle: const TextStyle(fontSize: 16),
-                    onPressed: () => widget.onSetReminder(null),
+                    title: 'Next',
+                    backgroundColor: widget.mainColor,
+                    textColor: Colors.white,
+                    textStyle: const TextStyle(fontSize: 18),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    onPressed: _onSelect,
                   )),
-            ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: AnimatedBuilder(
+                  animation: buttonAnimation,
+                  builder: (_, __) => SizedBox(
+                      height: buttonAnimation.value,
+                      width: double.infinity,
+                      child: MainButton(
+                        title: 'Not Now',
+                        backgroundColor: Colors.transparent,
+                        textColor: widget.isDarkMode ? Colors.white : Colors.black,
+                        textStyle: const TextStyle(fontSize: 16),
+                        onPressed: () => widget.onSetReminder(null),
+                      )),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    ),
-  );
+        ),
+      );
+
+  _onBack() {
+    if (pageController.page == 0) {
+      Navigator.of(context).pop();
+    } else {
+      pageController.previousPage(duration: const Duration(milliseconds: 200), curve: Curves.linear);
+    }
+  }
 
   _onSelect() {
     if (pageController.page == 0) {

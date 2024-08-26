@@ -11,6 +11,7 @@ class ProOptionData {
   final double percentSaved;
   final ProOptionTime optionTime;
   final int freeTrialDays;
+  final String symbol;
 
   ProOptionData(
     this.id,
@@ -20,6 +21,7 @@ class ProOptionData {
     this.optionTime,
     this.percentSaved,
     this.freeTrialDays,
+    this.symbol,
   );
 }
 
@@ -98,7 +100,7 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildPrice(data.price, data.originalPrice),
+                  _buildPrice(data.price, data.originalPrice, data.symbol),
 
                   // Option's time
                   Text(
@@ -115,7 +117,7 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
                   ),
 
                   // Price per day
-                  _buildPricePerDay(data.price, data.optionTime),
+                  _buildPricePerDay(data.price, data.optionTime, data.symbol),
                 ],
               ),
 
@@ -129,11 +131,16 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
         ),
       );
 
-  Widget _buildPrice(double price, double originalPrice) => Row(
+  Widget _buildPrice(double price, double originalPrice, String symbol) => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Price
-          Text('\$$price', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: widget.isDarkMode ? Colors.white : Colors.black)),
+          Text('$symbol${price.toStringAsFixed(price > 1000 ? 0 : 2)}',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: widget.isDarkMode ? Colors.white : Colors.black,
+              )),
 
           // Original price
           if (originalPrice > 0)
@@ -149,30 +156,33 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
         ],
       );
 
-  Widget _buildPricePerDay(double price, ProOptionTime timeType) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RichText(
-              text: TextSpan(
-                  style: TextStyle(
-                    color: widget.isDarkMode ? Colors.white : Colors.black,
-                  ),
-                  children: [
-                const TextSpan(text: 'Just '),
-                TextSpan(
-                    text: '\$${_getPricePerDay(price, timeType).floor()}.',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    )),
-                TextSpan(text: _getPricePerDay(price, timeType).toStringAsFixed(2).replaceAll('0.', ''))
-              ])),
-          const Text(
-            'Per Day',
-            style: TextStyle(fontSize: 10, color: Colors.grey),
-          ),
-        ],
-      );
+  Widget _buildPricePerDay(double price, ProOptionTime timeType, String symbol) {
+    final pricePerDay = _getPricePerDay(price, timeType);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        RichText(
+            text: TextSpan(
+                style: TextStyle(
+                  color: widget.isDarkMode ? Colors.white : Colors.black,
+                ),
+                children: [
+              const TextSpan(text: 'Just '),
+              TextSpan(
+                  text: '$symbol${pricePerDay.floor()}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  )),
+              if (pricePerDay < 1000) TextSpan(text: '.${pricePerDay.toStringAsFixed(2).substring(pricePerDay.toStringAsFixed(2).length - 2)}')
+            ])),
+        const Text(
+          'Per Day',
+          style: TextStyle(fontSize: 10, color: Colors.grey),
+        ),
+      ],
+    );
+  }
 
   Widget _buildTitleBox(String title, int index) => Stack(alignment: Alignment.centerRight, children: [
         Container(
