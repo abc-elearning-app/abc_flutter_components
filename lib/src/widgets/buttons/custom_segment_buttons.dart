@@ -38,7 +38,7 @@ class _FilterSegmentState extends State<FilterSegment> with TickerProviderStateM
   @override
   void initState() {
     animationControllers = List.generate(3, (_) => AnimationController(vsync: this, duration: const Duration(milliseconds: 200)));
-    animations = List.generate(3, (index) => Tween<double>(begin: 0.95, end: 1).animate(animationControllers[index]));
+    animations = List.generate(3, (index) => Tween<double>(begin: 1, end: 1.05).animate(animationControllers[index]));
 
     if (mounted) animationControllers.first.forward();
 
@@ -58,7 +58,7 @@ class _FilterSegmentState extends State<FilterSegment> with TickerProviderStateM
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(color: widget.isDarkMode ? Colors.grey.shade900 : widget.backgroundColor, borderRadius: BorderRadius.circular(8)),
-      padding: const EdgeInsets.symmetric(horizontal: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 5),
       height: 45,
       child: Row(
         children: [

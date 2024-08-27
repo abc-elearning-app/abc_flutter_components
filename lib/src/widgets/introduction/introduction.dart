@@ -69,10 +69,7 @@ class _IntroductionComponentState extends State<IntroductionComponent> {
           child: Column(
             children: [
               Expanded(
-                  child: PageView.builder(
-                      controller: _pageController,
-                      itemCount: widget.tabList.length,
-                      itemBuilder: (_, index) => _buildStudyPlanTab(index))),
+                  child: PageView.builder(controller: _pageController, itemCount: widget.tabList.length, itemBuilder: (_, index) => _buildStudyPlanTab(index))),
               _buildNavigateSection()
             ],
           ),
@@ -89,10 +86,7 @@ class _IntroductionComponentState extends State<IntroductionComponent> {
             child: Stack(alignment: Alignment.center, children: [
               Container(color: widget.lowerBackgroundColor),
               Container(
-                decoration: BoxDecoration(
-                    color: widget.upperBackgroundColor,
-                    borderRadius: const BorderRadius.only(
-                        bottomRight: Radius.circular(50))),
+                decoration: BoxDecoration(color: widget.upperBackgroundColor, borderRadius: const BorderRadius.only(bottomRight: Radius.circular(50))),
               ),
             ]),
           ),
@@ -103,10 +97,7 @@ class _IntroductionComponentState extends State<IntroductionComponent> {
             child: Stack(children: [
               Container(color: widget.upperBackgroundColor),
               Container(
-                decoration: BoxDecoration(
-                    color: widget.lowerBackgroundColor,
-                    borderRadius:
-                        const BorderRadius.only(topLeft: Radius.circular(50))),
+                decoration: BoxDecoration(color: widget.lowerBackgroundColor, borderRadius: const BorderRadius.only(topLeft: Radius.circular(50))),
               ),
             ]),
           )
@@ -169,10 +160,7 @@ class _IntroductionComponentState extends State<IntroductionComponent> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PageIndicator(
-                  pageCount: widget.tabList.length,
-                  currentPage: value.toInt(),
-                  color: widget.mainColor),
+              PageIndicator(pageCount: widget.tabList.length, currentPage: value.toInt(), color: widget.mainColor),
               SizedBox(
                 height: 55,
                 width: 160,
@@ -190,8 +178,7 @@ class _IntroductionComponentState extends State<IntroductionComponent> {
 
   _handleButtonClick() {
     if (_pageController.page != widget.tabList.length - 1) {
-      _pageController.nextPage(
-          duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+      _pageController.nextPage(duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
     } else {
       widget.onFinish();
     }
