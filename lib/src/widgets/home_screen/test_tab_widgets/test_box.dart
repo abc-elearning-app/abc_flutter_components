@@ -13,6 +13,7 @@ class TestData {
   final double correct;
   final bool isDone;
   final String background;
+  final double passingPercent;
 
   TestData({
     required this.id,
@@ -24,6 +25,7 @@ class TestData {
     required this.background,
     required this.correct,
     required this.isDone,
+    required this.passingPercent,
   });
 }
 
