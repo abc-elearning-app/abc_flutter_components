@@ -19,27 +19,24 @@ class StudyPlanButtonComponent extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       decoration: BoxDecoration(
-          color: mainColor,
-          borderRadius: BorderRadius.circular(16),
-          image: DecorationImage(
-              image: AssetImage(buttonBackground), fit: BoxFit.cover)),
+        color: mainColor,
+        borderRadius: BorderRadius.circular(16),
+        image: DecorationImage(image: AssetImage(buttonBackground), fit: BoxFit.cover),
+      ),
       width: double.infinity,
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              shadowColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16))),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          ),
           onPressed: onClickStudyPlan,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
             child: Text(
               title,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: Colors.white),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
             ),
           )),
     );

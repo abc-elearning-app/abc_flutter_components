@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
@@ -11,6 +12,7 @@ class ProOptionData {
   final double percentSaved;
   final ProOptionTime optionTime;
   final int freeTrialDays;
+  final String symbol;
 
   ProOptionData(
     this.id,
@@ -20,6 +22,7 @@ class ProOptionData {
     this.optionTime,
     this.percentSaved,
     this.freeTrialDays,
+    this.symbol,
   );
 }
 
@@ -85,7 +88,8 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
         scale: _animations[index],
         child: GestureDetector(
           onTap: () => _handleSelectOption(index),
-          child: Container(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 100),
             height: 180,
             margin: const EdgeInsets.symmetric(horizontal: 5),
             padding: const EdgeInsets.all(3),
@@ -98,7 +102,7 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildPrice(data.price, data.originalPrice),
+                  _buildPrice(data.price, data.originalPrice, data.symbol),
 
                   // Option's time
                   Text(
@@ -115,7 +119,7 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
                   ),
 
                   // Price per day
-                  _buildPricePerDay(data.price, data.optionTime),
+                  _buildPricePerDay(data.price, data.optionTime, data.symbol),
                 ],
               ),
 
@@ -129,11 +133,16 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
         ),
       );
 
-  Widget _buildPrice(double price, double originalPrice) => Row(
+  Widget _buildPrice(double price, double originalPrice, String symbol) => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Price
-          Text('\$$price', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: widget.isDarkMode ? Colors.white : Colors.black)),
+          Text('$symbol${price.toStringAsFixed(price > 1000 ? 0 : 2)}',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: widget.isDarkMode ? Colors.white : Colors.black,
+              )),
 
           // Original price
           if (originalPrice > 0)
@@ -149,35 +158,42 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
         ],
       );
 
-  Widget _buildPricePerDay(double price, ProOptionTime timeType) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RichText(
-              text: TextSpan(
-                  style: TextStyle(
-                    color: widget.isDarkMode ? Colors.white : Colors.black,
-                  ),
-                  children: [
-                const TextSpan(text: 'Just '),
-                TextSpan(
-                    text: '\$${_getPricePerDay(price, timeType).floor()}.',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    )),
-                TextSpan(text: _getPricePerDay(price, timeType).toStringAsFixed(2).replaceAll('0.', ''))
-              ])),
-          const Text(
-            'Per Day',
-            style: TextStyle(fontSize: 10, color: Colors.grey),
-          ),
-        ],
-      );
+  Widget _buildPricePerDay(double price, ProOptionTime timeType, String symbol) {
+    final pricePerDay = _getPricePerDay(price, timeType);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        RichText(
+            text: TextSpan(
+                style: TextStyle(
+                  color: widget.isDarkMode ? Colors.white : Colors.black,
+                ),
+                children: [
+              const TextSpan(text: 'Just '),
+              TextSpan(
+                  text: '$symbol${pricePerDay.floor()}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  )),
+              if (pricePerDay < 1000) TextSpan(text: '.${pricePerDay.toStringAsFixed(2).substring(pricePerDay.toStringAsFixed(2).length - 2)}')
+            ])),
+        const Text(
+          'Per Day',
+          style: TextStyle(fontSize: 10, color: Colors.grey),
+        ),
+      ],
+    );
+  }
 
   Widget _buildTitleBox(String title, int index) => Stack(alignment: Alignment.centerRight, children: [
-        Container(
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 100),
           height: 24,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: selectedOption == index ? widget.mainColor : widget.secondaryColor),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: selectedOption == index ? widget.mainColor : widget.secondaryColor,
+          ),
           child: Center(
               child: Text(
             title,
@@ -204,7 +220,8 @@ class _ProOptionsState extends State<ProOptions> with TickerProviderStateMixin {
         alignment: Alignment.bottomCenter,
         child: Transform.translate(
           offset: const Offset(0, 15),
-          child: Container(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 100),
             padding: const EdgeInsets.symmetric(
               horizontal: 10,
               vertical: 4,

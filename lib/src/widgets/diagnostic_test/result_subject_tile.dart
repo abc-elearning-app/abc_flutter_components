@@ -25,6 +25,9 @@ class ResultSubjectTile extends StatelessWidget {
   final String intermediateIcon;
   final String advancedIcon;
 
+  final double minIntermediateValue;
+  final double minAdvancedValue;
+
   const ResultSubjectTile({
     super.key,
     required this.title,
@@ -36,6 +39,8 @@ class ResultSubjectTile extends StatelessWidget {
     required this.advancedIcon,
     required this.isDarkMode,
     required this.iconBackgroundColor,
+    required this.minIntermediateValue,
+    required this.minAdvancedValue,
   });
 
   @override
@@ -45,14 +50,7 @@ class ResultSubjectTile extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
-        boxShadow: !isDarkMode
-            ? [
-                BoxShadow(
-                    color: Colors.grey.shade300,
-                    blurRadius: 1,
-                    offset: const Offset(0, 1))
-              ]
-            : null,
+        boxShadow: !isDarkMode ? [BoxShadow(color: Colors.grey.shade300, blurRadius: 1, offset: const Offset(0, 1))] : null,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
@@ -74,13 +72,10 @@ class ResultSubjectTile extends StatelessWidget {
               Expanded(
                   child: Text(
                 title,
-                style: const TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 15,
-                    overflow: TextOverflow.ellipsis),
+                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, overflow: TextOverflow.ellipsis),
               )),
               Text(
-                '${progress.ceil()}%',
+                '${progress.ceil().clamp(0, 96)}%',
                 style: const TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 15,
@@ -101,7 +96,7 @@ class ResultSubjectTile extends StatelessWidget {
                     height: 10,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: index < progress / 10
+                        color: index + 1 < progress / 10
                             ? color
                             : isDarkMode
                                 ? Colors.white.withOpacity(0.12)
@@ -125,10 +120,7 @@ class ResultSubjectTile extends StatelessWidget {
               const SizedBox(width: 5),
               Text(
                 _getLevelTitle(),
-                style: TextStyle(
-                    fontSize: 12,
-                    color: (isDarkMode ? Colors.white : Colors.black)
-                        .withOpacity(0.5)),
+                style: TextStyle(fontSize: 12, color: (isDarkMode ? Colors.white : Colors.black).withOpacity(0.5)),
               ),
             ],
           )
@@ -138,9 +130,9 @@ class ResultSubjectTile extends StatelessWidget {
   }
 
   _getLevelIcon() {
-    if (progress < 20) {
+    if (progress < minIntermediateValue) {
       return beginnerIcon;
-    } else if (progress < 80) {
+    } else if (progress < minAdvancedValue) {
       return intermediateIcon;
     } else {
       return advancedIcon;
@@ -148,9 +140,9 @@ class ResultSubjectTile extends StatelessWidget {
   }
 
   _getLevelTitle() {
-    if (progress < 20) {
+    if (progress < minIntermediateValue) {
       return 'Beginner';
-    } else if (progress < 80) {
+    } else if (progress < minAdvancedValue) {
       return 'Intermediate';
     } else {
       return 'Advanced';

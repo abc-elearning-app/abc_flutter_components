@@ -63,7 +63,7 @@ class LinearProgressBox extends StatelessWidget {
                       lineHeight: 30,
                       backgroundColor: Colors.transparent,
                       progressColor: progressColor,
-                      percent: passingProbability - improvedPercent,
+                      percent: (passingProbability - improvedPercent).clamp(0, 1),
                     ),
                   ]),
                 ),

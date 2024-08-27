@@ -101,6 +101,7 @@ class AccountTabComponent extends StatelessWidget {
                       starIcon: starIcon,
                       triangleIcon: triangleIcon,
                       premiumIcon: premiumIcon),
+
                 if (!isPro)
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 15),

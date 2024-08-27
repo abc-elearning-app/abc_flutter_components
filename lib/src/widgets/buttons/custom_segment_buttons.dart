@@ -76,7 +76,10 @@ class _FilterSegmentState extends State<FilterSegment> with TickerProviderStateM
             previousIndex = index;
             setState(() => statusIndex = index);
             widget.onChange(statusIndex);
-            animationControllers[index].forward(from: 0);
+            for (var controller in animationControllers) {
+              controller.reverse();
+            }
+            animationControllers[index].forward();
           }
         },
         child: ScaleTransition(

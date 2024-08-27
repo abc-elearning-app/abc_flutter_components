@@ -45,13 +45,10 @@ class OtpPage extends StatelessWidget {
         )),
         Padding(
           padding: const EdgeInsets.all(30),
-          // Scroll view for small screen to avoid overflow
-          child: SingleChildScrollView(
-            child: Text(
-              detail,
-              style: TextStyle(fontSize: 16, color: isDarkMode ? Colors.white.withOpacity(0.6) : Colors.black),
-              textAlign: TextAlign.center,
-            ),
+          child: Text(
+            detail,
+            style: TextStyle(fontSize: 16, color: isDarkMode ? Colors.white.withOpacity(0.6) : Colors.black),
+            textAlign: TextAlign.center,
           ),
         ),
         Padding(

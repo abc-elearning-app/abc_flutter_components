@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
@@ -30,49 +31,53 @@ class EmailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(child: IconWidget(icon: image)),
-        // Detail text
-        Padding(
-          padding: const EdgeInsets.all(20),
-          // Scroll view for small screen
-          child: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          //Image
+          IconWidget(icon: image, height: 200),
+      
+          // Detail text
+          Padding(
+            padding: const EdgeInsets.all(20),
             child: Text(
               detail,
               style: TextStyle(fontSize: 16, color: isDarkMode ? Colors.white.withOpacity(0.6) : Colors.black),
               textAlign: TextAlign.center,
             ),
           ),
-        ),
-        _buildSocialMediaButton(iconData: FontAwesomeIcons.google, title: 'Sign in with Google', onPressed: onGoogleSignIn),
-        if (Platform.isIOS) _buildSocialMediaButton(iconData: FontAwesomeIcons.apple, title: 'Sign in with Apple', onPressed: onAppleSignIn),
-        // Email text field
-        const Row(
-          children: [
-            Expanded(child: Divider(indent: 20)),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Text('Or', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-            ),
-            Expanded(child: Divider(endIndent: 20)),
-          ],
-        ),
-
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      
+          // Google and Apple login
+          _buildSocialMediaButton(iconData: FontAwesomeIcons.google, title: 'Sign in with Google', onPressed: onGoogleSignIn),
+          if (Platform.isIOS) _buildSocialMediaButton(iconData: FontAwesomeIcons.apple, title: 'Sign in with Apple', onPressed: onAppleSignIn),
+      
+          // Email text field
+          const Row(
             children: [
-              const Text(
-                'Email',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              Expanded(child: Divider(indent: 20)),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Text('Or', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
               ),
-              _buildEmailTextField(),
+              Expanded(child: Divider(endIndent: 20)),
             ],
           ),
-        ),
-      ],
+      
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Email',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                _buildEmailTextField(),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

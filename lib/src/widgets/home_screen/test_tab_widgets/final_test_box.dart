@@ -67,17 +67,18 @@ class FinalTestBox extends StatelessWidget {
                 Row(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 5, right: 20),
+                      padding: const EdgeInsets.only(left: 5, right: 10),
                       child: IconWidget(icon: icon, height: 80),
                     ),
                     const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Final Test', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white)),
-                          Text('Our final test is the ultimate gauge that assesses your readiness for the actual exam.',
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white)),
-                        ],
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: Text('Our final test is the ultimate gauge that assesses your readiness for the actual exam.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white,
+                            )),
                       ),
                     )
                   ],
