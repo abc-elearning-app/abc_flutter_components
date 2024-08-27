@@ -113,7 +113,7 @@ class GeneralResultBox extends StatelessWidget {
             radius: outerRadius - lineWidth,
             lineWidth: lineWidth,
             circularStrokeCap: CircularStrokeCap.round,
-            percent: mainProgress / 100,
+            percent: (mainProgress / 100).clamp(0, 0.96),
             animation: true,
             backgroundColor: _getLevelColor(levelType).withOpacity(0.5),
             progressColor: _getLevelColor(levelType),
