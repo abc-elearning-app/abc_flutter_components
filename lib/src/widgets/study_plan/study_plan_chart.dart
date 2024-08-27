@@ -418,7 +418,7 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
         plotOffset: type == ChartType.line ? 10 : 0,
         opposedPosition: type == ChartType.line,
         minimum: type == ChartType.line ? widget.minLineValue : widget.minBarValue,
-        maximum: (type == ChartType.line ? widget.maxLineValue : (widget.expectedBarValue ~/ 10 + 1) * 10) + 5,
+        maximum: (type == ChartType.line ? widget.maxLineValue : ((widget.expectedBarValue ~/ 10 + 1) * 10)).clamp(30, 100) + 5,
         interval: type == ChartType.line
             ? widget.lineValueInterval
             : widget.expectedBarValue <= 50

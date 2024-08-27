@@ -42,8 +42,6 @@ class _StudyPlanBoxComponentState extends State<StudyPlanBoxComponent> with Sing
   late AnimationController _animationController;
   late Animation _animation;
 
-  // late ValueNotifier<int> _displayOption;
-
   @override
   void initState() {
     _isExpanded = ValueNotifier(true);
@@ -101,7 +99,7 @@ class _StudyPlanBoxComponentState extends State<StudyPlanBoxComponent> with Sing
                     // Dropdown button
                     AnimatedBuilder(
                       animation: _animation,
-                      builder: (BuildContext context, Widget? child) {
+                      builder: (_, __) {
                         return Transform.rotate(
                             angle: _animation.value,
                             child: const Icon(
