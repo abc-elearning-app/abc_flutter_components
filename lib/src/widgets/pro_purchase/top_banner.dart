@@ -4,6 +4,7 @@ class TopBannerComponent extends StatelessWidget {
   final String background;
   final bool isDarkMode;
   final Color secondaryColor;
+  final bool loading;
   final void Function() onRestore;
 
   const TopBannerComponent({
@@ -12,6 +13,7 @@ class TopBannerComponent extends StatelessWidget {
     required this.onRestore,
     required this.isDarkMode,
     required this.secondaryColor,
+    required this.loading,
   });
 
   @override
@@ -35,14 +37,20 @@ class TopBannerComponent extends StatelessWidget {
                   color: isDarkMode ? Colors.white : Colors.black,
                 ),
                 onPressed: () => Navigator.of(context).pop()),
-            TextButton(
-                onPressed: onRestore,
-                style: TextButton.styleFrom(foregroundColor: secondaryColor),
-                child: Text('Restore',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: isDarkMode ? Colors.white : Colors.black,
-                    )))
+            loading
+                ? Container(
+                    margin: const EdgeInsets.only(right: 20),
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(color: isDarkMode ? Colors.white : Colors.black))
+                : TextButton(
+                    onPressed: onRestore,
+                    style: TextButton.styleFrom(foregroundColor: secondaryColor),
+                    child: Text('Restore',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: isDarkMode ? Colors.white : Colors.black,
+                        )))
           ],
         ),
       ),
