@@ -132,7 +132,7 @@ class _StudyPlanBoxComponentState extends State<StudyPlanBoxComponent> with Sing
                       startDate: widget.startDate,
                       examDate: widget.examDate,
                       valueList: widget.valueList,
-                      expectedBarValue: widget.expectedQuestions,
+                      expectedBarValuePerColumn: widget.expectedQuestions,
                     ),
                   ),
                 ),
