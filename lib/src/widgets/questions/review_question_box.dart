@@ -8,6 +8,7 @@ class QuestionData {
   final List<AnswerData> answers;
   final String explanation;
   final bool? isSelected;
+  final String? topicName;
   bool bookmarked;
   bool liked;
   bool disliked;
@@ -19,6 +20,7 @@ class QuestionData {
     required this.answers,
     required this.explanation,
     this.isSelected,
+    this.topicName,
     this.bookmarked = false,
     this.liked = false,
     this.disliked = false,
@@ -185,11 +187,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
       final answers = widget.questionData.answers;
       bool? correctlyChosen;
       if (widget.questionData.isSelected == true) {
-        if (answers.where((answer) => answer.isCorrect == false).isNotEmpty) {
-          correctlyChosen = false;
-        } else if (answers.where((answer) => answer.isCorrect == true).isNotEmpty) {
-          correctlyChosen = true;
-        }
+        correctlyChosen = !answers.where((answer) => answer.isCorrect == false).isNotEmpty;
       }
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -228,6 +226,11 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
             ),
           )
         ],
+      );
+    } else if (widget.questionData.topicName != null) {
+      return Text(
+        widget.questionData.topicName!,
+        style: TextStyle(color: widget.isDarkMode ? Colors.white : Colors.black, fontSize: 14),
       );
     }
     return const SizedBox();

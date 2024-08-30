@@ -33,7 +33,7 @@ class LinearProgressBox extends StatelessWidget {
           Column(
             children: [
               const Text('Passing Probability', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w400)),
-              Text('${(passingProbability * 100).toInt()}%', style: const TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w600))
+              Text('${(passingProbability * 100).ceil()}%', style: const TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w600))
             ],
           ),
 
@@ -55,7 +55,7 @@ class LinearProgressBox extends StatelessWidget {
                       lineHeight: 30,
                       backgroundColor: Colors.transparent,
                       progressColor: improveColor,
-                      percent: passingProbability,
+                      percent: passingProbability.clamp(0, 1),
                     ),
                     LinearPercentIndicator(
                       padding: EdgeInsets.zero,

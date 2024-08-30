@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-class FinalTestBox extends StatelessWidget {
+class FinalTestBoxComponent extends StatelessWidget {
   final String icon;
   final String background;
 
@@ -10,7 +10,6 @@ class FinalTestBox extends StatelessWidget {
   final Color secondaryColor;
   final Color correctColor;
   final Color incorrectColor;
-  final List<Color> gradientColors;
 
   final bool isDarkMode;
 
@@ -22,7 +21,7 @@ class FinalTestBox extends StatelessWidget {
 
   final void Function() onClickFinal;
 
-  const FinalTestBox({
+  const FinalTestBoxComponent({
     super.key,
     required this.icon,
     required this.background,
@@ -36,10 +35,6 @@ class FinalTestBox extends StatelessWidget {
     required this.isDone,
     this.correctColor = const Color(0xFF15CB9F),
     this.incorrectColor = const Color(0xFFFC5656),
-    this.gradientColors = const [
-      Color(0xFFC0A67C),
-      Color(0xFF958366),
-    ],
   });
 
   @override
@@ -99,7 +94,9 @@ class FinalTestBox extends StatelessWidget {
                         : RichText(
                             text: TextSpan(style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.white), children: [
                             TextSpan(
-                                text: (progress < 100 ? progress : correctPercent).toInt().toString(), style: const TextStyle(fontWeight: FontWeight.w500)),
+                              text: (isDone ? correctPercent : progress).toInt().toString(),
+                              style: const TextStyle(fontWeight: FontWeight.w500),
+                            ),
                             TextSpan(text: '% ${_getProgressText()}', style: TextStyle(fontSize: 12, color: Colors.white.withOpacity(0.7)))
                           ]))
                   ],
@@ -112,25 +109,15 @@ class FinalTestBox extends StatelessWidget {
     );
   }
 
-  Widget _buildLinearProgress() => !isDone
-      ? LinearPercentIndicator(
-          padding: EdgeInsets.zero,
-          percent: progress / 100,
-          animation: true,
-          barRadius: const Radius.circular(20),
-          lineHeight: 10,
-          progressColor: mainColor,
-          backgroundColor: Colors.grey.shade200.withOpacity(0.3),
-        )
-      : LinearPercentIndicator(
-          padding: EdgeInsets.zero,
-          percent: correctPercent / 100,
-          animation: true,
-          barRadius: const Radius.circular(20),
-          lineHeight: 10,
-          progressColor: correctColor,
-          backgroundColor: incorrectColor,
-        );
+  Widget _buildLinearProgress() => LinearPercentIndicator(
+        padding: EdgeInsets.zero,
+        percent: (isDone ? correctPercent : progress) / 100,
+        animation: true,
+        barRadius: const Radius.circular(20),
+        lineHeight: 10,
+        progressColor: isDone ? correctColor : mainColor,
+        backgroundColor: isDone ? incorrectColor : Colors.grey.shade200.withOpacity(0.3),
+      );
 
   _getResultText() {
     if (progress == 0) return 'Start';
@@ -144,7 +131,7 @@ class FinalTestBox extends StatelessWidget {
   _getProgressText() => isDone ? 'Correct' : 'Answered';
 
   _gradientColors() => LinearGradient(
-      colors: isDarkMode ? [const Color(0xFF292929).withOpacity(0.8), const Color(0xFF292929)] : [gradientColors[0].withOpacity(0.8), gradientColors[1]],
+      colors: isDarkMode ? [const Color(0xFF292929).withOpacity(0.8), const Color(0xFF292929)] : [secondaryColor.withOpacity(0.8), secondaryColor],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter);
 }

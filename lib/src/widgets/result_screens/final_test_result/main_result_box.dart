@@ -1,9 +1,12 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 
-class MainResultBox extends StatelessWidget {
+class MainResultBox extends StatefulWidget {
   final bool isFirstTime;
   final bool isDarkMode;
 
@@ -35,41 +38,69 @@ class MainResultBox extends StatelessWidget {
   });
 
   @override
+  State<MainResultBox> createState() => _MainResultBoxState();
+}
+
+class _MainResultBoxState extends State<MainResultBox> {
+  late Timer timer;
+  late ValueNotifier<int> percentValue;
+
+  @override
+  void initState() {
+    percentValue = ValueNotifier(0);
+    timer = Timer.periodic(const Duration(milliseconds: 20), (_) {
+      percentValue.value = percentValue.value + 1;
+      if (percentValue.value >= widget.progress) timer.cancel();
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    percentValue.dispose();
+    timer.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(alignment: Alignment.topCenter, children: [
       Container(
         margin: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(isDarkMode ? 0.16 : 1),
+          color: Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1),
           borderRadius: BorderRadius.circular(30),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (isFirstTime) _buildMessage(),
+            if (widget.isFirstTime) _buildMessage(),
 
-            if (!isFirstTime) const SizedBox(height: 10),
+            if (!widget.isFirstTime) const SizedBox(height: 10),
 
             // Progress chart
             HalfCircleProgressIndicator(
-              correctColor: correctColor,
-              incorrectColor: incorrectColor,
-              progress: progress / 100,
+              correctColor: widget.correctColor,
+              incorrectColor: widget.incorrectColor,
+              progress: widget.progress / 100,
               lineWidth: 20,
               radius: 125,
               center: Container(
                 margin: const EdgeInsets.only(bottom: 30),
-                child: RichText(
-                  text: TextSpan(
-                      style: DefaultTextStyle.of(context)
-                          .style
-                          .copyWith(color: progress < 0.8 ? incorrectColor : correctColor, fontWeight: FontWeight.bold),
-                      children: [
-                        TextSpan(text: '${progress.round()}', style: const TextStyle(fontSize: 70)),
-                        const TextSpan(text: '%', style: TextStyle(fontSize: 40))
-                      ]),
+                child: ValueListenableBuilder(
+                  valueListenable: percentValue,
+                  builder: (_, percent, __) => RichText(
+                    text: TextSpan(
+                        style: DefaultTextStyle.of(context)
+                            .style
+                            .copyWith(color: widget.progress < 0.8 ? widget.incorrectColor : widget.correctColor, fontWeight: FontWeight.bold),
+                        children: [
+                          TextSpan(text: '$percent', style: const TextStyle(fontSize: 70)),
+                          const TextSpan(text: '%', style: TextStyle(fontSize: 40))
+                        ]),
+                  ),
                 ),
               ),
             ),
@@ -78,33 +109,33 @@ class MainResultBox extends StatelessWidget {
             _buildExplanation(),
 
             // Linear progress
-            if (isFirstTime) _buildLinearProgress(context),
+            if (widget.isFirstTime) _buildLinearProgress(context),
 
             // Average community score
-            if (isFirstTime)
+            if (widget.isFirstTime)
               Text(
-                'Community Score: ${averageProgress.toInt()}% ',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: isDarkMode ? Colors.white : Colors.black),
+                'Community Score: ${widget.averageProgress.toInt()}% ',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: widget.isDarkMode ? Colors.white : Colors.black),
               )
           ],
         ),
       ),
 
       // Top banner
-      if (isFirstTime) _buildBanner(),
+      if (widget.isFirstTime) _buildBanner(),
     ]);
   }
 
   Widget _buildMessage() => Padding(
         padding: const EdgeInsets.symmetric(vertical: 30),
         child: Text(
-          progress >= passPercent
+          widget.progress >= widget.passPercent
               ? "Do not rest on your laurels, friend. Time to leaf through the rest of these tests and make them tremble with your intellect!"
               : "That was a tough one, but every wrong answer is a stepping stone to the right one. Keep at it, and you'll be a knowledge ninja soon!",
           textAlign: TextAlign.center,
           style: TextStyle(
               fontWeight: FontWeight.w400,
-              color: Color.lerp(progress >= passPercent ? correctColor : incorrectColor, Colors.black, isDarkMode ? 0 : 0.2),
+              color: Color.lerp(widget.progress >= widget.passPercent ? widget.correctColor : widget.incorrectColor, Colors.black, widget.isDarkMode ? 0 : 0.2),
               fontSize: 14),
         ),
       );
@@ -114,8 +145,8 @@ class MainResultBox extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _colorExplanation(correctColor, 'Correct', correctQuestions),
-            _colorExplanation(incorrectColor, 'Incorrect', incorrectQuestions),
+            _colorExplanation(widget.correctColor, 'Correct', widget.correctQuestions),
+            _colorExplanation(widget.incorrectColor, 'Incorrect', widget.incorrectQuestions),
           ],
         ),
       );
@@ -142,7 +173,7 @@ class MainResultBox extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Text(
                   '$questionNum ${'Questions'}',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Colors.black),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: widget.isDarkMode ? Colors.white : Colors.black),
                 ),
               )
             ],
@@ -155,7 +186,7 @@ class MainResultBox extends StatelessWidget {
 
         // Background
         LinearPercentIndicator(
-          backgroundColor: isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200,
+          backgroundColor: widget.isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200,
           lineHeight: 9,
           barRadius: const Radius.circular(8),
         ),
@@ -163,8 +194,8 @@ class MainResultBox extends StatelessWidget {
         // Main progress
         LinearPercentIndicator(
           backgroundColor: Colors.transparent,
-          percent: progress / 100,
-          progressColor: mainColor,
+          percent: widget.progress / 100,
+          progressColor: widget.mainColor,
           lineHeight: 12,
           animation: true,
           barRadius: const Radius.circular(8),
@@ -172,7 +203,7 @@ class MainResultBox extends StatelessWidget {
 
         // Average point
         Positioned(
-            left: MediaQuery.of(context).size.width * 0.0075 * averageProgress,
+            left: MediaQuery.of(context).size.width * 0.0075 * widget.averageProgress,
             child: CircleAvatar(
               radius: 9,
               backgroundColor: Colors.grey.withOpacity(0.3),
@@ -187,16 +218,16 @@ class MainResultBox extends StatelessWidget {
         offset: const Offset(0, -25),
         child: Stack(alignment: Alignment.center, children: [
           IconWidget(
-            icon: bannerShapeImage,
+            icon: widget.bannerShapeImage,
             height: 50,
-            color: progress >= passPercent ? correctColor : Color.lerp(incorrectColor, Colors.white, 0.8)!,
+            color: widget.progress >= widget.passPercent ? widget.correctColor : Color.lerp(widget.incorrectColor, Colors.white, 0.8)!,
           ),
           Text(
-            progress >= passPercent ? 'Excellent Performance!' : 'Not Enough To Pass!',
+            widget.progress >= widget.passPercent ? 'Excellent Performance!' : 'Not Enough To Pass!',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
-              color: progress >= passPercent ? Colors.white : incorrectColor,
+              color: widget.progress >= widget.passPercent ? Colors.white : widget.incorrectColor,
             ),
           ),
         ]),

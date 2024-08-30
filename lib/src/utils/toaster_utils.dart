@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-void showToastSuccess(String msg, {int delay = 1}) {
+void showToastSuccess(String msg, {int delay = 1, bool alignTop = false}) {
   Fluttertoast.cancel();
   Fluttertoast.showToast(
     msg: msg,
     timeInSecForIosWeb: delay,
     toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.CENTER,
+    gravity: alignTop ? ToastGravity.TOP : ToastGravity.CENTER,
     backgroundColor: const Color(0xFFEBFAF5),
     textColor: const Color(0xFF00C17C),
     fontSize: 16.0,
@@ -46,7 +46,7 @@ void showToastInfo(String msg) {
     msg: msg,
     timeInSecForIosWeb: 1,
     toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.CENTER,
+    gravity: ToastGravity.TOP,
     backgroundColor: const Color(0xFFE4F0FB),
     textColor: Colors.white,
     fontSize: 16.0,

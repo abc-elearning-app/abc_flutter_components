@@ -24,21 +24,16 @@ class _NewProButtonState extends State<NewProButton> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1));
-    // _animation = Tween<double>(begin: pi / 8, end: -pi / 8).animate(_controller);
-    _animation = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween<double>(begin: pi / 8, end: 9 * pi / 8).chain(CurveTween(curve: Curves.easeInOut)), weight: 1),
-      TweenSequenceItem(tween: ConstantTween(9 * pi / 8), weight: 1),
-      TweenSequenceItem(tween: Tween<double>(begin: -7 * pi / 8, end: pi / 8).chain(CurveTween(curve: Curves.easeInOut)), weight: 1),
-    ]).animate(_controller);
+    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 5));
+    _animation = Tween<double>(begin: 0, end: 2 * pi).animate(_controller);
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        Future.delayed(const Duration(seconds: 2), () {
+        Future.delayed(const Duration(seconds: 3), () {
           if (mounted) _controller.reverse();
         });
       } else if (status == AnimationStatus.dismissed) {
-        Future.delayed(const Duration(seconds: 2), () {
+        Future.delayed(const Duration(seconds: 3), () {
           if (mounted) _controller.forward();
         });
       }
@@ -67,13 +62,12 @@ class _NewProButtonState extends State<NewProButton> with SingleTickerProviderSt
               child: Container(
                 height: 80,
                 width: 80,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                child: Row(
-                  children: [
-                    Expanded(child: Container(color: widget.mainColor)),
-                    Expanded(child: Container(color: Color.lerp(widget.mainColor, Colors.white, 0.15))),
-                  ],
-                ),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    gradient: LinearGradient(colors: [
+                      widget.mainColor,
+                      Color.lerp(widget.mainColor, Colors.white, 0.5) ?? widget.mainColor,
+                    ])),
               ),
             );
           },
@@ -85,11 +79,12 @@ class _NewProButtonState extends State<NewProButton> with SingleTickerProviderSt
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: Color.lerp(widget.mainColor, Colors.white, 0.5) ?? widget.mainColor,
+            color: widget.mainColor,
             width: 2,
           ),
         ),
-        child: Transform.scale(scale: 0.9, child: IconWidget(icon: widget.proIcon, width: 1)),
+        padding: const EdgeInsets.all(3),
+        child: IconWidget(icon: widget.proIcon, width: 1),
       ),
     ]);
   }
@@ -98,7 +93,6 @@ class _NewProButtonState extends State<NewProButton> with SingleTickerProviderSt
 class RRectClipper extends CustomClipper<RRect> {
   @override
   RRect getClip(Size size) {
-    // Define the rounded rectangle you want to clip inside the CircleAvatar
     return RRect.fromRectAndRadius(
       Rect.fromLTWH(
         0,
@@ -106,7 +100,7 @@ class RRectClipper extends CustomClipper<RRect> {
         size.width,
         size.height / 2,
       ),
-      const Radius.circular(10), // Corner radius of the rectangle
+      const Radius.circular(10),
     );
   }
 

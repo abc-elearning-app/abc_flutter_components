@@ -24,26 +24,25 @@ class ProBanner extends StatefulWidget {
   final ProBannerData data;
   final String limitedOfferFrame;
 
-  const ProBanner(
-      {super.key,
-      required this.background,
-      required this.textColor,
-      required this.data,
-      required this.limitedOfferFrame});
+  const ProBanner({
+    super.key,
+    required this.background,
+    required this.textColor,
+    required this.data,
+    required this.limitedOfferFrame,
+  });
 
   @override
   State<ProBanner> createState() => _ProBannerState();
 }
 
 class _ProBannerState extends State<ProBanner> {
-  final _time = ValueNotifier<Duration>(
-      const Duration(hours: 19, minutes: 56, seconds: 12));
+  final _time = ValueNotifier<Duration>(const Duration(hours: 19, minutes: 56, seconds: 12));
   late Timer timer;
 
   @override
   void initState() {
-    timer = Timer.periodic(const Duration(seconds: 1),
-        (_) => _time.value -= const Duration(seconds: 1));
+    timer = Timer.periodic(const Duration(seconds: 1), (_) => _time.value -= const Duration(seconds: 1));
     super.initState();
   }
 
@@ -57,42 +56,25 @@ class _ProBannerState extends State<ProBanner> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage(widget.background), fit: BoxFit.cover)),
+      decoration: BoxDecoration(image: DecorationImage(image: AssetImage(widget.background), fit: BoxFit.cover)),
       child: Row(
         children: [
           Expanded(
               child: RichText(
-            text: TextSpan(
-                style: TextStyle(
-                    fontSize: 14,
-                    color: widget.textColor,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w500),
-                children: [
-                  const TextSpan(text: 'Save '),
-                  TextSpan(
-                      text: '${widget.data.percentSaved.toInt()}%',
-                      style: const TextStyle(
-                          color: Color(0xFFFFD600),
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold)),
-                  const TextSpan(text: ' - Only '),
-                  TextSpan(
-                      text: '\$${widget.data.price}',
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w800)),
-                  TextSpan(text: ' For 1 ${widget.data.timeType.name}')
-                ]),
+            text: TextSpan(style: TextStyle(fontSize: 14, color: widget.textColor, fontFamily: 'Poppins', fontWeight: FontWeight.w500), children: [
+              const TextSpan(text: 'Save '),
+              TextSpan(
+                  text: '${widget.data.percentSaved.toInt()}%', style: const TextStyle(color: Color(0xFFFFD600), fontSize: 16, fontWeight: FontWeight.bold)),
+              const TextSpan(text: ' - Only '),
+              TextSpan(text: '\$${widget.data.price > 1000 ? widget.data.price.toInt() : widget.data.price.toStringAsFixed(2)}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
+              TextSpan(text: ' For 1 ${widget.data.timeType.name}')
+            ]),
           )),
 
           // Limited offer
           Container(
             width: 100,
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(widget.limitedOfferFrame))),
+            decoration: BoxDecoration(image: DecorationImage(image: AssetImage(widget.limitedOfferFrame))),
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: ValueListenableBuilder(
               valueListenable: _time,

@@ -42,8 +42,6 @@ class _StudyPlanBoxComponentState extends State<StudyPlanBoxComponent> with Sing
   late AnimationController _animationController;
   late Animation _animation;
 
-  // late ValueNotifier<int> _displayOption;
-
   @override
   void initState() {
     _isExpanded = ValueNotifier(true);
@@ -101,13 +99,11 @@ class _StudyPlanBoxComponentState extends State<StudyPlanBoxComponent> with Sing
                     // Dropdown button
                     AnimatedBuilder(
                       animation: _animation,
-                      builder: (BuildContext context, Widget? child) {
+                      builder: (_, __) {
                         return Transform.rotate(
-                            angle: _animation.value,
-                            child: const Icon(
-                              Icons.chevron_left_rounded,
-                              size: 35,
-                            ));
+                          angle: _animation.value,
+                          child: const Icon(Icons.chevron_left_rounded, size: 35),
+                        );
                       },
                     )
                   ],
@@ -124,18 +120,20 @@ class _StudyPlanBoxComponentState extends State<StudyPlanBoxComponent> with Sing
                   color: widget.isDarkMode ? Colors.grey.shade900 : Colors.white,
                   borderRadius: const BorderRadius.only(bottomRight: Radius.circular(16), bottomLeft: Radius.circular(16))),
               child: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: StudyPlanChart(
-                    leftYAxisTitle: 'Learnt Questions',
-                    isDarkMode: widget.isDarkMode,
-                    lineSectionHeight: 120,
-                    barSectionHeight: 150,
-                    startDate: widget.startDate,
-                    examDate: widget.examDate,
-                    valueList: widget.valueList,
-                    expectedBarValue: widget.expectedQuestions,
+                child: Transform.translate(
+                  offset: const Offset(0, 140),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: StudyPlanChart(
+                      leftYAxisTitle: 'Learnt Questions',
+                      isDarkMode: widget.isDarkMode,
+                      lineSectionHeight: 120,
+                      barSectionHeight: 150,
+                      startDate: widget.startDate,
+                      examDate: widget.examDate,
+                      valueList: widget.valueList,
+                      expectedBarValuePerColumn: widget.expectedQuestions,
+                    ),
                   ),
                 ),
               ),

@@ -32,11 +32,14 @@ class StudyPlanButtonComponent extends StatelessWidget {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           ),
           onPressed: onClickStudyPlan,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
+          child: SizedBox(
+            height: 55,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: Text(
+                title,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
+              ),
             ),
           )),
     );

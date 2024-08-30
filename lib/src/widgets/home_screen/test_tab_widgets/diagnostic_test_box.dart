@@ -5,12 +5,11 @@ import '../../../../../flutter_abc_jsc_components.dart';
 
 enum DiagnosticTestBoxStatus { notStarted, inProgress, done }
 
-class DiagnosticTestBox extends StatelessWidget {
+class DiagnosticTestBoxComponent extends StatelessWidget {
   final String icon;
   final String background;
 
   final Color color;
-  final List<Color> gradientColors;
 
   final double progress;
   final bool isDarkMode;
@@ -19,7 +18,7 @@ class DiagnosticTestBox extends StatelessWidget {
 
   final void Function() onClick;
 
-  const DiagnosticTestBox({
+  const DiagnosticTestBoxComponent({
     super.key,
     required this.icon,
     required this.background,
@@ -28,10 +27,6 @@ class DiagnosticTestBox extends StatelessWidget {
     required this.progress,
     required this.isDarkMode,
     required this.status,
-    this.gradientColors = const [
-      Color(0xFFC0A67C),
-      Color(0xFF958366),
-    ],
   });
 
   @override
@@ -133,16 +128,15 @@ class DiagnosticTestBox extends StatelessWidget {
   }
 
   _gradientColors() => LinearGradient(
-        colors: isDarkMode
-            ? [
-                const Color(0xFF292929).withOpacity(0.55),
-                const Color(0xFF292929),
-              ]
-            : [
-                gradientColors[0].withOpacity(0.8),
-                gradientColors[1],
-              ],
-      );
+      colors: isDarkMode
+          ? [
+              const Color(0xFF292929).withOpacity(0.55),
+              const Color(0xFF292929),
+            ]
+          : [
+              color.withOpacity(0.8),
+              color,
+            ]);
 
   _getLabel() {
     switch (status) {
