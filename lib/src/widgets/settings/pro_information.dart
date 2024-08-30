@@ -63,7 +63,7 @@ class ProInformationTile extends StatelessWidget {
               ],
             ),
           ),
-          if(proVersion) InkWell(
+          if(proVersion) GestureDetector(
             onTap: onTap,
             child: NewProButton(
               key: GlobalKey(),

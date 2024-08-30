@@ -65,7 +65,7 @@ class TestBox extends StatelessWidget {
     return GestureDetector(
       onTap: () => onSelect(data.id),
       child: Container(
-        width: MediaQuery.of(context).size.width / 2 - 20,
+        width: 175,
         margin: const EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -78,14 +78,26 @@ class TestBox extends StatelessWidget {
         child: Stack(children: [
           Positioned.fill(
               child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: (isDarkMode ? const Color(0xFF292929) : secondaryColor).withOpacity(0.92),
-                ),
-              )),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              gradient: LinearGradient(
+                colors: isDarkMode
+                    ? [const Color(0xFF292929).withOpacity(0.8), Colors.grey.shade900]
+                    : [
+                        Colors.transparent,
+                        secondaryColor.withOpacity(0.5),
+                        secondaryColor,
+                      ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: isDarkMode ? const [0, 0.8] : const [0, 0.2, 0.5],
+              ),
+            ),
+          )),
           Padding(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(12),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Title
@@ -99,19 +111,17 @@ class TestBox extends StatelessWidget {
                 ),
 
                 // Questions
-                Expanded(
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: RichText(
-                        text: TextSpan(style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w400), children: [
-                          TextSpan(text: '• ${data.isDone ? data.correctQuestions : data.answeredQuestions}'),
-                          TextSpan(
-                            text: '/${data.totalQuestions} ${data.isDone ? 'Correct' : 'Answered'}',
-                            style: TextStyle(color: Colors.white.withOpacity(0.8)),
-                          ),
-                        ]),
-                      )),
-                ),
+                Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: RichText(
+                      text: TextSpan(style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w400), children: [
+                        TextSpan(text: '• ${data.isDone ? data.correctQuestions : data.answeredQuestions}'),
+                        TextSpan(
+                          text: '/${data.totalQuestions} ${data.isDone ? 'Correct' : 'Answered'}',
+                          style: TextStyle(color: Colors.white.withOpacity(0.8)),
+                        ),
+                      ]),
+                    )),
 
                 // Progress
                 Stack(alignment: Alignment.centerRight, children: [
@@ -122,8 +132,8 @@ class TestBox extends StatelessWidget {
                       percent: (data.isDone ? data.correct : data.progress) / 100,
                       progressColor: data.isDone
                           ? data.correct < minPassPercent
-                          ? incorrectColor
-                          : correctColor
+                              ? incorrectColor
+                              : correctColor
                           : mainColor,
                       lineHeight: 25,
                       backgroundColor: Colors.white.withOpacity(0.5),
@@ -150,11 +160,12 @@ class TestBox extends StatelessWidget {
               ],
             ),
           ),
+
           if (data.isDone)
             Positioned(
-              top: 5,
-              right: 5,
-              child: IconWidget(icon: data.correct < minPassPercent ? incorrectIcon : correctIcon),
+              top: 10,
+              right: 10,
+              child: IconWidget(icon: data.correct < minPassPercent ? incorrectIcon : correctIcon, height: 30,),
             )
         ]),
       ),

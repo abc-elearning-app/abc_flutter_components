@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-
 
 class MainResultBox extends StatefulWidget {
   final bool isFirstTime;
@@ -48,17 +46,19 @@ class _MainResultBoxState extends State<MainResultBox> {
   @override
   void initState() {
     percentValue = ValueNotifier(0);
-    timer = Timer.periodic(const Duration(milliseconds: 20), (_) {
-      percentValue.value = percentValue.value + 1;
-      if (percentValue.value >= widget.progress) timer.cancel();
-    });
+    if (widget.progress > 0) {
+      timer = Timer.periodic(const Duration(milliseconds: 15), (_) {
+        percentValue.value = percentValue.value + 1;
+        if (percentValue.value >= widget.progress) timer.cancel();
+      });
+    }
     super.initState();
   }
 
   @override
   void dispose() {
     percentValue.dispose();
-    timer.cancel();
+    if (widget.progress > 0) timer.cancel();
     super.dispose();
   }
 
