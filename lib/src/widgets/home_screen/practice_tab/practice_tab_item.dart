@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class QuestionGroupData {
   final int id;
@@ -20,6 +21,11 @@ class QuestionGroupData {
 class PracticeTabItemComponent extends StatelessWidget {
   final QuestionGroupData questionGroupData;
   final bool isDarkMode;
+  final bool proVersion;
+  final double? progress;
+  final int? passPercent;
+  final bool? finished;
+  final String proIcon;
   final void Function(int id) onSelect;
 
   const PracticeTabItemComponent({
@@ -27,6 +33,11 @@ class PracticeTabItemComponent extends StatelessWidget {
     required this.questionGroupData,
     required this.isDarkMode,
     required this.onSelect,
+    required this.proVersion,
+    required this.proIcon,
+    this.passPercent,
+    this.progress,
+    this.finished
   });
 
   @override
@@ -67,10 +78,43 @@ class PracticeTabItemComponent extends StatelessWidget {
                   Text(questionGroupData.subtitle, style: const TextStyle(fontSize: 12)),
                 ],
               ),
-            )
+            ),
+            _makeProgress()
           ],
         ),
       ),
     );
+  }
+
+  Widget _makeProgress() {
+    Widget? widget;
+    if(finished == true && progress != null && passPercent != null && progress! >= passPercent!) {
+      widget = const Icon(Icons.done_rounded, color: Colors.green, size: 40);
+    } else if(finished == true && progress != null && passPercent != null && progress! < passPercent!) {
+      widget = const Icon(Icons.close_rounded, color: Colors.red, size: 40);
+    } else if(progress != null && progress! > -1) {
+      widget = Stack(
+        alignment: Alignment.center,
+        children: [
+          CircularPercentIndicator(
+            radius: 24,
+            percent: progress!,
+            lineWidth: 4,
+            progressColor: Colors.green,
+            backgroundColor: Colors.green.shade100,
+          ),
+          Text('${(progress! * 100).round().toString()}%', style: const TextStyle(fontSize: 12))
+        ],
+      );
+    } else if(!proVersion) {
+      widget = Image.asset(proIcon, width: 30);
+    }
+    if(widget != null) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 12),
+        child: widget,
+      );
+    }
+    return const SizedBox();
   }
 }

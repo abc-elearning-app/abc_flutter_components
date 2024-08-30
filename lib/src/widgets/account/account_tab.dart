@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
-enum PackageType { weekly, monthly, yearly }
+enum PackageType { weekly, monthly, yearly, pro }
 
 class AccountTabComponent extends StatelessWidget {
   final bool isDarkMode;
@@ -9,7 +9,7 @@ class AccountTabComponent extends StatelessWidget {
   final String appName;
   final String appVersion;
   final PackageType packageType;
-  final DateTime expireDate;
+  final DateTime? expireDate;
 
   final String appLogo;
   final String crownIcon;
@@ -18,6 +18,7 @@ class AccountTabComponent extends StatelessWidget {
   final String starIcon;
   final String triangleIcon;
   final String premiumIcon;
+  final String proIcon;
 
   final String syncIcon;
   final String deleteAccountIcon;
@@ -26,7 +27,9 @@ class AccountTabComponent extends StatelessWidget {
   final String avatar;
   final String username;
   final String email;
+  final bool loggedIn;
 
+  final Color primaryColor;
   final Color secondaryColor;
   final Color backgroundColor;
 
@@ -34,6 +37,7 @@ class AccountTabComponent extends StatelessWidget {
   final void Function() onSync;
   final void Function() onLogout;
   final void Function() onDeleteAccount;
+  final bool? tester;
 
   const AccountTabComponent({
     super.key,
@@ -59,9 +63,13 @@ class AccountTabComponent extends StatelessWidget {
     required this.appName,
     required this.appVersion,
     required this.packageType,
-    required this.expireDate,
     required this.crownIcon,
+    required this.primaryColor,
     required this.secondaryColor,
+    required this.loggedIn,
+    required this.proIcon,
+    this.expireDate,
+    this.tester
   });
 
   @override
@@ -109,12 +117,12 @@ class AccountTabComponent extends StatelessWidget {
                   ),
 
                 // User information (avatar, email, name)
-                Padding(
+                if(loggedIn) Padding(
                   padding: EdgeInsets.only(top: isPro ? 15 : 0),
                   child: UserInformation(isPro: isPro, avatar: avatar, email: email, username: username, crownIcon: crownIcon),
                 ),
 
-                if (isPro)
+                if (isPro && loggedIn)
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 15),
                     child: Divider(),
@@ -142,37 +150,47 @@ class AccountTabComponent extends StatelessWidget {
 
   Widget _proInformation() => Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Row(
-              children: [
-                IconWidget(icon: appLogo, height: 40),
-                const SizedBox(width: 15),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        appName,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        'Version $appVersion',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w300,
-                            fontStyle: FontStyle.italic,
-                            color: isDarkMode ? Colors.white : Colors.black.withOpacity(0.5)),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
+          ProInformationTile(
+            appLogo: appLogo,
+            appName: appName,
+            appVersion: appVersion,
+            isDarkMode: isDarkMode,
+            mainColor: primaryColor,
+            proIcon: proIcon,
+            proVersion: isPro,
+            padding: const EdgeInsets.all(0)
           ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: 8),
+          //   child: Row(
+          //     children: [
+          //       IconWidget(icon: appLogo, height: 40),
+          //       const SizedBox(width: 15),
+          //       Expanded(
+          //         child: Column(
+          //           crossAxisAlignment: CrossAxisAlignment.start,
+          //           children: [
+          //             Text(
+          //               appName,
+          //               style: const TextStyle(
+          //                 fontSize: 16,
+          //                 fontWeight: FontWeight.w600,
+          //               ),
+          //             ),
+          //             Text(
+          //               'Version $appVersion',
+          //               style: TextStyle(
+          //                   fontSize: 16,
+          //                   fontWeight: FontWeight.w300,
+          //                   fontStyle: FontStyle.italic,
+          //                   color: isDarkMode ? Colors.white : Colors.black.withOpacity(0.5)),
+          //             ),
+          //           ],
+          //         ),
+          //       )
+          //     ],
+          //   ),
+          // ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
@@ -195,7 +213,7 @@ class AccountTabComponent extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
+          if(expireDate != null) Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -208,7 +226,7 @@ class AccountTabComponent extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  _getDateTime(expireDate),
+                  _getDateTime(expireDate!),
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, decoration: TextDecoration.underline),
                 ),
               ],
@@ -250,6 +268,12 @@ class AccountTabComponent extends StatelessWidget {
   _getDateTime(DateTime time) {
     final displayMonth = time.month < 10 ? '0${time.month}' : '${time.month}';
     final displayDay = time.day < 10 ? '0${time.day}' : '${time.day}';
+    if(tester == true) {
+      final displayHour = time.hour < 10 ? '0${time.hour}' : '${time.hour}';
+      final displayMinute = time.minute < 10 ? '0${time.minute}' : '${time.minute}';
+      final displaySecond = time.second < 10 ? '0${time.second}' : '${time.second}';
+      return '${time.year}-$displayMonth-$displayDay $displayHour:$displayMinute:$displaySecond';
+    }
     return '${time.year}-$displayMonth-$displayDay';
   }
 }
