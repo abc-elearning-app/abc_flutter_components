@@ -107,7 +107,6 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
     if (widget.hasSubTopic) {
       // This loop may not loop through all groups since it stops at the current group
       for (var group in widget.levelGroupList) {
-
         if (group.isFocused) {
           int levelsTillCurrent = group.levels.indexWhere((level) => level.isCurrent) + 1;
           int completeCycleCount = levelsTillCurrent ~/ (widget.upperRowCount + widget.lowerRowCount);
@@ -195,12 +194,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                 ),
               ),
               Padding(
-                  padding: const EdgeInsets.only(
-                    left: 20,
-                    right: 20,
-                    bottom: 15,
-                    top: 5,
-                  ),
+                  padding: const EdgeInsets.only(left: 20, right: 20, bottom: 15, top: 5),
                   child: CustomLinearProgress(
                       mainColor: widget.mainColor,
                       percent: percent < 0 ? 0 : percent,
