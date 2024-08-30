@@ -75,7 +75,7 @@ class ResultSubjectTile extends StatelessWidget {
                 style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, overflow: TextOverflow.ellipsis),
               )),
               Text(
-                '${progress.ceil().clamp(0, 96)}%',
+                '${progress.clamp(0, minAdvancedValue).ceil()}%',
                 style: const TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 15,
