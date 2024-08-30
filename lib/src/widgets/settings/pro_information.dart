@@ -7,10 +7,12 @@ class ProInformationTile extends StatelessWidget {
   final String appName;
   final String appVersion;
   final String proIcon;
-
+  final String? subtitle;
   final bool isDarkMode;
-
   final Color mainColor;
+  final VoidCallback? onTap;
+  final EdgeInsets? padding;
+  final bool proVersion;
 
   const ProInformationTile({
     super.key,
@@ -20,12 +22,16 @@ class ProInformationTile extends StatelessWidget {
     required this.isDarkMode,
     required this.mainColor,
     required this.proIcon,
+    required this.proVersion,
+    this.onTap,
+    this.padding,
+    this.subtitle,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: padding ?? const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
           IconWidget(icon: appLogo, height: 50),
@@ -44,15 +50,26 @@ class ProInformationTile extends StatelessWidget {
                 Text(
                   'Version $appVersion',
                   style: TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w300, fontStyle: FontStyle.italic, color: isDarkMode ? Colors.white : Colors.black.withOpacity(0.5)),
+                      fontSize: 12, fontWeight: FontWeight.w300, fontStyle: FontStyle.italic, color: isDarkMode ? Colors.white : Colors.black),
+                ),
+                if(subtitle != null && subtitle!.isNotEmpty) Text(
+                  subtitle!,
+                  style: TextStyle(
+                    fontSize: 10, fontWeight: FontWeight.w300, 
+                    fontStyle: FontStyle.italic, 
+                    color: isDarkMode ? Colors.white38 : Colors.grey
+                  ),
                 ),
               ],
             ),
           ),
-          NewProButton(
-            key: GlobalKey(),
-            mainColor: mainColor,
-            proIcon: proIcon,
+          if(proVersion) InkWell(
+            onTap: onTap,
+            child: NewProButton(
+              key: GlobalKey(),
+              mainColor: mainColor,
+              proIcon: proIcon,
+            ),
           )
         ],
       ),

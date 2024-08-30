@@ -8,6 +8,7 @@ class SettingTile extends StatelessWidget {
 
   final String icon;
   final String title;
+  final String? subtitle;
   final bool showPro;
   final String? proIcon;
 
@@ -35,6 +36,7 @@ class SettingTile extends StatelessWidget {
     required this.title,
     required this.type,
     required this.onClick,
+    this.subtitle,
   });
 
   @override
@@ -43,6 +45,7 @@ class SettingTile extends StatelessWidget {
       onTap: onClick,
       leading: IconWidget(icon: icon, color: isDarkMode ? Colors.white : Colors.black),
       title: Text(title, style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: isDarkMode ? Colors.white : Colors.black)),
+      subtitle: subtitle != null && subtitle!.isNotEmpty ? Text(subtitle!, style: TextStyle(fontSize: 12, color: isDarkMode ? Colors.white : Colors.black87)) : null,
       trailing: _buildTrailing(),
     );
   }
