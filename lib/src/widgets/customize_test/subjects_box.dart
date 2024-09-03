@@ -20,7 +20,6 @@ class SubjectsBox extends StatefulWidget {
   final Color mainColor;
   final Color secondaryColor;
   final bool isDarkMode;
-  final List<int> selectedIds;
   final void Function(List<int> selectedIds) onSelect;
 
   const SubjectsBox({
@@ -30,7 +29,6 @@ class SubjectsBox extends StatefulWidget {
     required this.secondaryColor,
     required this.isDarkMode,
     required this.onSelect,
-    required this.selectedIds,
   });
 
   @override
@@ -42,10 +40,8 @@ class _SubjectsBoxState extends State<SubjectsBox> {
 
   @override
   void initState() {
+    selectedIds = widget.subjects.map((subject) => subject.id).toList();
     super.initState();
-    setState(() {
-      selectedIds = widget.selectedIds;
-    });
   }
 
   @override
@@ -109,13 +105,12 @@ class _SubjectsBoxState extends State<SubjectsBox> {
 
               // Checkbox
               MyCheckBox(
-                activeColor: widget.mainColor,
-                fillColor: Colors.white.withOpacity(0.08),
-                borderColor: widget.isDarkMode ? Colors.white.withOpacity(0.16) : widget.mainColor,
-                iconColor: Colors.white,
-                value: selectedIds.contains(subjectData.id),
-                onChanged: (_) => _onToggle(subjectData.id)
-              ),
+                  activeColor: widget.mainColor,
+                  fillColor: Colors.white.withOpacity(0.08),
+                  borderColor: widget.isDarkMode ? Colors.white.withOpacity(0.16) : widget.mainColor,
+                  iconColor: Colors.white,
+                  value: selectedIds.contains(subjectData.id),
+                  onChanged: (_) => _onToggle(subjectData.id)),
             ],
           ),
         ),
@@ -134,7 +129,7 @@ class _SubjectsBoxState extends State<SubjectsBox> {
               value: selectedIds.length == widget.subjects.length,
               onChanged: (value) {
                 setState(() {
-                  if(value) {
+                  if (value) {
                     selectedIds = widget.subjects.map((e) => e.id).toList();
                   } else {
                     selectedIds = [];
@@ -149,7 +144,7 @@ class _SubjectsBoxState extends State<SubjectsBox> {
 
   void _onToggle(int id) {
     setState(() {
-      if(selectedIds.contains(id)) {
+      if (selectedIds.contains(id)) {
         selectedIds.remove(id);
       } else {
         selectedIds.add(id);

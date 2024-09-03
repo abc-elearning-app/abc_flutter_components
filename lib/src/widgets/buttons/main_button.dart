@@ -19,7 +19,7 @@ class MainButton extends StatelessWidget {
 
   const MainButton({
     super.key,
-    this.delayPressedMilliseconds = 100,
+    this.delayPressedMilliseconds = 200,
     this.loading = false,
     required this.title,
     this.borderSide,
@@ -36,10 +36,8 @@ class MainButton extends StatelessWidget {
     this.borderRadius = 12,
   });
 
-
   @override
   Widget build(BuildContext context) {
-    int previousClickTime = 0;
     Color bgColor = backgroundColor ?? Theme.of(context).colorScheme.primary;
     bool temp = false;
     return MaterialButton(
@@ -56,26 +54,12 @@ class MainButton extends StatelessWidget {
       onPressed: disabled
           ? null
           : () {
-              if (DateTime.now().millisecondsSinceEpoch < previousClickTime + 300) {
-                return;
-              } else {
-                previousClickTime = DateTime.now().millisecondsSinceEpoch;
-              }
-
-              if (temp || loading == true) {
-                return;
-              }
+              if (temp || loading == true) return;
               temp = true;
-              Future.delayed(Duration(milliseconds: delayPressedMilliseconds), () {
-                temp = false;
-              });
+              Future.delayed(Duration(milliseconds: delayPressedMilliseconds), () => temp = false);
               onPressed.call();
             },
-      child: icon != null
-          ? Stack(
-              children: [icon!, _text()],
-            )
-          : _text(),
+      child: icon != null ? Stack(children: [icon!, _text()]) : _text(),
     );
   }
 

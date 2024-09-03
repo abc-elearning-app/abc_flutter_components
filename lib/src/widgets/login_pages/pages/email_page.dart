@@ -1,11 +1,10 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
-class EmailPage extends StatelessWidget {
+class EmailPage extends StatefulWidget {
   final String image;
   final String detail;
   final Color mainColor;
@@ -30,72 +29,87 @@ class EmailPage extends StatelessWidget {
   });
 
   @override
+  State<EmailPage> createState() => _EmailPageState();
+}
+
+class _EmailPageState extends State<EmailPage> {
+  final focusNode = FocusNode();
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          //Image
-          IconWidget(icon: image, height: 200),
-      
-          // Detail text
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Text(
-              detail,
-              style: TextStyle(fontSize: 16, color: isDarkMode ? Colors.white.withOpacity(0.6) : Colors.black),
-              textAlign: TextAlign.center,
-            ),
-          ),
-      
-          // Google and Apple login
-          _buildSocialMediaButton(iconData: FontAwesomeIcons.google, title: 'Sign in with Google', onPressed: onGoogleSignIn),
-          if (Platform.isIOS) _buildSocialMediaButton(iconData: FontAwesomeIcons.apple, title: 'Sign in with Apple', onPressed: onAppleSignIn),
-      
-          // Email text field
-          const Row(
+    return PopScope(
+      onPopInvoked: (didPop) => FocusScope.of(context).unfocus(),
+      child: SingleChildScrollView(
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Column(
             children: [
-              Expanded(child: Divider(indent: 20)),
+              //Image
+              IconWidget(icon: widget.image, height: 200),
+
+              // Detail text
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Text('Or', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                  widget.detail,
+                  style: TextStyle(fontSize: 16, color: widget.isDarkMode ? Colors.white.withOpacity(0.6) : Colors.black),
+                  textAlign: TextAlign.center,
+                ),
               ),
-              Expanded(child: Divider(endIndent: 20)),
+
+              // Google and Apple login
+              _buildSocialMediaButton(iconData: FontAwesomeIcons.google, title: 'Sign in with Google', onPressed: widget.onGoogleSignIn),
+              if (Platform.isIOS) _buildSocialMediaButton(iconData: FontAwesomeIcons.apple, title: 'Sign in with Apple', onPressed: widget.onAppleSignIn),
+
+              // Email text field
+              const Row(
+                children: [
+                  Expanded(child: Divider(indent: 20)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text('Or', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                  ),
+                  Expanded(child: Divider(endIndent: 20)),
+                ],
+              ),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Email',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    _buildEmailTextField(),
+                  ],
+                ),
+              ),
             ],
           ),
-      
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Email',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                _buildEmailTextField(),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 
   Widget _buildEmailTextField() {
-    final border = OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide(color: isDarkMode ? mainColor : secondaryColor));
+    final border = OutlineInputBorder(
+        borderRadius: BorderRadius.circular(15), borderSide: BorderSide(color: widget.isDarkMode ? widget.mainColor : widget.secondaryColor));
 
     // Add padding when keyboard appear
     return Padding(
       padding: const EdgeInsets.only(top: 5, bottom: 20),
       child: TextField(
-        onChanged: (_) => onEnterEmail(),
-        controller: emailController,
-        cursorColor: isDarkMode ? mainColor : secondaryColor,
+        onChanged: (_) => widget.onEnterEmail(),
+        focusNode: focusNode,
+        controller: widget.emailController,
+        cursorColor: widget.isDarkMode ? widget.mainColor : widget.secondaryColor,
         decoration: InputDecoration(
           filled: true,
           hintText: 'Please type your email address!',
-          hintStyle: TextStyle(color: isDarkMode ? Colors.white.withOpacity(0.24) : Colors.grey.shade300, fontSize: 16),
-          fillColor: isDarkMode ? Colors.grey.shade900 : Colors.white,
+          hintStyle: TextStyle(color: widget.isDarkMode ? Colors.white.withOpacity(0.24) : Colors.grey.shade300, fontSize: 16),
+          fillColor: widget.isDarkMode ? Colors.grey.shade900 : Colors.white,
           focusedBorder: border,
           enabledBorder: border,
         ),
@@ -107,20 +121,22 @@ class EmailPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
       child: ElevatedButton(
-        onPressed: onPressed,
+        onPressed: () {
+          FocusScope.of(context).unfocus();
+          onPressed();
+        },
         style: ElevatedButton.styleFrom(
-          foregroundColor: secondaryColor,
-          backgroundColor: isDarkMode ? Colors.grey.shade900 : Colors.white,
-          side: BorderSide(width: 0.8, color: isDarkMode ? mainColor : secondaryColor),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15)
-        ),
+            foregroundColor: widget.secondaryColor,
+            backgroundColor: widget.isDarkMode ? Colors.grey.shade900 : Colors.white,
+            side: BorderSide(width: 0.8, color: widget.isDarkMode ? widget.mainColor : widget.secondaryColor),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15)),
         child: Row(
           children: [
-            FaIcon(iconData, color: isDarkMode ? mainColor : secondaryColor),
+            FaIcon(iconData, color: widget.isDarkMode ? widget.mainColor : widget.secondaryColor),
             const SizedBox(width: 16),
-            Expanded(child: Text(title, style: TextStyle(color: isDarkMode ? mainColor : secondaryColor, fontSize: 16))),
+            Expanded(child: Text(title, style: TextStyle(color: widget.isDarkMode ? widget.mainColor : widget.secondaryColor, fontSize: 16))),
           ],
         ),
       ),

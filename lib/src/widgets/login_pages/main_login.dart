@@ -81,8 +81,8 @@ class _MainLoginPageState extends State<MainLoginPage> {
         mainColor: widget.mainColor,
         secondaryColor: widget.secondaryColor,
         onEnterEmail: () => _buttonEnable.value = _isValidEmail(emailController.text),
-        onGoogleSignIn: () => widget.onGoogleSignIn(),
-        onAppleSignIn: () => widget.onAppleSignIn(),
+        onGoogleSignIn: widget.onGoogleSignIn,
+        onAppleSignIn: widget.onAppleSignIn,
       ),
       OtpPage(
         isDarkMode: widget.isDarkMode,
