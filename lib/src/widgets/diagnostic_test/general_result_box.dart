@@ -113,7 +113,7 @@ class GeneralResultBox extends StatelessWidget {
             radius: outerRadius - lineWidth,
             lineWidth: lineWidth,
             circularStrokeCap: CircularStrokeCap.round,
-            percent: (mainProgress / 100).clamp(0, 0.96),
+            percent: (mainProgress / 100).clamp(0, minAdvancedValue / 100),
             animation: true,
             backgroundColor: _getLevelColor(levelType).withOpacity(0.5),
             progressColor: _getLevelColor(levelType),
@@ -133,7 +133,7 @@ class GeneralResultBox extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${mainProgress.clamp(0, 96).toInt()}%',
+                    '${mainProgress.clamp(0, minAdvancedValue).toInt()}%',
                     style: TextStyle(color: _getLevelColor(levelType), fontSize: 32, fontWeight: FontWeight.bold),
                   )
                 ],

@@ -160,37 +160,6 @@ class AccountTabComponent extends StatelessWidget {
             proVersion: isPro,
             padding: const EdgeInsets.all(0)
           ),
-          // Padding(
-          //   padding: const EdgeInsets.only(bottom: 8),
-          //   child: Row(
-          //     children: [
-          //       IconWidget(icon: appLogo, height: 40),
-          //       const SizedBox(width: 15),
-          //       Expanded(
-          //         child: Column(
-          //           crossAxisAlignment: CrossAxisAlignment.start,
-          //           children: [
-          //             Text(
-          //               appName,
-          //               style: const TextStyle(
-          //                 fontSize: 16,
-          //                 fontWeight: FontWeight.w600,
-          //               ),
-          //             ),
-          //             Text(
-          //               'Version $appVersion',
-          //               style: TextStyle(
-          //                   fontSize: 16,
-          //                   fontWeight: FontWeight.w300,
-          //                   fontStyle: FontStyle.italic,
-          //                   color: isDarkMode ? Colors.white : Colors.black.withOpacity(0.5)),
-          //             ),
-          //           ],
-          //         ),
-          //       )
-          //     ],
-          //   ),
-          // ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(

@@ -266,7 +266,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                 child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 10),
               width: double.infinity,
-              height: 1,
+              height: 2,
               color: Colors.grey.shade400,
             )),
             ConstrainedBox(
@@ -274,14 +274,14 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
               child: Text(
                 textAlign: TextAlign.center,
                 title,
-                style: TextStyle(fontWeight: FontWeight.w500, color: widget.isDarkMode ? Colors.white : widget.dividerColor, fontSize: 18),
+                style: TextStyle(fontWeight: FontWeight.w600, color: widget.isDarkMode ? Colors.white : widget.dividerColor, fontSize: 18),
               ),
             ),
             Expanded(
                 child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 10),
               width: double.infinity,
-              height: 1,
+              height: 2,
               color: Colors.grey.shade400,
             )),
           ],

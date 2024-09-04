@@ -79,7 +79,7 @@ class DiagnosticTestBoxComponent extends StatelessWidget {
                             child: RichText(
                               text: const TextSpan(
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                   fontFamily: 'Poppins',
                                 ),

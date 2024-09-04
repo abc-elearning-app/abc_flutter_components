@@ -20,12 +20,20 @@ class QuestionGroupData {
 
 class PracticeTabItemComponent extends StatelessWidget {
   final QuestionGroupData questionGroupData;
-  final bool isDarkMode;
-  final bool proVersion;
+
   final double? progress;
   final int? passPercent;
   final bool? finished;
-  final String proIcon;
+
+  final bool isDarkMode;
+  final bool? proVersion;
+
+  final String? proIcon;
+  final String? correctIcon;
+  final String? incorrectIcon;
+
+  final Color? mainColor;
+
   final void Function(int id) onSelect;
 
   const PracticeTabItemComponent({
@@ -33,11 +41,14 @@ class PracticeTabItemComponent extends StatelessWidget {
     required this.questionGroupData,
     required this.isDarkMode,
     required this.onSelect,
-    required this.proVersion,
-    required this.proIcon,
+    this.proIcon,
+    this.proVersion,
     this.passPercent,
     this.progress,
-    this.finished
+    this.finished,
+    this.correctIcon,
+    this.incorrectIcon,
+    this.mainColor,
   });
 
   @override
@@ -46,9 +57,9 @@ class PracticeTabItemComponent extends StatelessWidget {
       onTap: () => onSelect(questionGroupData.id),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        padding: const EdgeInsets.all(15),
+        padding: const EdgeInsets.symmetric(horizontal: 15),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(20),
             color: isDarkMode ? Colors.grey.shade800 : Colors.white,
             boxShadow: !isDarkMode ? [BoxShadow(color: Colors.grey.shade200, blurRadius: 5, spreadRadius: 2)] : null),
         child: Row(
@@ -57,64 +68,80 @@ class PracticeTabItemComponent extends StatelessWidget {
                 height: 60,
                 width: 60,
                 padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.only(right: 15),
+                margin: const EdgeInsets.only(right: 15, top: 15, bottom: 15),
                 decoration: BoxDecoration(
                   color: questionGroupData.iconBackgroundColor,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: IconWidget(icon: questionGroupData.icon)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    questionGroupData.title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                      color: isDarkMode ? Colors.white : Colors.black,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        questionGroupData.title,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: isDarkMode ? Colors.white : Colors.black,
+                        ),
+                      ),
+                      if (proVersion == false)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: CircleAvatar(
+                            radius: 10,
+                            backgroundColor: Colors.black,
+                            child: IconWidget(icon: proIcon ?? '', height: 10),
+                          ),
+                        ),
+                    ],
                   ),
                   Text(questionGroupData.subtitle, style: const TextStyle(fontSize: 12)),
                 ],
               ),
             ),
-            _makeProgress()
+            if (proVersion == true) _progressIndicator()
           ],
         ),
       ),
     );
   }
 
-  Widget _makeProgress() {
-    Widget? widget;
-    if(finished == true && progress != null && passPercent != null && progress! >= passPercent!) {
-      widget = const Icon(Icons.done_rounded, color: Colors.green, size: 40);
-    } else if(finished == true && progress != null && passPercent != null && progress! < passPercent!) {
-      widget = const Icon(Icons.close_rounded, color: Colors.red, size: 40);
-    } else if(progress != null && progress! > -1) {
+  Widget _progressIndicator() {
+    late Widget widget;
+    if (finished == true && progress != null && passPercent != null && progress! >= passPercent!) {
+      widget = IconWidget(icon: correctIcon ?? '');
+    } else if (finished == true && progress != null && passPercent != null && progress! < passPercent!) {
+      widget = IconWidget(icon: incorrectIcon ?? '');
+    } else if (progress != null && progress! > -1) {
       widget = Stack(
         alignment: Alignment.center,
         children: [
           CircularPercentIndicator(
-            radius: 24,
+            radius: 20,
             percent: progress!,
-            lineWidth: 4,
-            progressColor: Colors.green,
-            backgroundColor: Colors.green.shade100,
+            lineWidth: 5,
+            circularStrokeCap: CircularStrokeCap.round,
+            progressColor: mainColor,
+            backgroundColor: mainColor?.withOpacity(0.3) ?? Colors.grey.shade100,
           ),
-          Text('${(progress! * 100).round().toString()}%', style: const TextStyle(fontSize: 12))
+          Text('${(progress! * 100).round().toString()}%', style: TextStyle(fontSize: 12, color: isDarkMode ? Colors.white : Colors.black))
         ],
       );
-    } else if(!proVersion) {
-      widget = Image.asset(proIcon, width: 30);
+    } else {
+      widget = const SizedBox.shrink();
     }
-    if(widget != null) {
-      return Padding(
-        padding: const EdgeInsets.only(left: 12),
+
+    return Transform.translate(
+      offset: progress != null && progress! > -1 ? const Offset(0, 0) : const Offset(8, -25),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10),
         child: widget,
-      );
-    }
-    return const SizedBox();
+      ),
+    );
   }
 }

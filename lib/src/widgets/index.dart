@@ -12,6 +12,7 @@ export 'bottom_nav_bars/fancy_bottom_nav_bar/widgets/half_painter.dart';
 export 'bottom_nav_bars/fancy_bottom_nav_bar/widgets/tab_item.dart';
 export 'bottom_nav_bars/fancy_bottom_nav_bar/widgets/half_clipper.dart';
 export 'bottom_nav_bars/bubble_bottom_nav_bar/bubble_bottom_nav_bar.dart';
+export 'bottom_nav_bars/improved_curved_bottom_nav_bar/improved_curved_bottom_nav_bar.dart';
 export 'emails/enter_email_sheet.dart';
 export 'tab_views/my_tab_bar_view.dart';
 export 'check_boxes/my_check_box.dart';
