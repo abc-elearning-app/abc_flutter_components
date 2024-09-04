@@ -29,6 +29,7 @@ class UserInformation extends StatelessWidget {
           avatar: avatar,
           username: username,
           crownIcon: crownIcon,
+          email: email,
         ),
         Expanded(
           child: GestureDetector(

@@ -140,7 +140,11 @@ class _MainLoginPageState extends State<MainLoginPage> {
 
               // Main page content
               PageView.builder(
-                  physics: const NeverScrollableScrollPhysics(), controller: _pageController, itemCount: tabs.length, itemBuilder: (_, index) => tabs[index]),
+                physics: const NeverScrollableScrollPhysics(),
+                controller: _pageController,
+                itemCount: tabs.length,
+                itemBuilder: (_, index) => tabs[index],
+              ),
             ]),
           ),
           Expanded(

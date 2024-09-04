@@ -60,7 +60,7 @@ class PracticeTabItemComponent extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 15),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: isDarkMode ? Colors.grey.shade800 : Colors.white,
+            color: isDarkMode ? Colors.grey.shade900 : Colors.white,
             boxShadow: !isDarkMode ? [BoxShadow(color: Colors.grey.shade200, blurRadius: 5, spreadRadius: 2)] : null),
         child: Row(
           children: [
@@ -129,7 +129,7 @@ class PracticeTabItemComponent extends StatelessWidget {
             progressColor: mainColor,
             backgroundColor: mainColor?.withOpacity(0.3) ?? Colors.grey.shade100,
           ),
-          Text('${(progress! * 100).round().toString()}%', style: TextStyle(fontSize: 12, color: isDarkMode ? Colors.white : Colors.black))
+          Text('${(progress! * 100).round().toString()}%', style: TextStyle(fontSize: 10, color: isDarkMode ? Colors.white : Colors.black))
         ],
       );
     } else {

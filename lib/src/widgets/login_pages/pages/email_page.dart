@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
@@ -45,10 +44,14 @@ class _EmailPageState extends State<EmailPage> {
           child: Column(
             children: [
               //Image
-              IconWidget(icon: widget.image, height: 200),
+              SizedBox(
+                width: double.infinity,
+                child: IconWidget(icon: widget.image, height: 200),
+              ),
 
               // Detail text
-              Padding(
+              Container(
+                width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 child: Text(
                   widget.detail,
@@ -62,15 +65,19 @@ class _EmailPageState extends State<EmailPage> {
               if (Platform.isIOS) _buildSocialMediaButton(iconData: FontAwesomeIcons.apple, title: 'Sign in with Apple', onPressed: widget.onAppleSignIn),
 
               // Email text field
-              const Row(
-                children: [
-                  Expanded(child: Divider(indent: 20)),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text('Or', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  ),
-                  Expanded(child: Divider(endIndent: 20)),
-                ],
+              Container(
+                color: Colors.transparent,
+                width: double.infinity,
+                child: const Row(
+                  children: [
+                    Expanded(child: Divider(indent: 20)),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Text('Or', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                    ),
+                    Expanded(child: Divider(endIndent: 20)),
+                  ],
+                ),
               ),
 
               Padding(
@@ -78,9 +85,12 @@ class _EmailPageState extends State<EmailPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Email',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    const SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        'Email',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
                     ),
                     _buildEmailTextField(),
                   ],

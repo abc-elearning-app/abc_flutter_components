@@ -7,6 +7,7 @@ class UserAvatar extends StatelessWidget {
   final bool isPro;
   final String avatar;
   final String username;
+  final String email;
   final String crownIcon;
 
   const UserAvatar({
@@ -15,6 +16,7 @@ class UserAvatar extends StatelessWidget {
     required this.avatar,
     required this.username,
     required this.crownIcon,
+    required this.email,
   });
 
   @override
@@ -26,7 +28,7 @@ class UserAvatar extends StatelessWidget {
         child: CircleAvatar(
             backgroundImage: avatar.isEmpty ? null : CachedNetworkImageProvider(avatar),
             radius: 35 / 2,
-            child: avatar.isEmpty ? Text(username.isEmpty ? 'A' : username[0].toUpperCase()) : null),
+            child: avatar.isEmpty ? Text(username.isEmpty ? email[0].toUpperCase() : username[0].toUpperCase()) : null),
       ),
 
       // Crown for pro account
