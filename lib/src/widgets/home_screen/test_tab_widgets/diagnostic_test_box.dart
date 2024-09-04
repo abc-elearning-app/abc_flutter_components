@@ -70,28 +70,25 @@ class DiagnosticTestBoxComponent extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                 child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: Row(
-                        children: [
-                          Padding(padding: const EdgeInsets.only(left: 5, right: 20), child: IconWidget(icon: icon, height: 70)),
-                          Expanded(
-                            child: RichText(
-                              text: const TextSpan(
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: 'Poppins',
-                                ),
-                                children: [
-                                  TextSpan(text: 'Take our diagnostic test to assess your current level and get a '),
-                                  TextSpan(text: 'personalized study plan.', style: TextStyle(fontWeight: FontWeight.w600)),
-                                ],
+                    Row(
+                      children: [
+                        Padding(padding: const EdgeInsets.only(left: 5, right: 20), child: IconWidget(icon: icon, height: 70)),
+                        Expanded(
+                          child: RichText(
+                            text: const TextSpan(
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'Poppins',
                               ),
+                              children: [
+                                TextSpan(text: 'Take our diagnostic test to assess your current level and get a '),
+                                TextSpan(text: 'personalized study plan.', style: TextStyle(fontWeight: FontWeight.w600)),
+                              ],
                             ),
-                          )
-                        ],
-                      ),
+                          ),
+                        )
+                      ],
                     ),
                     if (status != DiagnosticTestBoxStatus.notStarted)
                       Padding(

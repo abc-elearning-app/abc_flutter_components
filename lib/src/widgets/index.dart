@@ -6,7 +6,6 @@ export 'buttons/flat_button.dart';
 export 'buttons/custom_segment_buttons.dart';
 export 'buttons/new_pro_button.dart';
 export 'loadings/loading_item.dart';
-export 'bottom_nav_bars/curved_bottom_nav_bar/curved_bottom_nav_bar.dart';
 export 'bottom_nav_bars/fancy_bottom_nav_bar/fancy_bottom_nav_bar.dart';
 export 'bottom_nav_bars/fancy_bottom_nav_bar/widgets/half_painter.dart';
 export 'bottom_nav_bars/fancy_bottom_nav_bar/widgets/tab_item.dart';
