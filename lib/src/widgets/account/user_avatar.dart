@@ -9,12 +9,13 @@ class UserAvatar extends StatelessWidget {
   final String username;
   final String crownIcon;
 
-  const UserAvatar(
-      {super.key,
-      required this.isPro,
-      required this.avatar,
-      required this.username,
-      required this.crownIcon});
+  const UserAvatar({
+    super.key,
+    required this.isPro,
+    required this.avatar,
+    required this.username,
+    required this.crownIcon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +24,9 @@ class UserAvatar extends StatelessWidget {
         radius: 20,
         backgroundColor: isPro ? const Color(0xFFF0BD3A) : Colors.transparent,
         child: CircleAvatar(
-            backgroundImage:
-                avatar.isEmpty ? null : CachedNetworkImageProvider(avatar),
+            backgroundImage: avatar.isEmpty ? null : CachedNetworkImageProvider(avatar),
             radius: 35 / 2,
-            child: avatar.isEmpty ? Text(username[0].toUpperCase()) : null),
+            child: avatar.isEmpty ? Text(username.isEmpty ? 'A' : username[0].toUpperCase()) : null),
       ),
 
       // Crown for pro account
