@@ -40,7 +40,7 @@ class OtpPage extends StatelessWidget {
       children: [
         Expanded(
             child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(30),
           child: Image.asset(image),
         )),
         Padding(

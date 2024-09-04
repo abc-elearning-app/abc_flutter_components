@@ -70,7 +70,7 @@ class FinalTestBoxComponent extends StatelessWidget {
                         padding: EdgeInsets.only(right: 10),
                         child: Text('Our final test is the ultimate gauge that assesses your readiness for the actual exam.',
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 14,
                               fontWeight: FontWeight.w400,
                               color: Colors.white,
                             )),
