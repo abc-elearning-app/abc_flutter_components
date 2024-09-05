@@ -3,6 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
+class SplashScreenConfig {
+  static const int minimumTimeToLoadSplash = 2400;
+}
+
 class SplashScreenComponent extends StatefulWidget {
   final Color secondaryColor;
   final Color backgroundColor;
@@ -39,7 +43,7 @@ class _SplashScreenComponentState extends State<SplashScreenComponent> with Sing
 
   @override
   void initState() {
-    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 2200));
+    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: SplashScreenConfig.minimumTimeToLoadSplash - 200));
     scaleBoxAnimation = TweenSequence<double>([
       TweenSequenceItem(tween: ConstantTween<double>(0), weight: 2 / 22),
       TweenSequenceItem(tween: Tween<double>(begin: 0, end: 1).chain(CurveTween(curve: Curves.easeInOut)), weight: 5 / 22),

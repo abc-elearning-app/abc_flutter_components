@@ -51,6 +51,7 @@ class ReviewQuestionBox extends StatefulWidget {
   final Color explanationColor;
 
   final Widget Function(BuildContext context, String text, TextStyle textStyle)? renderTextBuilder;
+  final Widget Function(BuildContext context)? reportMistakeBuilder;
 
   // Callbacks
   final void Function(bool isSelected) onBookmark;
@@ -77,6 +78,7 @@ class ReviewQuestionBox extends StatefulWidget {
     required this.correctColor,
     required this.incorrectColor,
     required this.proIcon,
+    this.reportMistakeBuilder
   });
 
   @override
@@ -249,6 +251,8 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
               onBookmark: widget.onBookmark,
               onLike: widget.onLike,
               onDislike: widget.onDislike),
+          if(widget.reportMistakeBuilder != null) 
+            widget.reportMistakeBuilder!.call(context)
         ],
       ));
 
