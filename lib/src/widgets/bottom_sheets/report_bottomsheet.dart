@@ -224,9 +224,10 @@ class _ReportBottomsheetComponentState extends State<ReportBottomsheetComponent>
               ),
               onPressed: _onSubmit)));
 
-  _onSubmit() {
+  _onSubmit() async {
+    Navigator.pop(context);
+    await Future.delayed(const Duration(milliseconds: 350));
     widget.onClick(options.where((option) => option.isSelected).toList(), _textEditingController.text);
-    Navigator.of(context).pop();
   }
 
   _updateSelection(int index) {

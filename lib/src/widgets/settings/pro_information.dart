@@ -11,6 +11,7 @@ class ProInformationTile extends StatelessWidget {
   final bool isDarkMode;
   final Color mainColor;
   final VoidCallback? onTap;
+  final VoidCallback? onTapTitle;
   final EdgeInsets? padding;
   final bool proVersion;
 
@@ -24,6 +25,7 @@ class ProInformationTile extends StatelessWidget {
     required this.proIcon,
     required this.proVersion,
     this.onTap,
+    this.onTapTitle,
     this.padding,
     this.subtitle,
   });
@@ -37,30 +39,33 @@ class ProInformationTile extends StatelessWidget {
           IconWidget(icon: appLogo, height: 50),
           const SizedBox(width: 15),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  appName,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+            child: GestureDetector(
+              onTap: onTapTitle,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    appName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                Text(
-                  'Version $appVersion',
-                  style: TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w300, fontStyle: FontStyle.italic, color: isDarkMode ? Colors.white : Colors.black),
-                ),
-                if(subtitle != null && subtitle!.isNotEmpty) Text(
-                  subtitle!,
-                  style: TextStyle(
-                    fontSize: 10, fontWeight: FontWeight.w300, 
-                    fontStyle: FontStyle.italic, 
-                    color: isDarkMode ? Colors.white38 : Colors.grey
+                  Text(
+                    'Version $appVersion',
+                    style: TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w300, fontStyle: FontStyle.italic, color: isDarkMode ? Colors.white : Colors.black),
                   ),
-                ),
-              ],
+                  if(subtitle != null && subtitle!.isNotEmpty) Text(
+                    subtitle!,
+                    style: TextStyle(
+                      fontSize: 10, fontWeight: FontWeight.w300, 
+                      fontStyle: FontStyle.italic, 
+                      color: isDarkMode ? Colors.white38 : Colors.grey
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           if(proVersion) GestureDetector(
