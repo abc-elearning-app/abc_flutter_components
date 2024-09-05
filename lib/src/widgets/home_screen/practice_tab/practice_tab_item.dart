@@ -89,15 +89,8 @@ class PracticeTabItemComponent extends StatelessWidget {
                           color: isDarkMode ? Colors.white : Colors.black,
                         ),
                       ),
-                      if (proVersion == false)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: CircleAvatar(
-                            radius: 10,
-                            backgroundColor: Colors.black,
-                            child: IconWidget(icon: proIcon ?? '', height: 10),
-                          ),
-                        ),
+                      const SizedBox(width: 10),
+                      if (proVersion == false) GetProIcon(darkMode: isDarkMode, proIcon: proIcon ?? '', height: 25, width: 70)
                     ],
                   ),
                   Text(questionGroupData.subtitle, style: const TextStyle(fontSize: 12)),

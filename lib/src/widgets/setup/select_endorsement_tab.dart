@@ -63,33 +63,48 @@ class _SelectEndorsementTabState extends State<SelectEndorsementTab> {
         Expanded(child: ListView.builder(itemCount: widget.endorsementList.length, itemBuilder: (_, index) => _buildItem(index))),
         Padding(
           padding: const EdgeInsets.only(left: 15, right: 30, bottom: 15, top: 15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Select All',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          child: GestureDetector(
+            onTap: () {
+              allSelected.value = !allSelected.value;
+              setState(() {
+                if (allSelected.value) {
+                  selectedIds = widget.endorsementList.map((en) => en.id).toList();
+                } else {
+                  selectedIds.clear();
+                }
+              });
+            },
+            child: Container(
+              color: Colors.transparent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Select All',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                  ValueListenableBuilder(
+                    valueListenable: allSelected,
+                    builder: (_, value, __) => MyCheckBox(
+                      activeColor: widget.mainColor,
+                      borderColor: widget.mainColor,
+                      iconColor: Colors.white,
+                      value: value,
+                      onChanged: (value) {
+                        setState(() {
+                          if (value) {
+                            selectedIds = widget.endorsementList.map((en) => en.id).toList();
+                          } else {
+                            selectedIds.clear();
+                          }
+                        });
+                        allSelected.value = value;
+                      },
+                    ),
+                  )
+                ],
               ),
-              ValueListenableBuilder(
-                valueListenable: allSelected,
-                builder: (_, value, __) => MyCheckBox(
-                  activeColor: widget.mainColor,
-                  borderColor: widget.mainColor,
-                  iconColor: Colors.white,
-                  value: value,
-                  onChanged: (value) {
-                    setState(() {
-                      if (value) {
-                        selectedIds = widget.endorsementList.map((en) => en.id).toList();
-                      } else {
-                        selectedIds.clear();
-                      }
-                    });
-                    allSelected.value = value;
-                  },
-                ),
-              )
-            ],
+            ),
           ),
         ),
         Container(

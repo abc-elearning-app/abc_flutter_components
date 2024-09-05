@@ -118,29 +118,41 @@ class _SubjectsBoxState extends State<SubjectsBox> {
     );
   }
 
-  Widget _selectAllButton(BuildContext context) => Row(
-        children: [
-          Text('Select All', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: _textColor())),
-          Padding(
-            padding: const EdgeInsets.only(right: 3, left: 10),
-            child: MyCheckBox(
-              activeColor: widget.mainColor,
-              borderColor: widget.mainColor,
-              value: selectedIds.length == widget.subjects.length,
-              onChanged: (value) {
-                setState(() {
-                  if (value) {
-                    selectedIds = widget.subjects.map((e) => e.id).toList();
-                  } else {
-                    selectedIds = [];
-                  }
-                  widget.onSelect(selectedIds);
-                });
-              },
+  Widget _selectAllButton(BuildContext context) => GestureDetector(
+    onTap: () {
+      setState(() {
+        if (!(selectedIds.length == widget.subjects.length)) {
+          selectedIds = widget.subjects.map((e) => e.id).toList();
+        } else {
+          selectedIds = [];
+        }
+        widget.onSelect(selectedIds);
+      });
+    },
+    child: Row(
+          children: [
+            Text('Select All', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: _textColor())),
+            Padding(
+              padding: const EdgeInsets.only(right: 3, left: 10),
+              child: MyCheckBox(
+                activeColor: widget.mainColor,
+                borderColor: widget.mainColor,
+                value: selectedIds.length == widget.subjects.length,
+                onChanged: (value) {
+                  setState(() {
+                    if (value) {
+                      selectedIds = widget.subjects.map((e) => e.id).toList();
+                    } else {
+                      selectedIds = [];
+                    }
+                    widget.onSelect(selectedIds);
+                  });
+                },
+              ),
             ),
-          ),
-        ],
-      );
+          ],
+        ),
+  );
 
   void _onToggle(int id) {
     setState(() {

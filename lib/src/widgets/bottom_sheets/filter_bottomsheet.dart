@@ -86,25 +86,35 @@ class _FilterBottomsheetComponentState extends State<FilterBottomsheetComponent>
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    children: [
-                      const Expanded(child: Text('Select All', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600))),
-                      ValueListenableBuilder(
-                        valueListenable: allSelected,
-                        builder: (_, value, __) => MyCheckBox(
-                            value: value,
-                            borderColor: widget.secondaryColor,
-                            fillColor: widget.isDarkMode ? Colors.grey.shade900 : Colors.white,
-                            activeColor: widget.secondaryColor,
-                            borderWidth: 1.5,
-                            iconColor: Colors.white,
-                            onChanged: (value) {
-                              allSelected.value = value;
-                              enableButton.value = value;
-                              setState(() => selectedOptions = List.generate(widget.list.length, (_) => value));
-                            }),
+                  child: GestureDetector(
+                    onTap: () {
+                      allSelected.value = !allSelected.value;
+                      enableButton.value = allSelected.value;
+                      setState(() => selectedOptions = List.generate(widget.list.length, (_) => allSelected.value));
+                    },
+                    child: Container(
+                      color: Colors.transparent,
+                      child: Row(
+                        children: [
+                          const Expanded(child: Text('Select All', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600))),
+                          ValueListenableBuilder(
+                            valueListenable: allSelected,
+                            builder: (_, value, __) => MyCheckBox(
+                                value: value,
+                                borderColor: widget.secondaryColor,
+                                fillColor: widget.isDarkMode ? Colors.grey.shade900 : Colors.white,
+                                activeColor: widget.secondaryColor,
+                                borderWidth: 1.5,
+                                iconColor: Colors.white,
+                                onChanged: (value) {
+                                  allSelected.value = value;
+                                  enableButton.value = value;
+                                  setState(() => selectedOptions = List.generate(widget.list.length, (_) => value));
+                                }),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
                 ListView.builder(
@@ -141,7 +151,8 @@ class _FilterBottomsheetComponentState extends State<FilterBottomsheetComponent>
 
   Widget _tile(int index) => GestureDetector(
         onTap: () => _onToggle(index, setState),
-        child: Padding(
+        child: Container(
+          color: Colors.transparent,
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Row(
             children: [
