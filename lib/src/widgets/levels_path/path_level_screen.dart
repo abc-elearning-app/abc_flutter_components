@@ -277,7 +277,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.w600, color: widget.isDarkMode ? Colors.white : Colors.black, fontSize: 18),
+                style: TextStyle(fontWeight: FontWeight.w500, color: widget.isDarkMode ? Colors.white : Colors.black, fontSize: 18),
               ),
             ]),
             Expanded(
