@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
@@ -87,7 +86,7 @@ class _ReportBottomsheetComponentState extends State<ReportBottomsheetComponent>
           duration: const Duration(milliseconds: 100),
           child: Container(
             margin: const EdgeInsets.only(top: 10),
-            padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+            padding: const EdgeInsets.only(top: 20),
             width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.only(
@@ -141,8 +140,9 @@ class _ReportBottomsheetComponentState extends State<ReportBottomsheetComponent>
   Widget _optionRow(ReportData mistakeData, int index) => StatefulBuilder(
         builder: (_, setState) => GestureDetector(
           onTap: () => setState(() => _updateSelection(index)),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Container(
+            color: Colors.transparent,
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: Row(
               children: [
                 if (widget.leftCheckbox) _buildCheckBox(mistakeData, index),
@@ -187,6 +187,7 @@ class _ReportBottomsheetComponentState extends State<ReportBottomsheetComponent>
             UnderlineInputBorder(borderSide: BorderSide(width: 1, color: widget.isDarkMode ? Colors.white.withOpacity(0.24) : Colors.black));
         return AnimatedContainer(
           duration: const Duration(milliseconds: 200),
+          margin: const EdgeInsets.symmetric(horizontal: 20),
           height: value ? 50 : 0,
           child: value
               ? TextField(
@@ -206,7 +207,7 @@ class _ReportBottomsheetComponentState extends State<ReportBottomsheetComponent>
   }
 
   Widget _submitButton() => Container(
-      margin: const EdgeInsets.only(top: 20),
+      margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
       width: double.infinity,
       child: ValueListenableBuilder(
           valueListenable: _enableButton,

@@ -132,8 +132,8 @@ class _ImprovedCurvedBottomNavBarState extends State<ImprovedCurvedBottomNavBar>
             decoration: BoxDecoration(color: widget.backgroundColor, boxShadow: [
               BoxShadow(
                 color: widget.backgroundColor,
-                blurRadius: 2,
-                spreadRadius: 5,
+                blurRadius: 10,
+                spreadRadius: 10,
               )
             ]),
             child: Stack(

@@ -65,7 +65,7 @@ class TestBox extends StatelessWidget {
     return GestureDetector(
       onTap: () => onSelect(data.id),
       child: Container(
-        width: 175,
+        width: MediaQuery.of(context).size.width / 2 - 30,
         margin: const EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(
           image: DecorationImage(

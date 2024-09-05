@@ -232,7 +232,7 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
     final currentGroup = widget.levelGroupList[groupIndex];
     return Column(
       children: [
-        if (widget.hasSubTopic) _buildDivider(currentGroup.title),
+        if (widget.hasSubTopic) _buildDivider(groupIndex, currentGroup.title),
         PathLevelComponent(
             hasSubTopic: widget.hasSubTopic,
             levelList: currentGroup.levels,
@@ -257,8 +257,8 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
     );
   }
 
-  Widget _buildDivider(String title) => Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 20),
+  Widget _buildDivider(int index, String title) => Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -266,23 +266,26 @@ class _PathLevelScreenState extends State<PathLevelScreen> {
                 child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 10),
               width: double.infinity,
-              height: 2,
-              color: Colors.grey.shade400,
+              height: 1,
+              color: Colors.grey.shade500,
             )),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 250),
-              child: Text(
-                textAlign: TextAlign.center,
+            Stack(alignment: Alignment.center, children: [
+              // Transform.translate(
+              //   offset: const Offset(0, -25),
+              //   child: Text('UNIT ${index + 1}', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black.withOpacity(0.5))),
+              // ),
+              Text(
                 title,
-                style: TextStyle(fontWeight: FontWeight.w600, color: widget.isDarkMode ? Colors.white : widget.dividerColor, fontSize: 18),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w500, color: widget.isDarkMode ? Colors.white : Colors.black, fontSize: 18),
               ),
-            ),
+            ]),
             Expanded(
                 child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 10),
               width: double.infinity,
-              height: 2,
-              color: Colors.grey.shade400,
+              height: 1,
+              color: Colors.grey.shade500,
             )),
           ],
         ),

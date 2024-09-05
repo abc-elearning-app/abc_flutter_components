@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 class UserInformation extends StatelessWidget {
@@ -24,19 +25,28 @@ class UserInformation extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         UserAvatar(
-            isPro: isPro,
-            avatar: avatar,
-            username: username,
-            crownIcon: crownIcon),
-
+          isPro: isPro,
+          avatar: avatar,
+          username: username,
+          crownIcon: crownIcon,
+          email: email,
+        ),
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: Text(
-              email,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+          child: GestureDetector(
+            onTap: () async {
+              await Clipboard.setData(ClipboardData(text: email));
+              showToastSuccess('Email copied to clipboard');
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: Text(
+                email,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ),
