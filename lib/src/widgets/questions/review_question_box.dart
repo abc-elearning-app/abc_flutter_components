@@ -211,20 +211,25 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                 color: Colors.white,
               )),
           const SizedBox(width: 6),
-          Text(
-            correctlyChosen == true
-                ? 'CORRECT'
-                : correctlyChosen == false
-                    ? 'INCORRECT'
-                    : 'UNANSWERED',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: correctlyChosen == true
-                  ? widget.correctColor
-                  : correctlyChosen == false
-                      ? widget.incorrectColor
-                      : const Color(0xFFBFBFBF),
+          Expanded(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                correctlyChosen == true
+                    ? 'CORRECT'
+                    : correctlyChosen == false
+                        ? 'INCORRECT'
+                        : 'UNANSWERED',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: correctlyChosen == true
+                      ? widget.correctColor
+                      : correctlyChosen == false
+                          ? widget.incorrectColor
+                          : const Color(0xFFBFBFBF),
+                ),
+              ),
             ),
           )
         ],

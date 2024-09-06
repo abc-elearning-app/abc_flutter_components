@@ -21,8 +21,7 @@ class StarLineWidget extends StatefulWidget {
   State<StarLineWidget> createState() => _StarLineWidgetState();
 }
 
-class _StarLineWidgetState extends State<StarLineWidget>
-    with TickerProviderStateMixin {
+class _StarLineWidgetState extends State<StarLineWidget> with TickerProviderStateMixin {
   int selectedStars = 0;
 
   late List<AnimationController> starControllers;
@@ -36,12 +35,10 @@ class _StarLineWidgetState extends State<StarLineWidget>
               vsync: this,
               duration: const Duration(milliseconds: 300),
             ));
-    starAnimations = List.generate(
-        5,
-        (index) => Tween<double>(
-              begin: 0.7,
-              end: 1,
-            ).animate(starControllers[index]));
+    starAnimations = List.generate(5, (index) => TweenSequence<double>([
+      TweenSequenceItem(tween: Tween<double>(begin: 0.7, end: 1.2), weight: 2),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.2, end: 1), weight: 1),
+    ]).animate(starControllers[index]));
     super.initState();
   }
 
@@ -62,8 +59,7 @@ class _StarLineWidgetState extends State<StarLineWidget>
         children: List.generate(
             widget.starImages.length,
             (id) => Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
                   child: GestureDetector(
                     onTap: () => _handleSelection(id),
                     child: ScaleTransition(
@@ -80,11 +76,9 @@ class _StarLineWidgetState extends State<StarLineWidget>
     );
   }
 
-  _getIcon(int id) =>
-      selectedStars <= id ? widget.unselectedStarImage : widget.starImages[id];
+  _getIcon(int id) => selectedStars <= id ? widget.unselectedStarImage : widget.starImages[id];
 
-  _getColor(int id) =>
-      selectedStars <= id && widget.isDarkMode ? Colors.white : null;
+  _getColor(int id) => selectedStars <= id && widget.isDarkMode ? Colors.white : null;
 
   _handleSelection(int id) {
     setState(() => selectedStars = id + 1);

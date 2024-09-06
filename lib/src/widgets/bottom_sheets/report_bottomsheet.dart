@@ -215,9 +215,10 @@ class _ReportBottomsheetComponentState extends State<ReportBottomsheetComponent>
               borderRadius: 12,
               title: widget.buttonTitle,
               backgroundColor: widget.mainColor,
-              disabledColor: Color.lerp(widget.mainColor, Colors.black, 0.5),
+              disabledColor: (widget.isDarkMode ?  Colors.white : Colors.black).withOpacity(widget.isDarkMode ? 0.08 : 0.12),
               disabled: !value,
-              textColor: !value ? Colors.grey : Colors.white,
+              disabledTextColor: Colors.white,
+              textColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 15),
               textStyle: const TextStyle(
                 fontSize: 16,
