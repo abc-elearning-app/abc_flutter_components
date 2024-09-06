@@ -241,7 +241,7 @@ class AccountTabComponent extends StatelessWidget {
       final displayHour = time.hour < 10 ? '0${time.hour}' : '${time.hour}';
       final displayMinute = time.minute < 10 ? '0${time.minute}' : '${time.minute}';
       final displaySecond = time.second < 10 ? '0${time.second}' : '${time.second}';
-      return '${time.year}-$displayMonth-$displayDay $displayHour:$displayMinute:$displaySecond';
+      return '${time.year}-$displayMonth-$displayDay ($displayHour:$displayMinute:$displaySecond)';
     }
     return '${time.year}-$displayMonth-$displayDay';
   }
