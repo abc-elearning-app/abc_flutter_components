@@ -5,6 +5,7 @@ class QuestionData {
   final String longId;
   final int questionId;
   final String question;
+  final String image;
   final List<AnswerData> answers;
   final String explanation;
   final bool? isSelected;
@@ -17,6 +18,7 @@ class QuestionData {
     required this.longId,
     required this.questionId,
     required this.question,
+    required this.image,
     required this.answers,
     required this.explanation,
     this.isSelected,
@@ -51,6 +53,7 @@ class ReviewQuestionBox extends StatefulWidget {
   final Color explanationColor;
 
   final Widget Function(BuildContext context, String text, TextStyle textStyle)? renderTextBuilder;
+  final Widget Function(BuildContext context, String image)? renderImageBuilder;
   final Widget Function(BuildContext context)? reportMistakeBuilder;
 
   // Callbacks
@@ -78,7 +81,8 @@ class ReviewQuestionBox extends StatefulWidget {
     required this.correctColor,
     required this.incorrectColor,
     required this.proIcon,
-    this.reportMistakeBuilder
+    this.reportMistakeBuilder,
+    this.renderImageBuilder
   });
 
   @override
@@ -126,12 +130,15 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                 if (widget.renderTextBuilder != null)
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
                         '${widget.index + 1}. ',
                         style: textStyle,
                       ),
-                      Expanded(child: widget.renderTextBuilder!.call(context, widget.questionData.question, textStyle))
+                      Expanded(child: widget.renderTextBuilder!.call(context, widget.questionData.question, textStyle)),
+                      if(widget.renderImageBuilder != null) 
+                        widget.renderImageBuilder!.call(context, widget.questionData.image)
                     ],
                   )
                 else
