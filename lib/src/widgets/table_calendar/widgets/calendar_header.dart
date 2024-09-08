@@ -1,13 +1,10 @@
-// Copyright 2019 Aleksander Woźniak
-// SPDX-License-Identifier: Apache-2.0
-
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import '../customization/header_style.dart';
-import '../shared/utils.dart';
-import 'month_picker.dart';
+
+import '../utils.dart';
+import 'header_style.dart';
 
 class CalendarHeader extends StatefulWidget {
+  final bool isDarkMode;
   final dynamic locale;
   final DateTime focusedMonth;
   final DateTime firstDate;
@@ -42,7 +39,7 @@ class CalendarHeader extends StatefulWidget {
     required this.onPrimaryColor,
     required this.surfaceColor,
     required this.onSurfaceColor,
-    required this.setSelectedYear,
+    required this.setSelectedYear, required this.isDarkMode,
   }) : super(key: key);
 
   @override
@@ -50,46 +47,40 @@ class CalendarHeader extends StatefulWidget {
 }
 
 class _CalendarHeaderState extends State<CalendarHeader> {
-  var _isYearSelection = false;
-  late int _yearDisplayPage;
-  late final PageController _yearPageController;
 
   @override
   void initState() {
-    _yearDisplayPage = widget.focusedMonth.year ~/ 15;
-    _yearPageController = PageController(initialPage: _yearDisplayPage);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final text = widget.headerStyle.titleTextFormatter
-            ?.call(widget.focusedMonth, widget.locale) ??
-        DateFormat.yMMMM('en').format(widget.focusedMonth);
 
     return Container(
-      decoration: BoxDecoration(color: Colors.white.withOpacity(0.27)),
       margin: widget.headerStyle.headerMargin,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           LayoutBuilder(
-            builder: (_, constraint) => Row(
-              children: [
-                ...List.generate(
-                  7,
-                  (index) => Container(
-                    width: constraint.maxWidth / 7,
-                    height: constraint.maxWidth / 7,
-                    alignment: Alignment.center,
-                    child: Text(
-                      _getWeekdaysAbbreviationByNumber(index),
-                      style: widget.headerStyle.weekDaysTextStyle,
+            builder: (_, constraint) =>
+                Row(
+                  children: [
+                    ...List.generate(
+                      7,
+                          (index) =>
+                          Container(
+                            width: constraint.maxWidth / 7,
+                            height: constraint.maxWidth / 7,
+                            alignment: Alignment.center,
+                            child: Text(
+                              _getWeekdaysAbbrevByNumber(index),
+                              style: widget.headerStyle.weekDaysTextStyle.copyWith(color: (widget.isDarkMode ? Colors.white : Colors.black).withOpacity(0.5)),
+                            ),
+                          ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
           ),
           // Row(
           //   children: [
@@ -102,23 +93,21 @@ class _CalendarHeaderState extends State<CalendarHeader> {
           //           });
           //         },
           //         child: Padding(
-          //           padding: const EdgeInsets.symmetric(
-          //               horizontal: 18.0, vertical: 10),
+          //           padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 10),
           //           child: Container(
           //             child: Row(
           //               mainAxisSize: MainAxisSize.min,
           //               children: [
-          //                 widget.headerTitleBuilder
-          //                         ?.call(context, widget.focusedMonth) ??
+          //                 widget.headerTitleBuilder?.call(context, widget.focusedMonth) ??
           //                     Text(
           //                       text,
           //                       style: widget.headerStyle.titleTextStyle,
           //                     ),
-          //                 const SizedBox(width: 10),
+          //                 const SizedBox(
+          //                   width: 10,
+          //                 ),
           //                 Icon(
-          //                   _isYearSelection
-          //                       ? Icons.arrow_drop_up_sharp
-          //                       : Icons.arrow_drop_down_sharp,
+          //                   _isYearSelection ? Icons.arrow_drop_up_sharp : Icons.arrow_drop_down_sharp,
           //                   size: 24,
           //                 )
           //               ],
@@ -127,9 +116,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
           //         ),
           //       ),
           //     ),
-          //     SizedBox(
-          //       width: 10,
-          //     ),
+          //     const SizedBox(width: 10),
           //     if (widget.headerStyle.leftChevronVisible)
           //       CustomIconButton(
           //         icon: widget.headerStyle.leftChevronIcon,
@@ -166,46 +153,46 @@ class _CalendarHeaderState extends State<CalendarHeader> {
           //       ),
           //   ],
           // ),
-          if (_isYearSelection)
-            Divider(
-              thickness: 2,
-              color: Colors.grey.withOpacity(0.3),
-            ),
-          if (_isYearSelection)
-            MonthPicker(
-                yearPageController: _yearPageController,
-                initialDate: widget.focusedMonth,
-                firstDate: widget.firstDate,
-                lastDate: widget.lastDate,
-                primaryColor: widget.primaryColor,
-                onPrimaryColor: widget.onPrimaryColor,
-                surfaceColor: widget.surfaceColor,
-                onSurfaceColor: widget.onSurfaceColor,
-                setYearDisplayPage: (page) {
-                  setState(() => _yearDisplayPage = page);
-                },
-                setSelectedYear: widget.setSelectedYear)
+          // if (_isYearSelection)
+          //   Divider(
+          //     thickness: 2,
+          //     color: Colors.grey.withOpacity(0.3),
+          //   ),
+          // if (_isYearSelection)
+          //   MonthPicker(
+          //       yearPageController: _yearPageController,
+          //       initialDate: widget.focusedMonth,
+          //       firstDate: widget.firstDate,
+          //       lastDate: widget.lastDate,
+          //       primaryColor: widget.primaryColor,
+          //       onPrimaryColor: widget.onPrimaryColor,
+          //       surfaceColor: widget.surfaceColor,
+          //       onSurfaceColor: widget.onSurfaceColor,
+          //       setYearDisplayPage: (page) {
+          //         setState(() => _yearDisplayPage = page);
+          //       },
+          //       setSelectedYear: widget.setSelectedYear)
         ],
       ),
     );
   }
 
-  String _getWeekdaysAbbreviationByNumber(int number) {
+  String _getWeekdaysAbbrevByNumber(int number) {
     switch (number) {
       case 0:
-        return 'SUN';
+        return 'Su';
       case 1:
-        return 'MON';
+        return 'Mo';
       case 2:
-        return 'TUE';
+        return 'Tu';
       case 3:
-        return 'WED';
+        return 'We';
       case 4:
-        return 'THU';
+        return 'Th';
       case 5:
-        return 'FRI';
+        return 'Fr';
       case 6:
-        return 'SAT';
+        return 'Sa';
       default:
         return '';
     }

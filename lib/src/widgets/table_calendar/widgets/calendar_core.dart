@@ -1,13 +1,9 @@
-// Copyright 2019 Aleksander Woźniak
-// SPDX-License-Identifier: Apache-2.0
-
 import 'package:flutter/material.dart';
 
-import '../shared/utils.dart';
+import '../utils.dart';
 import 'calendar_page.dart';
 
-typedef _OnCalendarPageChanged = void Function(
-    int pageIndex, DateTime focusedDay);
+typedef _OnCalendarPageChanged = void Function(int pageIndex, DateTime focusedDay);
 
 class CalendarCore extends StatelessWidget {
   final DateTime? focusedDay;
@@ -72,54 +68,43 @@ class CalendarCore extends StatelessWidget {
         final visibleDays = _daysInRange(visibleRange.start, visibleRange.end);
 
         final actualDowHeight = dowVisible ? dowHeight! : 0.0;
-        final constrainedRowHeight = constraints.hasBoundedHeight
-            ? (constraints.maxHeight - actualDowHeight) /
-                _getRowCount(calendarFormat, baseDay)
-            : null;
+        final constrainedRowHeight = constraints.hasBoundedHeight ? (constraints.maxHeight - actualDowHeight) / _getRowCount(calendarFormat, baseDay) : null;
 
-        return Padding(
-          padding: const EdgeInsets.only(top: 20),
-          child: CalendarPage(
-            visibleDays: visibleDays,
-            dowVisible: dowVisible,
-            dowDecoration: dowDecoration,
-            rowDecoration: rowDecoration,
-            tableBorder: tableBorder,
-            tablePadding: tablePadding,
-            dowBuilder: (context, day) {
-              return SizedBox(
-                height: dowHeight,
-                child: dowBuilder?.call(context, day),
-              );
-            },
-            dayBuilder: (context, day) {
-              DateTime baseDay;
-              final previousFocusedDay = focusedDay;
-              if (previousFocusedDay == null || previousIndex == null) {
-                baseDay = _getBaseDay(calendarFormat, index);
-              } else {
-                baseDay =
-                    _getFocusedDay(calendarFormat, previousFocusedDay, index);
-              }
+        return CalendarPage(
+          visibleDays: visibleDays,
+          dowVisible: dowVisible,
+          dowDecoration: dowDecoration,
+          rowDecoration: rowDecoration,
+          tableBorder: tableBorder,
+          tablePadding: tablePadding,
+          dowBuilder: (context, day) {
+            return SizedBox(
+              height: dowHeight,
+              child: dowBuilder?.call(context, day),
+            );
+          },
+          dayBuilder: (context, day) {
+            DateTime baseDay;
+            final previousFocusedDay = focusedDay;
+            if (previousFocusedDay == null || previousIndex == null) {
+              baseDay = _getBaseDay(calendarFormat, index);
+            } else {
+              baseDay = _getFocusedDay(calendarFormat, previousFocusedDay, index);
+            }
 
-              return Container(
-                height: constrainedRowHeight ?? rowHeight,
-                child: dayBuilder(
-                  context,
-                  day,
-                  baseDay,
-                ),
-              );
-            },
-            dowHeight: dowHeight,
-            weekNumberVisible: weekNumbersVisible,
-            weekNumberBuilder: (context, day) {
-              return SizedBox(
-                height: constrainedRowHeight ?? rowHeight,
-                child: weekNumberBuilder?.call(context, day),
-              );
-            },
-          ),
+            return SizedBox(
+              height: constrainedRowHeight ?? rowHeight,
+              child: dayBuilder(context, day, baseDay),
+            );
+          },
+          dowHeight: dowHeight,
+          weekNumberVisible: weekNumbersVisible,
+          weekNumberBuilder: (context, day) {
+            return SizedBox(
+              height: constrainedRowHeight ?? rowHeight,
+              child: weekNumberBuilder?.call(context, day),
+            );
+          },
         );
       },
       onPageChanged: (index) {
@@ -164,8 +149,7 @@ class CalendarCore extends StatelessWidget {
     return last.difference(_firstDayOfWeek(first)).inDays ~/ 14;
   }
 
-  DateTime _getFocusedDay(
-      CalendarFormat format, DateTime prevFocusedDay, int pageIndex) {
+  DateTime _getFocusedDay(CalendarFormat format, DateTime prevFocusedDay, int pageIndex) {
     if (pageIndex == previousIndex) {
       return prevFocusedDay;
     }
@@ -178,12 +162,10 @@ class CalendarCore extends StatelessWidget {
         day = DateTime.utc(prevFocusedDay.year, prevFocusedDay.month + pageDif);
         break;
       case CalendarFormat.twoWeeks:
-        day = DateTime.utc(prevFocusedDay.year, prevFocusedDay.month,
-            prevFocusedDay.day + pageDif * 14);
+        day = DateTime.utc(prevFocusedDay.year, prevFocusedDay.month, prevFocusedDay.day + pageDif * 14);
         break;
       case CalendarFormat.week:
-        day = DateTime.utc(prevFocusedDay.year, prevFocusedDay.month,
-            prevFocusedDay.day + pageDif * 7);
+        day = DateTime.utc(prevFocusedDay.year, prevFocusedDay.month, prevFocusedDay.day + pageDif * 7);
         break;
     }
 
@@ -204,12 +186,10 @@ class CalendarCore extends StatelessWidget {
         day = DateTime.utc(firstDay.year, firstDay.month + pageIndex);
         break;
       case CalendarFormat.twoWeeks:
-        day = DateTime.utc(
-            firstDay.year, firstDay.month, firstDay.day + pageIndex * 14);
+        day = DateTime.utc(firstDay.year, firstDay.month, firstDay.day + pageIndex * 14);
         break;
       case CalendarFormat.week:
-        day = DateTime.utc(
-            firstDay.year, firstDay.month, firstDay.day + pageIndex * 7);
+        day = DateTime.utc(firstDay.year, firstDay.month, firstDay.day + pageIndex * 7);
         break;
     }
 
@@ -284,9 +264,7 @@ class CalendarCore extends StatelessWidget {
   }
 
   DateTime _lastDayOfMonth(DateTime month) {
-    final date = month.month < 12
-        ? DateTime.utc(month.year, month.month + 1, 1)
-        : DateTime.utc(month.year + 1, 1, 1);
+    final date = month.month < 12 ? DateTime.utc(month.year, month.month + 1, 1) : DateTime.utc(month.year + 1, 1, 1);
     return date.subtract(const Duration(days: 1));
   }
 
