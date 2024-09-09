@@ -174,7 +174,6 @@ class CalendarStyle {
       shape: BoxShape.circle,
     ),
     this.todayTextStyle = const TextStyle(
-      color: Color(0xFFFAFAFA),
       fontSize: 14.0,
       fontWeight: FontWeight.w500,
     ), //

@@ -7,12 +7,15 @@ import '../table_calendar/utils.dart';
 
 class ExamDateBottomsheet extends StatefulWidget {
   final String dropdownIcon;
+  final String bellIcon;
 
   final Color mainColor;
   final Color secondaryColor;
   final Color backgroundColor;
 
   final bool isDarkMode;
+
+  final void Function(DateTime examDate) onSave;
 
   const ExamDateBottomsheet({
     super.key,
@@ -21,6 +24,8 @@ class ExamDateBottomsheet extends StatefulWidget {
     required this.mainColor,
     required this.backgroundColor,
     required this.secondaryColor,
+    required this.bellIcon,
+    required this.onSave,
   });
 
   @override
@@ -79,7 +84,7 @@ class _ExamDateBottomsheetState extends State<ExamDateBottomsheet> {
                   borderRadius: 16,
                   backgroundColor: widget.mainColor,
                   textColor: Colors.white,
-                  onPressed: () {},
+                  onPressed: () => widget.onSave(DateTime.now().add(const Duration(days: 10))),
                 ),
               )
             ],
@@ -117,27 +122,31 @@ class _ExamDateBottomsheetState extends State<ExamDateBottomsheet> {
       ? Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           margin: const EdgeInsets.symmetric(vertical: 15),
+          height: 380,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: widget.isDarkMode ? Colors.grey.shade900 : Colors.white),
-          child: TableCalendar(
-            mainColor: widget.mainColor,
-            secondaryColor: widget.secondaryColor,
-            focusedDay: DateTime.now().add(const Duration(days: 2)),
-            firstDay: DateTime.now(),
-            lastDay: DateTime.now().add(const Duration(days: 10000)),
-            rangeSelectionMode: RangeSelectionMode.toggledOn,
-            calendarFormat: CalendarFormat.month,
-            rangeStartDay: rangeStart,
-            rangeEndDay: rangeEnd,
-            isDarkMode: widget.isDarkMode,
-            onRangeSelected: (startDate, endDate, focusedDate) {
-              setState(() {
-                if (startDate != null) {
-                  rangeStart = startDate;
-                  rangeEnd = rangeStart;
-                }
-                if (endDate != null) rangeEnd = endDate;
-              });
-            },
+          child: SingleChildScrollView(
+            child: TableCalendar(
+              mainColor: widget.mainColor,
+              secondaryColor: widget.secondaryColor,
+              bellIcon: widget.bellIcon,
+              focusedDay: DateTime.now().add(const Duration(days: 2)),
+              firstDay: DateTime.now(),
+              lastDay: DateTime.now().add(const Duration(days: 10000)),
+              rangeSelectionMode: RangeSelectionMode.toggledOn,
+              calendarFormat: CalendarFormat.month,
+              rangeStartDay: rangeStart,
+              rangeEndDay: rangeEnd,
+              isDarkMode: widget.isDarkMode,
+              onRangeSelected: (startDate, endDate, focusedDate) {
+                setState(() {
+                  if (startDate != null) {
+                    rangeStart = startDate;
+                    rangeEnd = rangeStart;
+                  }
+                  if (endDate != null) rangeEnd = endDate;
+                });
+              },
+            ),
           ),
         )
       : const SizedBox();

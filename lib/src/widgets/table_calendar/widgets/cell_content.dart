@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:intl/intl.dart';
 
 import 'calendar_builder.dart';
@@ -23,6 +25,7 @@ class CellContent extends StatelessWidget {
   final CalendarBuilders calendarBuilders;
   final Color mainColor;
   final Color secondaryColor;
+  final String bellIcon;
 
   const CellContent({
     Key? key,
@@ -42,6 +45,7 @@ class CellContent extends StatelessWidget {
     required this.isWeekend,
     required this.mainColor,
     required this.secondaryColor,
+    required this.bellIcon,
     this.locale,
   }) : super(key: key);
 
@@ -67,7 +71,7 @@ class CellContent extends StatelessWidget {
     final alignment = calendarStyle.cellAlignment;
     final rangeStartDecoration = BoxDecoration(color: const Color(0xFF5497FF), borderRadius: BorderRadius.circular(8));
     final rangeEndDecoration = BoxDecoration(color: mainColor, borderRadius: BorderRadius.circular(8));
-    final todayDecoration = BoxDecoration(color: secondaryColor, shape: BoxShape.circle);
+    final todayDecoration = BoxDecoration(shape: BoxShape.circle, border: Border.all(width: 2, color: secondaryColor));
 
     if (isDisabled) {
       cell = calendarBuilders.disabledBuilder?.call(context, day, focusedDay) ??
@@ -88,26 +92,36 @@ class CellContent extends StatelessWidget {
             child: Text(text, style: calendarStyle.selectedTextStyle),
           );
     } else if (isRangeStart) {
-      cell = Stack(children: [
-        calendarBuilders.rangeStartBuilder?.call(context, day, focusedDay) ??
-            Container(
-              margin: margin.copyWith(top: 8, bottom: 8, left: 4, right: 4),
-              padding: padding,
-              decoration: rangeStartDecoration,
-              alignment: alignment,
-              child: Text(text, style: calendarStyle.rangeStartTextStyle),
-            ),
-        //TODO : Bell icon
-      ]);
-    } else if (isRangeEnd) {
-      cell = calendarBuilders.rangeEndBuilder?.call(context, day, focusedDay) ??
+      cell = calendarBuilders.rangeStartBuilder?.call(context, day, focusedDay) ??
           Container(
             margin: margin.copyWith(top: 8, bottom: 8, left: 4, right: 4),
             padding: padding,
-            decoration: rangeEndDecoration,
+            decoration: rangeStartDecoration,
             alignment: alignment,
-            child: Text(text, style: calendarStyle.rangeEndTextStyle),
+            child: Text(text, style: calendarStyle.rangeStartTextStyle),
           );
+    } else if (isRangeEnd) {
+      cell = Stack(children: [
+        calendarBuilders.rangeEndBuilder?.call(context, day, focusedDay) ??
+            Container(
+              margin: margin.copyWith(top: 8, bottom: 8, left: 4, right: 4),
+              padding: padding,
+              decoration: rangeEndDecoration,
+              alignment: alignment,
+              child: Text(text, style: calendarStyle.rangeEndTextStyle),
+            ),
+        Align(
+          alignment: Alignment.topRight,
+          child: Transform.translate(
+            offset: const Offset(5, 0),
+            child: CircleAvatar(
+              radius: 10,
+              backgroundColor: Colors.red,
+              child: IconWidget(icon: bellIcon, height: 10),
+            ),
+          ),
+        ),
+      ]);
     } else if (isToday && isTodayHighlighted) {
       cell = calendarBuilders.todayBuilder?.call(context, day, focusedDay) ??
           Container(

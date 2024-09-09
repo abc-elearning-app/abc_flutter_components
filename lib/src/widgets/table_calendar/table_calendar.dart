@@ -28,6 +28,7 @@ class TableCalendar<T> extends StatefulWidget {
   final bool isDarkMode;
   final Color mainColor;
   final Color secondaryColor;
+  final String bellIcon;
 
   /// Locale to format `TableCalendar` dates with, for example: `'en_US'`.
   ///
@@ -271,6 +272,7 @@ class TableCalendar<T> extends StatefulWidget {
     required this.isDarkMode,
     required this.mainColor,
     required this.secondaryColor,
+    required this.bellIcon,
   })  : assert(availableCalendarFormats.keys.contains(calendarFormat)),
         assert(availableCalendarFormats.length <= CalendarFormat.values.length),
         assert(weekendDays.isNotEmpty ? weekendDays.every((day) => day >= DateTime.monday && day <= DateTime.sunday) : true),
@@ -458,7 +460,7 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
               return CalendarHeader(
                   isDarkMode: widget.isDarkMode,
                   headerTitleBuilder: widget.calendarBuilders.headerTitleBuilder,
-                  focusedMonth: value,
+                  focusedDate: value,
                   firstDate: widget.firstDay,
                   lastDate: widget.lastDay,
                   primaryColor: widget.primaryColor,
@@ -616,6 +618,7 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
         Widget content = CellContent(
           mainColor: widget.mainColor,
           secondaryColor: widget.secondaryColor,
+          bellIcon: widget.bellIcon,
           key: ValueKey('CellContent-${day.year}-${day.month}-${day.day}'),
           day: day,
           focusedDay: focusedDay,
