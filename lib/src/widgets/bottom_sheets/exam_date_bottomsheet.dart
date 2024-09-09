@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/table_calendar/table_calendar.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 import '../table_calendar/utils.dart';
 
@@ -15,6 +14,9 @@ class ExamDateBottomsheet extends StatefulWidget {
 
   final bool isDarkMode;
 
+  final DateTime startDate;
+  final DateTime examDate;
+
   final void Function(DateTime examDate) onSave;
 
   const ExamDateBottomsheet({
@@ -26,6 +28,8 @@ class ExamDateBottomsheet extends StatefulWidget {
     required this.secondaryColor,
     required this.bellIcon,
     required this.onSave,
+    required this.startDate,
+    required this.examDate,
   });
 
   @override
@@ -33,19 +37,18 @@ class ExamDateBottomsheet extends StatefulWidget {
 }
 
 class _ExamDateBottomsheetState extends State<ExamDateBottomsheet> {
-  bool initialized = false;
-
-  late DateTime rangeStart;
-  late DateTime rangeEnd;
+  late DateTime selectedExamDate;
   late DateTime focusedDate;
+  late DateTime firstDate;
+  late DateTime lastDate;
 
   @override
   void initState() {
-    rangeStart = DateTime.now();
-    rangeEnd = DateTime.now().add(const Duration(days: 10));
+    firstDate = widget.startDate;
+    lastDate = DateTime.now().add(const Duration(days: 100000));
+    selectedExamDate = widget.examDate;
     focusedDate = DateTime.now();
 
-    initializeDateFormatting('vi_VN', null).then((value) => setState(() => initialized = true));
     super.initState();
   }
 
@@ -70,8 +73,10 @@ class _ExamDateBottomsheetState extends State<ExamDateBottomsheet> {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Text('Select Exam Date',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: widget.isDarkMode ? Colors.white : Colors.black)),
+                child: Text(
+                  'Select Exam Date',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: widget.isDarkMode ? Colors.white : Colors.black),
+                ),
               ),
               _informationBox(),
               _calendarBox(),
@@ -84,7 +89,9 @@ class _ExamDateBottomsheetState extends State<ExamDateBottomsheet> {
                   borderRadius: 16,
                   backgroundColor: widget.mainColor,
                   textColor: Colors.white,
-                  onPressed: () => widget.onSave(DateTime.now().add(const Duration(days: 10))),
+                  disabled: selectedExamDate.difference(widget.examDate).inDays == 0 || selectedExamDate.difference(widget.startDate).inDays == 0,
+                  disabledColor: (widget.isDarkMode ? Colors.white : Colors.black).withOpacity(0.12),
+                  onPressed: () => widget.onSave(selectedExamDate),
                 ),
               )
             ],
@@ -104,55 +111,52 @@ class _ExamDateBottomsheetState extends State<ExamDateBottomsheet> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('When is your exam date?', style: TextStyle(fontSize: 12, color: widget.isDarkMode ? Colors.white : Colors.black)),
-                Text(_getDisplayDate(DateTime.now()), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: widget.mainColor))
+                Text(_getDisplayDate(selectedExamDate), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: widget.mainColor))
               ],
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text('Days left', style: TextStyle(fontSize: 12, color: widget.isDarkMode ? Colors.white : Colors.black)),
-                Text('23 Days', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: widget.mainColor))
+                Text(
+                  '${_getRoundedTime(selectedExamDate).difference(_getRoundedTime(widget.startDate)).inDays} Days',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: widget.mainColor),
+                )
               ],
             ),
           ],
         ),
       );
 
-  Widget _calendarBox() => initialized
-      ? Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          margin: const EdgeInsets.symmetric(vertical: 15),
-          height: 380,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: widget.isDarkMode ? Colors.grey.shade900 : Colors.white),
-          child: SingleChildScrollView(
-            child: TableCalendar(
-              mainColor: widget.mainColor,
-              secondaryColor: widget.secondaryColor,
-              bellIcon: widget.bellIcon,
-              focusedDay: DateTime.now().add(const Duration(days: 2)),
-              firstDay: DateTime.now(),
-              lastDay: DateTime.now().add(const Duration(days: 10000)),
-              rangeSelectionMode: RangeSelectionMode.toggledOn,
-              calendarFormat: CalendarFormat.month,
-              rangeStartDay: rangeStart,
-              rangeEndDay: rangeEnd,
-              isDarkMode: widget.isDarkMode,
-              onRangeSelected: (startDate, endDate, focusedDate) {
-                setState(() {
-                  if (startDate != null) {
-                    rangeStart = startDate;
-                    rangeEnd = rangeStart;
-                  }
-                  if (endDate != null) rangeEnd = endDate;
-                });
-              },
-            ),
-          ),
-        )
-      : const SizedBox();
+  Widget _calendarBox() => Container(
+        margin: const EdgeInsets.symmetric(vertical: 15),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: widget.isDarkMode ? Colors.grey.shade900 : Colors.white),
+        child: TableCalendar(
+          rowHeight: 40,
+          focusedDay: focusedDate,
+          firstDay: firstDate,
+          lastDay: lastDate,
+          onDisabledDayTapped: (_) => showToastError('Please select a date in the future'),
+          rangeStartDay: widget.startDate,
+          rangeEndDay: selectedExamDate,
+          rangeSelectionMode: RangeSelectionMode.toggledOn,
+          mainColor: widget.mainColor,
+          calendarFormat: CalendarFormat.month,
+          secondaryColor: widget.secondaryColor,
+          bellIcon: widget.bellIcon,
+          isDarkMode: widget.isDarkMode,
+          onRangeSelected: (date, _, __) {
+            setState(() {
+              if (date != null) selectedExamDate = date;
+            });
+          },
+        ),
+      );
 
   _getDisplayDate(DateTime time) {
     List<String> abrMonthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return '${abrMonthNames[time.month]} ${time.day}, ${time.year}';
   }
+
+  _getRoundedTime(DateTime time) => time.copyWith(hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
 }

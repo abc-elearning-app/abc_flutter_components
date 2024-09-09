@@ -35,14 +35,10 @@ class MonthPicker extends StatefulWidget {
 class __MonthPickerState extends State<MonthPicker> {
   final _pageViewKey = GlobalKey();
   late DateTime _selectedDate;
-  late final DateTime _firstDate;
-  late final DateTime _lastDate;
 
   @override
   void initState() {
     super.initState();
-    _firstDate = DateTime(widget.firstDate.year, widget.firstDate.month);
-    _lastDate = DateTime(widget.lastDate.year, widget.lastDate.month);
     _selectedDate = DateTime(widget.initialDate.year, widget.initialDate.month);
   }
 

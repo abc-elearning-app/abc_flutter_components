@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:intl/intl.dart';
 
@@ -69,11 +67,58 @@ class CellContent extends StatelessWidget {
     final margin = calendarStyle.cellMargin;
     final padding = calendarStyle.cellPadding;
     final alignment = calendarStyle.cellAlignment;
-    final rangeStartDecoration = BoxDecoration(color: const Color(0xFF5497FF), borderRadius: BorderRadius.circular(8));
+    final rangeStartDecoration = BoxDecoration(
+      color: const Color(0xFF5497FF),
+      borderRadius: BorderRadius.circular(8),
+    );
     final rangeEndDecoration = BoxDecoration(color: mainColor, borderRadius: BorderRadius.circular(8));
-    final todayDecoration = BoxDecoration(shape: BoxShape.circle, border: Border.all(width: 2, color: secondaryColor));
 
-    if (isDisabled) {
+    if (isRangeStart) {
+      cell = calendarBuilders.rangeStartBuilder?.call(context, day, focusedDay) ??
+          Container(
+            height: 32,
+            width: 32,
+            margin: margin,
+            padding: padding,
+            decoration: rangeStartDecoration,
+            alignment: alignment,
+            child: Text(text, style: calendarStyle.rangeStartTextStyle),
+          );
+    } else if (isRangeEnd) {
+      cell = Stack(children: [
+        calendarBuilders.rangeEndBuilder?.call(context, day, focusedDay) ??
+            Container(
+              height: 32,
+              width: 32,
+              margin: margin,
+              padding: padding,
+              decoration: rangeEndDecoration,
+              alignment: alignment,
+              child: Text(text, style: calendarStyle.rangeEndTextStyle),
+            ),
+        Positioned(
+          top: 0,
+          right: 0,
+          child: Transform.translate(
+            offset: const Offset(5, -5),
+            child: CircleAvatar(
+              radius: 8,
+              backgroundColor: Colors.red,
+              child: IconWidget(icon: bellIcon, height: 10),
+            ),
+          ),
+        ),
+      ]);
+    } else if (isOutside) {
+      cell = calendarBuilders.outsideBuilder?.call(context, day, focusedDay) ??
+          Container(
+            margin: margin,
+            padding: padding,
+            decoration: calendarStyle.outsideDecoration,
+            alignment: alignment,
+            child: Text(text, style: calendarStyle.outsideTextStyle),
+          );
+    } else if (isDisabled) {
       cell = calendarBuilders.disabledBuilder?.call(context, day, focusedDay) ??
           Container(
             margin: margin,
@@ -91,45 +136,17 @@ class CellContent extends StatelessWidget {
             alignment: alignment,
             child: Text(text, style: calendarStyle.selectedTextStyle),
           );
-    } else if (isRangeStart) {
-      cell = calendarBuilders.rangeStartBuilder?.call(context, day, focusedDay) ??
-          Container(
-            margin: margin.copyWith(top: 8, bottom: 8, left: 4, right: 4),
-            padding: padding,
-            decoration: rangeStartDecoration,
-            alignment: alignment,
-            child: Text(text, style: calendarStyle.rangeStartTextStyle),
-          );
-    } else if (isRangeEnd) {
-      cell = Stack(children: [
-        calendarBuilders.rangeEndBuilder?.call(context, day, focusedDay) ??
-            Container(
-              margin: margin.copyWith(top: 8, bottom: 8, left: 4, right: 4),
-              padding: padding,
-              decoration: rangeEndDecoration,
-              alignment: alignment,
-              child: Text(text, style: calendarStyle.rangeEndTextStyle),
-            ),
-        Align(
-          alignment: Alignment.topRight,
-          child: Transform.translate(
-            offset: const Offset(5, 0),
-            child: CircleAvatar(
-              radius: 10,
-              backgroundColor: Colors.red,
-              child: IconWidget(icon: bellIcon, height: 10),
-            ),
-          ),
-        ),
-      ]);
     } else if (isToday && isTodayHighlighted) {
       cell = calendarBuilders.todayBuilder?.call(context, day, focusedDay) ??
           Container(
-            margin: margin.copyWith(top: 8, bottom: 8, left: 4, right: 4),
+            margin: const EdgeInsets.all(6),
             padding: padding,
-            decoration: todayDecoration,
+            decoration: BoxDecoration(
+              color: mainColor,
+              shape: BoxShape.circle,
+            ),
             alignment: alignment,
-            child: Text(text, style: calendarStyle.todayTextStyle),
+            child: Center(child: Text(text, style: calendarStyle.todayTextStyle.copyWith(color: Colors.white))),
           );
     } else if (isHoliday) {
       cell = calendarBuilders.holidayBuilder?.call(context, day, focusedDay) ??
@@ -148,15 +165,6 @@ class CellContent extends StatelessWidget {
             decoration: calendarStyle.withinRangeDecoration,
             alignment: alignment,
             child: Text(text, style: calendarStyle.withinRangeTextStyle),
-          );
-    } else if (isOutside) {
-      cell = calendarBuilders.outsideBuilder?.call(context, day, focusedDay) ??
-          Container(
-            margin: margin,
-            padding: padding,
-            decoration: calendarStyle.outsideDecoration,
-            alignment: alignment,
-            child: Text(text, style: calendarStyle.outsideTextStyle),
           );
     } else {
       cell = calendarBuilders.defaultBuilder?.call(context, day, focusedDay) ??
