@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../table_calendar/utils.dart';
+
 class InformationData {
   final Widget icon;
   final String title;
@@ -104,38 +106,6 @@ class StudyPlanDetailComponent extends StatelessWidget {
   }
 
   _getDisplayDate({required DateTime time, bool displayFull = false}) {
-    const List<String> abrMonthNames = [
-      '', // Placeholder for 1-based indexing
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-
-    const List<String> fullMonthNames = [
-      '', // Placeholder for 1-based indexing
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-
     return '${displayFull ? fullMonthNames[time.month] : abrMonthNames[time.month]} ${time.day}, ${time.year}';
   }
 }

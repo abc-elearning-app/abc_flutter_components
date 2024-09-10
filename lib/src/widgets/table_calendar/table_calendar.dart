@@ -289,7 +289,6 @@ class TableCalendar<T> extends StatefulWidget {
 class _TableCalendarState<T> extends State<TableCalendar<T>> {
   late final PageController _pageController;
   late ValueNotifier<DateTime> _focusedDay;
-  late ValueNotifier<OpenPickerStatus> openPickerStatus;
   late RangeSelectionMode _rangeSelectionMode;
 
   // DateTime? _firstSelectedDay;
@@ -298,7 +297,6 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
   void initState() {
     super.initState();
     _focusedDay = ValueNotifier(widget.focusedDay);
-    openPickerStatus = ValueNotifier(OpenPickerStatus.close);
     _rangeSelectionMode = widget.rangeSelectionMode;
   }
 
@@ -314,7 +312,6 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
   @override
   void dispose() {
     _focusedDay.dispose();
-    openPickerStatus.dispose();
     super.dispose();
   }
 
@@ -399,9 +396,6 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
                     ((date.year - widget.firstDay.year) * 12 + date.month - widget.firstDay.month).clamp(0, 1000),
                   );
                 },
-                onTogglePicker: (status) {
-                  openPickerStatus.value = status;
-                },
               );
             },
           ),
@@ -412,7 +406,6 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
               _pageController = pageController;
               widget.onCalendarCreated?.call(pageController);
             },
-            openPickerStatus: openPickerStatus,
             focusedDay: _focusedDay.value,
             calendarFormat: widget.calendarFormat,
             availableGestures: widget.availableGestures,

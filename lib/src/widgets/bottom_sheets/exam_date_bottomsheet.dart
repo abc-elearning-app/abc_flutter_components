@@ -154,7 +154,6 @@ class _ExamDateBottomsheetState extends State<ExamDateBottomsheet> {
       );
 
   _getDisplayDate(DateTime time) {
-    List<String> abrMonthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return '${abrMonthNames[time.month]} ${time.day}, ${time.year}';
   }
 

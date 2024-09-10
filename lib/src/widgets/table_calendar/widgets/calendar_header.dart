@@ -1,13 +1,11 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
+import '../utils.dart';
 import 'header_style.dart';
-
-enum OpenPickerStatus { showMonthPicker, showYearPicker, close }
 
 class CalendarHeader extends StatefulWidget {
   final bool isDarkMode;
+  final dynamic locale;
   final DateTime focusedDate;
   final DateTime firstDate;
   final DateTime lastDate;
@@ -18,11 +16,12 @@ class CalendarHeader extends StatefulWidget {
   final HeaderStyle headerStyle;
   final VoidCallback onLeftChevronTap;
   final VoidCallback onRightChevronTap;
+  final DayBuilder? headerTitleBuilder;
   final Function(DateTime date) setSelectedDate;
-  final Function(OpenPickerStatus status) onTogglePicker;
 
   const CalendarHeader({
     Key? key,
+    this.locale,
     required this.focusedDate,
     required this.headerStyle,
     required this.onLeftChevronTap,
@@ -35,43 +34,29 @@ class CalendarHeader extends StatefulWidget {
     required this.onSurfaceColor,
     required this.setSelectedDate,
     required this.isDarkMode,
-    required this.onTogglePicker,
+    this.headerTitleBuilder,
   }) : super(key: key);
 
   @override
   State<CalendarHeader> createState() => _CalendarHeaderState();
 }
 
-class _CalendarHeaderState extends State<CalendarHeader> with TickerProviderStateMixin {
-  bool showMonthPicker = false;
-  bool showYearPicker = false;
-
-  late AnimationController chevronMonthController;
-  late AnimationController chevronYearController;
-
-  late Animation<double> chevronMonthAnimation;
-  late Animation<double> chevronYearAnimation;
+class _CalendarHeaderState extends State<CalendarHeader> {
+  var _isYearSelection = false;
+  late int _yearDisplayPage;
+  late final PageController _yearPageController;
 
   @override
   void initState() {
-    chevronMonthController = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
-    chevronMonthAnimation = Tween<double>(begin: 0, end: pi).animate(chevronMonthController);
-
-    chevronYearController = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
-    chevronYearAnimation = Tween<double>(begin: 0, end: pi).animate(chevronYearController);
+    _yearDisplayPage = widget.focusedDate.year ~/ 15;
+    _yearPageController = PageController(initialPage: _yearDisplayPage);
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    chevronMonthController.dispose();
-    chevronYearController.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(color: Colors.white.withOpacity(0.27)),
       margin: widget.headerStyle.headerMargin,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Column(
@@ -80,89 +65,124 @@ class _CalendarHeaderState extends State<CalendarHeader> with TickerProviderStat
           Row(
             children: [
               Expanded(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: GestureDetector(
-                        onTap: _onToggleMonthPicker,
+                child: GestureDetector(
+                  onTap: () {
+                    // onHeaderTap.call();
+                    setState(() {
+                      _isYearSelection = !_isYearSelection;
+                    });
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        flex: 3,
                         child: FittedBox(
                           alignment: Alignment.centerLeft,
                           fit: BoxFit.scaleDown,
-                          child: Container(
-                            color: Colors.transparent,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  fullMonthNames[widget.focusedDate.month - 1],
-                                  style: TextStyle(
-                                    color: widget.isDarkMode ? Colors.white : Colors.black,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                AnimatedBuilder(
-                                  animation: chevronMonthAnimation,
-                                  builder: (_, __) => Transform.rotate(
-                                    angle: chevronMonthAnimation.value,
-                                    child: const Icon(Icons.arrow_drop_down_rounded, size: 30),
-                                  ),
-                                )
-                              ],
-                            ),
+                          child: DropdownButton(
+                            value: widget.focusedDate.month - 1,
+                            underline: const SizedBox(),
+                            icon: const Icon(Icons.arrow_drop_down_rounded, size: 30),
+                            menuMaxHeight: 200,
+                            borderRadius: BorderRadius.circular(10),
+                            items: List.generate(
+                                12,
+                                (index) => DropdownMenuItem(
+                                      value: index,
+                                      child: Text(
+                                        fullMonthNames[index],
+                                        style: TextStyle(
+                                          color: widget.isDarkMode ? Colors.white : Colors.black,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    )),
+                            onChanged: (int? selectedMonth) {
+                              if (selectedMonth != null) widget.setSelectedDate(widget.focusedDate.copyWith(month: selectedMonth + 1));
+                            },
                           ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: GestureDetector(
-                        onTap: _onToggleYearPicker,
+                      Expanded(
+                        flex: 2,
                         child: FittedBox(
                           alignment: Alignment.center,
                           fit: BoxFit.scaleDown,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                widget.focusedDate.year.toString(),
-                                style: TextStyle(
-                                  color: widget.isDarkMode ? Colors.white : Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              AnimatedBuilder(
-                                animation: chevronYearAnimation,
-                                builder: (_, __) => Transform.rotate(
-                                  angle: chevronYearAnimation.value,
-                                  child: const Icon(Icons.arrow_drop_down_rounded, size: 30),
-                                ),
-                              )
-                            ],
-                          ),
+                          child: DropdownButton(
+                              value: widget.focusedDate.year,
+                              underline: const SizedBox(),
+                              menuMaxHeight: 200,
+                              borderRadius: BorderRadius.circular(10),
+                              icon: const Icon(Icons.arrow_drop_down_rounded, size: 30),
+                              items: List.generate(
+                                  10,
+                                  (index) => DropdownMenuItem(
+                                        value: DateTime.now().year + index,
+                                        child: Text(
+                                          (DateTime.now().year + index).toString(),
+                                          style: TextStyle(
+                                            color: widget.isDarkMode ? Colors.white : Colors.black,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      )),
+                              onChanged: (int? selectedYear) {
+                                if (selectedYear != null) widget.setSelectedDate(widget.focusedDate.copyWith(year: selectedYear));
+                              }),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-
-              // Chevron buttons
               if (widget.headerStyle.leftChevronVisible)
                 IconButton(
-                  onPressed: widget.onLeftChevronTap,
+                  onPressed: () {
+                    if (_isYearSelection) {
+                      _yearPageController.animateToPage(
+                        _yearDisplayPage - 1,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeIn,
+                      );
+                    } else {
+                      widget.onLeftChevronTap.call();
+                    }
+                  },
                   icon: const Icon(Icons.chevron_left_rounded, size: 30),
                 ),
               if (widget.headerStyle.rightChevronVisible)
                 IconButton(
-                  onPressed: widget.onRightChevronTap,
+                  onPressed: () {
+                    if (_isYearSelection) {
+                      _yearPageController.animateToPage(
+                        _yearDisplayPage + 1,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeIn,
+                      );
+                    } else {
+                      widget.onRightChevronTap.call();
+                    }
+                  },
                   icon: const Icon(Icons.chevron_right_rounded, size: 30),
                 ),
             ],
           ),
+          // MonthPicker(
+          //     yearPageController: _yearPageController,
+          //     initialDate: widget.focusedDate,
+          //     firstDate: widget.firstDate,
+          //     lastDate: widget.lastDate,
+          //     primaryColor: widget.primaryColor,
+          //     onPrimaryColor: widget.onPrimaryColor,
+          //     surfaceColor: widget.surfaceColor,
+          //     onSurfaceColor: widget.onSurfaceColor,
+          //     setYearDisplayPage: (page) {
+          //       setState(() => _yearDisplayPage = page);
+          //     },
+          //     setSelectedYear: widget.setSelectedYear),
 
           // Days abbreviation
           LayoutBuilder(
@@ -172,7 +192,7 @@ class _CalendarHeaderState extends State<CalendarHeader> with TickerProviderStat
                   7,
                   (index) => Container(
                     width: constraint.maxWidth / 7,
-                    height: constraint.maxWidth / 7 - 20,
+                    height: constraint.maxWidth / 7,
                     alignment: Alignment.center,
                     child: Text(
                       _getWeekdaysAbbrevByNumber(index),
@@ -188,47 +208,7 @@ class _CalendarHeaderState extends State<CalendarHeader> with TickerProviderStat
     );
   }
 
-  _onToggleMonthPicker() {
-    if (showMonthPicker && chevronMonthController.status == AnimationStatus.completed) {
-      chevronMonthController.reverse(from: 1);
-      showMonthPicker = !showMonthPicker;
-      widget.onTogglePicker(OpenPickerStatus.close);
-    } else if (!showMonthPicker && chevronMonthController.status == AnimationStatus.dismissed) {
-      // Open month picker
-      chevronMonthController.forward(from: 0);
-      showMonthPicker = !showMonthPicker;
-
-      // Close year picker if open
-      if (showYearPicker) {
-        showYearPicker = false;
-        chevronYearController.reverse();
-      }
-
-      widget.onTogglePicker(OpenPickerStatus.showMonthPicker);
-    }
-  }
-
-  _onToggleYearPicker() {
-    if (showYearPicker && chevronYearController.status == AnimationStatus.completed) {
-      chevronYearController.reverse(from: 1);
-      showYearPicker = !showYearPicker;
-      widget.onTogglePicker(OpenPickerStatus.close);
-    } else if (!showYearPicker && chevronYearController.status == AnimationStatus.dismissed) {
-      // Open year picker
-      chevronYearController.forward(from: 0);
-      showYearPicker = !showYearPicker;
-
-      // Close month picker if open
-      if (showMonthPicker) {
-        showMonthPicker = false;
-        chevronMonthController.reverse();
-      }
-
-      widget.onTogglePicker(OpenPickerStatus.showYearPicker);
-    }
-  }
-
-  _getWeekdaysAbbrevByNumber(int number) {
+  String _getWeekdaysAbbrevByNumber(int number) {
     switch (number) {
       case 0:
         return 'Su';
@@ -249,5 +229,5 @@ class _CalendarHeaderState extends State<CalendarHeader> with TickerProviderStat
     }
   }
 
-  final fullMonthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  List<String> fullMonthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 }
