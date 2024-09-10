@@ -66,7 +66,7 @@ class MainButton extends StatelessWidget {
   Widget _text() {
     return loading
         ? _makeLoading(loadingColor ?? Colors.grey)
-        : Text(title, style: (textStyle ?? const TextStyle()).copyWith(color: textColor ?? Colors.white));
+        : Text(title, style: (textStyle ?? const TextStyle()).copyWith(color: textColor ?? Colors.white), textAlign: TextAlign.center);
   }
 
   Widget _makeLoading(Color color) {

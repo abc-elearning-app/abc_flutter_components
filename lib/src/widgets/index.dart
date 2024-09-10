@@ -86,6 +86,7 @@ export 'study_plan/study_plan_chart.dart';
 export 'streak/streak_screen.dart';
 export 'bottom_sheets/report_bottomsheet.dart';
 export 'bottom_sheets/filter_bottomsheet.dart';
+export 'bottom_sheets/exam_date_bottomsheet.dart';
 export 'home_screen/statistic_tab_widgets/subject_analysis_box.dart';
 export 'icons/icon_widget.dart';
 export 'questions/action_icon.dart';

@@ -132,6 +132,7 @@ class _FilterBottomsheetComponentState extends State<FilterBottomsheetComponent>
                     child: MainButton(
                       title: 'Apply Filters',
                       disabled: !value,
+                      disabledColor: (widget.isDarkMode ?  Colors.white : Colors.black).withOpacity(widget.isDarkMode ? 0.08 : 0.12),
                       backgroundColor: widget.mainColor,
                       borderRadius: 16,
                       padding: const EdgeInsets.symmetric(vertical: 15),

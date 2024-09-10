@@ -1,6 +1,3 @@
-// Copyright 2019 Aleksander Woźniak
-// SPDX-License-Identifier: Apache-2.0
-
 import 'package:flutter/material.dart';
 
 class CalendarPage extends StatelessWidget {
@@ -19,8 +16,8 @@ class CalendarPage extends StatelessWidget {
   const CalendarPage({
     Key? key,
     required this.visibleDays,
-    required this.dayBuilder,
     this.dowBuilder,
+    required this.dayBuilder,
     this.weekNumberBuilder,
     this.dowDecoration,
     this.rowDecoration,
@@ -35,10 +32,13 @@ class CalendarPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Table(
-      children: [
-        ..._buildCalendarDays(context),
-      ],
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Table(
+        children: [
+          ..._buildCalendarDays(context),
+        ],
+      ),
     );
   }
 

@@ -34,14 +34,10 @@ class MonthPicker extends StatefulWidget {
 class __MonthPickerState extends State<MonthPicker> {
   final _pageViewKey = GlobalKey();
   late DateTime _selectedDate;
-  late final DateTime _firstDate;
-  late final DateTime _lastDate;
 
   @override
   void initState() {
     super.initState();
-    _firstDate = DateTime(widget.firstDate.year, widget.firstDate.month);
-    _lastDate = DateTime(widget.lastDate.year, widget.lastDate.month);
     _selectedDate = DateTime(widget.initialDate.year, widget.initialDate.month);
   }
 
@@ -112,20 +108,17 @@ class __MonthPickerState extends State<MonthPicker> {
     Color surfaceColor,
     Color onSurfaceColor,
   ) {
-    bool isSelected =
-        date.month == _selectedDate.month && date.year == _selectedDate.year;
+    bool isSelected = date.month == _selectedDate.month && date.year == _selectedDate.year;
 
     return TextButton(
       onPressed: () {
-        if (widget.firstDate.year > date.year ||
-            widget.lastDate.year < date.year) return;
+        if (widget.firstDate.year > date.year || widget.lastDate.year < date.year) return;
         setState(() => _selectedDate = DateTime(date.year, date.month));
         widget.setSelectedYear(_selectedDate);
       },
       style: TextButton.styleFrom(
         backgroundColor: isSelected ? primaryColor : null,
-        foregroundColor: widget.firstDate.year > date.year ||
-                widget.lastDate.year < date.year
+        foregroundColor: widget.firstDate.year > date.year || widget.lastDate.year < date.year
             ? Colors.grey
             : isSelected
                 ? onPrimaryColor
@@ -138,7 +131,7 @@ class __MonthPickerState extends State<MonthPicker> {
       ),
       child: Text(
         DateFormat.y().format(DateTime(date.year)),
-        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
       ),
     );
   }

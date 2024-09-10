@@ -101,7 +101,7 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
   // Index of the column that contains the current day
   int currentGroupIndex = 0;
 
-  int get daysTillExam => _getRoundedTime(widget.examDate).difference(_getRoundedTime(widget.startDate)).inDays;
+  int get daysTillExam => _getRoundedTime(widget.examDate).difference(_getRoundedTime(widget.startDate)).inDays + 1;
 
   bool get isLessColumnThanDefault => daysTillExam < widget.displayColumns;
 
@@ -296,8 +296,8 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
         margin: const EdgeInsets.only(top: 120),
         height: widget.barSectionHeight,
         child: Stack(children: [
-          _barChartComponent('Expected Questions', ChartType.expected),
           _barChartComponent('Actual Questions', ChartType.actual),
+          _barChartComponent('Expected Questions', ChartType.expected),
         ]),
       );
 
@@ -397,17 +397,17 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(title, style: TextStyle(fontWeight: FontWeight.w500, color: color)),
+              Text(title, style: const TextStyle(fontWeight: FontWeight.w500, color: color)),
               const SizedBox(height: 10),
               startDate.compareTo(endDate) == 0
-                  ? Text(startDateString, style: TextStyle(color: color, fontSize: 12))
-                  : Text('$startDateString - $endDateString', style: TextStyle(color: color, fontSize: 12)),
+                  ? Text(startDateString, style: const TextStyle(color: color, fontSize: 12))
+                  : Text('$startDateString - $endDateString', style: const TextStyle(color: color, fontSize: 12)),
               const SizedBox(width: 80, child: Divider()),
               chartType == ChartType.line
-                  ? Text('${value.toInt()}%', style: TextStyle(color: color, fontWeight: FontWeight.w500))
+                  ? Text('${value.toInt()}%', style: const TextStyle(color: color, fontWeight: FontWeight.w500))
                   : Text(
                       '${barValue[pointIndex]}/${expectedBarValue.clamp(30 * differenceDays, 100 * differenceDays)}',
-                      style: TextStyle(color: color, fontWeight: FontWeight.w500),
+                      style: const TextStyle(color: color, fontWeight: FontWeight.w500),
                     ),
             ],
           ),
