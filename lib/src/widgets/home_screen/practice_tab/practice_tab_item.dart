@@ -1,6 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 class QuestionGroupData {
   final int id;
@@ -53,29 +56,39 @@ class PracticeTabItemComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    double iconSize = screenHeight < 900 ? 60 : 70;
     return GestureDetector(
       onTap: () => onSelect(questionGroupData.id),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        padding: const EdgeInsets.symmetric(horizontal: 15),
+        margin: EdgeInsets.symmetric(horizontal: 16, vertical: screenHeight < 700 ? 8 : 10),
+        padding: EdgeInsets.all(screenHeight < 700 ? 12 : 16),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             color: isDarkMode ? Colors.grey.shade900 : Colors.white,
             boxShadow: !isDarkMode ? [BoxShadow(color: Colors.grey.shade200, blurRadius: 5, spreadRadius: 2)] : null),
         child: Row(
           children: [
-            Container(
-                height: 60,
-                width: 60,
-                padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.only(right: 15, top: 15, bottom: 15),
-                decoration: BoxDecoration(
-                  color: questionGroupData.iconBackgroundColor,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: IconWidget(icon: questionGroupData.icon)),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Container(
+                  height: iconSize,
+                  width: iconSize,
+                  padding: const EdgeInsets.all(10),
+                  margin: EdgeInsets.only(
+                    left: screenWidth / 90,
+                    right: 15,
+                  ),
+                  decoration: BoxDecoration(
+                    color: questionGroupData.iconBackgroundColor,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: IconWidget(icon: questionGroupData.icon)),
+            ),
             Expanded(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
@@ -93,7 +106,24 @@ class PracticeTabItemComponent extends StatelessWidget {
                       if (proVersion == false) GetProIcon(darkMode: isDarkMode, proIcon: proIcon ?? '', height: 25, width: 70)
                     ],
                   ),
-                  Text(questionGroupData.subtitle, style: const TextStyle(fontSize: 12)),
+                  screenHeight < 700
+                      ? TextScroll(
+                          key: GlobalKey(),
+                          questionGroupData.subtitle,
+                          style: const TextStyle(fontSize: 12),
+                          velocity: const Velocity(pixelsPerSecond: Offset(10, 0)),
+                          numberOfReps: 3,
+                          pauseBetween: const Duration(seconds: 3),
+                          pauseOnBounce: const Duration(seconds: 3),
+                          delayBefore: const Duration(seconds: 3),
+                          mode: TextScrollMode.bouncing,
+                        )
+                      : Text(
+                          questionGroupData.subtitle,
+                          style: const TextStyle(fontSize: 12),
+                          maxLines: screenHeight < 700 ? 1 : 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                 ],
               ),
             ),
