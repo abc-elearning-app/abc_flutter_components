@@ -54,7 +54,6 @@ class ReviewQuestionBox extends StatefulWidget {
 
   final Widget Function(BuildContext context, String text, TextStyle textStyle)? renderTextBuilder;
   final Widget Function(BuildContext context, String image)? renderImageBuilder;
-  final Widget Function(BuildContext context)? reportMistakeBuilder;
 
   // Callbacks
   final void Function(bool isSelected) onBookmark;
@@ -81,7 +80,6 @@ class ReviewQuestionBox extends StatefulWidget {
     required this.correctColor,
     required this.incorrectColor,
     required this.proIcon,
-    this.reportMistakeBuilder,
     this.renderImageBuilder
   });
 
@@ -252,21 +250,14 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
 
   Widget _buildButtons() => Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          ActionButtons(
-              bookmarked: isBookmarked,
-              liked: isLiked,
-              disliked: isDisliked,
-              color: widget.mainColorHex,
-              onBookmark: widget.onBookmark,
-              onLike: widget.onLike,
-              onDislike: widget.onDislike),
-          if(widget.reportMistakeBuilder != null) 
-            widget.reportMistakeBuilder!.call(context)
-        ],
-      ));
+      child: ActionButtons(
+          bookmarked: isBookmarked,
+          liked: isLiked,
+          disliked: isDisliked,
+          color: widget.mainColorHex,
+          onBookmark: widget.onBookmark,
+          onLike: widget.onLike,
+          onDislike: widget.onDislike));
 
   Widget _buildAnswer(String content, {bool? isCorrect}) {
     late IconData icon;
