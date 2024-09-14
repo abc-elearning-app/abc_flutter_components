@@ -460,11 +460,10 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
   }
 
   _drawLineMarker(MarkerRenderArgs args) {
-    final isActualLine = args.seriesIndex == 1;
     final index = args.pointIndex!;
 
-    args.markerHeight = isActualLine && (index == 0 || index == columns - 1) ? 12 : 20;
-    args.markerWidth = isActualLine && (index == 0 || index == columns - 1) ? 12 : 20;
+    args.markerHeight = 12;
+    args.markerWidth = 12;
     args.borderWidth = 2;
 
     if (args.seriesIndex == 1) {
