@@ -89,7 +89,7 @@ class _ExamDateBottomsheetState extends State<ExamDateBottomsheet> {
                   borderRadius: 16,
                   backgroundColor: widget.mainColor,
                   textColor: Colors.white,
-                  disabled: selectedExamDate.difference(widget.examDate).inDays == 0 || selectedExamDate.difference(widget.startDate).inDays == 0,
+                  disabled: _getButtonDisabled(),
                   disabledColor: (widget.isDarkMode ? Colors.white : Colors.black).withOpacity(0.12),
                   onPressed: () => widget.onSave(selectedExamDate),
                 ),
@@ -158,4 +158,8 @@ class _ExamDateBottomsheetState extends State<ExamDateBottomsheet> {
   }
 
   _getRoundedTime(DateTime time) => time.copyWith(hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0);
+
+  _getButtonDisabled() =>
+      _getRoundedTime(selectedExamDate).difference(_getRoundedTime(widget.examDate)).inDays == 0 ||
+      _getRoundedTime(selectedExamDate).difference(_getRoundedTime(widget.startDate)).inDays == 0;
 }

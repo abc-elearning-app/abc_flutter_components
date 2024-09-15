@@ -1,3 +1,5 @@
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
+
 import 'pages/select_exam_date.dart';
 import 'pages/select_reminder_time_page.dart';
 import 'pages/start_diagnostic_page.dart';
@@ -171,46 +173,44 @@ class _StudyPlanSetupComponentState extends State<StudyPlanSetupComponent> {
   Widget _buildNextButton(int pageIndexValue) => Container(
         width: double.infinity,
         margin: const EdgeInsets.symmetric(horizontal: 10),
-        child: ElevatedButton(
-          onPressed: () => _handleMainButtonClick(),
-          style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              backgroundColor: widget.mainColor,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
-          child: Text(
-            _getButtonText(pageIndexValue),
-            style: const TextStyle(
-              fontSize: 20,
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
+        child: MainButton(
+          title: _getButtonText(pageIndexValue),
+          textStyle: const TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
           ),
+          borderRadius: 15,
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          backgroundColor: widget.mainColor,
+          onPressed: _handleMainButtonClick,
         ),
       );
 
   Widget _buildNotNowButton(int pageIndexValue) => AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         width: double.infinity,
-        height: pageIndexValue < 1 ? 0 : 50,
         //show after 1st page
+        height: pageIndexValue < 1 ? 0 : 50,
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: ElevatedButton(
-            onPressed: () => _handleNotNowButtonClick(),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              elevation: 0,
-            ),
-            child: Text(
-              'Not Now',
-              style: TextStyle(color: widget.isDarkMode ? Colors.white : Colors.black, fontSize: 16, fontWeight: FontWeight.w300),
-            )),
+        child: MainButton(
+          title: 'Not Now',
+          textColor: widget.isDarkMode ? Colors.white : Colors.black,
+          textStyle: TextStyle(color: widget.isDarkMode ? Colors.white : Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+          backgroundColor: Colors.transparent,
+          onPressed: () => _handleNotNowButtonClick(),
+        ),
       );
 
   _handleMainButtonClick() {
     switch (_pageController.page) {
       case 0:
         {
+          final currentDate = DateTime.now();
+          if (selectedDate.day == currentDate.day && selectedDate.month == currentDate.month && selectedDate.year == currentDate.year) {
+            showToastError('Please choose a date in the future');
+            return;
+          }
           widget.onSelectExamDate(selectedDate);
           _pageController.nextPage(
             duration: const Duration(milliseconds: 200),
