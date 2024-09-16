@@ -56,7 +56,10 @@ class _CalendarHeaderState extends State<CalendarHeader> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: Colors.white.withOpacity(0.27)),
+      decoration: BoxDecoration(
+        color: widget.isDarkMode ? Colors.grey.shade900 : Colors.white.withOpacity(0.27),
+        borderRadius: const BorderRadius.only(topRight: Radius.circular(10), topLeft: Radius.circular(10))
+      ),
       margin: widget.headerStyle.headerMargin,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Column(

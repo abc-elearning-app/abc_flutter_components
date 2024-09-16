@@ -71,7 +71,7 @@ class StudyTabSubjectTile extends StatelessWidget {
               radius: 35,
               percent: subjectData.progress / 100,
               progressColor: tileColor,
-              backgroundColor: tileSecondaryColor,
+              backgroundColor: isDarkMode ? Colors.white.withOpacity(0.12) : tileSecondaryColor,
               circularStrokeCap: CircularStrokeCap.round,
               lineWidth: 7,
               center: Text(
