@@ -57,6 +57,14 @@ class _NewProButtonState extends State<NewProButton> with SingleTickerProviderSt
           height: 40,
           width: 80,
           decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        Container(
+          height: 40,
+          width: 80,
+          decoration: BoxDecoration(
             color: widget.mainColor.withOpacity(0.8),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(

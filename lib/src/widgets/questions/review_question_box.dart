@@ -123,7 +123,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: widget.topBackgroundColor,
+              color: widget.isDarkMode ? Colors.grey.shade800 : widget.topBackgroundColor,
               borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
