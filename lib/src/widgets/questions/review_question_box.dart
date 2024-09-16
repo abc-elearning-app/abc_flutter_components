@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/icons/icon_box.dart';
 
@@ -9,7 +11,7 @@ class QuestionData {
   final String image;
   final List<AnswerData> answers;
   final String explanation;
-  final bool? isSelected;
+  final bool? selectionStatus;
   final String topicName;
   final String topicIcon;
   bool bookmarked;
@@ -25,7 +27,7 @@ class QuestionData {
     required this.explanation,
     required this.topicName,
     required this.topicIcon,
-    this.isSelected,
+    this.selectionStatus,
     this.bookmarked = false,
     this.liked = false,
     this.disliked = false,
@@ -43,6 +45,7 @@ class ReviewQuestionBox extends StatefulWidget {
   final int index;
   final QuestionData questionData;
 
+  final bool showResultLabel;
   final bool isPro;
   final bool isDarkMode;
   final bool isTester;
@@ -92,6 +95,7 @@ class ReviewQuestionBox extends StatefulWidget {
     this.renderTextBuilder,
     this.renderImageBuilder,
     this.paragraphBuilder,
+    required this.showResultLabel,
   });
 
   @override
@@ -121,12 +125,13 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Topic name and icon
           Container(
             decoration: BoxDecoration(
               color: widget.isDarkMode ? Colors.grey.shade800 : widget.topBackgroundColor,
               borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+            padding: const EdgeInsets.all(15),
             child: Row(
               children: [
                 IconBox(
@@ -137,21 +142,30 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                   backgroundColor: widget.secondaryColor,
                 ),
                 const SizedBox(width: 10),
-                Text(widget.questionData.topicName, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                Expanded(
+                    child: Text(
+                  widget.questionData.topicName,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  maxLines: 2,
+                )),
+                if (!widget.showResultLabel) _buildButtons()
               ],
             ),
           ),
+
           Padding(
             padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15, top: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Expanded(child: _buildStatus()),
-                    _buildButtons(),
-                  ],
-                ),
+                // Status and action buttons
+                if (widget.showResultLabel)
+                  Row(
+                    children: [
+                      Expanded(child: _buildStatus()),
+                      _buildButtons(),
+                    ],
+                  ),
 
                 const SizedBox(height: 5),
 
@@ -166,7 +180,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                         style: textStyle,
                       ),
                       Expanded(child: widget.renderTextBuilder!.call(context, widget.questionData.question, textStyle)),
-                      if (widget.renderImageBuilder != null && widget.questionData.image.isNotEmpty) 
+                      if (widget.renderImageBuilder != null && widget.questionData.image.isNotEmpty)
                         widget.renderImageBuilder!.call(context, widget.questionData.image)
                     ],
                   )
@@ -175,8 +189,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                     '${widget.index + 1}. ${widget.questionData.question}',
                     style: textStyle,
                   ),
-                if(widget.paragraphBuilder != null) 
-                  widget.paragraphBuilder!.call(context, textStyle),
+                if (widget.paragraphBuilder != null) widget.paragraphBuilder!.call(context, textStyle),
                 Column(
                   children: List.generate(widget.questionData.answers.length,
                       (index) => _buildAnswer(widget.questionData.answers[index].content, isCorrect: widget.questionData.answers[index].isCorrect)),
@@ -223,58 +236,51 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
   }
 
   Widget _buildStatus() {
-    if (widget.questionData.isSelected != null) {
-      final answers = widget.questionData.answers;
-      bool? correctlyChosen;
-      if (widget.questionData.isSelected == true) {
-        correctlyChosen = !answers.where((answer) => answer.isCorrect == false).isNotEmpty;
-      }
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          CircleAvatar(
-              radius: 7,
-              backgroundColor: correctlyChosen == true
-                  ? widget.correctColor
-                  : correctlyChosen == false
-                      ? widget.incorrectColor
-                      : const Color(0xFFBFBFBF),
-              child: Icon(
-                correctlyChosen == true
-                    ? Icons.check
-                    : correctlyChosen == false
-                        ? Icons.close
-                        : Icons.horizontal_rule_rounded,
-                size: 12,
-                color: Colors.white,
-              )),
-          const SizedBox(width: 6),
-          Expanded(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Text(
-                correctlyChosen == true
-                    ? 'CORRECT'
-                    : correctlyChosen == false
-                        ? 'INCORRECT'
-                        : 'UNANSWERED',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: correctlyChosen == true
-                      ? widget.correctColor
-                      : correctlyChosen == false
-                          ? widget.incorrectColor
-                          : const Color(0xFFBFBFBF),
-                ),
+    final selectionStatus = widget.questionData.selectionStatus;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        CircleAvatar(
+            radius: 7,
+            backgroundColor: selectionStatus == true
+                ? widget.correctColor
+                : selectionStatus == false
+                    ? widget.incorrectColor
+                    : const Color(0xFFBFBFBF),
+            child: Icon(
+              selectionStatus == true
+                  ? Icons.check
+                  : selectionStatus == false
+                      ? Icons.close
+                      : Icons.horizontal_rule_rounded,
+              size: 12,
+              color: Colors.white,
+            )),
+        const SizedBox(width: 6),
+        Expanded(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              selectionStatus == true
+                  ? 'CORRECT'
+                  : selectionStatus == false
+                      ? 'INCORRECT'
+                      : 'UNANSWERED',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: selectionStatus == true
+                    ? widget.correctColor
+                    : selectionStatus == false
+                        ? widget.incorrectColor
+                        : const Color(0xFFBFBFBF),
               ),
             ),
-          )
-        ],
-      );
-    }
-    return const SizedBox();
+          ),
+        )
+      ],
+    );
   }
 
   Widget _buildButtons() => Padding(
