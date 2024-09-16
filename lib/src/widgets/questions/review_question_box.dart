@@ -59,6 +59,7 @@ class ReviewQuestionBox extends StatefulWidget {
 
   final Widget Function(BuildContext context, String text, TextStyle textStyle)? renderTextBuilder;
   final Widget Function(BuildContext context, String image)? renderImageBuilder;
+  final Widget Function(BuildContext context, TextStyle textStyle)? paragraphBuilder;
 
   // Callbacks
   final void Function(bool isSelected) onBookmark;
@@ -90,6 +91,7 @@ class ReviewQuestionBox extends StatefulWidget {
     this.topBackgroundColor = const Color(0xFFFFFDF1),
     this.renderTextBuilder,
     this.renderImageBuilder,
+    this.paragraphBuilder,
   });
 
   @override
@@ -164,7 +166,8 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                         style: textStyle,
                       ),
                       Expanded(child: widget.renderTextBuilder!.call(context, widget.questionData.question, textStyle)),
-                      if (widget.renderImageBuilder != null) widget.renderImageBuilder!.call(context, widget.questionData.image)
+                      if (widget.renderImageBuilder != null && widget.questionData.image.isNotEmpty) 
+                        widget.renderImageBuilder!.call(context, widget.questionData.image)
                     ],
                   )
                 else
@@ -172,6 +175,8 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                     '${widget.index + 1}. ${widget.questionData.question}',
                     style: textStyle,
                   ),
+                if(widget.paragraphBuilder != null) 
+                  widget.paragraphBuilder!.call(context, textStyle),
                 Column(
                   children: List.generate(widget.questionData.answers.length,
                       (index) => _buildAnswer(widget.questionData.answers[index].content, isCorrect: widget.questionData.answers[index].isCorrect)),

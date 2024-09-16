@@ -131,10 +131,10 @@ class AccountTabComponent extends StatelessWidget {
                 if (isPro) _proInformation(),
 
                 // Action buttons
-                const SizedBox(height: 10),
-                _buildButton('Sync Data', syncIcon, onSync),
-                _buildButton('Log Out', logoutIcon, onLogout),
-                _buildButton(
+                if(loggedIn) const SizedBox(height: 10),
+                if(loggedIn)  _buildButton('Sync Data', syncIcon, onSync),
+                if(loggedIn)  _buildButton('Log Out', logoutIcon, onLogout),
+                if(loggedIn)  _buildButton(
                   'Delete Account',
                   deleteAccountIcon,
                   onDeleteAccount,
@@ -201,7 +201,7 @@ class AccountTabComponent extends StatelessWidget {
               ],
             ),
           ),
-          if (isPro)
+          if (isPro && loggedIn)
             const Padding(
               padding: EdgeInsets.only(top: 15),
               child: Divider(),
