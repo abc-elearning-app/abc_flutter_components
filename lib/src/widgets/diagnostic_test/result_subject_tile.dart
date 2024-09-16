@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 
 class SubjectResultData {
+  final int id;
   final String title;
   final double progress;
   final String icon;
@@ -10,6 +11,7 @@ class SubjectResultData {
     required this.title,
     required this.progress,
     required this.icon,
+    required this.id,
   });
 }
 
@@ -18,6 +20,7 @@ class ResultSubjectTile extends StatelessWidget {
   final String icon;
   final double progress;
   final Color color;
+  final Color mainColor;
   final Color iconBackgroundColor;
   final bool isDarkMode;
 
@@ -27,6 +30,8 @@ class ResultSubjectTile extends StatelessWidget {
 
   final double minIntermediateValue;
   final double minAdvancedValue;
+
+  final void Function() onImprove;
 
   const ResultSubjectTile({
     super.key,
@@ -41,6 +46,8 @@ class ResultSubjectTile extends StatelessWidget {
     required this.iconBackgroundColor,
     required this.minIntermediateValue,
     required this.minAdvancedValue,
+    required this.onImprove,
+    required this.mainColor,
   });
 
   @override
@@ -122,8 +129,21 @@ class ResultSubjectTile extends StatelessWidget {
                 _getLevelTitle(),
                 style: TextStyle(fontSize: 12, color: (isDarkMode ? Colors.white : Colors.black).withOpacity(0.5)),
               ),
+              const Expanded(child: SizedBox()),
+              Transform.scale(
+                scale: 0.9,
+                child: MaterialButton(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+                  color: mainColor.withOpacity(0.1),
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  textColor: mainColor,
+                  onPressed: onImprove,
+                  child: const Text('Improve', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                ),
+              ),
             ],
-          )
+          ),
         ],
       ),
     );

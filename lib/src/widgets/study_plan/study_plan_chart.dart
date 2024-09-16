@@ -378,7 +378,7 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
         double value = 0;
         if (!(valueList.length == 1 && valueList[0] == 0 && pointIndex == 0)) {
           if (chartType == ChartType.line) {
-            value = seriesIndex == 0 ? lineValues[pointIndex] * 100 : expectedLineValues[pointIndex];
+            value = seriesIndex == 0 ? expectedLineValues[pointIndex] : lineValues[pointIndex] * 100;
           } else {
             value = barValue[pointIndex].toDouble();
           }
@@ -428,7 +428,11 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
       plotOffset: type == ChartType.line ? 10 : 0,
       opposedPosition: type == ChartType.line,
       minimum: type == ChartType.line ? widget.minLineValue : widget.minBarValue,
-      maximum: (type == ChartType.line ? widget.maxLineValue : maxBarValue > 300 ? maxBarValue + 100 : maxBarValue + 30),
+      maximum: (type == ChartType.line
+          ? widget.maxLineValue
+          : maxBarValue > 300
+              ? maxBarValue + 100
+              : maxBarValue + 30),
       interval: type == ChartType.line ? widget.lineValueInterval : maxBarValue / 2,
       axisLine: const AxisLine(color: Colors.grey),
       majorGridLines: const MajorGridLines(color: Colors.transparent),

@@ -16,6 +16,7 @@ class _ConfettiEffectState extends State<ConfettiEffect> {
   @override
   void initState() {
     _confettiController = ConfettiController();
+    _confettiController.play();
     super.initState();
   }
 
@@ -27,15 +28,10 @@ class _ConfettiEffectState extends State<ConfettiEffect> {
 
   @override
   Widget build(BuildContext context) {
-    _confettiController.play();
-
-    return Align(
-      alignment: Alignment.topCenter,
-      child: ConfettiWidget(
-        shouldLoop: true,
-        blastDirectionality: BlastDirectionality.explosive,
-        confettiController: _confettiController,
-      ),
+    return ConfettiWidget(
+      shouldLoop: true,
+      blastDirectionality: BlastDirectionality.explosive,
+      confettiController: _confettiController,
     );
   }
 }
