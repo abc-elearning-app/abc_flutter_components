@@ -5,7 +5,6 @@ import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class MainResultBox extends StatefulWidget {
-  final bool isFirstTime;
   final bool isDarkMode;
 
   final Color mainColor;
@@ -30,7 +29,6 @@ class MainResultBox extends StatefulWidget {
     required this.correctQuestions,
     required this.incorrectQuestions,
     required this.mainColor,
-    required this.isFirstTime,
     required this.passPercent,
     required this.bannerShapeImage,
   });
@@ -76,9 +74,9 @@ class _MainResultBoxState extends State<MainResultBox> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (widget.isFirstTime) _buildMessage(),
+            _buildMessage(),
 
-            if (!widget.isFirstTime) const SizedBox(height: 10),
+            const SizedBox(height: 10),
 
             // Progress chart
             HalfCircleProgressIndicator(
@@ -109,20 +107,19 @@ class _MainResultBoxState extends State<MainResultBox> {
             _buildExplanation(),
 
             // Linear progress
-            if (widget.isFirstTime) _buildLinearProgress(context),
+            _buildLinearProgress(context),
 
             // Average community score
-            if (widget.isFirstTime)
-              Text(
-                'Community Score: ${widget.averageProgress.toInt()}% ',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: widget.isDarkMode ? Colors.white : Colors.black),
-              )
+            Text(
+              'Community Score: ${widget.averageProgress.toInt()}% ',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: widget.isDarkMode ? Colors.white : Colors.black),
+            )
           ],
         ),
       ),
 
       // Top banner
-      if (widget.isFirstTime) _buildBanner(),
+      _buildBanner(),
     ]);
   }
 

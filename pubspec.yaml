@@ -3,7 +3,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.3.2 <4.0.0'
+  sdk: '>=3.3.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -24,6 +24,8 @@ dependencies:
   simple_gesture_detector: ^0.2.0
   font_awesome_flutter: ^10.7.0
   tuple: ^2.0.2
+  text_scroll: ^0.2.0
+
 
 dev_dependencies:
   flutter_test:

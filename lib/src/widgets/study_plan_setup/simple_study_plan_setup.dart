@@ -226,6 +226,12 @@ class _SimpleStudyPlanSetupComponentState extends State<SimpleStudyPlanSetupComp
 
   _onSelect() {
     if (pageController.page == 0) {
+      final currentDate = DateTime.now();
+      if (selectedDate.day == currentDate.day && selectedDate.month == currentDate.month && selectedDate.year == currentDate.year) {
+        showToastError('Please choose a date in the future');
+        return;
+      }
+
       widget.onSetExamDate(selectedDate);
 
       if (widget.showSetupReminder) {

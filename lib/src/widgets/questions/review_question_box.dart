@@ -42,6 +42,7 @@ class ReviewQuestionBox extends StatefulWidget {
 
   final bool isPro;
   final bool isDarkMode;
+  final bool isTester;
   final String proIcon;
 
   final Color mainColor;
@@ -54,13 +55,13 @@ class ReviewQuestionBox extends StatefulWidget {
 
   final Widget Function(BuildContext context, String text, TextStyle textStyle)? renderTextBuilder;
   final Widget Function(BuildContext context, String image)? renderImageBuilder;
-  final Widget Function(BuildContext context)? reportMistakeBuilder;
 
   // Callbacks
   final void Function(bool isSelected) onBookmark;
   final void Function(bool isSelected) onLike;
   final void Function(bool isSelected) onDislike;
   final void Function() onProClick;
+  final void Function() onReportTest;
 
   const ReviewQuestionBox({
     super.key,
@@ -81,8 +82,9 @@ class ReviewQuestionBox extends StatefulWidget {
     required this.correctColor,
     required this.incorrectColor,
     required this.proIcon,
-    this.reportMistakeBuilder,
-    this.renderImageBuilder
+    this.renderImageBuilder,
+    required this.isTester,
+    required this.onReportTest,
   });
 
   @override
@@ -137,8 +139,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                         style: textStyle,
                       ),
                       Expanded(child: widget.renderTextBuilder!.call(context, widget.questionData.question, textStyle)),
-                      if(widget.renderImageBuilder != null) 
-                        widget.renderImageBuilder!.call(context, widget.questionData.image)
+                      if (widget.renderImageBuilder != null) widget.renderImageBuilder!.call(context, widget.questionData.image)
                     ],
                   )
                 else
@@ -252,20 +253,16 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
 
   Widget _buildButtons() => Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          ActionButtons(
-              bookmarked: isBookmarked,
-              liked: isLiked,
-              disliked: isDisliked,
-              color: widget.mainColorHex,
-              onBookmark: widget.onBookmark,
-              onLike: widget.onLike,
-              onDislike: widget.onDislike),
-          if(widget.reportMistakeBuilder != null) 
-            widget.reportMistakeBuilder!.call(context)
-        ],
+      child: ActionButtons(
+        bookmarked: isBookmarked,
+        liked: isLiked,
+        disliked: isDisliked,
+        color: widget.mainColorHex,
+        onBookmark: widget.onBookmark,
+        onLike: widget.onLike,
+        onDislike: widget.onDislike,
+        isTester: widget.isTester,
+        onReportTest: widget.onReportTest,
       ));
 
   Widget _buildAnswer(String content, {bool? isCorrect}) {

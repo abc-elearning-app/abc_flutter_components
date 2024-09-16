@@ -7,7 +7,10 @@ enum PickerType { day, month, year }
 class CustomDatePicker extends StatefulWidget {
   final void Function(DateTime selectedDate) onSelectDate;
 
-  const CustomDatePicker({super.key, required this.onSelectDate});
+  const CustomDatePicker({
+    super.key,
+    required this.onSelectDate,
+  });
 
   @override
   _CustomDatePickerState createState() => _CustomDatePickerState();

@@ -106,6 +106,6 @@ class StudyPlanDetailComponent extends StatelessWidget {
   }
 
   _getDisplayDate({required DateTime time, bool displayFull = false}) {
-    return '${displayFull ? fullMonthNames[time.month] : abrMonthNames[time.month]} ${time.day}, ${time.year}';
+    return '${displayFull ? fullMonthNames[time.month - 1] : abrMonthNames[time.month]} ${time.day}, ${time.year}';
   }
 }

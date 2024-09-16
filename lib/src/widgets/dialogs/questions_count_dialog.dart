@@ -107,6 +107,7 @@ class _QuestionCountDialogState extends State<QuestionCountDialog> {
                               borderRadius: 18,
                               title: 'Practice',
                               disabled: !value,
+                              disabledColor: (widget.isDarkMode ?  Colors.white : Colors.black).withOpacity(widget.isDarkMode ? 0.08 : 0.12),
                               textStyle: const TextStyle(fontSize: 16),
                               onPressed: () => _handlePracticeClick(),
                               backgroundColor: widget.mainColor,

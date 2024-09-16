@@ -14,9 +14,12 @@ class ActionButtons extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final EdgeInsetsGeometry? padding;
 
+  final bool isTester;
+
   final void Function(bool isSelected) onBookmark;
   final void Function(bool isSelected) onLike;
   final void Function(bool isSelected) onDislike;
+  final void Function()? onReportTest;
 
   const ActionButtons({
     super.key,
@@ -30,6 +33,8 @@ class ActionButtons extends StatelessWidget {
     this.margin,
     this.padding,
     this.selectedColor,
+    this.onReportTest,
+    this.isTester = false,
   });
 
   @override
@@ -60,6 +65,8 @@ class ActionButtons extends StatelessWidget {
             isSelected: disliked,
             onToggle: onDislike,
             actionType: ActionType.dislike,
+            onReportTest: onReportTest,
+            isTester: isTester,
           ),
         ],
       ),
@@ -72,7 +79,9 @@ class ActionButton extends StatelessWidget {
   final String color;
   final String? selectedColor;
   final bool isSelected;
+  final bool isTester;
   final void Function(bool isSelected) onToggle;
+  final void Function()? onReportTest;
 
   const ActionButton({
     super.key,
@@ -80,17 +89,17 @@ class ActionButton extends StatelessWidget {
     required this.isSelected,
     required this.onToggle,
     required this.actionType,
+    this.isTester = false,
     this.selectedColor,
+    this.onReportTest,
   });
 
   @override
   Widget build(BuildContext context) {
-
     String icon = _getIcon();
     return GestureDetector(
-      onTap: () {
-        onToggle(!isSelected);
-      },
+      onTap: () => onToggle(!isSelected),
+      onLongPress: actionType == ActionType.dislike && isTester ? onReportTest : null,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5),
         child: SvgPicture.string(

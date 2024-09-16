@@ -185,6 +185,7 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
     int startGroupIndex = 0;
     for (int i = 0; i < currentGroupIndex; i++) {
       int sum = valueList.sublist(startGroupIndex, startGroupIndex + daysInGroups[i]).reduce((a, b) => a + b);
+      sum = sum.clamp(0, 500);
       barValue.add(sum);
 
       startGroupIndex += daysInGroups[i];
@@ -192,13 +193,14 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
 
     // Calculate current day group's average
     int sum = valueList.sublist(startGroupIndex, widget.valueList.length).reduce((a, b) => a + b);
+    sum = sum.clamp(0, 500);
     barValue.add(sum);
 
     // The rest are all 0
     int remainColumns = columns - barValue.length;
     barValue.addAll(List.generate(remainColumns, (_) => 0));
 
-    expectedBarValue = (widget.questionPerDay * daysTillExam) ~/ columns;
+    expectedBarValue = ((widget.questionPerDay * daysTillExam) ~/ columns).clamp(0, 500);
   }
 
   _createDateGroups() {
@@ -376,7 +378,7 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
         double value = 0;
         if (!(valueList.length == 1 && valueList[0] == 0 && pointIndex == 0)) {
           if (chartType == ChartType.line) {
-            value = seriesIndex == 0 ? expectedLineValues[pointIndex] : lineValues[pointIndex] * 100;
+            value = seriesIndex == 0 ? lineValues[pointIndex] * 100 : expectedLineValues[pointIndex];
           } else {
             value = barValue[pointIndex].toDouble();
           }
@@ -406,7 +408,7 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
               chartType == ChartType.line
                   ? Text('${value.toInt()}%', style: const TextStyle(color: color, fontWeight: FontWeight.w500))
                   : Text(
-                      '${barValue[pointIndex]}/${expectedBarValue.clamp(30 * differenceDays, 100 * differenceDays)}',
+                      '${barValue[pointIndex]}/$expectedBarValue',
                       style: const TextStyle(color: color, fontWeight: FontWeight.w500),
                     ),
             ],
@@ -426,7 +428,7 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
       plotOffset: type == ChartType.line ? 10 : 0,
       opposedPosition: type == ChartType.line,
       minimum: type == ChartType.line ? widget.minLineValue : widget.minBarValue,
-      maximum: (type == ChartType.line ? widget.maxLineValue : maxBarValue) + 30,
+      maximum: (type == ChartType.line ? widget.maxLineValue : maxBarValue > 300 ? maxBarValue + 100 : maxBarValue + 30),
       interval: type == ChartType.line ? widget.lineValueInterval : maxBarValue / 2,
       axisLine: const AxisLine(color: Colors.grey),
       majorGridLines: const MajorGridLines(color: Colors.transparent),
@@ -460,11 +462,10 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
   }
 
   _drawLineMarker(MarkerRenderArgs args) {
-    final isActualLine = args.seriesIndex == 1;
     final index = args.pointIndex!;
 
-    args.markerHeight = isActualLine && (index == 0 || index == columns - 1) ? 12 : 20;
-    args.markerWidth = isActualLine && (index == 0 || index == columns - 1) ? 12 : 20;
+    args.markerHeight = 12;
+    args.markerWidth = 12;
     args.borderWidth = 2;
 
     if (args.seriesIndex == 1) {
