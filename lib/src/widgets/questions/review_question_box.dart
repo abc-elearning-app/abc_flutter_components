@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
+import 'package:flutter_abc_jsc_components/src/widgets/icons/icon_box.dart';
 
 class QuestionData {
   final String longId;
@@ -9,7 +10,8 @@ class QuestionData {
   final List<AnswerData> answers;
   final String explanation;
   final bool? isSelected;
-  final String? topicName;
+  final String topicName;
+  final String topicIcon;
   bool bookmarked;
   bool liked;
   bool disliked;
@@ -21,8 +23,9 @@ class QuestionData {
     required this.image,
     required this.answers,
     required this.explanation,
+    required this.topicName,
+    required this.topicIcon,
     this.isSelected,
-    this.topicName,
     this.bookmarked = false,
     this.liked = false,
     this.disliked = false,
@@ -52,6 +55,7 @@ class ReviewQuestionBox extends StatefulWidget {
   final Color correctColor;
   final Color incorrectColor;
   final Color explanationColor;
+  final Color topBackgroundColor;
 
   final Widget Function(BuildContext context, String text, TextStyle textStyle)? renderTextBuilder;
   final Widget Function(BuildContext context, String image)? renderImageBuilder;
@@ -77,14 +81,15 @@ class ReviewQuestionBox extends StatefulWidget {
     required this.mainColorHex,
     required this.secondaryColor,
     required this.secondaryColorHex,
-    this.renderTextBuilder,
-    this.explanationColor = const Color(0xFF5497FF),
     required this.correctColor,
     required this.incorrectColor,
     required this.proIcon,
-    this.renderImageBuilder,
     required this.isTester,
     required this.onReportTest,
+    this.explanationColor = const Color(0xFF5497FF),
+    this.topBackgroundColor = const Color(0xFFFFFDF1),
+    this.renderTextBuilder,
+    this.renderImageBuilder,
   });
 
   @override
@@ -109,11 +114,31 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
           color: Colors.white.withOpacity(widget.isDarkMode ? 0.16 : 1),
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: !widget.isDarkMode ? [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, spreadRadius: 2, offset: const Offset(0, 2))] : null),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Container(
+            decoration: BoxDecoration(
+              color: widget.topBackgroundColor,
+              borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+            child: Row(
+              children: [
+                IconBox(
+                  padding: const EdgeInsets.all(5),
+                  size: 35,
+                  icon: widget.questionData.topicIcon,
+                  iconColor: Colors.white,
+                  backgroundColor: widget.secondaryColor,
+                ),
+                const SizedBox(width: 10),
+                Text(widget.questionData.topicName, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+              ],
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15, top: 10),
             child: Column(
@@ -222,6 +247,7 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
           Expanded(
             child: FittedBox(
               fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
               child: Text(
                 correctlyChosen == true
                     ? 'CORRECT'
@@ -241,11 +267,6 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
             ),
           )
         ],
-      );
-    } else if (widget.questionData.topicName != null) {
-      return Text(
-        widget.questionData.topicName!,
-        style: TextStyle(color: widget.isDarkMode ? Colors.white : Colors.black, fontSize: 14),
       );
     }
     return const SizedBox();
