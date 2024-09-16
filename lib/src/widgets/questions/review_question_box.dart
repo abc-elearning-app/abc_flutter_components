@@ -139,7 +139,8 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                         style: textStyle,
                       ),
                       Expanded(child: widget.renderTextBuilder!.call(context, widget.questionData.question, textStyle)),
-                      if (widget.renderImageBuilder != null) widget.renderImageBuilder!.call(context, widget.questionData.image)
+                      if (widget.renderImageBuilder != null && widget.questionData.image.isNotEmpty) 
+                        widget.renderImageBuilder!.call(context, widget.questionData.image)
                     ],
                   )
                 else
