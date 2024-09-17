@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:flutter_abc_jsc_components/src/widgets/icons/icon_box.dart';
 
@@ -189,7 +187,10 @@ class _ReviewQuestionBoxState extends State<ReviewQuestionBox> {
                     '${widget.index + 1}. ${widget.questionData.question}',
                     style: textStyle,
                   ),
-                if (widget.paragraphBuilder != null) widget.paragraphBuilder!.call(context, textStyle),
+                if (widget.paragraphBuilder != null) Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: widget.paragraphBuilder!.call(context, textStyle),
+                ),
                 Column(
                   children: List.generate(widget.questionData.answers.length,
                       (index) => _buildAnswer(widget.questionData.answers[index].content, isCorrect: widget.questionData.answers[index].isCorrect)),
