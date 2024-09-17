@@ -120,11 +120,11 @@ class FinalTestBoxComponent extends StatelessWidget {
       );
 
   _getResultText() {
-    if (progress == 0) return 'Start';
     if (isDone) {
       if (correctPercent >= minPassValue) return 'Passed';
       return 'Failed';
     }
+    if (progress == 0) return 'Start';
     return 'Continue';
   }
 

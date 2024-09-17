@@ -13,8 +13,11 @@ class ImprovedCurvedBottomNavBar extends StatefulWidget {
   final Color backgroundColor;
   final Color navBarColor;
   final Color unselectedColor;
+  final Color mainColor;
 
   final double iconScale;
+
+  final bool isDarkMode;
 
   const ImprovedCurvedBottomNavBar({
     super.key,
@@ -29,6 +32,8 @@ class ImprovedCurvedBottomNavBar extends StatefulWidget {
     required this.selectedIcons,
     required this.unselectedIcons,
     required this.titles,
+    required this.isDarkMode,
+    required this.mainColor,
   });
 
   @override
@@ -44,7 +49,7 @@ class _ImprovedCurvedBottomNavBarState extends State<ImprovedCurvedBottomNavBar>
 
   Duration get animationDuration => widget.animationDuration;
 
-  Color get navBarColor => widget.navBarColor;
+  Color get navBarColor => widget.isDarkMode ? Colors.grey.shade900 : widget.navBarColor;
 
   // Offset values
   double screenWidth = 0;
@@ -129,9 +134,9 @@ class _ImprovedCurvedBottomNavBarState extends State<ImprovedCurvedBottomNavBar>
         Container(
             height: 120,
             width: double.infinity,
-            decoration: BoxDecoration(color: widget.backgroundColor, boxShadow: [
+            decoration: BoxDecoration(color: widget.isDarkMode ? Colors.black : widget.backgroundColor, boxShadow: [
               BoxShadow(
-                color: widget.backgroundColor,
+                color: widget.isDarkMode ? Colors.black : widget.backgroundColor,
                 blurRadius: 10,
                 spreadRadius: 10,
               )
@@ -186,7 +191,9 @@ class _ImprovedCurvedBottomNavBarState extends State<ImprovedCurvedBottomNavBar>
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 15,
-                              color: widget.unselectedColor.withOpacity(_getTextOpacity(index)),
+                              color: widget.isDarkMode
+                                  ? Color.lerp(widget.mainColor, Colors.white, 1.0 - _getTextOpacity(index))
+                                  : widget.unselectedColor.withOpacity(_getTextOpacity(index)),
                             ),
                           )),
                     ),
@@ -252,14 +259,29 @@ class _ImprovedCurvedBottomNavBarState extends State<ImprovedCurvedBottomNavBar>
             offset: const Offset(0, -44),
             child: CircleAvatar(
               radius: 40,
-              backgroundColor: widget.backgroundColor,
+              backgroundColor: widget.isDarkMode ? Colors.black : widget.backgroundColor,
               child: CircleAvatar(
                 radius: 35,
                 backgroundColor: navBarColor,
-                child: Opacity(
-                  opacity: _getSelectedIconOpacity(),
-                  child: Transform.scale(scale: widget.iconScale, child: widget.selectedIcons[controllerAttached ? pageController.page!.round() : 0]),
-                ),
+                child: Stack(alignment: Alignment.center, children: [
+                  Container(
+                    height: 25,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0.2),
+                          blurRadius: 5,
+                          spreadRadius: 1,
+                        )
+                      ],
+                    ),
+                  ),
+                  Opacity(
+                    opacity: _getSelectedIconOpacity(),
+                    child: Transform.scale(scale: widget.iconScale, child: widget.selectedIcons[controllerAttached ? pageController.page!.round() : 0]),
+                  ),
+                ]),
               ),
             ),
           ),
@@ -269,8 +291,8 @@ class _ImprovedCurvedBottomNavBarState extends State<ImprovedCurvedBottomNavBar>
   _getTextOpacity(int index) {
     if (!controllerAttached) return 0.0;
 
-    if ((pageController.page! - index).abs() >= 1) return 0.5;
-    return 1.0 - (pageController.page! - index).abs().clamp(0, 0.5);
+    if ((pageController.page! - index).abs() >= 1) return widget.isDarkMode ? 0 : 0.5;
+    return 1.0 - (pageController.page! - index).abs().clamp(0, widget.isDarkMode ? 1 : 0.5);
   }
 
   _getSelectedIconOpacity() {

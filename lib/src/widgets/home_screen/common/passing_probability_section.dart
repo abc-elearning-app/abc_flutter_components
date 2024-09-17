@@ -3,17 +3,13 @@ import 'package:flutter_abc_jsc_components/src/widgets/progress/custom_linear_pr
 
 class PassingProbabilityComponent extends StatelessWidget {
   final double passingProbability;
-
   final Color mainColor;
-  final Color darkModeMainColor;
-
   final bool isDarkMode;
 
   const PassingProbabilityComponent({
     super.key,
     required this.passingProbability,
     required this.mainColor,
-    required this.darkModeMainColor,
     required this.isDarkMode,
   });
 
@@ -26,7 +22,7 @@ class PassingProbabilityComponent extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: isDarkMode
-            ? darkModeMainColor.withOpacity(0.3)
+            ? Colors.white.withOpacity(0.16)
             : mainColor.withOpacity(0.16),
       ),
       child: Column(

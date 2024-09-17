@@ -24,7 +24,6 @@ class ReportBottomsheetComponent extends StatefulWidget {
   final Color secondaryColor;
   final Color backgroundColor;
 
-  final bool showHandle;
   final bool leftCheckbox;
 
   final void Function(List<ReportData> selectedOptions, String reason) onClick;
@@ -35,7 +34,6 @@ class ReportBottomsheetComponent extends StatefulWidget {
     this.secondaryColor = const Color(0xFF7C6F5B),
     this.backgroundColor = const Color(0xFFF5F4EE),
     this.title,
-    this.showHandle = true,
     this.buttonTitle = 'Submit',
     required this.isDarkMode,
     required this.onClick,
@@ -80,7 +78,7 @@ class _ReportBottomsheetComponentState extends State<ReportBottomsheetComponent>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (!widget.showHandle) IconWidget(icon: widget.dropdownIcon),
+        IconWidget(icon: widget.dropdownIcon),
         AnimatedPadding(
           padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           duration: const Duration(milliseconds: 100),
@@ -99,14 +97,6 @@ class _ReportBottomsheetComponentState extends State<ReportBottomsheetComponent>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  if (widget.showHandle)
-                    Container(
-                      width: 60,
-                      height: 4,
-                      margin: const EdgeInsets.only(bottom: 15),
-                      decoration: BoxDecoration(color: widget.isDarkMode ? Colors.white : Colors.black, borderRadius: BorderRadius.circular(100)),
-                    ),
-
                   if (widget.title != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 15),
@@ -170,9 +160,7 @@ class _ReportBottomsheetComponentState extends State<ReportBottomsheetComponent>
           fillColor: widget.isDarkMode ? Colors.white.withOpacity(0.08) : Colors.white,
           borderColor: widget.isDarkMode
               ? Colors.white.withOpacity(0.16)
-              : widget.showHandle
-                  ? widget.mainColor
-                  : widget.secondaryColor,
+              : widget.secondaryColor,
           iconColor: Colors.white,
           value: mistakeData.isSelected,
           onChanged: (_) => setState(() => _updateSelection(index)),

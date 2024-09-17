@@ -65,7 +65,7 @@ class TestBox extends StatelessWidget {
     return GestureDetector(
       onTap: () => onSelect(data.id),
       child: Container(
-        width: MediaQuery.of(context).size.width / 2 - 30,
+        width: (MediaQuery.of(context).size.width / 2 - 30).clamp(180, 1000),
         margin: const EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -82,7 +82,7 @@ class TestBox extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               gradient: LinearGradient(
                 colors: isDarkMode
-                    ? [const Color(0xFF292929).withOpacity(0.8), Colors.grey.shade900]
+                    ? [const Color(0xFF292929).withOpacity(0.3), Colors.grey.shade900]
                     : [
                         Colors.transparent,
                         secondaryColor.withOpacity(0.5),
@@ -90,7 +90,7 @@ class TestBox extends StatelessWidget {
                       ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                stops: isDarkMode ? const [0, 0.8] : const [0, 0.2, 0.5],
+                stops: isDarkMode ? const [0, 0.55 ] : const [0, 0.2, 0.5],
               ),
             ),
           )),
