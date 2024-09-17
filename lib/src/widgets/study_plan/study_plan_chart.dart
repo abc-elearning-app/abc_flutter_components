@@ -360,7 +360,7 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
       canShowMarker: true,
       activationMode: ActivationMode.singleTap,
       tooltipPosition: TooltipPosition.pointer,
-      color: Colors.black,
+      color: widget.isDarkMode ? Colors.grey.shade900 : Colors.black,
       shadowColor: Colors.black,
       borderColor: Colors.black,
       builder: (_, __, ___, pointIndex, seriesIndex) {
@@ -393,7 +393,7 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
           padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: Colors.black,
+            color: widget.isDarkMode ? Colors.grey.shade900 : Colors.black,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

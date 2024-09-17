@@ -52,8 +52,7 @@ class SubjectAnalysisBox extends StatefulWidget {
   State<SubjectAnalysisBox> createState() => _SubjectAnalysisBoxState();
 }
 
-class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
-    with SingleTickerProviderStateMixin {
+class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox> with SingleTickerProviderStateMixin {
   late ValueNotifier<bool> _isExpanded;
   late AnimationController _animationController;
   late Animation _animation;
@@ -65,8 +64,7 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
-    _animation = Tween<double>(begin: 1.5 * pi, end: pi / 2)
-        .animate(_animationController);
+    _animation = Tween<double>(begin: 0.5 * pi, end: 1.5 * pi).animate(_animationController);
 
     super.initState();
   }
@@ -84,17 +82,8 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: widget.isDarkMode
-              ? Colors.white.withOpacity(0.3)
-              : widget.backgroundColor,
-          boxShadow: !widget.isDarkMode
-              ? [
-                  BoxShadow(
-                      color: Colors.grey.shade300,
-                      blurRadius: 5,
-                      spreadRadius: 2)
-                ]
-              : null),
+          color: widget.isDarkMode ? Colors.white.withOpacity(0.3) : widget.backgroundColor,
+          boxShadow: !widget.isDarkMode ? [BoxShadow(color: Colors.grey.shade300, blurRadius: 5, spreadRadius: 2)] : null),
       child: Column(
         children: [
           GestureDetector(
@@ -119,17 +108,13 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
                     Expanded(
                         child: Text(
                       widget.subjectAnalysisData.title,
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color:
-                              widget.isDarkMode ? Colors.white : Colors.black),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: widget.isDarkMode ? Colors.white : Colors.black),
                     )),
 
                     // Dropdown button
                     AnimatedBuilder(
                       animation: _animation,
-                      builder: (BuildContext context, Widget? child) {
+                      builder: (_, __) {
                         return Transform.rotate(
                           angle: _animation.value,
                           child: const Icon(
@@ -152,11 +137,8 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
               duration: const Duration(milliseconds: 300),
               height: value ? 220 : 0,
               decoration: BoxDecoration(
-                  color:
-                      widget.isDarkMode ? Colors.grey.shade900 : Colors.white,
-                  borderRadius: const BorderRadius.only(
-                      bottomRight: Radius.circular(20),
-                      bottomLeft: Radius.circular(20))),
+                  color: widget.isDarkMode ? Colors.grey.shade900 : Colors.white,
+                  borderRadius: const BorderRadius.only(bottomRight: Radius.circular(20), bottomLeft: Radius.circular(20))),
               child: SingleChildScrollView(
                 physics: const NeverScrollableScrollPhysics(),
                 child: Column(
@@ -166,20 +148,10 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Accuracy Rate',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: widget.isDarkMode
-                                      ? Colors.white
-                                      : Colors.black)),
+                          Text('Accuracy Rate', style: TextStyle(fontSize: 14, color: widget.isDarkMode ? Colors.white : Colors.black)),
                           Text(
                             '${widget.subjectAnalysisData.accuracyRate.toInt()}%',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: widget.isDarkMode
-                                    ? Colors.white
-                                    : Colors.black),
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: widget.isDarkMode ? Colors.white : Colors.black),
                           )
                         ],
                       ),
@@ -293,9 +265,9 @@ class _SubjectAnalysisBoxState extends State<SubjectAnalysisBox>
 
   _handleToggleExpand() {
     if (!_isExpanded.value) {
-      _animationController.forward();
-    } else {
       _animationController.reverse();
+    } else {
+      _animationController.forward();
     }
     _isExpanded.value = !_isExpanded.value;
   }
