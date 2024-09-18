@@ -39,38 +39,37 @@ class AccountTabComponent extends StatelessWidget {
   final void Function() onDeleteAccount;
   final bool? tester;
 
-  const AccountTabComponent({
-    super.key,
-    required this.isDarkMode,
-    required this.circleIcon,
-    required this.dnaIcon,
-    required this.starIcon,
-    required this.triangleIcon,
-    required this.premiumIcon,
-    required this.isPro,
-    required this.syncIcon,
-    required this.deleteAccountIcon,
-    required this.logoutIcon,
-    required this.backgroundColor,
-    required this.onUpgrade,
-    required this.onSync,
-    required this.onLogout,
-    required this.onDeleteAccount,
-    required this.avatar,
-    required this.username,
-    required this.email,
-    required this.appLogo,
-    required this.appName,
-    required this.appVersion,
-    required this.packageType,
-    required this.crownIcon,
-    required this.primaryColor,
-    required this.secondaryColor,
-    required this.loggedIn,
-    required this.proIcon,
-    this.expireDate,
-    this.tester
-  });
+  const AccountTabComponent(
+      {super.key,
+      required this.isDarkMode,
+      required this.circleIcon,
+      required this.dnaIcon,
+      required this.starIcon,
+      required this.triangleIcon,
+      required this.premiumIcon,
+      required this.isPro,
+      required this.syncIcon,
+      required this.deleteAccountIcon,
+      required this.logoutIcon,
+      required this.backgroundColor,
+      required this.onUpgrade,
+      required this.onSync,
+      required this.onLogout,
+      required this.onDeleteAccount,
+      required this.avatar,
+      required this.username,
+      required this.email,
+      required this.appLogo,
+      required this.appName,
+      required this.appVersion,
+      required this.packageType,
+      required this.crownIcon,
+      required this.primaryColor,
+      required this.secondaryColor,
+      required this.loggedIn,
+      required this.proIcon,
+      this.expireDate,
+      this.tester});
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +84,7 @@ class AccountTabComponent extends StatelessWidget {
         ),
         Container(
           width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20).copyWith(bottom: 0),
           decoration: BoxDecoration(
               color: isDarkMode ? Colors.black : backgroundColor,
               borderRadius: const BorderRadius.only(
@@ -117,10 +116,11 @@ class AccountTabComponent extends StatelessWidget {
                   ),
 
                 // User information (avatar, email, name)
-                if(loggedIn) Padding(
-                  padding: EdgeInsets.only(top: isPro ? 15 : 0),
-                  child: UserInformation(isPro: isPro, avatar: avatar, email: email, username: username, crownIcon: crownIcon),
-                ),
+                if (loggedIn)
+                  Padding(
+                    padding: EdgeInsets.only(top: isPro ? 15 : 0),
+                    child: UserInformation(isPro: isPro, avatar: avatar, email: email, username: username, crownIcon: crownIcon),
+                  ),
 
                 if (isPro && loggedIn)
                   const Padding(
@@ -131,15 +131,10 @@ class AccountTabComponent extends StatelessWidget {
                 if (isPro) _proInformation(),
 
                 // Action buttons
-                if(loggedIn) const SizedBox(height: 10),
-                if(loggedIn)  _buildButton('Sync Data', syncIcon, onSync),
-                if(loggedIn)  _buildButton('Log Out', logoutIcon, onLogout),
-                if(loggedIn)  _buildButton(
-                  'Delete Account',
-                  deleteAccountIcon,
-                  onDeleteAccount,
-                  color: Colors.red,
-                ),
+                if (loggedIn) const SizedBox(height: 10),
+                if (loggedIn) _buildButton('Sync Data', syncIcon, onSync),
+                if (loggedIn) _buildButton('Log Out', logoutIcon, onLogout),
+                // if (loggedIn) _buildButton('Delete Account', deleteAccountIcon, onDeleteAccount, color: Colors.red),
               ],
             ),
           ),
@@ -151,15 +146,14 @@ class AccountTabComponent extends StatelessWidget {
   Widget _proInformation() => Column(
         children: [
           ProInformationTile(
-            appLogo: appLogo,
-            appName: appName,
-            appVersion: appVersion,
-            isDarkMode: isDarkMode,
-            mainColor: primaryColor,
-            proIcon: proIcon,
-            proVersion: isPro,
-            padding: const EdgeInsets.all(0)
-          ),
+              appLogo: appLogo,
+              appName: appName,
+              appVersion: appVersion,
+              isDarkMode: isDarkMode,
+              mainColor: primaryColor,
+              proIcon: proIcon,
+              proVersion: isPro,
+              padding: const EdgeInsets.all(0)),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
@@ -182,25 +176,26 @@ class AccountTabComponent extends StatelessWidget {
               ],
             ),
           ),
-          if(expireDate != null) Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Expiration Date',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
+          if (expireDate != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Expiration Date',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
-                ),
-                Text(
-                  _getDateTime(expireDate!),
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, decoration: TextDecoration.underline),
-                ),
-              ],
+                  Text(
+                    _getDateTime(expireDate!),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, decoration: TextDecoration.underline),
+                  ),
+                ],
+              ),
             ),
-          ),
           if (isPro && loggedIn)
             const Padding(
               padding: EdgeInsets.only(top: 15),
@@ -237,7 +232,7 @@ class AccountTabComponent extends StatelessWidget {
   _getDateTime(DateTime time) {
     final displayMonth = time.month < 10 ? '0${time.month}' : '${time.month}';
     final displayDay = time.day < 10 ? '0${time.day}' : '${time.day}';
-    if(tester == true) {
+    if (tester == true) {
       final displayHour = time.hour < 10 ? '0${time.hour}' : '${time.hour}';
       final displayMinute = time.minute < 10 ? '0${time.minute}' : '${time.minute}';
       final displaySecond = time.second < 10 ? '0${time.second}' : '${time.second}';
