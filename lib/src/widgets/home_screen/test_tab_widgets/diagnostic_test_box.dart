@@ -13,6 +13,7 @@ class DiagnosticTestBoxComponent extends StatelessWidget {
 
   final double progress;
   final bool isDarkMode;
+  final Widget Function(BuildContext context)? loadingBuilder;
 
   final DiagnosticTestBoxStatus status;
 
@@ -27,7 +28,11 @@ class DiagnosticTestBoxComponent extends StatelessWidget {
     required this.progress,
     required this.isDarkMode,
     required this.status,
+    this.loadingBuilder,
   });
+
+  EdgeInsets get padding => const EdgeInsets.symmetric(horizontal: 15, vertical: 5);
+  BorderRadius get borderRadius => BorderRadius.circular(16);
 
   @override
   Widget build(BuildContext context) {
@@ -41,85 +46,102 @@ class DiagnosticTestBoxComponent extends StatelessWidget {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: isDarkMode ? Colors.white : Colors.black),
           ),
         ),
-        GestureDetector(
-          onTap: onClick,
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                image: DecorationImage(
-                  image: AssetImage(background),
-                  fit: BoxFit.cover,
-                ),
-                boxShadow: !isDarkMode
-                    ? [
-                        BoxShadow(
-                          color: Colors.grey.shade300,
-                          blurRadius: 2,
-                          spreadRadius: 2,
-                          offset: const Offset(0, 1),
-                        )
-                      ]
-                    : null),
-            child: Stack(children: [
-              Positioned.fill(
-                  child: Container(
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), gradient: _gradientColors()),
-              )),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                child: Column(
-                  children: [
-                    Row(
+        Stack(
+          children: [
+            GestureDetector(
+              onTap: onClick,
+              child: Container(
+                margin: padding,
+                decoration: BoxDecoration(
+                    borderRadius: borderRadius,
+                    image: DecorationImage(
+                      image: AssetImage(background),
+                      fit: BoxFit.cover,
+                    ),
+                    boxShadow: !isDarkMode
+                        ? [
+                            BoxShadow(
+                              color: Colors.grey.shade300,
+                              blurRadius: 2,
+                              spreadRadius: 2,
+                              offset: const Offset(0, 1),
+                            )
+                          ]
+                        : null),
+                child: Stack(children: [
+                  Positioned.fill(
+                      child: Container(
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), gradient: _gradientColors()),
+                  )),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                    child: Column(
                       children: [
-                        Padding(padding: const EdgeInsets.only(left: 5, right: 20), child: IconWidget(icon: icon, height: 70)),
-                        Expanded(
-                          child: RichText(
-                            text: const TextSpan(
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: 'Poppins',
+                        Row(
+                          children: [
+                            Padding(padding: const EdgeInsets.only(left: 5, right: 20), child: IconWidget(icon: icon, height: 70)),
+                            Expanded(
+                              child: RichText(
+                                text: const TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Poppins',
+                                  ),
+                                  children: [
+                                    TextSpan(text: 'Take our diagnostic test to assess your current level and get a '),
+                                    TextSpan(text: 'personalized study plan.', style: TextStyle(fontWeight: FontWeight.w600)),
+                                  ],
+                                ),
                               ),
-                              children: [
-                                TextSpan(text: 'Take our diagnostic test to assess your current level and get a '),
-                                TextSpan(text: 'personalized study plan.', style: TextStyle(fontWeight: FontWeight.w600)),
-                              ],
+                            )
+                          ],
+                        ),
+                        if (status != DiagnosticTestBoxStatus.notStarted)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: LinearPercentIndicator(
+                              padding: EdgeInsets.zero,
+                              percent: progress / 100,
+                              animation: true,
+                              barRadius: const Radius.circular(20),
+                              lineHeight: 8,
+                              progressColor: Colors.white,
+                              backgroundColor: Colors.grey.shade200.withOpacity(0.3),
                             ),
                           ),
+                        if (status == DiagnosticTestBoxStatus.notStarted) const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(_getLabel(), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white)),
+                            const Padding(
+                              padding: EdgeInsets.only(right: 5),
+                              child: Icon(Icons.arrow_forward, color: Colors.white),
+                            )
+                          ],
                         )
                       ],
                     ),
-                    if (status != DiagnosticTestBoxStatus.notStarted)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: LinearPercentIndicator(
-                          padding: EdgeInsets.zero,
-                          percent: progress / 100,
-                          animation: true,
-                          barRadius: const Radius.circular(20),
-                          lineHeight: 8,
-                          progressColor: Colors.white,
-                          backgroundColor: Colors.grey.shade200.withOpacity(0.3),
-                        ),
-                      ),
-                    if (status == DiagnosticTestBoxStatus.notStarted) const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(_getLabel(), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white)),
-                        const Padding(
-                          padding: EdgeInsets.only(right: 5),
-                          child: Icon(Icons.arrow_forward, color: Colors.white),
-                        )
-                      ],
-                    )
-                  ],
-                ),
+                  ),
+                ]),
               ),
-            ]),
-          ),
-        ),
+            ),
+            if(loadingBuilder != null) 
+              Positioned.fill(
+                child: Padding(
+                  padding: padding,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black45,
+                      borderRadius: borderRadius
+                    ),
+                    child: loadingBuilder!.call(context),
+                  ),
+                )
+              )
+          ],
+        )
       ],
     );
   }
