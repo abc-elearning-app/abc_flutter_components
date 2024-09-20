@@ -97,6 +97,12 @@ class _MainLoginPageState extends State<MainLoginPage> {
     ];
 
     super.initState();
+    
+    //TODO: test
+    Future.delayed(const Duration(seconds: 1), () {
+      emailController.text = 'hiepnx27@gmail.com';
+      _buttonEnable.value = true;
+    });
   }
 
   void _nextPageListener() => _pageIndex.value = _pageController.page!.toInt();
