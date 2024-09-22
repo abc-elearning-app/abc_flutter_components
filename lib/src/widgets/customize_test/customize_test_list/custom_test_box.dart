@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class CustomTestData {
+  final int id;
   final String title;
   final int totalQuestions;
   final int doneQuestions;
@@ -10,6 +12,7 @@ class CustomTestData {
   final bool isFinished;
 
   CustomTestData({
+    required this.id,
     required this.title,
     required this.totalQuestions,
     required this.time,
@@ -19,15 +22,19 @@ class CustomTestData {
   });
 }
 
-class CustomTestBox extends StatelessWidget {
+class CustomTestBox extends StatefulWidget {
   final Color passColor;
   final Color failColor;
   final Color mainColor;
   final Color secondaryColor;
+  final String editIcon;
+  final String deleteIcon;
 
   final bool isDarkMode;
   final bool isFinished;
+  final bool isUnderSelection;
 
+  final int id;
   final String title;
   final int totalQuestions;
   final int doneQuestions;
@@ -35,7 +42,10 @@ class CustomTestBox extends StatelessWidget {
 
   final double minPassValue;
 
-  final bool isSelected;
+  final void Function(int id) onClick;
+  final void Function(int id) onEdit;
+  final void Function(int id) onDelete;
+  final void Function(bool isSelected) onSelect;
 
   const CustomTestBox({
     super.key,
@@ -50,107 +60,212 @@ class CustomTestBox extends StatelessWidget {
     required this.doneQuestions,
     required this.time,
     required this.secondaryColor,
-    required this.isSelected,
+    required this.isUnderSelection,
+    required this.editIcon,
+    required this.deleteIcon,
+    required this.onEdit,
+    required this.onDelete,
+    required this.id,
+    required this.onClick,
+    required this.onSelect,
   });
 
+  @override
+  State<CustomTestBox> createState() => _CustomTestBoxState();
+}
+
+class _CustomTestBoxState extends State<CustomTestBox> with SingleTickerProviderStateMixin {
   TextStyle get infoTextStyle => const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, fontStyle: FontStyle.italic);
+
+  bool isSwiped = false;
+  bool isSelected = false;
+
+  late AnimationController controller;
+  late Animation<double> swipeAnimation;
+  late Animation<double> fadeAnimation;
+  late Animation<double> scaleAnimation;
+
+  @override
+  void initState() {
+    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
+    swipeAnimation = Tween<double>(begin: 0, end: -150).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
+    fadeAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
+    scaleAnimation = Tween<double>(begin: 0.9, end: 1).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
+
+    isSelected = widget.isUnderSelection;
+
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant CustomTestBox oldWidget) {
+    if (widget.isUnderSelection != oldWidget.isUnderSelection) {
+      if (widget.isUnderSelection) controller.reverse();
+      setState(() => isSelected = widget.isUnderSelection);
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: ValueKey(title),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        alignment: Alignment.centerLeft,
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+    return GestureDetector(
+      onTap: () {
+        if (isSwiped) {
+          controller.reverse();
+        } else {
+          widget.onClick(widget.id);
+        }
+      },
+      child: AnimatedBuilder(
+        animation: controller,
+        builder: (_, __) => Stack(
+          alignment: Alignment.centerRight,
           children: [
-            Icon(Icons.edit),
-            SizedBox(width: 10),
-            Text('Edit', style: TextStyle(color: Colors.white)),
-          ],
-        ),
-      ),
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        padding: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          color: (isFinished ? _getMainColor() : secondaryColor).withOpacity(0.08),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            CircularPercentIndicator(
-              radius: 24,
-              lineWidth: 5,
-              percent: doneQuestions / totalQuestions,
-              animation: true,
-              progressColor: _getMainColor(),
-              backgroundColor: Colors.grey.withOpacity(0.3),
-              circularStrokeCap: CircularStrokeCap.round,
-              center: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(((doneQuestions / totalQuestions) * 100).toStringAsFixed(0), style: const TextStyle(fontSize: 12)),
-                  const Text('%', style: TextStyle(fontSize: 8)),
-                ],
+            Align(
+              alignment: Alignment.centerRight,
+              child: Opacity(
+                opacity: fadeAnimation.value,
+                child: ScaleTransition(
+                  scale: scaleAnimation,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildOptionBox(Colors.blue, widget.editIcon, widget.onEdit),
+                      _buildOptionBox(Colors.red, widget.deleteIcon, widget.onDelete),
+                    ],
+                  ),
+                ),
               ),
             ),
-            const SizedBox(width: 10),
-            Expanded(
-                child: Column(
-              children: [
-                Row(
+            Transform.translate(
+              offset: Offset(swipeAnimation.value, 0),
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: (widget.isFinished ? _getMainColor() : widget.secondaryColor).withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
                   children: [
-                    Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                    if (isFinished)
-                      Container(
-                        margin: const EdgeInsets.only(left: 10),
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: _getMainColor().withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(100),
+                    CircularPercentIndicator(
+                      radius: 24,
+                      lineWidth: 5,
+                      percent: widget.doneQuestions / widget.totalQuestions,
+                      animation: true,
+                      progressColor: _getMainColor(),
+                      backgroundColor: Colors.grey.withOpacity(0.3),
+                      circularStrokeCap: CircularStrokeCap.round,
+                      center: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(((widget.doneQuestions / widget.totalQuestions) * 100).toStringAsFixed(0), style: const TextStyle(fontSize: 12)),
+                          const Text('%', style: TextStyle(fontSize: 8)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                        child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text(widget.title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                            if (widget.isFinished)
+                              Container(
+                                margin: const EdgeInsets.only(left: 10),
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: _getMainColor().withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    (widget.doneQuestions / widget.totalQuestions) >= widget.minPassValue ? 'PASSED' : 'FAILED',
+                                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: _getMainColor()),
+                                  ),
+                                ),
+                              )
+                          ],
                         ),
-                        child: Center(
-                          child: Text(
-                            (doneQuestions / totalQuestions) >= minPassValue ? 'PASSED' : 'FAILED',
-                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: _getMainColor()),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Text('${widget.doneQuestions}/${widget.totalQuestions}', style: infoTextStyle),
+                            Text(' Questions  ', style: infoTextStyle.copyWith(color: Colors.grey.shade600)),
+                            Text('${widget.time}', style: infoTextStyle),
+                            Text(' Minutes', style: infoTextStyle.copyWith(color: Colors.grey.shade600)),
+                          ],
+                        )
+                      ],
+                    )),
+                    widget.isUnderSelection
+                        ? GestureDetector(
+                            onTap: () {
+                              setState(() => isSelected = !isSelected);
+                              widget.onSelect(!isSelected);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: isSelected ? widget.mainColor : Colors.transparent,
+                                  border: Border.all(
+                                    width: 1,
+                                    color: isSelected ? widget.mainColor : Colors.grey,
+                                  )),
+                              padding: const EdgeInsets.all(2),
+                              child: Icon(Icons.check, color: isSelected ? Colors.white : Colors.transparent, size: 18),
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: () {
+                              if (isSwiped) {
+                                controller.reverse();
+                              } else {
+                                controller.forward();
+                              }
+                              isSwiped = !isSwiped;
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.more_horiz, color: Colors.grey),
+                            ),
                           ),
-                        ),
-                      )
                   ],
                 ),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    Text('$doneQuestions/$totalQuestions', style: infoTextStyle),
-                    Text(' Questions  ', style: infoTextStyle.copyWith(color: Colors.grey.shade600)),
-                    Text('$time', style: infoTextStyle),
-                    Text(' Minutes', style: infoTextStyle.copyWith(color: Colors.grey.shade600)),
-                  ],
-                )
-              ],
-            )),
-            isSelected
-                ? Checkbox(value: true, onChanged: (_) {})
-                : Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(Icons.more_horiz, color: Colors.grey),
-                  ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Color _getMainColor() => isFinished
-      ? (doneQuestions / totalQuestions) * 100 >= minPassValue
-          ? passColor
-          : failColor
-      : mainColor;
+  Widget _buildOptionBox(Color color, String icon, void Function(int id) action) => GestureDetector(
+        onTap: () => action.call(widget.id),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: color.withOpacity(0.1),
+          ),
+          margin: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.all(10),
+          child: IconWidget(icon: icon, color: color, height: 25),
+        ),
+      );
+
+  Color _getMainColor() => widget.isFinished
+      ? (widget.doneQuestions / widget.totalQuestions) * 100 >= widget.minPassValue
+          ? widget.passColor
+          : widget.failColor
+      : widget.mainColor;
 }
