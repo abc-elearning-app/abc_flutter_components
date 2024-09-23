@@ -36,13 +36,7 @@ class SubjectsBox extends StatefulWidget {
 }
 
 class _SubjectsBoxState extends State<SubjectsBox> {
-  late List<int> selectedIds;
-
-  @override
-  void initState() {
-    selectedIds = widget.subjects.map((subject) => subject.id).toList();
-    super.initState();
-  }
+  List<int> selectedIds = [];
 
   @override
   Widget build(BuildContext context) {
@@ -119,17 +113,17 @@ class _SubjectsBoxState extends State<SubjectsBox> {
   }
 
   Widget _selectAllButton(BuildContext context) => GestureDetector(
-    onTap: () {
-      setState(() {
-        if (!(selectedIds.length == widget.subjects.length)) {
-          selectedIds = widget.subjects.map((e) => e.id).toList();
-        } else {
-          selectedIds = [];
-        }
-        widget.onSelect(selectedIds);
-      });
-    },
-    child: Row(
+        onTap: () {
+          setState(() {
+            if (!(selectedIds.length == widget.subjects.length)) {
+              selectedIds = widget.subjects.map((e) => e.id).toList();
+            } else {
+              selectedIds = [];
+            }
+            widget.onSelect(selectedIds);
+          });
+        },
+        child: Row(
           children: [
             Text('Select All', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: _textColor())),
             Padding(
@@ -152,7 +146,7 @@ class _SubjectsBoxState extends State<SubjectsBox> {
             ),
           ],
         ),
-  );
+      );
 
   void _onToggle(int id) {
     setState(() {

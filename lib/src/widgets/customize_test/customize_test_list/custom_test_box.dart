@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -8,7 +9,7 @@ class CustomTestData {
   final int totalQuestions;
   final int doneQuestions;
   final int time;
-  final double minPassValue;
+  final int minPassValue;
   final bool isFinished;
 
   CustomTestData({
@@ -33,6 +34,7 @@ class CustomTestBox extends StatefulWidget {
   final bool isDarkMode;
   final bool isFinished;
   final bool isUnderSelection;
+  final bool selectedAll;
 
   final int id;
   final String title;
@@ -40,12 +42,12 @@ class CustomTestBox extends StatefulWidget {
   final int doneQuestions;
   final int time;
 
-  final double minPassValue;
+  final int minPassValue;
 
-  final void Function(int id) onClick;
+  final void Function(int id, bool isFinished) onClick;
   final void Function(int id) onEdit;
   final void Function(int id) onDelete;
-  final void Function(bool isSelected) onSelect;
+  final void Function(int id, bool isSelected) onSelect;
 
   const CustomTestBox({
     super.key,
@@ -68,6 +70,7 @@ class CustomTestBox extends StatefulWidget {
     required this.id,
     required this.onClick,
     required this.onSelect,
+    required this.selectedAll,
   });
 
   @override
@@ -78,7 +81,8 @@ class _CustomTestBoxState extends State<CustomTestBox> with SingleTickerProvider
   TextStyle get infoTextStyle => const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, fontStyle: FontStyle.italic);
 
   bool isSwiped = false;
-  bool isSelected = false;
+
+  late ValueNotifier<bool> isSelected;
 
   late AnimationController controller;
   late Animation<double> swipeAnimation;
@@ -87,28 +91,28 @@ class _CustomTestBoxState extends State<CustomTestBox> with SingleTickerProvider
 
   @override
   void initState() {
+    isSelected = ValueNotifier(false);
+
     controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
-    swipeAnimation = Tween<double>(begin: 0, end: -150).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
+    swipeAnimation = Tween<double>(begin: 0, end: -130).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
     fadeAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
     scaleAnimation = Tween<double>(begin: 0.9, end: 1).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
-
-    isSelected = widget.isUnderSelection;
-
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant CustomTestBox oldWidget) {
-    if (widget.isUnderSelection != oldWidget.isUnderSelection) {
-      if (widget.isUnderSelection) controller.reverse();
-      setState(() => isSelected = widget.isUnderSelection);
-    }
+    isSwiped = false;
+    controller.reverse();
+    isSelected.value = widget.selectedAll;
+    widget.onSelect(widget.id, widget.selectedAll);
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void dispose() {
     controller.dispose();
+    isSelected.dispose();
     super.dispose();
   }
 
@@ -117,9 +121,14 @@ class _CustomTestBoxState extends State<CustomTestBox> with SingleTickerProvider
     return GestureDetector(
       onTap: () {
         if (isSwiped) {
+          isSwiped = !isSwiped;
           controller.reverse();
+        }
+        if (widget.isUnderSelection) {
+          isSelected.value = !isSelected.value;
+          widget.onSelect(widget.id, isSelected.value);
         } else {
-          widget.onClick(widget.id);
+          widget.onClick(widget.id, widget.isFinished);
         }
       },
       child: AnimatedBuilder(
@@ -199,8 +208,8 @@ class _CustomTestBoxState extends State<CustomTestBox> with SingleTickerProvider
                           children: [
                             Text('${widget.doneQuestions}/${widget.totalQuestions}', style: infoTextStyle),
                             Text(' Questions  ', style: infoTextStyle.copyWith(color: Colors.grey.shade600)),
-                            Text('${widget.time}', style: infoTextStyle),
-                            Text(' Minutes', style: infoTextStyle.copyWith(color: Colors.grey.shade600)),
+                            if (widget.time > 0) Text('${widget.time ~/ 60}', style: infoTextStyle),
+                            if (widget.time > 0) Text(' Minutes', style: infoTextStyle.copyWith(color: Colors.grey.shade600)),
                           ],
                         )
                       ],
@@ -208,19 +217,22 @@ class _CustomTestBoxState extends State<CustomTestBox> with SingleTickerProvider
                     widget.isUnderSelection
                         ? GestureDetector(
                             onTap: () {
-                              setState(() => isSelected = !isSelected);
-                              widget.onSelect(!isSelected);
+                              isSelected.value = !isSelected.value;
+                              widget.onSelect(widget.id, isSelected.value);
                             },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: isSelected ? widget.mainColor : Colors.transparent,
-                                  border: Border.all(
-                                    width: 1,
-                                    color: isSelected ? widget.mainColor : Colors.grey,
-                                  )),
-                              padding: const EdgeInsets.all(2),
-                              child: Icon(Icons.check, color: isSelected ? Colors.white : Colors.transparent, size: 18),
+                            child: ValueListenableBuilder(
+                              valueListenable: isSelected,
+                              builder: (_, selected, __) => Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: selected ? widget.mainColor : Colors.transparent,
+                                    border: Border.all(
+                                      width: 1,
+                                      color: selected ? widget.mainColor : Colors.grey,
+                                    )),
+                                padding: const EdgeInsets.all(2),
+                                child: Icon(Icons.check, color: selected ? Colors.white : Colors.transparent, size: 18),
+                              ),
                             ),
                           )
                         : GestureDetector(
@@ -257,7 +269,7 @@ class _CustomTestBoxState extends State<CustomTestBox> with SingleTickerProvider
             borderRadius: BorderRadius.circular(8),
             color: color.withOpacity(0.1),
           ),
-          margin: const EdgeInsets.symmetric(horizontal: 10),
+          margin: const EdgeInsets.symmetric(horizontal: 8),
           padding: const EdgeInsets.all(10),
           child: IconWidget(icon: icon, color: color, height: 25),
         ),
