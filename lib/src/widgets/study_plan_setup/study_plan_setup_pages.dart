@@ -20,6 +20,7 @@ class StudyPlanSetupComponent extends StatefulWidget {
   final void Function() onSkipNotification;
   final void Function(DateTime selectedDate) onSelectExamDate;
   final void Function(TimeOfDay selectedReminderTime) onSelectReminderTime;
+  final Widget Function(BuildContext context)? loadingDiagnosticTestBuilder;
 
   const StudyPlanSetupComponent({
     super.key,
@@ -35,6 +36,7 @@ class StudyPlanSetupComponent extends StatefulWidget {
     required this.onSkipSetup,
     required this.isDarkMode,
     required this.onSkipNotification,
+    this.loadingDiagnosticTestBuilder
   });
 
   @override
