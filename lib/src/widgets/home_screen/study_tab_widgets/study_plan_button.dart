@@ -27,6 +27,7 @@ class StudyPlanButtonComponent extends StatelessWidget {
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             elevation: 0,
+            foregroundColor: Colors.grey.shade900,
             backgroundColor: Colors.transparent,
             shadowColor: Colors.transparent,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

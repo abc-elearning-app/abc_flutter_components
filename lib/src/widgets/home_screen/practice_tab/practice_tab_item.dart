@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_abc_jsc_components/flutter_abc_jsc_components.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:text_scroll/text_scroll.dart';
 
 class QuestionGroupData {
@@ -22,21 +21,10 @@ class QuestionGroupData {
 class PracticeTabItemComponent extends StatelessWidget {
   final QuestionGroupData questionGroupData;
 
-  final double? progress;
-  final int? passPercent;
-  final bool? finished;
-
   final bool isDarkMode;
   final bool? proVersion;
-  final bool hasTest;
 
   final String? proIcon;
-  final String? correctIcon;
-  final String? incorrectIcon;
-
-  final Color? mainColor;
-  final Color? correctColor;
-  final Color? incorrectColor;
 
   final void Function(int id) onSelect;
 
@@ -47,20 +35,7 @@ class PracticeTabItemComponent extends StatelessWidget {
     required this.onSelect,
     this.proIcon,
     this.proVersion,
-    this.passPercent,
-    this.progress,
-    this.finished,
-    this.correctIcon,
-    this.incorrectIcon,
-    this.mainColor,
-    this.correctColor,
-    this.incorrectColor,
-    this.hasTest = false,
   });
-
-  bool get passed => finished == true && progress != null && passPercent != null && progress! * 100 >= passPercent!;
-
-  bool get failed => finished == true && progress != null && passPercent != null && progress! * 100 < passPercent!;
 
   @override
   Widget build(BuildContext context) {
@@ -112,23 +87,6 @@ class PracticeTabItemComponent extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       if (proVersion == false) GetProIcon(darkMode: isDarkMode, proIcon: proIcon ?? '', height: 25, width: 70),
-                      if (proVersion == true && hasTest && finished == true)
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: (passed ? correctColor! : incorrectColor!).withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            child: Center(
-                              child: Text(
-                                passed ? 'PASSED' : 'FAILED',
-                                style: TextStyle(color: passed ? correctColor! : incorrectColor!, fontSize: 12, fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ),
-                        )
                     ],
                   ),
                   const SizedBox(height: 5),
@@ -153,65 +111,8 @@ class PracticeTabItemComponent extends StatelessWidget {
                 ],
               ),
             ),
-            if (proVersion == true && hasTest) _progressIndicator()
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _progressIndicator() {
-    Widget widget = Stack(
-      alignment: Alignment.center,
-      children: [
-        CircularPercentIndicator(
-          radius: 24,
-          percent: progress!,
-          lineWidth: 4,
-          circularStrokeCap: CircularStrokeCap.round,
-          progressColor: passed
-              ? correctColor
-              : failed
-                  ? incorrectColor
-                  : mainColor,
-          backgroundColor: mainColor?.withOpacity(0.2) ?? Colors.grey.shade100,
-        ),
-        Text('${(progress! * 100).round()}%',
-            style: TextStyle(
-              fontSize: 12,
-              color: isDarkMode ? Colors.white : Colors.black,
-              fontWeight: FontWeight.w500,
-            ))
-      ],
-    );
-    // if (finished == true && progress != null && passPercent != null && progress! >= passPercent!) {
-    //   widget = IconWidget(icon: correctIcon ?? '');
-    // } else if (finished == true && progress != null && passPercent != null && progress! < passPercent!) {
-    //   widget = IconWidget(icon: incorrectIcon ?? '');
-    // } else if (progress != null && progress! > -1) {
-    //   widget = Stack(
-    //     alignment: Alignment.center,
-    //     children: [
-    //       CircularPercentIndicator(
-    //         radius: 20,
-    //         percent: progress!,
-    //         lineWidth: 5,
-    //         circularStrokeCap: CircularStrokeCap.round,
-    //         progressColor: mainColor,
-    //         backgroundColor: mainColor?.withOpacity(0.3) ?? Colors.grey.shade100,
-    //       ),
-    //       Text('${(progress! * 100).round().toString()}%', style: TextStyle(fontSize: 10, color: isDarkMode ? Colors.white : Colors.black))
-    //     ],
-    //   );
-    // } else {
-    //   widget = const SizedBox.shrink();
-    // }
-
-    return Transform.translate(
-      offset: progress != null && progress! > -1 ? const Offset(0, 0) : const Offset(8, -25),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 10),
-        child: widget,
       ),
     );
   }

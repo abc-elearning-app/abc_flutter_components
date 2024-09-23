@@ -16,6 +16,7 @@ class _ConfettiEffectState extends State<ConfettiEffect> {
   @override
   void initState() {
     _confettiController = ConfettiController();
+    _confettiController.stop();
     _confettiController.play();
     super.initState();
   }
@@ -24,6 +25,20 @@ class _ConfettiEffectState extends State<ConfettiEffect> {
   void dispose() {
     _confettiController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant ConfettiEffect oldWidget) {
+    _confettiController.stop();
+    _confettiController.play();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void didChangeDependencies() {
+    _confettiController.stop();
+    _confettiController.play();
+    super.didChangeDependencies();
   }
 
   @override

@@ -181,26 +181,24 @@ class _StudyPlanChartState extends State<StudyPlanChart> {
       }
     }
 
+    expectedBarValue = ((widget.questionPerDay * daysTillExam) ~/ columns).clamp(0, 500);
+
     // Calculate average values of each group till the current group (exclude the current group)
     int startGroupIndex = 0;
     for (int i = 0; i < currentGroupIndex; i++) {
-      int sum = valueList.sublist(startGroupIndex, startGroupIndex + daysInGroups[i]).reduce((a, b) => a + b);
-      sum = sum.clamp(0, 500);
+      int sum = valueList.sublist(startGroupIndex, startGroupIndex + daysInGroups[i]).reduce((a, b) => a + b).clamp(0, expectedBarValue);
       barValue.add(sum);
 
       startGroupIndex += daysInGroups[i];
     }
 
     // Calculate current day group's average
-    int sum = valueList.sublist(startGroupIndex, widget.valueList.length).reduce((a, b) => a + b);
-    sum = sum.clamp(0, 500);
+    int sum = valueList.sublist(startGroupIndex, widget.valueList.length).reduce((a, b) => a + b).clamp(0, expectedBarValue);
     barValue.add(sum);
 
     // The rest are all 0
     int remainColumns = columns - barValue.length;
     barValue.addAll(List.generate(remainColumns, (_) => 0));
-
-    expectedBarValue = ((widget.questionPerDay * daysTillExam) ~/ columns).clamp(0, 500);
   }
 
   _createDateGroups() {

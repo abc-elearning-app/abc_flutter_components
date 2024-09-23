@@ -46,7 +46,7 @@ class _MainResultBoxState extends State<MainResultBox> {
     percentValue = ValueNotifier(0);
     if (widget.progress > 0) {
       timer = Timer.periodic(const Duration(milliseconds: 15), (_) {
-        percentValue.value = percentValue.value + 1;
+        percentValue.value = (percentValue.value + 1).clamp(0, widget.progress).toInt();
         if (percentValue.value >= widget.progress) timer.cancel();
       });
     }
