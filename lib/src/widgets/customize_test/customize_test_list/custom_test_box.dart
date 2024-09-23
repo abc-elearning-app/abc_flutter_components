@@ -123,8 +123,7 @@ class _CustomTestBoxState extends State<CustomTestBox> with SingleTickerProvider
         if (isSwiped) {
           isSwiped = !isSwiped;
           controller.reverse();
-        }
-        if (widget.isUnderSelection) {
+        } else if (widget.isUnderSelection) {
           isSelected.value = !isSelected.value;
           widget.onSelect(widget.id, isSelected.value);
         } else {
